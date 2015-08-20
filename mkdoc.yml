@@ -10,7 +10,9 @@ theme_dir: ./theme/mkdocs/
 theme_center_lead: false
 include_search: true
 pages:
+- Home: index.md
+  - Why Qi: Why-Qi.md
+  - Data behavior: Qi-Data-Behavior.md
+- Samples: samples/index.md
+  - .Net client: samples/dotNetClient.md
 
-- [index.md, Qi Docs home]
-# Introduction Guide Sections
-- [Why-Qi.md, Introduction, Why Qi]
