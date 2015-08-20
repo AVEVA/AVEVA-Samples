@@ -1,510 +1,635 @@
-System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
-   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
-   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
-   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__1_0(String current, XNode x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
-   at System.Linq.Enumerable.Aggregate[TSource,TAccumulate](IEnumerable`1 source, TAccumulate seed, Func`3 func)
-   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(IEnumerable`1 es) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
-   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__0_0(String att, XElement node) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 60
-   at GithubWikiDoc.XmlToMarkdown.<>c__DisplayClass0_0.<ToMarkDown>b__2(XElement x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 71
-   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
-   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__1_0(String current, XNode x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
-   at System.Linq.Enumerable.Aggregate[TSource,TAccumulate](IEnumerable`1 source, TAccumulate seed, Func`3 func)
-   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(IEnumerable`1 es) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
-   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__0_1(XElement x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 67
-   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
-   at GithubWikiDoc.Program.<>c.<Main>b__0_0(String file) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 25
-<?xml version="1.0"?>
-<doc>
-    <assembly>
-        <name>OSIsoft.Qi.Http.StreamRepository</name>
-    </assembly>
-    <members>
-        <member name="T:OSIsoft.Qi.Http.Repository.StreamDataController">
-            <name>
-            Qi Stream Data
-            </name>
-            <summary>
-            Data access method for Qi data streams
-            </summary>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetType(System.String)">
-            <name>
-            Get Stream Qi Type
-            </name> 
-            <summary>
-            Get a type for a Qi stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns>Qi type definition</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValue(System.String,System.String)">
-            <name>
-            Get Value
-            </name> 
-            <summary>
-            Returns a single value from a Qi data stream according to the configured stream behavior
-            </summary>
-            <param name="streamId">The id of the Qi stream</param>
-            <param name="index">The index of the value to return</param>
-            <returns>Return value</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValues(System.String,System.String[])">
-            <name>
-            Get Values
-            </name> 
-            <summary>
-            Select a set of values from a Qi data stream.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="index">An array of indexes to return a value for</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.CreateGetValuesRequest(System.String,System.String[])">
-            <name>
-            Get Values
-            </name> 
-            <summary>
-            Select a set of values from a Qi data stream.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="index">An array of indexes to return a value for</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValues(System.String,System.String,System.String,System.Int32)">
-            <name>
-            Get Values at intervals
-            </name> 
-            <summary>
-            Select a set of values from a Qi data stream.
-            A value will be returned for the start and end index and (count - 2) other values at evenly spaces intervals between the start and end. 
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="count">The number of values to return</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValues(System.String,System.String)">
-            <name>
-            Get Values
-            </name> 
-            <summary>
-            Select a set of values from a Qi data stream.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="filterExpression">An array of indexes to return a value for</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetDistinctValue(System.String,System.String)">
-            <name>
-            Get Distinct Value
-            </name> 
-            <summary>
-            Returns a single discrete value from a Qi data stream
-            </summary>
-            <param name="streamId">The id of Qi stream</param>
-            <param name="index">The index of the value to return</param>
-            <returns>Return value</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.FindDistinctValue(System.String,System.String,OSIsoft.Qi.QiSearchMode)">
-            <name>
-            Find Distinct Value
-            </name> 
-            <summary>
-            Find a single discrete value in a Qi data stream
-            </summary>
-            <param name="streamId">The id of Qi stream</param>
-            <param name="index">The index of the value to return</param>
-            <param name="mode">The search mode</param>
-            <returns>Return value</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetFirstValue(System.String)">
-            <name>
-            Get First Value
-            </name> 
-            <summary>
-            Get the first value in a Qi data stream
-            </summary>
-            <param name="streamId">The id of Qi stream</param>
-            <returns>Return value</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetLastValue(System.String)">
-            <name>
-            Get Last Value
-            </name> 
-            <summary>
-            Get the last value in a Qi data stream
-            </summary>
-            <param name="streamId">The id of Qi stream</param>
-            <returns>Return value</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,System.String)">
-            <name>
-            Get Window of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,System.String,OSIsoft.Qi.QiBoundaryType)">
-            <name>
-            Get Window of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="boundaryType">Boundary condition for range</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,System.String,OSIsoft.Qi.QiBoundaryType,System.String)">
-            <name>
-            Get Window of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="boundaryType">Boundary condition for range</param>
-            <param name="filterExpression">Filter expression</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,OSIsoft.Qi.QiBoundaryType,System.String,OSIsoft.Qi.QiBoundaryType,System.String)">
-            <name>
-            Get Window of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="startBoundaryType">Start boundary condition for range</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="endBoundaryType">End boundary condition for range</param>
-            <param name="filterExpression">Filter expression</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,OSIsoft.Qi.QiBoundaryType,System.String,OSIsoft.Qi.QiBoundaryType,System.String,System.String)">
-            <name>
-            Get Window of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="startBoundaryType">Start boundary condition for range</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="endBoundaryType">End boundary condition for range</param>
-            <param name="filterExpression">Filter expression</param>
-            <param name="selectExpression">Filter expression</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,System.String,OSIsoft.Qi.QiBoundaryType,System.Int32,System.String)">
-            <name>
-            Get Windows of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="boundaryType">Boundary condition for range</param>
-            <param name="count">Boundary condition for range</param>
-            <param name="continuationToken">Boundary condition for range</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,System.String,OSIsoft.Qi.QiBoundaryType,System.String,System.Int32,System.String)">
-            <name>
-            Get Windows of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="boundaryType">Boundary condition for range</param>
-            <param name="filterExpression">Filter expression</param>
-            <param name="count">Boundary condition for range</param>
-            <param name="continuationToken">Boundary condition for range</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(System.String,System.String,OSIsoft.Qi.QiBoundaryType,System.String,OSIsoft.Qi.QiBoundaryType,System.String,System.Int32,System.String)">
-            <name>
-            Get Windows of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="startBoundaryType">Start boundary condition for range</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="endBoundaryType">End boundary condition for range</param>
-            <param name="filterExpression">Filter expression</param>
-            <param name="count">Boundary condition for range</param>
-            <param name="continuationToken">Boundary condition for range</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(System.String,System.String,System.Int32)">
-            <name>
-            Get Range of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="count">The maximum number of values to return</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(System.String,System.String,System.Int32,System.Boolean)">
-            <name>
-            Get Range of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="count">The maximum number of values to return</param>
-            <param name="reversed">true to reverse the order of retrieval</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(System.String,System.String,System.Int32,OSIsoft.Qi.QiBoundaryType)">
-            <name>
-            Get Range of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="count">The maximum number of values to return</param>
-            <param name="boundaryType">boundary condition for the start index</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(System.String,System.String,System.Int32,System.Int32,System.Boolean,OSIsoft.Qi.QiBoundaryType)">
-            <name>
-            Get Range of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="skip">The number of events to skip before returning values</param>
-            <param name="count">The maximum number of values to return</param>
-            <param name="reversed">true to reverse the order of retrieval</param>
-            <param name="boundaryType">boundary condition for the start index</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(System.String,System.String,System.Int32,System.Int32,System.Boolean,OSIsoft.Qi.QiBoundaryType,System.String)">
-            <name>
-            Get Range of Values
-            </name> 
-            <summary>
-            Select multiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="skip">The number of events to skip before returning values</param>
-            <param name="count">The maximum number of values to return</param>
-            <param name="reversed">true to reverse the order of retrieval</param>
-            <param name="boundaryType">boundary condition for the start index</param>
-            <param name="filterExpression">Filter expression</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetIntervals(System.String,System.String,System.String,System.Int32)">
-            <name>
-            Get Intervals
-            </name> 
-            <summary>
-            Select a set of values from a Qi data stream.
-            A value will be returned for the start and end index and (count - 2) other values at evenly spaces intervals between the start and end. 
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="count">The number of values to return</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.GetIntervals(System.String,System.String,System.String,System.Int32,System.String)">
-            <name>
-            Get Intervals
-            </name> 
-            <summary>
-            Select a set of values from a Qi data stream.
-            A value will be returned for the start and end index and (count - 2) other values at evenly spaces intervals between the start and end. 
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <param name="count">The number of values to return</param>
-            <param name="count">A filter to apply to stream before creating aggregates</param>
-            <returns>data values</returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.InsertValue(System.String)">
-            <name>
-            Insert Single Value
-            </name> 
-            <summary>
-            Add a value to a qi data stream. If the a value already exists at the specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.InsertValues(System.String)">
-            <name>
-            Insert Mutiple Values
-            </name> 
-            <summary>
-            Adds a set of values to a qi data stream. If the a value already exists at a specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.InsertValues">
-            <name>
-            Insert Mutiple Values
-            </name> 
-            <summary>
-            Adds a set of values to a set of qi data streams. If the a value already exists at a specified index an error is returned.
-            </summary>      
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.ReplaceValue(System.String)">
-            <name>
-            Replace Single Value
-            </name> 
-            <summary>
-            Update a value in a qi data stream. If a value doesn't exist at the specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.ReplaceValues(System.String)">
-            <name>
-            Replace Mutiple Values
-            </name> 
-            <summary>
-            Update a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.ReplaceValues">
-            <name>
-            Replace Mutiple Values
-            </name> 
-            <summary>
-            Update a set of values in a set of qi data streams. If a value doesn't exist at a specified index an error is returned.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.UpdateValue(System.String)">
-            <name>
-            Update Single Value
-            </name> 
-            <summary>
-            Add or update a value in a qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.UpdateValues(System.String)">
-            <name>
-            Update Mutiple Values
-            </name> 
-            <summary>
-            Add or update multiple values in a qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.UpdateValues">
-            <name>
-            Update Mutiple Values
-            </name> 
-            <summary>
-            Add or update multiple values in a set of qi data streams.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.PatchValue(System.String,System.String)">
-            <name>
-            Replace Single Value
-            </name> 
-            <summary>
-            Update a value in a qi data stream. If a value doesn't exist at the specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.PatchValues(System.String,System.String)">
-            <name>
-            Replace Mutiple Values
-            </name> 
-            <summary>
-            Update a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.RemoveValue(System.String,System.String)">
-            <name>
-            Remove Single Value
-            </name> 
-            <summary>
-            Remove a single value from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="index">Qi data stream index value</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.RemoveValues(System.String,System.String[])">
-            <name>
-            Remove Mutiple Values
-            </name> 
-            <summary>
-            Removes a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="index">An array of indexes to remove</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.CreateRemoveValuesRequest(System.String,System.String[])">
-            <name>
-            Remove Mutiple Values
-            </name> 
-            <summary>
-            Removes a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="index">An array of indexes to remove</param>
-            <returns></returns>
-        </member>
-        <member name="M:OSIsoft.Qi.Http.Repository.StreamDataController.RemoveWindowValues(System.String,System.String,System.String)">
-            <name>
-            Remove Multiple Values
-            </name> 
-            <summary>
-            Remove mutiple values from a Qi data stream
-            </summary>
-            <param name="streamId">Qi stream name</param>
-            <param name="startIndex">Qi data stream value index start value</param>
-            <param name="endIndex">Qi data stream value index end value</param>
-            <returns></returns>
-        </member>
-    </members>
-</doc>
+
+# OSIsoft.Qi.Http.StreamRepository
+
+
+## T:OSIsoft.Qi.Http.Repository.StreamDataController
+
+Data access method for Qi data streams
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.CreateGetValuesRequest(streamId, index)
+
+Select a set of values from a Qi data stream.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| index | *System.String[]*<br>An array of indexes to return a value for |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.CreateRemoveValuesRequest(streamId, index)
+
+Removes a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| index | *System.String[]*<br>An array of indexes to remove |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.FindDistinctValue(streamId, index, mode)
+
+Find a single discrete value in a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>The id of Qi stream |
+| index | *System.String*<br>The index of the value to return |
+| mode | *OSIsoft.Qi.QiSearchMode*<br>The search mode |
+
+
+#### Returns
+
+Return value
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetDistinctValue(streamId, index)
+
+Returns a single discrete value from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>The id of Qi stream |
+| index | *System.String*<br>The index of the value to return |
+
+
+#### Returns
+
+Return value
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetFirstValue(streamId)
+
+Get the first value in a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>The id of Qi stream |
+
+
+#### Returns
+
+Return value
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetIntervals(streamId, startIndex, endIndex, count)
+
+Select a set of values from a Qi data stream. A value will be returned for the start and end index and (count - 2) other values at evenly spaces intervals between the start and end.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| count | *System.Int32*<br>The number of values to return |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetIntervals(streamId, startIndex, endIndex, count, count)
+
+Select a set of values from a Qi data stream. A value will be returned for the start and end index and (count - 2) other values at evenly spaces intervals between the start and end.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| count | *System.String*<br>The number of values to return |
+| count | *System.String*<br>A filter to apply to stream before creating aggregates |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetLastValue(streamId)
+
+Get the last value in a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>The id of Qi stream |
+
+
+#### Returns
+
+Return value
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(streamId, startIndex, count)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| count | *System.Int32*<br>The maximum number of values to return |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(streamId, startIndex, count, boundaryType)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| count | *System.Int32*<br>The maximum number of values to return |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>boundary condition for the start index |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(streamId, startIndex, count, reversed)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| count | *System.Int32*<br>The maximum number of values to return |
+| reversed | *System.Boolean*<br>true to reverse the order of retrieval |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(streamId, startIndex, skip, count, reversed, boundaryType)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| skip | *System.Int32*<br>The number of events to skip before returning values |
+| count | *System.Int32*<br>The maximum number of values to return |
+| reversed | *System.Boolean*<br>true to reverse the order of retrieval |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>boundary condition for the start index |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetRangeValues(streamId, startIndex, skip, count, reversed, boundaryType, filterExpression)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| skip | *System.Int32*<br>The number of events to skip before returning values |
+| count | *System.Int32*<br>The maximum number of values to return |
+| reversed | *System.Boolean*<br>true to reverse the order of retrieval |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>boundary condition for the start index |
+| filterExpression | *System.String*<br>Filter expression |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetType(streamId)
+
+Get a type for a Qi stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+Qi type definition
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValue(streamId, index)
+
+Returns a single value from a Qi data stream according to the configured stream behavior
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>The id of the Qi stream |
+| index | *System.String*<br>The index of the value to return |
+
+
+#### Returns
+
+Return value
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValues(streamId, filterExpression)
+
+Select a set of values from a Qi data stream.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| filterExpression | *System.String*<br>An array of indexes to return a value for |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValues(streamId, startIndex, endIndex, count)
+
+Select a set of values from a Qi data stream. A value will be returned for the start and end index and (count - 2) other values at evenly spaces intervals between the start and end.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| count | *System.Int32*<br>The number of values to return |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetValues(streamId, index)
+
+Select a set of values from a Qi data stream.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| index | *System.String[]*<br>An array of indexes to return a value for |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, startBoundaryType, endIndex, endBoundaryType, filterExpression)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| startBoundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Start boundary condition for range |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| endBoundaryType | *OSIsoft.Qi.QiBoundaryType*<br>End boundary condition for range |
+| filterExpression | *System.String*<br>Filter expression |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, startBoundaryType, endIndex, endBoundaryType, filterExpression, count, continuationToken)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| startBoundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Start boundary condition for range |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| endBoundaryType | *OSIsoft.Qi.QiBoundaryType*<br>End boundary condition for range |
+| filterExpression | *System.String*<br>Filter expression |
+| count | *System.Int32*<br>Boundary condition for range |
+| continuationToken | *System.String*<br>Boundary condition for range |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, startBoundaryType, endIndex, endBoundaryType, filterExpression, selectExpression)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| startBoundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Start boundary condition for range |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| endBoundaryType | *OSIsoft.Qi.QiBoundaryType*<br>End boundary condition for range |
+| filterExpression | *System.String*<br>Filter expression |
+| selectExpression | *System.String*<br>Filter expression |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, endIndex)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, endIndex, boundaryType)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Boundary condition for range |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, endIndex, boundaryType, count, continuationToken)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Boundary condition for range |
+| count | *System.Int32*<br>Boundary condition for range |
+| continuationToken | *System.String*<br>Boundary condition for range |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, endIndex, boundaryType, filterExpression)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Boundary condition for range |
+| filterExpression | *System.String*<br>Filter expression |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.GetWindowValues(streamId, startIndex, endIndex, boundaryType, filterExpression, count, continuationToken)
+
+Select multiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+| boundaryType | *OSIsoft.Qi.QiBoundaryType*<br>Boundary condition for range |
+| filterExpression | *System.String*<br>Filter expression |
+| count | *System.Int32*<br>Boundary condition for range |
+| continuationToken | *System.String*<br>Boundary condition for range |
+
+
+#### Returns
+
+data values
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.InsertValue(streamId)
+
+Add a value to a qi data stream. If the a value already exists at the specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.InsertValues
+
+Adds a set of values to a set of qi data streams. If the a value already exists at a specified index an error is returned.
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.InsertValues(streamId)
+
+Adds a set of values to a qi data stream. If the a value already exists at a specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.PatchValue(System.String,System.String)
+
+Update a value in a qi data stream. If a value doesn't exist at the specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.PatchValues(System.String,System.String)
+
+Update a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.RemoveValue(streamId, index)
+
+Remove a single value from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| index | *System.String*<br>Qi data stream index value |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.RemoveValues(streamId, index)
+
+Removes a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| index | *System.String[]*<br>An array of indexes to remove |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.RemoveWindowValues(streamId, startIndex, endIndex)
+
+Remove mutiple values from a Qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+| startIndex | *System.String*<br>Qi data stream value index start value |
+| endIndex | *System.String*<br>Qi data stream value index end value |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.ReplaceValue(streamId)
+
+Update a value in a qi data stream. If a value doesn't exist at the specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.ReplaceValues
+
+Update a set of values in a set of qi data streams. If a value doesn't exist at a specified index an error is returned.
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.ReplaceValues(streamId)
+
+Update a set of values in a qi data stream. If a value doesn't exist at a specified index an error is returned.
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.UpdateValue(streamId)
+
+Add or update a value in a qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.UpdateValues
+
+Add or update multiple values in a set of qi data streams.
+
+
+#### Returns
+
+
+
+
+### M:OSIsoft.Qi.Http.Repository.StreamDataController.UpdateValues(streamId)
+
+Add or update multiple values in a qi data stream
+
+| Name | Description |
+| ---- | ----------- |
+| streamId | *System.String*<br>Qi stream name |
+
+
+#### Returns
+
+
+

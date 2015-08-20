@@ -11,130 +11,204 @@ namespace GithubWikiDoc
 {
     class Program
     {
+        private Dictionary<string, string> context;
+        public Program()
+        {
+            context = new Dictionary<string, string>();
+            context["lastNode"] = null;
+        }
         static void Main(string[] args)
         {
-            Parallel.ForEach(Directory.EnumerateFiles(".\\"), file =>
-            {
-                if (Path.GetExtension(file).Equals(".xml", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var xml = File.ReadAllText(file);
-                    string md;
-                    try
-                    {
-                        var doc = XDocument.Parse(xml);
-                        md = doc.Root.ToMarkDown();
-                    }
-                    catch(Exception ex)
-                    {
-                        md = ex.ToString() + Environment.NewLine + xml;
-                    }
-                    String path = Path.ChangeExtension(file, "md");
-                    File.WriteAllText(path, md);
-                }
-            });
-        }
-    }
+            Program app = new Program();
 
-    static class XmlToMarkdown
-    {
-        internal static string ToMarkDown(this XNode e)
-        {
-            var templates = new Dictionary<string, string>
+            foreach(var file in Directory.EnumerateFiles(".\\", "*.xml"))
+            {                
+                string md;
+                try
                 {
-                    {"doc", "## {0} ##\n\n{1}\n\n"},
-                    {"type", "# {0}\n\n{1}\n\n---\n"},
-                    {"field", "##### {0}\n\n{1}\n\n---\n"},
-                    {"property", "##### {0}\n\n{1}\n\n---\n"},
-                    {"method", "##### {0}\n\n{1}\n\n---\n"},
-                    {"event", "##### {0}\n\n{1}\n\n---\n"},
-                    {"summary", "{0}\n\n"},
-                    {"remarks", "\n\n>{0}\n\n"},
-                    {"example", "_C# code_\n\n```c#\n{0}\n```\n\n"},
-                    {"seePage", "[[{1}|{0}]]"},
-                    {"seeAnchor", "[{1}]({0})"},
-                    {"param", "|Name | Description |\n|-----|------|\n|{0}: |{1}|\n" },
-                    {"exception", "[[{0}|{0}]]: {1}\n\n" },
-                    {"returns", "Returns: {0}\n\n"},
-                    {"none", ""}
-                };
-            var d = new Func<string, XElement, string[]>((att, node) => new[]
-                {
-                    node.Attribute(att).Value,
-                    node.Nodes().ToMarkDown()
-                });
-            var methods = new Dictionary<string, Func<XElement, IEnumerable<string>>>
-                {
-                    {"doc", x=> new[]{
-                        x.Element("assembly").Element("name").Value,
-                        x.Element("members").Elements("member").ToMarkDown()
-                    }},
-                    {"type", x=>d("name", x)},
-                    {"field", x=> d("name", x)},
-                    {"property", x=> d("name", x)},
-                    {"method",x=>d("name", x)},
-                    {"event", x=>d("name", x)},
-                    {"summary", x=> new[]{ x.Nodes().ToMarkDown() }},
-                    {"remarks", x => new[]{x.Nodes().ToMarkDown()}},
-                    {"example", x => new[]{x.Value.ToCodeBlock()}},
-                    {"seePage", x=> d("cref", x) },
-                    {"seeAnchor", x=> { var xx = d("cref", x); xx[0] = xx[0].ToLower(); return xx; }},
-                    {"param", x => d("name", x) },
-                    {"exception", x => d("cref", x) },
-                    {"returns", x => new[]{x.Nodes().ToMarkDown()}},
-                    {"none", x => new string[0]}
-                };
-
-            string name;
-            if (e.NodeType == XmlNodeType.Element)
-            {
-                var el = (XElement)e;
-                name = el.Name.LocalName;
-                if (name == "member")
-                {
-                    switch (el.Attribute("name").Value[0])
-                    {
-                        case 'F': name = "field"; break;
-                        case 'P': name = "property"; break;
-                        case 'T': name = "type"; break;
-                        case 'E': name = "event"; break;
-                        case 'M': name = "method"; break;
-                        default: name = "none"; break;
-                    }
+                    md = app.ToMarkdown(file);
                 }
-                if (name == "see")
+                catch(Exception ex)
                 {
-                    var anchor = el.Attribute("cref").Value.StartsWith("!:#");
-                    name = anchor ? "seeAnchor" : "seePage";
+                    md = ex.ToString() + Environment.NewLine + file;
                 }
-                var vals = methods[name](el).ToArray();
-                string str = "";
-                switch (vals.Length)
-                {
-                    case 1: str = string.Format(templates[name], vals[0]); break;
-                    case 2: str = string.Format(templates[name], vals[0], vals[1]); break;
-                    case 3: str = string.Format(templates[name], vals[0], vals[1], vals[2]); break;
-                    case 4: str = string.Format(templates[name], vals[0], vals[1], vals[2], vals[3]); break;
-                }
-
-                return str;
+                String path = Path.ChangeExtension(file, "md");
+                File.WriteAllText(path, md);
             }
-
-            if (e.NodeType == XmlNodeType.Text)
-                return Regex.Replace(((XText)e).Value.Replace('\n', ' '), @"\s+", " ");
-
-            return "";
         }
-
-        internal static string ToMarkDown(this IEnumerable<XNode> es)
+        public string ToMarkdown(string filePath)
         {
-            return es.Aggregate("", (current, x) => current + x.ToMarkDown());
+            var xdoc = XDocument.Load(filePath);
+            var sw = new StringWriter();
+            this.ToMarkdown(sw, xdoc.Root);
+            return sw.ToString();
         }
-
-        static string ToCodeBlock(this string s)
+ 
+ 
+ 
+        private void ToMarkdown(StringWriter sw, XElement root)
         {
-            var lines = s.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var blank = lines[0].TakeWhile(x => x == ' ').Count() - 4;
-            return string.Join("\n", lines.Select(x => new string(x.SkipWhile((y, i) => i < blank).ToArray())));
+            if (root.Name != "param" && context["lastNode"] == "param")
+            {
+                sw.WriteLine();
+            }
+            if (root.Name == "doc")
+            {
+			    foreach (var node in root.Nodes())
+                {
+                    var elem = (XElement)node;
+                    if (elem.Name == "assembly")
+                    {
+                        context["assembly"] = elem.Element("name").Value;
+                        sw.WriteLine("\n# {0}\n", context["assembly"]);
+                    }
+                    else if (elem.Name == "members")
+                    {
+                        ToMarkdown(sw, elem);
+                    }
+                }
+            }
+            else if (root.Name == "members")
+            {				
+                // Sorts by member name to regroup them all properly.
+                var members = new List<XElement>(root.Elements("member"));
+                members.Sort((a, b) => 
+                    a.Attribute(XName.Get("name")).Value.Substring(2).CompareTo(
+                    b.Attribute(XName.Get("name")).Value.Substring(2)));
+ 
+                foreach (var member in members)
+                {
+                    ToMarkdown(sw, member);
+                }
+            }
+            else if (root.Name == "member")
+            {
+			    var memberName = root.Attribute(XName.Get("name")).Value;
+                char memberType = memberName[0];
+ 
+                if (memberType == 'M')
+                {			
+                    memberName = RearrangeParametersInContext(root);
+                }
+ 
+                if (memberType == 'T')
+                {
+					string remove = String.Format("T:{0}.",context["assembly"]);
+					string shortMemberName = memberName.Replace(remove,"");
+                    sw.WriteLine("\n## {0}\n", shortMemberName);
+                    context["typeName"] = shortMemberName;
+                }
+                else
+                {				
+					string shortMemberName = memberName.Replace("P:" + context["assembly"],"").Replace(context["typeName"] + ".","");
+                    if (shortMemberName.StartsWith("#ctor"))
+                    {
+                        shortMemberName = shortMemberName.Replace("#ctor", "Constructor");
+                    }
+                    sw.WriteLine("\n### {0}\n", shortMemberName);
+                }
+ 
+                foreach (var node in root.Nodes())
+                {
+                    if (node.NodeType == XmlNodeType.Element)
+                    {
+                        ToMarkdown(sw, (XElement)node);
+                    }
+                }
+            }
+            else if (root.Name == "summary")
+            {
+                string summary = Regex.Replace(root.Value, "\\s+", " ", RegexOptions.Multiline);
+                sw.WriteLine("{0}\n", summary.Trim());
+            }
+            else if (root.Name == "param")
+            {
+                if (context["lastNode"] != "param")
+                {
+                    sw.WriteLine("| Name | Description |");
+                    sw.WriteLine("| ---- | ----------- |");
+                }
+ 
+                string paramName = root.Attribute(XName.Get("name")).Value;
+                if (context.ContainsKey(paramName))
+                {
+                    sw.WriteLine("| {0} | *{1}*<br>{2} |",
+                        paramName,
+                        context[paramName],
+                        Regex.Replace(root.Value, "\\s+", " ", RegexOptions.Multiline));
+                }
+                else
+                {
+                    sw.WriteLine("| {0} | *Unknown type*<br>{1} |",
+                        paramName,
+                        Regex.Replace(root.Value, "\\s+", " ", RegexOptions.Multiline));
+                }
+ 
+            }
+            else if (root.Name == "returns")
+            {
+                sw.WriteLine("\n#### Returns\n");
+                sw.WriteLine("{0}\n", Regex.Replace(root.Value, "\\s+", " ", RegexOptions.Multiline));
+            }
+            else if (root.Name == "remarks")
+            {
+                sw.WriteLine("\n#### Remarks\n");
+                sw.WriteLine("{0}\n", Regex.Replace(root.Value, "\\s+", " ", RegexOptions.Multiline));
+            }
+            else if (root.Name == "exception")
+            {
+                string exName = root.Attribute("cref").Value.Substring(2);
+                exName = exName.Replace(context["assembly"] + ".", "");
+                exName = exName.Replace(context["typeName"] + ".", "");
+                sw.WriteLine("*{0}:* {1}\n", 
+                    exName,
+                    Regex.Replace(root.Value, "\\s+", " ", RegexOptions.Multiline));
+            }
+ 
+            context["lastNode"] = root.Name.ToString();
         }
-    }
+ 
+ 
+ 
+        private string RearrangeParametersInContext(XElement methodMember)
+        {
+            string methodPrototype = methodMember.Attribute(XName.Get("name")).Value;
+            Match match = Regex.Match(methodPrototype, "\\((.*)\\)");
+            string parameterString = match.Groups[1].Value.Replace(" ", "");
+            string[] parameterTypes = parameterString.Split(',');
+ 
+            if (parameterTypes.Length == 0) 
+            {
+                // nothing to do...
+                return methodPrototype;
+            }
+ 
+            List<XElement> paramElems = new List<XElement>(methodMember.Elements("param"));
+            if (parameterTypes.Length != paramElems.Count)
+            {
+                // the parameter count do not match, we can't do the rearrangement.
+                return methodPrototype;
+            }
+ 
+            string newParamString = "";
+            for (int i = 0; i < paramElems.Count; i++)
+            {
+                XElement paramElem = paramElems[i];
+                string paramName = paramElem.Attribute(XName.Get("name")).Value;
+                string paramType = parameterTypes[i];
+                if (newParamString != "")
+                {
+                    newParamString += ", ";
+                }
+                newParamString += paramName;
+                context[paramName] = paramType;
+            }
+ 
+            string newMethodPrototype = Regex.Replace( methodPrototype, 
+                "\\(.*\\)", 
+                "(" + newParamString + ")");
+ 
+            return newMethodPrototype;
+        }
+    }    
 }
