@@ -7,7 +7,5 @@ copyright: Copyright &copy; 2015, OSIsoft, LLC
 theme: readthedocs
 
 pages:
-- ['index.md', 'Introduction']
-- ['Why-Qi.md', 'Why Qi?']
-- ['Qi-Data-Behavior.md', 'Data behavior']
-
+- 'index.md'
+- 'Why-Qi.md'
