@@ -1,0 +1,236 @@
+System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__1_0(String current, XNode x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at System.Linq.Enumerable.Aggregate[TSource,TAccumulate](IEnumerable`1 source, TAccumulate seed, Func`3 func)
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(IEnumerable`1 es) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__0_0(String att, XElement node) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 60
+   at GithubWikiDoc.XmlToMarkdown.<>c__DisplayClass0_0.<ToMarkDown>b__2(XElement x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 71
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__1_0(String current, XNode x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at System.Linq.Enumerable.Aggregate[TSource,TAccumulate](IEnumerable`1 source, TAccumulate seed, Func`3 func)
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(IEnumerable`1 es) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__0_1(XElement x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 67
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
+   at GithubWikiDoc.Program.<>c.<Main>b__0_0(String file) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 25
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OSIsoft.Qi.Http.MetadataRepository</name>
+    </assembly>
+    <members>
+        <member name="T:OSIsoft.Qi.Http.Repository.BehaviorController">
+            <name>
+            Qi Stream Behavior Definitions
+            </name>
+            <summary>
+            Data access methods for managing Qi stream behavior definitions
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.BehaviorController.GetStreamBehaviors">
+            <name>
+            Get Qi Stream Behaviors
+            </name> 
+            <summary>
+            Get all Qi stream behavior definitions
+            </summary>
+            <returns>IEnumerable of Qi stream behavior definitions</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.BehaviorController.GetStreamBehavior(System.String)">
+            <name>
+            Get Qi Stream Behavior
+            </name> 
+            <summary>
+            Get a Qi stream behavior definition
+            </summary>
+            <param name="behaviorId">Qi stream behavior Id</param>
+            <returns>Qi stream behavior definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.BehaviorController.UpdateStreamBehavior(System.String,OSIsoft.Qi.QiStreamBehavior)">
+            <name>
+            Update Qi Stream Behavior
+            </name> 
+            <summary>
+            Update a Qi Stream Behavior definition
+            </summary>
+            <param name="behaviorId">Qi stream behavior Id</param>
+            <param name="definition">Qi stream behavior definition</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.BehaviorController.GetOrCreateStreamBehavior(OSIsoft.Qi.QiStreamBehavior)">
+            <name>
+            Add Qi Stream Behavior
+            </name> 
+            <summary>
+            Add a Qi stream behavior definition
+            </summary>
+            <param name="definition">Qi stream behavior definition</param>
+            <returns>Qi stream behavior definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.BehaviorController.DeleteStreamBehavior(System.String)">
+            <name>
+            Delete Qi Stream Behavior
+            </name> 
+            <summary>
+            Delete a Qi stream behavior definition
+            </summary>
+            <param name="behaviorId">Qi stream behavior Id</param>
+            <returns></returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.Repository.StreamController">
+            <name>
+            Qi Stream Definitions
+            </name>
+            <summary>
+            Data access methods for managing Qi streams definitions
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.StreamController.GetStreams">
+            <name>
+            Get Qi Streams
+            </name> 
+            <summary>
+            Get all Qi stream definitions
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.StreamController.GetStream(System.String)">
+            <name>
+            Get Qi Stream
+            </name> 
+            <summary>
+            Get a Qi stream definition
+            </summary>
+            <param name="streamId">The Qi stream name</param>
+            <returns>Qi stream definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.StreamController.UpdateStream(System.String,OSIsoft.Qi.QiStream)">
+            <name>
+            Update Qi Stream
+            </name> 
+            <summary>
+            Update a Qi stream definition
+            </summary>
+            <param name="streamId">The Qi stream name</param>
+            <param name="definition">Qi stream definition</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.StreamController.GetOrCreateStream(OSIsoft.Qi.QiStream)">
+            <name>
+            Add Qi Stream
+            </name> 
+            <summary>
+            Add a Qi stream definition
+            </summary>
+            <param name="definition">Qi stream definition</param>
+            <returns>Qi stream definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.StreamController.DeleteStream(System.String)">
+            <name>
+            Delete Qi Stream
+            </name> 
+            <summary>
+            Delete a Qi stream definition
+            </summary>
+            <param name="streamId">The Qi stream name</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SubscriptionController.GetStreamSubscriptions(System.String)">
+            <name>
+            Get Qi Stream Subscriptions
+            </name> 
+            <summary>
+            Get all Qi stream subscription definitions
+            </summary>
+            <returns>IEnumerable of Qi stream subscription definitions</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SubscriptionController.GetStreamSubscription(System.String,System.String)">
+            <name>
+            Get Qi Stream Subscription
+            </name> 
+            <summary>
+            Get a Qi stream subscription definition
+            </summary>
+            <param name="subscriptionId">Qi stream subscription Id</param>
+            <returns>Qi stream subscription definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SubscriptionController.GetOrCreateStreamSubscription(System.String,OSIsoft.Qi.QiStreamSubscription)">
+            <name>
+            Add Qi Stream Subscriber
+            </name> 
+            <summary>
+            Add a Qi stream subscriber definition
+            </summary>
+            <param name="definition">Qi stream subscriber definition</param>
+            <returns>Qi stream subscriber definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SubscriptionController.DeleteStreamSubscription(System.String,System.String)">
+            <name>
+            Delete Qi Stream Subscription
+            </name> 
+            <summary>
+            Delete a Qi stream subscription definition
+            </summary>
+            <param name="subscriptionId">Qi stream subscription Id</param>
+            <returns></returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.Repository.TypeController">
+            <name>
+            Qi Type Definitions
+            </name>
+            <summary>
+            Data access methods for managing Qi type definitions
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TypeController.GetTypes">
+            <name>
+            Get Qi Types
+            </name> 
+            <summary>
+            Get all Qi type definitions
+            </summary>
+            <returns>INumerable of Qi type definitions</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TypeController.GetType(System.String)">
+            <name>
+            Get Qi Type
+            </name> 
+            <summary>
+            Get a Qi type definition
+            </summary>
+            <param name="typeId">Qi type Id</param>
+            <returns>Qi type definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TypeController.UpdateType(System.String,OSIsoft.Qi.QiType)">
+            <name>
+            Update Qi Type
+            </name> 
+            <summary>
+            Update a Qi type definition
+            </summary>
+            <param name="typeId">Qi type Id</param>
+            <param name="definition">Qi type definition</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TypeController.GetOrCreateType(OSIsoft.Qi.QiType)">
+            <name>
+            Add Qi Type
+            </name> 
+            <summary>
+            Add a Qi type definition
+            </summary>
+            <param name="definition">Qi type definition</param>
+            <returns>Qi type definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TypeController.DeleteType(System.String)">
+            <name>
+            Delete Qi Type
+            </name> 
+            <summary>
+            Delete a Qi type definition
+            </summary>
+            <param name="typeId">Qi type Id</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

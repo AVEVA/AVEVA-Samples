@@ -1,0 +1,541 @@
+System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__1_0(String current, XNode x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at System.Linq.Enumerable.Aggregate[TSource,TAccumulate](IEnumerable`1 source, TAccumulate seed, Func`3 func)
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(IEnumerable`1 es) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__0_0(String att, XElement node) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 60
+   at GithubWikiDoc.XmlToMarkdown.<>c__DisplayClass0_0.<ToMarkDown>b__5(XElement x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 74
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__1_0(String current, XNode x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at System.Linq.Enumerable.Aggregate[TSource,TAccumulate](IEnumerable`1 source, TAccumulate seed, Func`3 func)
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(IEnumerable`1 es) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 130
+   at GithubWikiDoc.XmlToMarkdown.<>c.<ToMarkDown>b__0_1(XElement x) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 67
+   at GithubWikiDoc.XmlToMarkdown.ToMarkDown(XNode e) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 109
+   at GithubWikiDoc.Program.<>c.<Main>b__0_0(String file) in C:\dev\Qi-docs-md\XmlToMd\XmlToMd\Program.cs:line 25
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OSIsoft.Qi.Http.Repository</name>
+    </assembly>
+    <members>
+        <member name="T:OSIsoft.Qi.Http.Repository.TenantDiagnosticsController">
+            <summary>
+            Diagnostics endpoint for Qi server
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantDiagnosticsController.GetState(System.String)">
+            <name>
+            Get Stream State
+            </name> 
+            <summary>
+            Select a set of values from a Qi data stream.
+            </summary>
+            <param name="streamId">Qi stream name</param>
+            <returns>data values</returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.Repository.SystemInstrumentationController">
+            <summary>
+            Instrumentation controller
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SystemInstrumentationController.Ping">
+            <name>
+            Get Group Ids
+            </name> 
+            <summary>
+            Get all metric container Ids
+            </summary>
+            <returns>IEnumerable of container Ids</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SystemInstrumentationController.GetGroups">
+            <name>
+            Get Group Ids
+            </name> 
+            <summary>
+            Get all metric container Ids
+            </summary>
+            <returns>IEnumerable of container Ids</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SystemInstrumentationController.GetCounts">
+            <name>
+            Get Group Counts
+            </name> 
+            <summary>
+            Get count of metrics in groups
+            </summary>
+            <returns>IEnumerable of container counts</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.SystemInstrumentationController.GetValues(System.String)">
+            <name>
+            Get Group Counts
+            </name> 
+            <summary>
+            Get count of metrics in groups
+            </summary>
+            <returns>IEnumerable of container counts</returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.Repository.TenantInstrumentationController">
+            <summary>
+            Instrumentation controller
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantInstrumentationController.Ping">
+            <name>
+            Get Group Ids
+            </name> 
+            <summary>
+            Get all metric container Ids
+            </summary>
+            <returns>IEnumerable of container Ids</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantInstrumentationController.GetGroups">
+            <name>
+            Get Group Ids
+            </name> 
+            <summary>
+            Get all metric container Ids
+            </summary>
+            <returns>IEnumerable of container Ids</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantInstrumentationController.GetCounts">
+            <name>
+            Get Group Counts
+            </name> 
+            <summary>
+            Get count of metrics in groups
+            </summary>
+            <returns>IEnumerable of container counts</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantInstrumentationController.GetValues(System.String)">
+            <name>
+            Get Group Counts
+            </name> 
+            <summary>
+            Get count of metrics in groups
+            </summary>
+            <returns>IEnumerable of container counts</returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.Repository.TenantController">
+            <name>
+            Qi Tenant Definitions
+            </name>
+            <summary>
+            Data access methods for managing Qi tenant definitions
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantController.GetTenants">
+            <name>
+            Get Qi Tenants
+            </name> 
+            <summary>
+            Get all Qi tenant definitions
+            </summary>
+            <returns>INumerable of Qi tenant definitions</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantController.GetTenant(System.String)">
+            <name>
+            Get Qi Tenant
+            </name> 
+            <summary>
+            Get a Qi tenant definition
+            </summary>
+            <param name="tenantId">Qi tenant Id</param>
+            <returns>Qi Tenant definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantController.UpdateTenant(System.String,OSIsoft.Qi.QiTenant)">
+            <name>
+            Update Qi Tenant
+            </name> 
+            <summary>
+            Update a Qi Tenant definition
+            </summary>
+            <param name="tenantId">Qi Tenant Id</param>
+            <param name="definition">Qi Tenant definition</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantController.GetOrCreateTenant(OSIsoft.Qi.QiTenant)">
+            <name>
+            Add Qi Tenant
+            </name> 
+            <summary>
+            Add a Qi Tenant definition
+            </summary>
+            <param name="definition">Qi Tenant definition</param>
+            <returns>Qi Tenant definition</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.Repository.TenantController.DeleteTenant(System.String)">
+            <name>
+            Delete Qi Tenant
+            </name> 
+            <summary>
+            Delete a Qi tenant definition
+            </summary>
+            <param name="tenantId">Qi tenant Id</param>
+            <returns></returns>
+        </member>
+        <member name="T:OSIsoft.Qi.HttpConfigurationExtensions">
+            <summary>
+            Http Configuration extensions
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.HttpConfigurationExtensions.EnableDocumentation(System.Web.Http.HttpConfiguration)">
+            <summary>
+            Enable the help system
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.IQiMetadataIndexRepository">
+            <summary>
+            Interface to storing metadata indexes
+            </summary>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.IQiStreamRepository">
+            <summary>
+            Interface to stream respository
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiStreamRepository.GetStreamProxy(System.String,OSIsoft.Qi.IQiCallContext,OSIsoft.Qi.Http.Repository.IQiStreamProxy@)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="callContext"></param>
+            <param name="proxy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiStreamRepository.TryGetStreamProxy(System.String,OSIsoft.Qi.IQiCallContext,System.IDisposable@,OSIsoft.Qi.Http.Repository.IQiStreamProxy@)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="callContext"></param>
+            <param name="lease"></param>
+            <param name="proxy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiStreamRepository.GetStreamViewProxy(System.String,System.String,OSIsoft.Qi.IQiCallContext,OSIsoft.Qi.Http.Repository.IQiStreamProxy@)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="selectExpression"></param>
+            <param name="callContext"></param>
+            <param name="proxy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiStreamRepository.TryGetStreamViewProxy(System.String,System.String,OSIsoft.Qi.IQiCallContext,System.IDisposable@,OSIsoft.Qi.Http.Repository.IQiStreamProxy@)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="selectExpression"></param>
+            <param name="callContext"></param>
+            <param name="lease"></param>
+            <param name="proxy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiStreamRepository.RemoveStreamProxy(System.String,OSIsoft.Qi.IQiCallContext)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="callContext"></param>
+        </member>
+        <member name="T:OSIsoft.Qi.PlatformExtensions">
+            <summary>
+            Qi Platform extension methods
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.PlatformExtensions.RegisterQiTenantService(OSIsoft.Qi.Platform)">
+            <summary>
+            Register in-memory system repository
+            </summary>
+            <param name="platform"></param>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.QiHttpMessageHandler">
+            <summary>
+            Http message handler for Qi repository services
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiHttpMessageHandler.#ctor(OSIsoft.Qi.QiContext)">
+            <summary>
+            QiHttpMessageHandler constructor
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiHttpMessageHandler.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <name>
+            SendAsync
+            </name>
+            <summary>
+            Implementation of the SendAsync method of DelegatingHandler class
+            </summary>
+            <param name="request">Incoming Http request</param>
+            <param name="cancellationToken">Cancellation token for incoming call</param>
+            <returns></returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.QiDependencyResolver">
+            <summary>
+            Dependency resolver for Qi repositories
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.#ctor(OSIsoft.Qi.QiContext,System.Web.Http.HttpConfiguration)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+            <param name="configuration"></param>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.BeginScope">
+            <summary>
+            Begin resolver scopt
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.RegisterController(System.Type,System.Func{OSIsoft.Qi.QiContext,System.Object})">
+            <summary>
+            Register a controller with the system
+            </summary>
+            <param name="controllerType"></param>
+            <param name="activator"></param>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.GetService(System.Type)">
+            <summary>
+            Get a resovled service
+            </summary>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.GetServices(System.Type)">
+            <summary>
+            Get a collection of services
+            </summary>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.LoadHelp">
+            <summary>
+            Load help controller
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiDependencyResolver.Dispose">
+            <summary>
+            Dispose the dependency resolver
+            </summary>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.ErrorStrings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.BadContent">
+            <summary>
+              Looks up a localized string similar to The message content could not be processed by the server.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.BadParameter">
+            <summary>
+              Looks up a localized string similar to Bad parameter, {0}.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.BadParameterFormat">
+            <summary>
+              Looks up a localized string similar to Unexpected input parameter format.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.BehaviorIdConflict">
+            <summary>
+              Looks up a localized string similar to The stream behavior cannot be updated as the stream behavior id presented, {0}, does not match the id in the stream behavior object, {1}..
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.Found">
+            <summary>
+              Looks up a localized string similar to A resource already exists at the specified index.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.NotFound">
+            <summary>
+              Looks up a localized string similar to Resource not found.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.StreamUpdateIdConflict">
+            <summary>
+              Looks up a localized string similar to Cannot update stream {0} as the udpated id, {1}, does not match..
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.TenantInvalid">
+            <summary>
+              Looks up a localized string similar to The tenant in the request was not found..
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.TypeExists">
+            <summary>
+              Looks up a localized string similar to Type with id = {0} exists in storage.
+            </summary>
+        </member>
+        <member name="P:OSIsoft.Qi.Http.ErrorStrings.Unknown">
+            <summary>
+              Looks up a localized string similar to Unexpected error.
+            </summary>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.IQiMetadataRepository">
+            <summary>
+            Interface for Qi repository service
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiMetadataRepository.GetTypeRepository">
+            <summary>
+            Retrieve the Type repository interface
+            </summary>
+            <returns>IRepository of types</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiMetadataRepository.GetStreamRepository">
+            <summary>
+            Retrieve the Stream repository interface
+            </summary>
+            <returns>IRepository of streams</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiMetadataRepository.GetStreamBehaviorRepository">
+            <summary>
+            Retrieve the QiStreamBehavior repository interface
+            </summary>
+            <returns>IRepository of stream behaviors</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.IQiMetadataRepository.GetStreamSubscriptionRepository">
+            <summary>
+            Retrieve the QiStreamBehavior repository interface
+            </summary>
+            <returns>IRepository of stream behaviors</returns>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.QiTenantService">
+            <summary>
+            Repository for Qi tenants
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object},OSIsoft.Qi.QiContext)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="settings"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.GetTenants">
+            <name>
+            Get Qi Tenants
+            </name> 
+            <summary>
+            Retrieve all QiTenant definitions
+            </summary>
+            <returns>IEnumberable of QiTenant objects</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.GetTenant(System.String)">
+            <name>
+            Get Qi Tenant
+            </name> 
+            <summary>
+            Retreieve a specific Qi Tenant definition
+            </summary>
+            <param name="id">The Qi Tenant id</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.GetTenantContext(System.String)">
+            <name>
+            Contains Tenant SystemContext
+            </name> 
+            <summary>
+            Retrieves a tenant's context
+            </summary>
+            <param name="id">Tenant id</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.ContainsTenant(System.String)">
+            <name>
+            Contains Tenant
+            </name> 
+            <summary>
+            Determines if a specific tenant definition exists
+            </summary>
+            <param name="id">Tenant id</param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.UpdateTenant(System.String,OSIsoft.Qi.QiTenant)">
+            <name>
+            Update a Qi tenant definition
+            </name> 
+            <summary>
+            Updates a Qi tenant's definition
+            </summary>
+            <param name="id">Tenant's id</param>
+            <param name="tenant">Tenant's definition</param>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.RemoveTenant(System.String)">
+            <name>
+            Remove Qi tenant definition
+            </name> 
+            <summary>
+            Removes a tenant's definition given it's id
+            </summary>
+            <param name="id">Tenant's id</param>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.Clear">
+            <name>
+            Clears all tenants
+            </name> 
+            <summary>
+            Clears knowledge of all tenants and releases repositories
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.GetTenantService``1(System.String)">
+            <summary>
+            Return a tenant specific platform service
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.ResolveUnknownTenant(System.String)">
+            <summary>
+            Resolve an unknown tenant id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.OnTenantCreated(System.Action{OSIsoft.Qi.Platform})">
+            <summary>
+            Signup for tenant creation
+            </summary>
+            <param name="callback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.IsValidTenantId(System.String)">
+            <summary>
+            Determine if a given tenant id is valid
+            </summary>
+            <param name="id">String representing tenant id</param>
+            <returns>True if the string is a valid tenant id</returns>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.Dispose">
+            <summary>
+            Dispose
+            </summary>
+        </member>
+        <member name="M:OSIsoft.Qi.Http.QiTenantService.Dispose(System.Boolean)">
+            <summary>
+            Dispose
+            </summary>
+            <param name="disposing"></param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OSIsoft.Qi.Http.Channel</name>
+    </assembly>
+    <members>
+        <member name="P:OSIsoft.Qi.Http.QiHttpClientException`1.Content">
+            <summary>
+            The exception content
+            </summary>
+        </member>
+        <member name="T:OSIsoft.Qi.Http.Channel.QiMethodResolver">
+            <summary>
+            Contains a dictionary of the runtime method handles associated with a type
+            </summary>
+        </member>
+    </members>
+</doc>
