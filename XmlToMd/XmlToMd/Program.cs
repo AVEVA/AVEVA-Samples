@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace GithubWikiDoc
+namespace OSIsoft.Qi.Docs
+///https://gist.github.com/formix/515d3d11ee7c1c252f92
 {
     class Program
     {
