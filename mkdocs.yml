@@ -10,5 +10,6 @@ pages:
 - Why Qi?: 'Why-Qi.md'
 - Data behavior: 'Qi-Data-Behavior.md'
 - Markdown cheatsheet: 'index.md'
-- Samples: 'samples/index.md'
-  - .Net client: 'samples/dotNetClient.md'
+- Samples: 
+  - 'Overview': 'samples/index.md'
+  - '.Net client': 'samples/dotNetClient.md'
