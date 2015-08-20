@@ -7,5 +7,7 @@ docs_dir: docs
 theme: readthedocs
 
 pages:
-- 'index.md'
-- 'Why-Qi.md'
+- Why Qi?: 'Why-Qi.md'
+- Data behavior: 'Qi-Data-Behavior.md'
+- Markdown cheatsheet: 'index.md'
+
