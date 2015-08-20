@@ -10,9 +10,7 @@ theme_dir: ./theme/mkdocs/
 theme_center_lead: false
 include_search: true
 pages:
-- Home: index.md
-  - Why Qi: Why-Qi.md
-  - Data behavior: Qi-Data-Behavior.md
-- Samples: samples/index.md
-  - .Net client: samples/dotNetClient.md
+- ['index.md', 'Introduction']
+- ['Why-Qi.md', 'Why Qi?']
+- ['Qi-Data-Behavior.md', 'Data behavior']
 
