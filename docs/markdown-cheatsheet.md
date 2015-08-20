@@ -72,6 +72,10 @@ Inline `code` has `back-ticks around` it.
 var s = "JavaScript syntax highlighting";
 alert(s);
 ```
+
+```c#
+String s = new String();
+```
  
 ```python
 s = "Python syntax highlighting"
