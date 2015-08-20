@@ -1,0 +1,16 @@
+site_name: Qi Docs
+site_description: Documenation for the Qi service
+#site_favicon: '/img/qidocs_favicon.ico'
+copyright: Copyright &copy; 2015, OSIsoft, LLC
+docs_dir: source
+repo_url:https://github.com/chad-at-osisoft/Qi-docs-md
+theme: readthedocs
+
+theme_dir: ./theme/mkdocs/
+theme_center_lead: false
+include_search: true
+pages:
+
+- [index.md, Qi Docs home]
+# Introduction Guide Sections
+- [Why-Qi.md, Introduction, Why Qi]
