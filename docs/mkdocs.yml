@@ -6,9 +6,6 @@ copyright: Copyright &copy; 2015, OSIsoft, LLC
 repo_url: https://github.com/chad-at-osisoft/Qi-docs-md
 theme: readthedocs
 
-theme_dir: ./theme/mkdocs/
-theme_center_lead: false
-include_search: true
 pages:
 - ['index.md', 'Introduction']
 - ['Why-Qi.md', 'Why Qi?']
