@@ -3,7 +3,7 @@ site_description: Documenation for the Qi service
 #site_favicon: '/img/qidocs_favicon.ico'
 copyright: Copyright &copy; 2015, OSIsoft, LLC
 #docs_dir: source
-repo_url: https://github.com/chad-at-osisoft/Qi-docs-md
+#repo_url: https://github.com/chad-at-osisoft/Qi-docs-md
 theme: readthedocs
 
 pages:
