@@ -7,6 +7,7 @@ using System.Xml.Linq;
 
 namespace OSIsoft.Qi.Docs
 ///https://gist.github.com/formix/515d3d11ee7c1c252f92
+/// consider using something like this to integrate this into a build: https://github.com/lijunle/Vsxmd
 {
     class Program
     {
