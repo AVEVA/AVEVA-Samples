@@ -1,5 +1,5 @@
 import qipy as q
 q.info()
-s = q.source("historianrelease.cloudapp.net", 3380)
-s.connect()
+s = q.channel("historianrelease.cloudapp.net:3380", "my api key")
+s.getTypes()
 

@@ -19,15 +19,15 @@ def info():
 
 import urllib, httplib as http
 
-class source:
-	def __init__(self, url, port):
+class channel:
+	def __init__(self, url, apikey):
 		self.url = url
-		self.port = port
-		print "Qi source at {url}:{port}".format(url = self.url, port = self.port)
+		print "Qi channel at {url}".format(url = self.url)
 
-	def connect(self):
-		conn = http.HTTPConnection(self.url, self.port)
+	def getTypes(self):
+		conn = http.HTTPConnection(self.url)
 		params = urllib.urlencode({})
+		
 		headers = {
 			"QiTenant" : "00000000-0000-0000-0000-000000000002",
 			"Content-type": "application/json", 
@@ -36,5 +36,8 @@ class source:
 		conn.request("GET", "/qi/types/", params, headers)
 		response = conn.getresponse()
 		print response.status, response.reason
+		data = response.read()
+		print data
+		
 			
 		
