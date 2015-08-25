@@ -1,4 +1,5 @@
 import qipy as q
 q.info()
-q.source("my url here")
-exit()
+s = q.source("historianrelease.cloudapp.net", 3380)
+s.connect()
+
