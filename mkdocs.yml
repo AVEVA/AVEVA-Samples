@@ -15,3 +15,4 @@ pages:
 - Samples: 
   - 'Overview': 'samples/index.md'
   - '.Net client': 'samples/dotNetClient.md'
+  - 'Python client': 'samples/python.md'
