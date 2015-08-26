@@ -52,6 +52,7 @@ The following APIs are not yet implemented in QiPy:
 - `/qi/streams/data/insertvalues` - POST
 - `/qi/streams/data/replacevalues` - PUT
 - `/qi/streams/data/updatevalues` - PUT
+
 **Subscriptions**
 - `/qi/streams/:stream_id/subscriptions` - GET, POST
 - `/qi/streams/:stream_id/subscriptions:subscription_id` - GET, DELETE 
