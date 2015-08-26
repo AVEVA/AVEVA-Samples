@@ -12,7 +12,7 @@ channel.getTypes()
 The following APIs are not yet implemented in QiPy:
 
 **Types** 
-- `/qi/types` - GET, POST 
+- something here `/qi/types` - GET, POST 
 - `/qi/types/:type_id` - GET, PUT ,DELETE
  
 **Behaviors** 
