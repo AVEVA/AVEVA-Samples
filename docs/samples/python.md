@@ -10,14 +10,14 @@ channel.getTypes()
 
 ### What's missing from QiPy
 The following APIs are not yet implemented in QiPy: 
- - `/qi/types` - GET|POST 
- - `/qi/types/:type_id` - GET|PUT|DELETE
+ - `/qi/types` - GET, POST 
+ - `/qi/types/:type_id` - GET, PUT ,DELETE
  
- - `/qi/behaviors` - GET|POST
- - `/qi/behaviors/:behavior_id` - GET|PUT|DELETE
+ - `/qi/behaviors` - GET, POST
+ - `/qi/behaviors/:behavior_id` - GET, PUT, DELETE
  	
- - `/qi/streams` - GET|POST 
- - `/qi/streams/:stream_id` - GET|PUT|DELETE
+ - `/qi/streams` - GET, POST 
+ - `/qi/streams/:stream_id` - GET, PUT, DELETE
  - `/qi/streams/:stream_id` - GET
 
  - `/qi/streams/:stream_id/data/getvalue` - GET
@@ -47,8 +47,8 @@ The following APIs are not yet implemented in QiPy:
  - `/qi/streams/data/replacevalues` - PUT
  - `/qi/streams/data/updatevalues` - PUT
  
- - `/qi/streams/:stream_id/subscriptions` - GET|POST
- - `/qi/streams/:stream_id/subscriptions:subscription_id` - GET|DELETE 
+ - `/qi/streams/:stream_id/subscriptions` - GET, POST
+ - `/qi/streams/:stream_id/subscriptions:subscription_id` - GET, DELETE 
  
  
  
