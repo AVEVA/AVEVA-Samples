@@ -4,12 +4,11 @@ class QiStream(object):
     """Qi stream definition"""
 
     def __init__(self):
-            self.__Id = 0
-            self.__Name = None
-            self.__Description = None
-            self.__TypeId = None
-            
-
+        self.__Id = 0
+        self.__Name = None
+        self.__Description = None
+        self.__TypeId = None
+    
     def getId(self):
         return self.__Id
 

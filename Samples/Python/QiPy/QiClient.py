@@ -154,9 +154,7 @@ class QiClient(object):
         
         streamResponse = response.read().decode()
         conn.close()
-        return QiStream.fromDictionary(json.loads(streamResponse))
-        
-        return returnlist
+        return QiStream.fromDictionary(json.loads(streamResponse))        
 
     def getStreams(self):
         conn = http.HTTPConnection(self.url)
@@ -212,6 +210,106 @@ class QiClient(object):
         conn.close()
     
 
+    # Stream data
+
+    def getLastValue(self, qi_stream):
+        if qi_stream is None:
+            return
+
+        if not isinstance(qi_stream, QiStream):
+            raise TypeError("stream must be a valid QiStream")
+         
+        conn = http.HTTPConnection(self.url)
+        conn.request("GET", "/qi/streams/" + qi_stream.Id + "/data/getlastvalue", 
+                     headers = self.__qi_headers())
+        response = conn.getresponse()
+
+        if response.status != 200:            
+            conn.close()
+            raise QiError("Failed to get last value for QiStream {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+        
+        streamResponse = response.read().decode()
+        conn.close()
+        return json.loads(streamResponse)
+
+    def insertValue(self, qi_stream, value):
+        """
+        Insert the specified value into this Qi stream.
+        The value parameter must be a dictionary of data matching
+        the stream type. For example:
+        {"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.4472922Z" }
+        """
+        if qi_stream is None:
+            return
+
+        if not isinstance(qi_stream, QiStream):
+            raise TypeError("stream must be a valid QiStream")
+
+        payload = json.dumps(value)
+
+        conn = http.HTTPConnection(self.url)
+        conn.request("POST", "/qi/streams/" + qi_stream.Id + "/data/insertvalue", 
+                     payload, self.__qi_headers())
+
+        response = conn.getresponse()
+
+        if response.status != 200:
+            conn.close()
+            raise QiError("Failed to insert value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+                
+    def replaceValue(self, qi_stream, value):
+        """
+        Update the specified value, as matched by *key* type property
+        into this Qi stream. The value parameter must be a dictionary of data matching
+        the stream type. For example:
+        {"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.4472922Z" }
+        """
+        if qi_stream is None:
+            return
+
+        if not isinstance(qi_stream, QiStream):
+            raise TypeError("stream must be a valid QiStream")
+
+        payload = json.dumps(value)
+
+        conn = http.HTTPConnection(self.url)
+        conn.request("PUT", "/qi/streams/" + qi_stream.Id + "/data/replaceValue", 
+                     payload, self.__qi_headers())
+
+        response = conn.getresponse()
+
+        if response.status != 200:
+            conn.close()
+            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+            
+    def removeValue(self, qi_stream, index):
+        """
+        Delete the value at the specified index. The value index is the data stored
+        in the *key* type property of the Qi type. The index parameter must be a 
+        string. For example:
+        '2015-08-12T22:07:49.4472922Z'
+        """
+        if qi_stream is None:
+            return
+
+        if not isinstance(qi_stream, QiStream):
+            raise TypeError("stream must be a valid QiStream")
+               
+        params = urllib.urlencode({"index": index})        
+        conn = http.HTTPConnection(self.url)
+        conn.request("DELETE", "/qi/streams/" + qi_stream.Id + "/data/removevalue?" + params, 
+                     headers = self.__qi_headers())
+
+        response = conn.getresponse()
+
+        if response.status != 200:
+            conn.close()
+            raise QiError("Failed to remove value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+               
     # Batched data
 
     def inserValues(self, values):
