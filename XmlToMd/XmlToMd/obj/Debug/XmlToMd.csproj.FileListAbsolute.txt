@@ -1,7 +1,0 @@
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\bin\Debug\XmlToMd.exe.config
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\bin\Debug\XmlToMd.exe
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\bin\Debug\XmlToMd.pdb
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\obj\Debug\XmlToMd.csprojResolveAssemblyReference.cache
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\obj\Debug\XmlToMd.exe
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\obj\Debug\XmlToMd.pdb
-C:\dev\Qi-docs-md\XmlToMd\XmlToMd\bin\Debug\OSIsoft.Qi.Http.Channel.xml
