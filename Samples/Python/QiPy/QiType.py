@@ -1,14 +1,42 @@
 ﻿from enum import Enum
 import json
+from QiTypeCode import QiTypeCode
+from QiTypeProperty import QiTypeProperty
 
 class QiType(object):
     """Qi type definitions"""
+
+    __qiTypeCodeMap = {
+        QiTypeCode.Empty : 0,
+        QiTypeCode.Object : 1,
+        QiTypeCode.DBNull : 2,
+        QiTypeCode.Boolean : 3,
+        QiTypeCode.Char : 4,
+        QiTypeCode.SByte : 5,
+        QiTypeCode.Byte : 6,
+        QiTypeCode.Int16 : 7,
+        QiTypeCode.UInt16 : 8,
+        QiTypeCode.Int32 : 9,
+        QiTypeCode.UInt32 : 10,
+        QiTypeCode.Int64 : 11,
+        QiTypeCode.UInt64 : 12,
+        QiTypeCode.Single : 13,
+        QiTypeCode.Double : 14,
+        QiTypeCode.Decimal : 15,
+        QiTypeCode.DateTime : 16,
+        QiTypeCode.String : 18,
+        QiTypeCode.Guid : 19,
+        QiTypeCode.DateTimeOffset : 20,
+        QiTypeCode.TimeSpan : 21,
+        QiTypeCode.Version : 22    
+        }
+
 
     def __init__(self):
         self.__Id = ""
         self.__Name = None
         self.__Description = None
-        self.__QiTypeCode = QiTypeCode.Object
+        self.__QiTypeCode = self.__qiTypeCodeMap[QiTypeCode.Object]
         self.__Properties = []
 
     def getId(self):
@@ -39,10 +67,12 @@ class QiType(object):
 
     
     def getQiTypeCode(self):
-        return self.__QiTypeCode
+        for key, val in self.__qiTypeCodeMap.iteritems():
+            if self.__QiTypeCode == val:
+                return key        
 
     def setQiTypeCode(self, QiTypeCode):
-        self.__QiTypeCode = QiTypeCode
+        self.__QiTypeCode = self.__qiTypeCodeMap[QiTypeCode]
 
     QiTypeCode = property(getQiTypeCode, setQiTypeCode)
 
@@ -80,7 +110,7 @@ class QiType(object):
     @staticmethod
     def fromString(content):
          dictionary = json.loads(content)
-         return QiType.fromDictionary(dictionary);
+         return QiType.fromDictionary(dictionary)
 
     @staticmethod
     def fromDictionary(content):
@@ -88,7 +118,7 @@ class QiType(object):
         type = QiType()
 
         if len(content) == 0:
-            return type;
+            return type
 
         if "Id" in content:
             type.Id = content["Id"]
@@ -99,16 +129,41 @@ class QiType(object):
         if "Description" in content:
             type.Description = content["Description"]
 
-        if "QiTypeCode" in content:
-            type.QiTypeCode = QiTypeCode(str(content["QiTypeCode"]))
+        if "QiTypeCode" in content:            
+            type.__QiTypeCode = content["QiTypeCode"]            
        
         if "Properties" in content:
             type.Properties = []
-            properties = content["Properties"];
+            properties = content["Properties"]
 
             if properties is not None and len(properties) > 0:
                 for value in properties:
                     type.Properties.append(QiTypeProperty.fromDictionary(value))
 
-        return type;
+        return type
 
+        
+    #qiTypeCodeMap = {
+    #    "Empty" : 0,
+    #    "Object" : 1,
+    #    "DBNull" : 2,
+    #    "Boolean" : 3,
+    #    "Char" : 4,
+    #    "SByte" : 5,
+    #    "Byte" : 6,
+    #    "Int16" : 7,
+    #    "UInt16" : 8,
+    #    "Int32" : 9,
+    #    "UInt32" : 10,
+    #    "Int64" : 11,
+    #    "UInt64" : 12,
+    #    "Single" : 13,
+    #    "Double" : 14,
+    #    "Decimal" : 15,
+    #    "DateTime" : 16,
+    #    "String" : 18,
+    #    "Guid" : 19,
+    #    "DateTimeOffset" : 20,
+    #    "TimeSpan" : 21,
+    #    "Version" : 22    
+    #    }

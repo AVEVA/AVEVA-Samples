@@ -21,8 +21,23 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="QiClient.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiError.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="qipy.py" />
+    <Compile Include="QiStream.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="QiType.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiTypeCode.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiTypeProperty.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test.py" />
