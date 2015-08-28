@@ -33,12 +33,12 @@ class QiClient(object):
         #                  format(status = response.status, reason = response.reason))
 
 
-        print "Verified Qi reponds at {url}".format(url = self.url)
+        print "Qi endpoint at {url}".format(url = self.url)
 
     
     # Qi Type
     
-    def createType(self, qi_type):        
+    def createType(self, qi_type):
         if qi_type is None:
             return
        
@@ -61,8 +61,7 @@ class QiClient(object):
             return type
         else:
             conn.close()
-            raise QiError("Failed to create type {status}:{reason}".format(status = response.status, reason = response.reason))
-
+            raise QiError("Failed to create type. {status}:{reason}".format(status = response.status, reason = response.reason))
     
     def getTypes(self):
         conn = http.HTTPConnection(self.url)
@@ -91,13 +90,12 @@ class QiClient(object):
         response = conn.getresponse()
         if response.status != 200:            
             conn.close()
-            raise QiError("Failed to get QiType, {type_id} {status}:{reason}".
+            raise QiError("Failed to get QiType, {type_id}. {status}:{reason}".
                           format(type_id = type_id, status = response.status, reason = response.reason))
         
         typesresponse = response.read().decode()
         conn.close()
         return QiType.fromString(typesresponse)        
-
                 
     def deleteType(self, type_id):
         if type_id is None:
@@ -108,9 +106,8 @@ class QiClient(object):
         
         if response.status != 200:            
             conn.close()
-            raise QiError("Failed to delete QiType, {type_id} {status}:{reason}".
+            raise QiError("Failed to delete QiType, {type_id}. {status}:{reason}".
                           format(type_id = type_id, status = response.status, reason = response.reason))
-
 
 
     # Qi Stream
@@ -123,34 +120,97 @@ class QiClient(object):
             return
    
         conn = http.HTTPConnection(self.url)
-        conn.request('POST', '/Qi/Stream', qi_stream.toString(), self.__qi_headers())
+        conn.request("POST", "/qi/streams", qi_stream.toString(), self.__qi_headers())
 
         response = conn.getresponse()
      
         if response.status == 302:
-            url =  urllib.parse.urlparse(response.getheader("Location"))
+            url =  urlparse(response.getheader("Location"))
             response.close()
 
-            conn.request('GET', url.path, headers = self.__qi_headers())
+            conn.request("GET", url.path, headers = self.__qi_headers())
             response = conn.getresponse()
 
         if response.status == 200 or response.status == 201:
-            type = QiStream.fromString(response.read().decode())
+            stream = QiStream.fromString(response.read().decode())
             conn.close()
-            return type
+            return stream
         else:
             conn.close()
-            raise QiError("Failed to get Qi stream")
+            raise QiError("Failed to create QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+        
 
-    def getBehaviors(self):
-        print "*** getBehaviors not implemented ***"
+    def getStream(self, stream_id):
+        conn = http.HTTPConnection(self.url)
+        
+        conn.request("GET", "/qi/streams/" + stream_id, headers = self.__qi_headers())
+        response = conn.getresponse()
+
+        if response.status != 200:            
+            conn.close()
+            raise QiError("Failed to get QiStream {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+        
+        streamResponse = response.read().decode()
+        conn.close()
+        return QiStream.fromDictionary(json.loads(streamResponse))
+        
+        return returnlist
+
+    def getStreams(self):
+        conn = http.HTTPConnection(self.url)
+        
+        conn.request("GET", "/qi/streams/", headers = self.__qi_headers())
+        response = conn.getresponse()
+
+        if response.status != 200:            
+            conn.close()
+            raise QiError("Failed to get QiStreams. {status}:{reason}".
+                          format(status = response.status, reason = response.reason))
+        
+        streamssresponse = response.read().decode()
+        conn.close()
+        streamsslist = json.loads(streamssresponse)
+        returnlist = []
+        for streamdict in streamsslist:
+            returnlist.append(QiStream.fromDictionary(streamdict))
+        
+        return returnlist
 
     def editStream(self, qi_stream): 
-        print "*** editStream not implemented ***"
+        if qi_stream is None:
+            return
 
-    def deleteStream(self, qi_stream):
-        print "*** deleteStream not implemented ***"
+        if not isinstance(qi_stream, QiStream):
+            return
+   
+        conn = http.HTTPConnection(self.url)
+        conn.request("PUT", "/qi/streams/" + qi_stream.Id, qi_stream.toString(), self.__qi_headers())
 
+        response = conn.getresponse()
+     
+        if response.status != 200:
+            conn.close()
+            raise QiError("Failed to edit QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+
+        conn.close()
+
+
+    def deleteStream(self, stream_id):
+        conn = http.HTTPConnection(self.url)
+        
+        conn.request("DELETE", "/qi/streams/" + stream_id, headers = self.__qi_headers())
+        response = conn.getresponse()
+
+        if response.status != 200:            
+            conn.close()
+            raise QiError("Failed to delete QiStream {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+        
+        conn.close()
+    
 
     # Batched data
 

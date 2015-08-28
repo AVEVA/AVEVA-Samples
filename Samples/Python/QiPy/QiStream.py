@@ -1,4 +1,5 @@
-﻿
+﻿import json
+
 class QiStream(object):
     """Qi stream definition"""
 
