@@ -309,7 +309,56 @@ class QiClient(object):
             conn.close()
             raise QiError("Failed to remove value for QiStream, {stream_id}. {status}:{reason}".
                           format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-               
+          
+        
+    def insertValues(self, qi_stream, values):
+        """
+        Insert the specified list of values submitted into the specified Qi stream.
+        The values parameter must be a list of dictionaries like:
+        [{"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.111000Z" }, 
+        {"Value": 104.5, "Timestamp": "2015-08-12T24:07:49.9991111Z" }]
+        """
+        if qi_stream is None:
+            return
+
+        if not isinstance(qi_stream, QiStream):
+            raise TypeError("stream must be a valid QiStream")
+
+        payload = json.dumps(values)
+        
+        conn = http.HTTPConnection(self.url)
+        conn.request("POST", "/qi/streams/" + qi_stream.Id + "/data/insertvalues", 
+                     payload, self.__qi_headers())
+
+        response = conn.getresponse()
+
+        if response.status != 200:
+            conn.close()
+            raise QiError("Failed to insert values for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+          
+    def getWindowValues(self, qi_stream, start, end):
+        if qi_stream is None:
+            return
+
+        if not isinstance(qi_stream, QiStream):
+            raise TypeError("stream must be a valid QiStream")
+         
+        conn = http.HTTPConnection(self.url)
+        params = urllib.urlencode({"startIndex": start, "endIndex": end})        
+        conn.request("GET", "/qi/streams/" + qi_stream.Id + "/data/GetWindowValues?" + params, 
+                     headers = self.__qi_headers())
+        response = conn.getresponse()
+
+        if response.status != 200:            
+            conn.close()
+            raise QiError("Failed to get last value for QiStream {stream_id}. {status}:{reason}".
+                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+        
+        streamResponse = response.read().decode()
+        conn.close()
+        return json.loads(streamResponse)
+
     # Batched data
 
     def inserValues(self, values):

@@ -1,9 +1,9 @@
 ﻿from qipy import *
 import datetime
 import time
+import random
 
-# client = QiClient("historianmain.cloudapp.net:3380", "my api key")
-client = QiClient("chad-dev:12345", "my api key")
+client = QiClient("localhost:12345", "my api key")
 
 print "Qi type operations"
 
@@ -18,8 +18,8 @@ listTypes()
 
 #create a double type
 #  QiType(double)
-#  L QiTypeProperty(DateTime)
-#  L QiTypeProperty(double)
+#  ├─ QiTypeProperty(DateTime)
+#  └─ QiTypeProperty(double)
 doubleType = QiType()
 doubleType.Id = "doubleType"
 doubleType.QiTypeCode = QiTypeCode.Double
@@ -53,8 +53,8 @@ except QiError as e:
 
 #create byte type
 #  QiType(byte)
-#  L QiTypeProperty(DateTime)
-#  L QiTypeProperty(Byte)
+#  ├─ QiTypeProperty(DateTime)
+#  └─ QiTypeProperty(Byte)
 byteType = QiType()
 byteType.Id = "byteType"
 byteType.QiTypeCode = QiTypeCode.Byte
@@ -118,7 +118,7 @@ listStreams()
 
 
 #write some data 
-now = datetime.datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%dT%H:%M:%SZ")
+now = datetime.datetime.now().isoformat()
 value = {
     "TimeId" : now,
     "Value": 100.001
@@ -136,7 +136,7 @@ print "replace value: " + str(value)
 
 #read the data 
 print client.getLastValue(createdStream)
-
+ 
 #delete the data
 client.removeValue(createdStream, value["TimeId"])
 print "removed value at: " + value["TimeId"]
@@ -144,11 +144,28 @@ print "removed value at: " + value["TimeId"]
 #read the data 
 print client.getLastValue(createdStream)
 
+# write a bunch of data
+values = [{"Value": random.random() * 1000, 
+           "TimeId": (datetime.datetime.now() - datetime.timedelta(minutes=x)).isoformat()} 
+          for x in range(10)]
+
+client.insertValues(createdStream, values)
+print "inserted {count} values".format(count = len(values))
+print "Last value is {value}".format(value = client.getLastValue(createdStream))
+
+#get the last few minutes of values
+print "Recent values are {values}".format(values = 
+        client.getWindowValues(createdStream, 
+        (datetime.datetime.now() - datetime.timedelta(minutes = 100)).isoformat(), 
+        datetime.datetime.now().isoformat()))
+
 #delete stream
 client.deleteStream(stream.Id)
 print "deleted tangent"
 
 listStreams()
+
+
 
 
 print "If you made it this far, everything works!"
