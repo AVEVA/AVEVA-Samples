@@ -186,9 +186,6 @@ namespace QiLibsSample
                 
             }
 
-
-
-
         }
 
         static protected void DumpEvents(IEnumerable<SimpleEvent> evnts)
