@@ -1,6 +1,5 @@
 ﻿from qipy import *
 import datetime
-import time
 import random
 
 client = QiClient("localhost:12345", "my api key")
@@ -118,9 +117,8 @@ listStreams()
 
 
 #write some data 
-now = datetime.datetime.now().isoformat()
 value = {
-    "TimeId" : now,
+    "TimeId" : datetime.datetime.now().isoformat(),
     "Value": 100.001
     }
 client.insertValue(createdStream, value)
@@ -147,7 +145,7 @@ print client.getLastValue(createdStream)
 # write a bunch of data
 values = [{"Value": random.random() * 1000, 
            "TimeId": (datetime.datetime.now() - datetime.timedelta(minutes=x)).isoformat()} 
-          for x in range(10)]
+          for x in range(1000)]
 
 client.insertValues(createdStream, values)
 print "inserted {count} values".format(count = len(values))

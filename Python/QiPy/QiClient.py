@@ -1,5 +1,5 @@
 ﻿# qipy
-# chad@osisoft.com
+# chad@osisoft.com and test
 
 from urlparse import urlparse
 import urllib
