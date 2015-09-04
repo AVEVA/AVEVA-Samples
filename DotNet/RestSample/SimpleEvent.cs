@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QiLibsSample
+namespace RestSample
 {
     public class SimpleEvent
     {
@@ -20,7 +19,6 @@ namespace QiLibsSample
             set;
         }
 
-        [Key]
         public DateTime Timestamp
         {
             get;

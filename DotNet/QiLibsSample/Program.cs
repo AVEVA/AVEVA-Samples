@@ -41,6 +41,7 @@ namespace QiLibsSample
                 // First, create a type builder, then pass it the name of the class you are using for events.
                 // This greatly simplifies type creation
 
+                Console.WriteLine("Creating a Qi type for SimpleEvents instances");
                 QiTypeBuilder typeBuilder = new QiTypeBuilder();
                 QiType evtType = typeBuilder.Create<SimpleEvent>();
                 evtType.Name = "SimpleEvent";

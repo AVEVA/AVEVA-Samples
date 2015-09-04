@@ -6,7 +6,49 @@ using System.Threading.Tasks;
 
 namespace RestSample
 {
-    class QiStream
+    public class QiStream
     {
+        public string Id
+        {
+            get;
+            set;
+        }
+        public string Name
+        {
+            get;
+            set;
+        }
+        public string Description
+        {
+            get;
+            set;
+        }
+        public string TypeId
+        {
+            get;
+            set;
+        }
+        public string BehaviorId
+        {
+            get;
+            set;
+        }
+
+        public QiStream(string name, string typeid)
+        {
+            Id = name;
+            Name = name;
+            TypeId = string.Empty;
+            TypeId = typeid;
+        }
+
+        public QiStream(string name, string typeid, string description, string behavior)
+        {
+            Id = name;
+            Name = name;
+            TypeId = typeid;
+            Description = description;
+            BehaviorId = behavior;
+        }
     }
 }
