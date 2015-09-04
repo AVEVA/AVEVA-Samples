@@ -164,7 +164,7 @@ namespace RestSample
             string getClause = string.Format(_getTemplate, startIndex, endIndex);
             HttpRequestMessage msg = new HttpRequestMessage
             {
-                RequestUri = new Uri(_baseUrl + streamId + getClause),
+                RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + getClause),
                 Method = HttpMethod.Get
             };
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
