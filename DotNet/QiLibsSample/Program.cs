@@ -42,7 +42,7 @@ namespace QiLibsSample
                 Console.WriteLine("Creating a tenant named " + tenantId);
                 QiTenant tenant = new QiTenant(tenantId);
 
-                // submit to PI Cloud Historian to create the tenant in storage
+                // submit to Qi Service to create the tenant in storage
 
                 qiclient.GetOrCreateTenant(tenant);
 
