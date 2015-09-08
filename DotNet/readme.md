@@ -2,7 +2,7 @@
 
 There are two .NET samples, both written in C#.
 
-##QiLIbs
+##QiLibs
 
 The first uses the OSIsoft Qi Libraries, which support the full features of Qi.  The document is here: <https://github.com/osisoft/Qi-Samples/blob/master/DotNet/readme_QiLibs.md>.
 
