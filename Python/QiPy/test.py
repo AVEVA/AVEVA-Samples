@@ -10,7 +10,7 @@ print "Qi type operations"
 def listTypes():
     types = client.getTypes()
     print "{len} Qi types found:".format(len = len(types))
-    print ", ".join(t.Name for t in types)
+    print ",\n ".join(t.Name for t in types)
 
 
 listTypes()
@@ -22,16 +22,13 @@ listTypes()
 doubleType = QiType()
 doubleType.Id = "doubleType"
 doubleType.QiTypeCode = QiTypeCode.Double
-
 doubleProperty = QiTypeProperty()
 doubleProperty.Id = "Value"
 doubleProperty.QiType = doubleType
 
-
 dateTimeType = QiType()
 dateTimeType.Id = "dateTimeType"
 dateTimeType.QiTypeCode = QiTypeCode.DateTime
-
 dateTimeProperty = QiTypeProperty()
 dateTimeProperty.Id = "TimeId"
 dateTimeProperty.QiType = dateTimeType
@@ -60,7 +57,6 @@ int64Type.QiTypeCode = QiTypeCode.Int64
 int64Property = QiTypeProperty()
 int64Property.Id = "Value"
 int64Property.QiType = int64Type
-
 dateTimeType = QiType()
 dateTimeType.Id = "dateTimeType"
 dateTimeType.QiTypeCode = QiTypeCode.DateTime
@@ -75,7 +71,7 @@ type.Id = "int64"
 type.Description = "as long as a long"
 type.Properties = [int64Property, dateTimeProperty]
 createdType = client.createType(type)
-print "created byte type"
+print "created int64 type"
 
 listTypes()
 
@@ -90,7 +86,6 @@ byteType.QiTypeCode = QiTypeCode.Byte
 byteProperty = QiTypeProperty()
 byteProperty.Id = "Value"
 byteProperty.QiType = byteType
-
 dateTimeType = QiType()
 dateTimeType.Id = "dateTimeType"
 dateTimeType.QiTypeCode = QiTypeCode.DateTime
