@@ -12,6 +12,14 @@ namespace RestSample
 {
     class Program
     {
+        // VERY IMPORTANT: edit the following values to reflect the tenant and authorization items you were given
+        static string tenantId = "sampletenant";
+        static string target = "change_to_auth_target";
+        static string tenant = "change_to_auth_tenant";
+        static string audience = "change_to_auth_audience";
+        static string clientKey = "change_to_auth_client_key";
+        static string appKey = "change_to_auth_app_key";
+
         static void Main(string[] args)
         {
             // Instantiate the REST client
@@ -22,8 +30,8 @@ namespace RestSample
             try
             {
                 // TODO retract when provisioning is complete
-                Console.WriteLine("Creating a tenant named sampletenant");
-                qiclient.CreateTenant("sampletenant").Wait();
+                Console.WriteLine("Creating a tenant named " + tenantId);
+                qiclient.CreateTenant(tenantId).Wait();
 
                 // create properties for double Value, DateTime Timstamp, string Units
                 Console.WriteLine("Creating a Qi type for SimpleEvents instances");
@@ -97,8 +105,52 @@ namespace RestSample
                 Console.WriteLine("Retrieving the inserted events");
                 Console.WriteLine("==============================");
                 string jCollection = qiclient.GetWindowValues("evtStream", start.ToString("o"), DateTime.UtcNow.ToString("o")).Result;
-                SimpleEvent[] evts = JsonConvert.DeserializeObject<SimpleEvent[]>(jCollection);
-                DumpEvents(evts);
+                SimpleEvent[] foundEvents = JsonConvert.DeserializeObject<SimpleEvent[]>(jCollection);
+                DumpEvents(foundEvents);
+                #endregion
+
+                #region Update events
+                Console.WriteLine();
+                Console.WriteLine("Updating values");
+                // take the first value inserted and update the value and UOM
+                evt = foundEvents.First<SimpleEvent>();
+                evt.Units = "deg F";
+                evt.Value = 212.0;
+                qiclient.UpdateValue("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+
+                // update the remaining events (convert to deg F)
+                foreach (SimpleEvent evnt in events)
+                {
+                    evnt.Units = "deg F";
+                    evnt.Value = evnt.Value * 9 / 5 + 32.0;
+                }
+                qiclient.UpdateValues("evtStream", JsonConvert.SerializeObject(events)).Wait();
+                Thread.Sleep(2000);
+
+                // check the results
+                Console.WriteLine("Retrieving the updated values");
+                Console.WriteLine("=============================");
+                jCollection = qiclient.GetWindowValues("evtStream", start.ToString("o"), DateTime.UtcNow.ToString("o")).Result;
+                foundEvents = JsonConvert.DeserializeObject<SimpleEvent[]>(jCollection);
+                DumpEvents(foundEvents);
+                #endregion
+
+                #region delete events
+                // remove the first value -- index is the timestamp of the event
+                Console.WriteLine();
+                Console.WriteLine("Deleting events");
+                qiclient.RemoveValue("evtStream", evt.Timestamp.ToString("o")).Wait();
+
+                // remove the rest -- start and end time indices
+                qiclient.RemoveWindowValues("evtStream", foundEvents.First<SimpleEvent>().Timestamp.ToString("o"), foundEvents.Last<SimpleEvent>().Timestamp.ToString("o")).Wait();
+                Thread.Sleep(2000);
+
+                Console.WriteLine("Checking for events");
+                Console.WriteLine("===================");
+
+                jCollection = qiclient.GetWindowValues("evtStream", start.ToString("o"), DateTime.UtcNow.ToString("o")).Result;
+                foundEvents = JsonConvert.DeserializeObject<SimpleEvent[]>(jCollection);
+                DumpEvents(foundEvents);
                 #endregion
                 #endregion
 
@@ -116,7 +168,7 @@ namespace RestSample
                 {
                     qiclient.DeleteStream("evtStream").Wait();
                     qiclient.DeleteType("SimpleEvent").Wait();
-                    qiclient.DeleteTenant("sampletenant").Wait();
+                    qiclient.DeleteTenant(tenantId).Wait();
                 }
                 catch (Exception)
                 {

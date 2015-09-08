@@ -13,6 +13,14 @@ namespace QiLibsSample
 {
     class Program
     {
+        // VERY IMPORTANT: edit the following values to reflect the tenant and authorization items you were given
+        static string tenantId = "sampletenant";
+        static string target = "change_to_auth_target";
+        static string tenant = "change_to_auth_tenant";
+        static string audience = "change_to_auth_audience";
+        static string clientKey = "change_to_auth_client_key";
+        static string appKey = "change_to_auth_app_key";
+
         static void Main(string[] args)
         {
             Console.WriteLine("Creating a .NET Qi Client...");
@@ -30,8 +38,8 @@ namespace QiLibsSample
             {
                 // TODO -- remove tenant creation when provisioning is accomplished
 
-                Console.WriteLine("Creating a tenant named sampletenant");
-                QiTenant tenant = new QiTenant("sampletenant");
+                Console.WriteLine("Creating a tenant named " + tenantId);
+                QiTenant tenant = new QiTenant(tenantId);
 
                 // submit to PI Cloud Historian to create the tenant in storage
 
@@ -182,9 +190,6 @@ namespace QiLibsSample
                 {
                     Console.WriteLine("Error deleting tenant: " + exTnt.Message);
                 }
-                Console.WriteLine("Press ENTER to finish");
-                Console.ReadLine();
-                
             }
 
         }

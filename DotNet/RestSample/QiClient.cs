@@ -23,9 +23,16 @@ namespace RestSample
         private string _insertSingle = @"/Data/InsertValue";
         private string _insertMultiple = @"/Data/InsertValues";
         private string _getTemplate = @"/Data/GetWindowValues?startIndex={0}&endIndex={1}";
+        private string _updateSingle = @"/Data/UpdateValue";
+        private string _updateMultiple = @"/Data/UpdateValues";
+        private string _removeSingleTemplate = @"/{0}/Data/RemoveValue?index={1}";
+        private string _removeMultipleTemplate = @"/{0}/Data/RemoveWindowValues?startIndex={1}&endIndex={2}";
 
         // void error formats
         private string _createError = "Failed to create {0} with Id = {1}";
+        private string _updateError = "Failed to update {0} with Id = {1}";
+        private string _deleteError = "Failed to delete event from stream {0} with index = {1}";
+        private string _deleteMultipleError = "Failed to delete events from stream {0} with indices {1}";
 
         public QiClient(string tenant, string baseUrl)
         {
@@ -77,6 +84,11 @@ namespace RestSample
             }
         }
 
+        /// <summary>
+        /// Create a stream on the target Qi Service
+        /// </summary>
+        /// <param name="streamDef">QiStream object with name, Id, type</param>
+        /// <returns>void</returns>
         public async Task CreateStream(QiStream streamDef)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -90,9 +102,14 @@ namespace RestSample
             string content = JsonConvert.SerializeObject(streamDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
-            await SendAndRespondVoid(msg, "stream", streamDef.Id);
+            await SendAndRespondVoid(msg, _createError, "stream", streamDef.Id);
         }
 
+        /// <summary>
+        /// Deletes the stream whose Id is passed
+        /// </summary>
+        /// <param name="streamId">Id of the QiStream to be deleted</param>
+        /// <returns>void</returns>
         public async Task DeleteStream(string streamId)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -101,9 +118,14 @@ namespace RestSample
                 Method = HttpMethod.Delete,
             };
 
-            await SendAndRespondVoid(msg, "stream", streamId);
+            await SendAndRespondVoid(msg, _createError, "stream", streamId);
         }
 
+        /// <summary>
+        /// Creates a QiType in the remote Qi Service.  QiTypes are required by QiStreams and cannot be deleted while so referenced.
+        /// </summary>
+        /// <param name="typeDef">QiType object defining a user-defined type with properties</param>
+        /// <returns>void</returns>
         public async Task CreateType(QiType typeDef)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -117,9 +139,14 @@ namespace RestSample
             string content = JsonConvert.SerializeObject(typeDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
-            await SendAndRespondVoid(msg, "type", typeDef.Id);
+            await SendAndRespondVoid(msg, _createError, "type", typeDef.Id);
         }
 
+        /// <summary>
+        /// Deletes a QiType in the remote Qi Service
+        /// </summary>
+        /// <param name="typeId">Id of the QiType to delete</param>
+        /// <returns>void</returns>
         public async Task DeleteType(string typeId)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -128,12 +155,18 @@ namespace RestSample
                 Method = HttpMethod.Delete,
             };
 
-           await  SendAndRespondVoid(msg, "type", typeId);
+           await  SendAndRespondVoid(msg, _deleteError, "type", typeId);
         }
         #endregion
 
         #region Create Methods for Data (Insert)
 
+        /// <summary>
+        /// Creates a single instance of a measured event in the named Qi Stream provided the object conforms to the type of the stream
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="evt">JSON serialization of the object to store</param>
+        /// <returns></returns>
         public async Task CreateEvent(string streamId, string evt)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -142,9 +175,15 @@ namespace RestSample
                 Method = HttpMethod.Post
             };
             msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
-            await SendAndRespondVoid(msg, "data event", streamId);
+            await SendAndRespondVoid(msg, _createError, "data event", streamId);
         }
 
+        /// <summary>
+        /// Creates multiple events in the identified Qi Stream
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="evt">JSON serialization of an array of events</param>
+        /// <returns>void</returns>
         public async Task CreateEvents(string streamId, string evt)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -153,12 +192,19 @@ namespace RestSample
                 Method = HttpMethod.Post
             };
             msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
-            await SendAndRespondVoid(msg, "data events", streamId);
+            await SendAndRespondVoid(msg, _createError, "data events", streamId);
         }
 
         #endregion
 
         #region Retrieve Methods for Data
+        /// <summary>
+        /// Gets all values in the range identified by the start and end indices
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="startIndex">string representation of a value related to the streams key; for a DateTime key, an ISO 8601 time reference</param>
+        /// <param name="endIndex">string representaion of a value related to the stream's key denoting the end of the desired range</param>
+        /// <returns>JSON serialized array of events</returns>
         public async Task<string> GetWindowValues(string streamId, string startIndex, string endIndex)
         {   
             string getClause = string.Format(_getTemplate, startIndex, endIndex);
@@ -181,13 +227,86 @@ namespace RestSample
 
         #endregion
 
-        private async Task SendAndRespondVoid(HttpRequestMessage msg, string entity, string id)
+        #region Update Methods for Data
+        /// <summary>
+        /// Updates a single event if found
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="evt">JSON serialization of the updated event</param>
+        /// <returns></returns>
+        public async Task UpdateValue(string streamId, string evt)
+        {
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + _updateSingle),
+                Method = HttpMethod.Put
+            };
+            msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
+            await SendAndRespondVoid(msg, _updateError, "data event", evt);
+        }
+
+        /// <summary>
+        /// Updates an array of events in a stream (replaces an event with the same key value)
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="evts">JSON serialization of an array of updated events</param>
+        /// <returns>void</returns>
+        public async Task UpdateValues(string streamId, string evts)
+        {
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + _updateMultiple),
+                Method = HttpMethod.Put
+            };
+            msg.Content = new StringContent(evts, Encoding.UTF8, "application/json");
+            await SendAndRespondVoid(msg, _updateError, "data events", streamId);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// removes a single value from the stream if the index is found
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="index">value of the key of the event to be deleted (for DateTime, ISO 8601 string)</param>
+        /// <returns>void</returns>
+        public async Task RemoveValue(string streamId, string index)
+        {
+            string uri = _baseUrl + _streamsBase + string.Format(_removeSingleTemplate, streamId, index);
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(uri),
+                Method = HttpMethod.Delete
+            };
+            await SendAndRespondVoid(msg, _deleteError, streamId, index);
+        }
+
+        /// <summary>
+        /// Removes all events within a range in a stream
+        /// </summary>
+        /// <param name="streamId">stream identifier</param>
+        /// <param name="startIndex">start key value for the range</param>
+        /// <param name="endIndex">end key value for the range</param>
+        /// <returns>void</returns>
+        public async Task RemoveWindowValues(string streamId, string startIndex, string endIndex)
+        {
+            string uri = _baseUrl + _streamsBase + string.Format(_removeMultipleTemplate, streamId, startIndex, endIndex);
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(uri),
+                Method = HttpMethod.Delete
+            };
+            await SendAndRespondVoid(msg, _deleteMultipleError, streamId, startIndex + ", " + endIndex);
+        }
+
+        private async Task SendAndRespondVoid(HttpRequestMessage msg, string template, string entity, string id)
         {
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (!response.IsSuccessStatusCode)
             {
-                throw new QiError(response.StatusCode, string.Format(_createError, entity, id));
+                throw new QiError(response.StatusCode, string.Format(template, entity, id));
             }
+
         }
     }
 }
