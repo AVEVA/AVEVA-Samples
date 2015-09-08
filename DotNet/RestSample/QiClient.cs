@@ -89,7 +89,7 @@ namespace RestSample
         /// </summary>
         /// <param name="streamDef">QiStream object with name, Id, type</param>
         /// <returns>void</returns>
-        public async Task CreateStream(QiStream streamDef)
+        public async Task<string> CreateStream(QiStream streamDef)
         {
             HttpRequestMessage msg = new HttpRequestMessage
             {
@@ -102,7 +102,15 @@ namespace RestSample
             string content = JsonConvert.SerializeObject(streamDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
-            await SendAndRespondVoid(msg, _createError, "stream", streamDef.Id);
+            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new QiError(response.StatusCode, "Error creating Stream with id " + streamDef.Id);
+            }
+            else
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
         /// <summary>
@@ -126,7 +134,7 @@ namespace RestSample
         /// </summary>
         /// <param name="typeDef">QiType object defining a user-defined type with properties</param>
         /// <returns>void</returns>
-        public async Task CreateType(QiType typeDef)
+        public async Task<string> CreateType(QiType typeDef)
         {
             HttpRequestMessage msg = new HttpRequestMessage
             {
@@ -139,7 +147,15 @@ namespace RestSample
             string content = JsonConvert.SerializeObject(typeDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
-            await SendAndRespondVoid(msg, _createError, "type", typeDef.Id);
+            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new QiError(response.StatusCode, "Error creating Type with id " + typeDef.Id);
+            }
+            else
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
         /// <summary>
