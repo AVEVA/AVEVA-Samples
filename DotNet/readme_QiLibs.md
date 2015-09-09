@@ -112,7 +112,7 @@ As with insertion, deletion of events is managed by a range over the type's inde
     qiclient.RemoveValue<int>("evtStream", 0);
     qiclient.RemoveWindowValues<int>("evtStream", 1, 99);
 ```
-The type of the index proeprty is specified as the type of the generic method.
+The type of the index property is specified as the type of the generic method.
 
 ## Bonus: Deleting Types and Streams
 
