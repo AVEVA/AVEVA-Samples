@@ -34,11 +34,15 @@ namespace RestSample
             set;
         }
 
+        public QiStream()
+        {
+        
+        }
+
         public QiStream(string name, string typeid)
         {
             Id = name;
             Name = name;
-            TypeId = string.Empty;
             TypeId = typeid;
         }
 

@@ -23,7 +23,7 @@ Qi is capable of storing any data type you care to define.  Each data stream is 
 
 The Qi Libraries permit the creation of Qi Types via reflection.  For simple types like our sample type, this may not seem like an advantage over the type creation illustrated in the REST samples.  For more complex types, particularly when you wish to nest complex types, reflection makes your job far easier!
 
-The first step to taking advantage of reflection is to create a .NET class.  Our sample definition is in `SimpleEvent.cs`.  Note the lines
+The first step to taking advantage of reflection is to create a .NET class.  Our sample definition is in `WaveData.cs`.  Note the lines
 
 ```c#
     [Key]
@@ -51,7 +51,7 @@ Note that `Create` is a generic method, and the type is the name of the class de
 
 ## Create a Qi Stream
 
-Anything in your process that you wish to measure is a stream in Qi, like a point or tag in the classic Pi Archive.  All you have to do is create a local QiStream instance, give it an id, assign it a type, and submit it to the Qi Service.  You may optionally assign a stream behavior to the stream.  This is the code to create a stream named `evtStream` for recording events of our sample type.  The value of the `TypeId` property is the value of the QiType `Id` property.
+An ordered series of events is stored in a Qi stream.  All you have to do is create a local QiStream instance, give it an id, assign it a type, and submit it to the Qi Service.  You may optionally assign a stream behavior to the stream.  This is the code to create a stream named `evtStream` for recording events of our sample type.  The value of the `TypeId` property is the value of the QiType `Id` property.
 
 ```c#
     QiStream sampleStream = new QiStream();

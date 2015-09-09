@@ -12,79 +12,110 @@ namespace RestSample
 {
     class Program
     {
+        // VERY IMPORTANT: edit the following values to reflect the tenant and authorization items you were given
+        static string tenantId = "sampletenant";
+        static string target = "change_to_auth_target";
+        static string tenant = "change_to_auth_tenant";
+        static string audience = "change_to_auth_audience";
+        static string clientKey = "change_to_auth_client_key";
+        static string appKey = "change_to_auth_app_key";
+
         static void Main(string[] args)
         {
             // Instantiate the REST client
             string server = ConfigurationManager.AppSettings["QiServerUrl"];
 
             QiClient qiclient = new QiClient("sampletenant", server);
+            QiType evtType = null;
 
             try
             {
                 // TODO retract when provisioning is complete
-                Console.WriteLine("Creating a tenant named sampletenant");
-                qiclient.CreateTenant("sampletenant").Wait();
+                Console.WriteLine("Creating a tenant named " + tenantId);
+                qiclient.CreateTenant(tenantId).Wait();
 
-                // create properties for double Value, DateTime Timstamp, string Units
-                Console.WriteLine("Creating a Qi type for SimpleEvents instances");
+                // create types for int and double, then create properties for all the WaveData properties
+                Console.WriteLine("Creating a Qi type for WaveData instances");
+                QiType intType = new QiType();
+                intType.Id = "intType";
+                intType.QiTypeCode = QiTypeCode.Int32;
+
                 QiType doubleType = new QiType();
                 doubleType.Id = "doubleType";
                 doubleType.QiTypeCode = QiTypeCode.Double;
-                QiTypeProperty doubleProperty = new QiTypeProperty();
-                doubleProperty.Id = "Value";
-                doubleProperty.QiType = doubleType;
 
-                QiType stringType = new QiType();
-                stringType.Id = "stringType";
-                stringType.QiTypeCode = QiTypeCode.String;
-                QiTypeProperty stringProperty = new QiTypeProperty();
-                stringProperty.Id = "Units";
-                stringProperty.QiType = stringType;
+                QiTypeProperty orderProperty = new QiTypeProperty();
+                orderProperty.Id = "Order";
+                orderProperty.QiType = intType;
+                orderProperty.IsKey = true;
 
-                QiType dateTimeType = new QiType();
-                dateTimeType.Id = "dateTimeType";
-                dateTimeType.QiTypeCode = QiTypeCode.DateTime;
-                QiTypeProperty dateTimeProperty = new QiTypeProperty();
-                dateTimeProperty.Id = "TimeStamp";
-                dateTimeProperty.QiType = dateTimeType;
-                dateTimeProperty.IsKey = true;
+                QiTypeProperty tauProperty = new QiTypeProperty();
+                tauProperty.Id = "Tau";
+                tauProperty.QiType = doubleType;
 
-                // Create a QiType for our SimpleEvent class; the metadata proeprties are the three we just created
+                QiTypeProperty radiansProperty = new QiTypeProperty();
+                radiansProperty.Id = "Radians";
+                radiansProperty.QiType = doubleType;
+
+                QiTypeProperty sinProperty = new QiTypeProperty();
+                sinProperty.Id = "Sin";
+                sinProperty.QiType = doubleType;
+
+                QiTypeProperty cosProperty = new QiTypeProperty();
+                cosProperty.Id = "Cos";
+                cosProperty.QiType = doubleType;
+
+                QiTypeProperty tanProperty = new QiTypeProperty();
+                tanProperty.Id = "Tan";
+                tanProperty.QiType = doubleType;
+
+                QiTypeProperty sinhProperty = new QiTypeProperty();
+                sinhProperty.Id = "Sinh";
+                sinhProperty.QiType = doubleType;
+
+                QiTypeProperty coshProperty = new QiTypeProperty();
+                coshProperty.Id = "cosh";
+                coshProperty.QiType = doubleType;
+
+                QiTypeProperty tanhProperty = new QiTypeProperty();
+                tanhProperty.Id = "Tanh";
+                tanhProperty.QiType = doubleType;
+                
+
+                // Create a QiType for our WaveData class; the metadata proeprties are the ones we just created
                 QiType type = new QiType();
-                type.Name = "SimpleEvent";
-                type.Id = "SimpleEvent";
-                type.Description = "This is a sample stream for storing SimpleEvent type measurements";
-                QiTypeProperty[] props = {doubleProperty, stringProperty, dateTimeProperty}; 
+                type.Name = "WaveData";
+                type.Id = "WaveData";
+                type.Description = "This is a sample stream for storing WaveData type events";
+                QiTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty}; 
                 type.Properties = props;
 
                 // create the type in the Qi Service
-                qiclient.CreateType(type).Wait();
+                string evtTypeString = qiclient.CreateType(type).Result;
+                evtType = JsonConvert.DeserializeObject<QiType>(evtTypeString);
 
                 // create a stream named evtStream
                 Console.WriteLine("Creating a stream in this tenant for simple event measurements");
-                QiStream stream = new QiStream("evtStream", "SimpleEvent");
-                qiclient.CreateStream(stream).Wait();
+                QiStream stream = new QiStream("evtStream", evtType.Id);
+                string evtStreamString = qiclient.CreateStream(stream).Result;
+                QiStream evtStream = JsonConvert.DeserializeObject<QiStream>(evtStreamString);
 
                 #region CRUD operations
                 #region Create (Insert)
 
                 Console.WriteLine("Artificially generating 100 events at one second intervals and inserting them into the Qi Service");
-                Random rnd = new Random();
 
                 // How to insert a single event
-                SimpleEvent evt = new SimpleEvent(rnd.NextDouble() * 100, "deg C");
+                TimeSpan span = new TimeSpan(0, 0, 1);
+                WaveData evt = WaveData.Next(span, 2.0, 0);
 
-                // for our contrived purposes, let's manually set the timestamp to 100 seconds in the past
-                DateTime start = DateTime.UtcNow.AddSeconds(-100.0);
-                evt.Timestamp = start;
                 qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
-                List<SimpleEvent> events = new List<SimpleEvent>();
+                List<WaveData> events = new List<WaveData>();
                 // how to insert an a collection of events
                 for (int i = 1; i < 100; i++)
                 {
-                    evt = new SimpleEvent(rnd.NextDouble() * 100, "deg C");
-                    evt.Timestamp = start.AddSeconds((double)i);
+                    evt = WaveData.Next(span, 2.0, i);
                     events.Add(evt);
                 }
                 qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
@@ -96,9 +127,53 @@ namespace RestSample
                 #region Retrieve events
                 Console.WriteLine("Retrieving the inserted events");
                 Console.WriteLine("==============================");
-                string jCollection = qiclient.GetWindowValues("evtStream", start.ToString("o"), DateTime.UtcNow.ToString("o")).Result;
-                SimpleEvent[] evts = JsonConvert.DeserializeObject<SimpleEvent[]>(jCollection);
-                DumpEvents(evts);
+                string jCollection = qiclient.GetWindowValues("evtStream", "0", "99").Result;
+                WaveData[] foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+                DumpEvents(foundEvents);
+                #endregion
+
+                #region Update events
+                Console.WriteLine();
+                Console.WriteLine("Updating values");
+                // take the first value inserted and update 
+                evt = foundEvents.First<WaveData>();
+                evt = WaveData.Next(span, 4.0, 0);
+                qiclient.UpdateValue("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+
+                // update the remaining events (same span, multiplier, order)
+                List<WaveData> newEvents = new List<WaveData>();
+                foreach (WaveData evnt in events)
+                {
+                    WaveData newEvt = WaveData.Next(span, 4.0, evnt.Order);
+                    newEvents.Add(newEvt);
+                }
+                qiclient.UpdateValues("evtStream", JsonConvert.SerializeObject(events)).Wait();
+                Thread.Sleep(2000);
+
+                // check the results
+                Console.WriteLine("Retrieving the updated values");
+                Console.WriteLine("=============================");
+                jCollection = qiclient.GetWindowValues("evtStream", "0", "99").Result;
+                foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+                DumpEvents(foundEvents);
+                #endregion
+
+                #region delete events
+                // remove the first value -- index is the timestamp of the event
+                Console.WriteLine();
+                Console.WriteLine("Deleting events");
+                qiclient.RemoveValue("evtStream", "0").Wait();
+
+                // remove the rest -- start and end time indices
+                qiclient.RemoveWindowValues("evtStream", "0", "99").Wait();
+                Thread.Sleep(2000);
+
+                Console.WriteLine("Checking for events");
+                Console.WriteLine("===================");
+
+                jCollection = qiclient.GetWindowValues("evtStream", "0", "99").Result;
+                foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+                DumpEvents(foundEvents);
                 #endregion
                 #endregion
 
@@ -115,8 +190,8 @@ namespace RestSample
                 try
                 {
                     qiclient.DeleteStream("evtStream").Wait();
-                    qiclient.DeleteType("SimpleEvent").Wait();
-                    qiclient.DeleteTenant("sampletenant").Wait();
+                    qiclient.DeleteType(evtType.Id).Wait();
+                    qiclient.DeleteTenant(tenantId).Wait();
                 }
                 catch (Exception)
                 {
@@ -124,12 +199,12 @@ namespace RestSample
             }
         }
 
-        static protected void DumpEvents(IEnumerable<SimpleEvent> evnts)
+        static protected void DumpEvents(IEnumerable<WaveData> evnts)
         {
-            Console.WriteLine(string.Format("Found {0} events, writing", evnts.Count<SimpleEvent>()));
-            foreach (SimpleEvent evnt in evnts)
+            Console.WriteLine(string.Format("Found {0} events, writing", evnts.Count<WaveData>()));
+            foreach (WaveData evnt in evnts)
             {
-                Console.WriteLine(string.Format("Event: Value: {0}, UOM: {1}, Timestamp: {2}", evnt.Value.ToString("F2"), evnt.Units, evnt.Timestamp.ToString("yyyy-MM-dd'T'HH:mm:ssZ")));
+                Console.WriteLine(evnt.ToString());
             }
         }
     }
