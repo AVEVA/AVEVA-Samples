@@ -103,7 +103,7 @@ namespace RestSample
                 #region CRUD operations
                 #region Create (Insert)
 
-                Console.WriteLine("Artificially generating 100 events at one second intervals and inserting them into the Qi Service");
+                Console.WriteLine("Artificially generating 100 events and inserting them into the Qi Service");
 
                 // How to insert a single event
                 TimeSpan span = new TimeSpan(0, 0, 1);
@@ -165,7 +165,7 @@ namespace RestSample
                 qiclient.RemoveValue("evtStream", "0").Wait();
 
                 // remove the rest -- start and end time indices
-                qiclient.RemoveWindowValues("evtStream", "0", "99").Wait();
+                qiclient.RemoveWindowValues("evtStream", "1", "99").Wait();
                 Thread.Sleep(2000);
 
                 Console.WriteLine("Checking for events");

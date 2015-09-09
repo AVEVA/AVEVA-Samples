@@ -65,7 +65,7 @@ namespace QiLibsSample
                 // set the TypeId property to the value of the Id property of the type you submitted
                 // All events submitted to this stream must be of this type
                 // Note there are Async versions of the client methods, too, using .NET TPL
-                sampleStream.TypeId = evtType.Id;
+                sampleStream.TypeId = tp.Id;
                 sampleStream.Description = "This is a sample stream for storing WaveData type measurements";
                 QiStream strm = qiclient.GetOrCreateStream(sampleStream);
 
@@ -138,7 +138,7 @@ namespace QiLibsSample
                 Console.WriteLine();
                 Console.WriteLine("Deleting events");
                 qiclient.RemoveValue<int>("evtStream", 0);
-                qiclient.RemoveWindowValues("evtStream", 1, 99);
+                qiclient.RemoveWindowValues<int>("evtStream", 1, 99);
                 Thread.Sleep(2000);
                 Console.WriteLine("Checking for events");
                 Console.WriteLine("===================");
@@ -165,7 +165,7 @@ namespace QiLibsSample
 
                     qiclient.DeleteStream("evtStream");
                     qiclient.DeleteType(evtType.Id);
-                    qiclient.DeleteTenant("sampletenant");
+                    qiclient.DeleteTenant(tenantId);
                 }
                 catch (Exception)
                 {
