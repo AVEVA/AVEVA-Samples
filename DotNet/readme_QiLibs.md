@@ -9,7 +9,6 @@ The client works through the `IQiServer` interface.  You instantiate it through 
 ```c#
     QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
     clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
-    clientFactory.OnCreated((p) => p.DefaultHeaders.Add("QiTenant", "sampletenant"));
     IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
 ```
 
@@ -19,35 +18,38 @@ The sample code includes several placeholder strings.  You must replace these wi
 
 ## Create a Qi Type
 
-Qi is capable of storing any data type you care to define.  Each data stream is associated with a Qi type, so that only events conforming to that type can be inserted into the stream.  The first step in Qi programming, then, is to define the types for your tenant.  
+Qi data streams represent open-ended collections of strongly-typed, ordered events. Qi is capable of storing any data type you care to define.  The only requirement is that your data type have one or more properties that constitute an ordered key.  While a timestamp is a very common type of key, any ordered value is permitted. Our sample type uses an integer.
+
+Each data stream is associated with a Qi type, so that only events conforming to that type can be inserted into the stream.  The first step in Qi programming, then, is to define the types for your tenant.  
 
 The Qi Libraries permit the creation of Qi Types via reflection.  For simple types like our sample type, this may not seem like an advantage over the type creation illustrated in the REST samples.  For more complex types, particularly when you wish to nest complex types, reflection makes your job far easier!
 
-The first step to taking advantage of reflection is to create a .NET class.  Our sample definition is in `WaveData.cs`.  Note the lines
+The first step to taking advantage of reflection is to create a .NET class.  Our sample definition is in `WaveData.cs`.  This class has an `Order` property for a key, and properties for radians and the common trigonometric and hyperbolic trigonometric functions of the value of the radians properties.  The class illustrates how Qi can store non-traditional custom types. Note the lines
 
 ```c#
     [Key]
-    public DateTime Timestamp
+    public int Order
     {
         get;
         set;
     }
 ```
 
-This creates a timestamp property and marks it as the index for this type.  The `Key` attribute comes from the `System.ComponentModel.DataAnnotations` namespace.  Remember, Qi allows the use of non-time indices, and also permits compound indices.
+This creates an Order property and marks it as the index for this type.  The `Key` attribute comes from the `System.ComponentModel.DataAnnotations` namespace.  There are two other ways to specify the key for your custom type.  If you use the `QiMember` attribute from the `OSIsoft.Qi` namespace, set the `IsKey` property to true.  If you prefer to use data contracts from the `System.Runtime.Serialization` namespace, create a `DataMember` property whose property name ends in `id` (case insensitive). Qi also permits compound indices.
 
 Now, back in the client code, we create a type builder object and use it to create an instance of the Qi type:
 
 ```c#
     QiTypeBuilder typeBuilder = new QiTypeBuilder();
-    QiType evtType = typeBuilder.Create<SimpleEvent>();
+    evtType = typeBuilder.Create<WaveData>();
 ```
 
-Note that `Create` is a generic method, and the type is the name of the class defining the type.  After you have a type, you set the `Id` property.  While we've created and configured a QiType object locally, we haven't created anything in the Qi Service, so you must submit it like this:
+Note that `Create` is a generic method, and the type is the name of the class defining the type.  While we've created and configured a QiType object locally, we haven't created anything in the Qi Service, so you must submit it like this:
 
 ```c#
-    qiclient.GetOrCreateType(evtType);
+    QiType tp = qiclient.GetOrCreateType(evtType);
 ```
+The Qi Service will assign a unique name and id to the QiType that is returned, and you will need the id when you create a stream, so be sure to capture the returned QiType instance.
 
 ## Create a Qi Stream
 
@@ -57,73 +59,73 @@ An ordered series of events is stored in a Qi stream.  All you have to do is cre
     QiStream sampleStream = new QiStream();
     sampleStream.Name = "evtStream";
     sampleStream.Id = "evtStream";
-    sampleStream.TypeId = "SimpleEvent";
-    sampleStream.Description = "This is a sample stream for storing SimpleEvent type measurements";
+
+    sampleStream.TypeId = tp.Id;
+    sampleStream.Description = "This is a sample stream for storing WaveData type measurements";
     QiStream strm = qiclient.GetOrCreateStream(sampleStream);
 ```
-Qi types are reference counted (as are behaviors), so once a type is assigned to one or more streams, it cannot be deleted until all streams using it are deleted.
+Note that we set the `TypeId` property of the stream we created to the value of the Id of the QiType instance returned by the call to `GetOrCreateType`. Qi types are reference counted (as are behaviors), so once a type is assigned to one or more streams, it cannot be deleted until all streams using it are deleted.
 
 ## Create and Insert Events into the Stream
 
-The `SimpleEvent` class allows us to create events locally.  In an actual production setting, this is where you would interface with your measurements.  We'll use the `Random` class to create values, and assign timestamps for a range 100 seconds into the past.  There are a number of methods you can use.  A single event can be inserted using InsertValue<T> or InsertValueAsync<T> (all Async methods use .NET TPL, see <https://msdn.microsoft.com/en-us/library/hh191443.aspx>).  You can also submit a collection of events using `InsertValues<T>` or `InsertValuesAsync<T>`.  There is also an overloaded version of InsertValues that takes an `IDictionary`.  Here is an edited version of the insertion code:
+The `WaveData` class allows us to create events locally.  In an actual production setting, this is where you would interface with your measurements.  We'll use the `Next` method to create values, and assign integers from 0..99 to establish an ordered collection of `WaveData` instances.  There are a number of methods you can use to insert values into the Qi Service.  A single event can be inserted using `InsertValue<T>` or `InsertValueAsync<T>` (all Async methods use .NET TPL, see <https://msdn.microsoft.com/en-us/library/hh191443.aspx>).  You can also submit a collection of events using `InsertValues<T>` or `InsertValuesAsync<T>`.  There is also an overloaded version of `InsertValues` that takes an `IDictionary`.  Here is an edited version of the insertion code:
 
 ```c#
-      SimpleEvent evt = new SimpleEvent(rnd.NextDouble() * 100, "deg C");
-      DateTime start = DateTime.UtcNow.AddSeconds(-100.0);
-      evt.Timestamp = start;
-      qiclient.InsertValue("evtStream", evt);
+    TimeSpan span = new TimeSpan(0, 0, 1);
+    WaveData evt = WaveData.Next(span, 2.0, 0);
 
-      List<SimpleEvent> events = new List<SimpleEvent>();
-      for (int i = 1; i < 100; i++)
-      {
-        evt = new SimpleEvent(rnd.NextDouble() * 100, "deg C");
-        evt.Timestamp = start.AddSeconds((double)i);
+    qiclient.InsertValue("evtStream", evt);
+
+    List<WaveData> events = new List<WaveData>();
+    for (int i = 1; i < 100; i++)
+    {
+        evt = WaveData.Next(span, 2.0, i);
         events.Add(evt);
-      }
-      qiclient.InsertValues<SimpleEvent>("evtStream", events);
+    }
+    qiclient.InsertValues<WaveData>("evtStream", events);
 ```
 
 ## Retrieve Events
 
-There are many methods that allow for the retrieval of events from a stream.  This sample demonstrates the most basic method of retrieving all the events on a particular time range.  The retrieval methods take start and end values; in our case, these are timestamp values converted to a round-trip format.  In general, the index values must be of the same type as the index assigned in the QiType.  Compound indices are values concatenated with a pipe ('|') separator.  You can get a collection of events on a time range like this:
+There are many methods that allow for the retrieval of events from a stream.  This sample demonstrates the most basic method of retrieving all the events on a particular time range.  The retrieval methods take string type start and end values; in our case, these the start and end ordinal indices expressed as strings ("0" and "99", respectively).  The index values must capable of conversion to the type of the index assigned in the QiType.  Timestamp keys are expressed as ISO 8601 format strings. Compound indices are values concatenated with a pipe ('|') separator.  You can get a collection of events on a time range like this:
 
 ```c#
-IEnumerable<SimpleEvent> foundEvts = qiclient.GetWindowValues<SimpleEvent>("evtStream", start.ToString("o"), DateTime.UtcNow.ToString("o"));
+    IEnumerable<WaveData> foundEvts = qiclient.GetWindowValues<WaveData>("evtStream", "0", "99");
 ```
 
 Keep in mind that with an IEnumerable instance, there are a variety of LINQ and extension methods allowing you to manipulate the events locally.
 
 ## Update Events
 
-We'll demonstrate updates by taking the values we created and converting them from Celsius to Fahrenheit (remember to update the units of measure!).  Once you've modified the events client-side, you submit them to the Qi Service with `UpdateValue<T>` or `UpdateValues<T>`, or their asynchronous equivalents:
+We'll demonstrate updates by taking the values we created and replacing them with new values.  Once you've modified the events client-side, you submit them to the Qi Service with `UpdateValue<T>` or `UpdateValues<T>`, or their asynchronous equivalents:
 
 ```c#
-    qiclient.UpdateValue<SimpleEvent>("evtStream", evt);
-    qiclient.UpdateValues<SimpleEvent>("evtStream", events);
+    qiclient.UpdateValue<WaveData>("evtStream", evt);
+    qiclient.UpdateValues<WaveData>("evtStream", newEvents);
 ```
 
 ## Delete Events
 
-As with insertion, deletion of events is managed by a range over the type's index.  In our case, this is a time range.  
+As with insertion, deletion of events is managed by a range over the type's index.    
 
 ```c#
-    qiclient.RemoveValue<DateTime>("evtStream", evt.Timestamp);
-    qiclient.RemoveWindowValues("evtStream", foundEvts.First<SimpleEvent>().Timestamp.ToString("o"), foundEvts.Last<SimpleEvent>().Timestamp.ToString("o"));
+    qiclient.RemoveValue<int>("evtStream", 0);
+    qiclient.RemoveWindowValues<int>("evtStream", 1, 99);
 ```
-This isn't as imposing as it appears here.  In the sample code, we retrieved the events, obtaining a collection, `foundEvents`.  We also manipulated a single event, `evt`.  We get the timestamp values from these objects and convert them to strings using the `o` predefined format string to create a round-trip time string.  The singular remove method is a generic whose type is the type of the event type's index property (for us, a `DateTime`).
+The type of the index proeprty is specified as the type of the generic method.
 
 ## Bonus: Deleting Types and Streams
 
 You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
 
 ```c#
-qiclient.DeleteStream("evtStream")
+    qiclient.DeleteStream("evtStream")
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly
 
 ```c#
-qiclient.DeleteType("SimpleEvent");
+    qiclient.DeleteType(evtType.Id);
 ```
 
-deletes the type from the Qi Service.  The `IQiServer` instance doesn't need any cleanup.  REST runs on HTTP, which is stateless, so the Qi Service is not maintaining a connection with the client.
+deletes the type from the Qi Service.  Recall that `evtType` is the QiType instance returned by the Qi Service when the type was created. The `IQiServer` instance doesn't need any cleanup.  REST runs on HTTP, which is stateless, so the Qi Service is not maintaining a connection with the client.
