@@ -1,6 +1,6 @@
 #.NET Samples: Building a Client with the Qi Libraries
 
-This sample differs from the other samples in that the client makes use of the OSIsoft Qi libraries, which are available as nuget packages from **placeholder**.  Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
+This sample differs from the other samples in that the client makes use of the OSIsoft Qi libraries, which are available as nuget packages from **placeholder**.  The packages used are `OSIsoft.Qi.Core`, `OSIsoft.Qi.Http.Channel`, and `OSIsoft.Qi.Http.Client`. Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
 
 ## Instantiate a Qi Client
 
@@ -9,12 +9,55 @@ The client works through the `IQiServer` interface.  You instantiate it through 
 ```c#
     QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
     clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
+    clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
     IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
+    
 ```
+
+The call to `OnCreated` establishes a lambda which is invoked upon the creation of the client object.  It sets an authentication header whose value is a string, `token`, which is an authentication token provided for security.  We'll discuss how to obtain such a token next.
 
 ## Obtain an Authentication Token
 
-The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft **placeholder**.
+The Qi Service is secured by obtaining tokens from an Azure Active Directory instance.  The sample applications are examples of a *confidential client*.  Such clients provide a user ID and secret that are authenticated against the directory.   The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft.  The strings are found at the beginning of `Program.cs`.
+
+```c#
+        static string _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        static string _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+        static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+```
+
+At the bottom of `Program.cs` you will find a method called `AcquireAuthToken`.  The first step in obtaining an authorization token is to create an authentication context related to the Azure Active Directory instance providing tokens.  The authority is designated by the URI in `_authority`.
+
+```c#
+    if (_authContext == null)
+    {
+        _authContext = new AuthenticationContext(_authority);
+    }
+```
+
+`AuthenticationContext` instances take care of communicating with the authority and also maintain a local cache of tokens.  Tokens have a fixed lifetime, typically one hour, but they can be refreshed by the authenticating authority for a longer period.  If the refresh period has expired, the credentials have to be presented to the authority again.  Happily, the `AcquireToken` method hides these details from client programmers.  As long as you call `AcquireToken` before each HTTP call, you will have a valid token.  Here is how that is done:
+
+```c#
+    try
+    {
+        ClientCredential userCred = new ClientCredential(_appId, _appKey);
+        AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+        return authResult.AccessToken;
+    }
+    catch (AdalException)
+    {
+        return string.Empty;
+    }
+```
+
+The result returned by `AcquireAuthToken` is the value, `token`, attached to the client object in the line you saw in the previous section:
+
+```c#
+    clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
+```
+
+The current version of the Qi Libraries do not permit you to attach a header prior to making a call on the client.  This does not matter for our sample, but a long-lived client would run into trouble when the token expired.  The proper pattern is to call `AcquireAuthToken` before each call and attach the token returned.  Future versions of the Qi Libraries will support this.
 
 ## Create a Qi Type
 
