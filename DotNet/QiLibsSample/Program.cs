@@ -25,7 +25,6 @@ namespace QiLibsSample
 
         // Azure AD authentication related
         private static AuthenticationContext _authContext = null;
-        private static AuthenticationResult _authResult = null;
 
         static void Main(string[] args)
         {
@@ -42,6 +41,7 @@ namespace QiLibsSample
 
             QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
             clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
+            clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
 
             IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
             
@@ -54,7 +54,6 @@ namespace QiLibsSample
                 Console.WriteLine("Creating a Qi type for WaveData instances");
                 QiTypeBuilder typeBuilder = new QiTypeBuilder();
                 evtType = typeBuilder.Create<WaveData>();
-
                 QiType tp = qiclient.GetOrCreateType(evtType);
 
                 Console.WriteLine("Creating a stream in this tenant for simple event measurements");
@@ -183,24 +182,18 @@ namespace QiLibsSample
             }
 
             // tokens expire after a certain period of time
-            // If _authResult is null (initial) or ExpiresOn is past (long-lived client), refresh the token
-            if (_authResult == null || _authResult.ExpiresOn < DateTimeOffset.Now)
+            // You can check this with the ExpiresOn property of AuthenticationResult, but it is not necessary.
+            // ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
+            try
             {
-                try
-                {
-
-                    ClientCredential userCred = new ClientCredential(_appId, _appKey);
-                    _authResult = _authContext.AcquireToken(_resource, userCred);
-                    return _authResult.AccessToken;
-                }
-                catch (AdalException)
-                {
-                    return string.Empty;
-                }
+                ClientCredential userCred = new ClientCredential(_appId, _appKey);
+                AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+                return authResult.AccessToken;
             }
-            else
-                return _authResult.AccessToken;
-
+            catch (AdalException)
+            {
+                return string.Empty;
+            }
         }
 
 
