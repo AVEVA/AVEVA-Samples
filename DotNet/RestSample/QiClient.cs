@@ -54,7 +54,6 @@ namespace RestSample
 
             _httpClient.BaseAddress = new Uri(_baseUrl); 
             _httpClient.Timeout = new TimeSpan(0, 0, 30);
-            //_httpClient.DefaultRequestHeaders.Add("QiTenant", tenant);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
         #region Metadata methods
