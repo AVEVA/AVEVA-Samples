@@ -12,7 +12,6 @@ namespace RestSample
 {
     class Program
     {
-        // VERY IMPORTANT: edit the following values to reflect the authorization items you were given
 
         static void Main(string[] args)
         {

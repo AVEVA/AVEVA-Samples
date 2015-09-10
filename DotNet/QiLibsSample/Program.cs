@@ -17,10 +17,10 @@ namespace QiLibsSample
     {
         // VERY IMPORTANT: edit the following values to reflect the authorization items you were given
 
-        static string _resource = "https://pihomemain.onmicrosoft.com/historian";
-        static string _authority = "https://login.windows.net/qimaininternal.onmicrosoft.com";
-        static string _appId = "03277c53-4327-407e-9982-a359de90c5be";
-        static string _appKey = "xNvnD7tnC86dEXiAQcwVTAVPVIyuSH93BaR2sGVWWqw=";
+        static string _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        static string _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+        static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
 
 
         // Azure AD authentication related
@@ -42,8 +42,7 @@ namespace QiLibsSample
 
             QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
             clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
-            //clientFactory.OnCreated((p) => p.DefaultHeaders.Add("QiTenant", "sampletenant"));
-            //clientFactory.OnCreated((p) => p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
+
             IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
             
             try
