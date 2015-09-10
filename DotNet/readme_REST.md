@@ -4,14 +4,14 @@ This sample is written using only the Qi REST API.  This API allows for the crea
 
 ## Instantiate a Qi Client
 
-We've created a class wrapping an `HttpClient` instance from the `System.Net.Http` namespace and providing methods for the major CRUD operations we wish to perform. The CRUD methods encapsulate the Qi REST API.  Each call consists of an HTTP request with a specific URL and HTTP verb.  The URL is the server plus the extension specific to the call.  Like all REST APIs, the Qi REST API maps HTTP verbs to CRUD like this:
+We've created a class wrapping an `HttpClient` instance from the `System.Net.Http` namespace and providing methods for the major CRUD operations we wish to perform. The CRUD methods encapsulate the Qi REST API.  Each call consists of an HTTP request with a specific URL and HTTP method.  The URL is the server plus the extension specific to the call.  Like all REST APIs, the Qi REST API maps HTTP methods to CRUD like this:
 
-| HTTP Verb | CRUD Operation | Content Found In |
-|-----------|----------------|------------------|
-| POST      | Create         | message body     |
-| GET       | Retrieve       | URL parameters   |
-| PUT       | Update         | message body     |
-| DELETE    | Delete         | URL parameters   |
+| HTTP Method | CRUD Operation | Content Found In |
+|-------------|----------------|------------------|
+| POST        | Create         | message body     |
+| GET         | Retrieve       | URL parameters   |
+| PUT         | Update         | message body     |
+| DELETE      | Delete         | URL parameters   |
 
 The constructor for our QiClient class takes the base URL (i.e., protocol plus server and port number) and ensures it ends with a forward slash.  This makes our job easier when it comes time to compose the URL for a specific REST call.  Next, the constructor establishes a thirty second timeout and indicates that the client accepts JSON format responses:
 
@@ -31,7 +31,38 @@ The constructor for our QiClient class takes the base URL (i.e., protocol plus s
 
 ## Obtain an Authentication Token
 
-The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft **placeholder**.
+The Qi Service is secured by obtaining tokens from an Azure Active Directory instance.  The sample applications are examples of a *confidential client*.  Such clients provide a user ID and secret that are authenticated against the directory.   The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft.  The strings are found at the beginning of `QiClient.cs`.
+
+```c#
+        static string _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        static string _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+        static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+```
+
+At the bottom of `QiClient.cs` you will find a method called `AcquireAuthToken`.  The first step in obtaining an authorization token is to create an authentication context related to the Azure Active Directory instance providing tokens.  The authority is designated by the URI in `_authority`.
+
+```c#
+    if (_authContext == null)
+    {
+        _authContext = new AuthenticationContext(_authority);
+    }
+```
+
+`AuthenticationContext` instances take care of communicating with the authority and also maintain a local cache of tokens.  Tokens have a fixed lifetime, typically one hour, but they can be refreshed by the authenticating authority for a longer period.  If the refresh period has expired, the credentials have to be presented to the authority again.  Happily, the `AcquireToken` method hides these details from client programmers.  As long as you call `AcquireToken` before each HTTP call, you will have a valid token.  Here is how that is done:
+
+```c#
+    try
+    {
+        ClientCredential userCred = new ClientCredential(_appId, _appKey);
+        AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+        return authResult.AccessToken;
+    }
+    catch (AdalException)
+    {
+        return string.Empty;
+    }
+```
 
 ## Create a Qi Type
 
@@ -91,7 +122,8 @@ All this creates a type definition locally, but it has to be submitted in a REST
                 Method = HttpMethod.Post,
             };
 
-            //msg.Headers.Authorization = "Bearer: x";
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string content = JsonConvert.SerializeObject(typeDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
@@ -108,7 +140,7 @@ All this creates a type definition locally, but it has to be submitted in a REST
         }
 ```
 
-The main program calls the method like this:
+After creating the `HttpRequestMessage` with the proper URL and HTTP method, we call `AcquireAuthToken` and attach the result to the message as a header.  This ensures that each call always has a valid authentication token. The main program calls the method like this:
 
 ```c#
   string evtTypeString = qiclient.CreateType(type).Result;
