@@ -6,189 +6,145 @@ client = QiClient("localhost:12345", "my api key")
 
 print "Qi type operations"
 
-#get all Qi types
-def listTypes():
-    types = client.getTypes()
-    print "{len} Qi types found:".format(len = len(types))
-    print ",\n ".join(t.Name for t in types)
-
-
-listTypes()
-
-#create a double type
-#  QiType(double)
-#  ├─ QiTypeProperty(DateTime)
-#  └─ QiTypeProperty(double)
+#create Qi types for double and int, then create properties for all the wavedata properties
+print "Creating Qi type for WaveData instances"
 doubleType = QiType()
 doubleType.Id = "doubleType"
 doubleType.QiTypeCode = QiTypeCode.Double
-doubleProperty = QiTypeProperty()
-doubleProperty.Id = "Value"
-doubleProperty.QiType = doubleType
 
-dateTimeType = QiType()
-dateTimeType.Id = "dateTimeType"
-dateTimeType.QiTypeCode = QiTypeCode.DateTime
-dateTimeProperty = QiTypeProperty()
-dateTimeProperty.Id = "TimeId"
-dateTimeProperty.QiType = dateTimeType
-dateTimeProperty.IsKey = True
+intType = QiType()
+intType.Id = "intType"
+intType.QiTypeCode = QiTypeCode.Int32
 
-type = QiType()
-type.Name = "Double"
-type.Id = "Double"
-type.Description = "more than a single"
-type.Properties = [doubleProperty, dateTimeProperty]
-createdType = client.createType(type)
-print "created double type"
+orderProperty =  QiTypeProperty()
+orderProperty.Id = "Order"
+orderProperty.QiType = intType
+orderProperty.IsKey = True
 
-listTypes()
+tauProperty = QiTypeProperty()
+tauProperty.Id = "Tau"
+tauProperty.QiType = doubleType
 
-#create an Int64 type
+radiansProperty = QiTypeProperty()
+radiansProperty.Id = "Radians"
+radiansProperty.QiType = doubleType
 
-try:
-    type = client.getType("Int64")
-except QiError as e:
-    print e.value
+sinProperty = QiTypeProperty()
+sinProperty.Id = "Sin"
+sinProperty.QiType = doubleType
 
-int64Type = QiType()
-int64Type.Id = "int64Type"
-int64Type.QiTypeCode = QiTypeCode.Int64
-int64Property = QiTypeProperty()
-int64Property.Id = "Value"
-int64Property.QiType = int64Type
-dateTimeType = QiType()
-dateTimeType.Id = "dateTimeType"
-dateTimeType.QiTypeCode = QiTypeCode.DateTime
-dateTimeProperty = QiTypeProperty()
-dateTimeProperty.Id = "TimeId"
-dateTimeProperty.QiType = dateTimeType
-dateTimeProperty.IsKey = True
+cosProperty = QiTypeProperty()
+cosProperty.Id = "Cos"
+cosProperty.QiType = doubleType
 
-type = QiType()
-type.Name = "int64"
-type.Id = "int64"
-type.Description = "as long as a long"
-type.Properties = [int64Property, dateTimeProperty]
-createdType = client.createType(type)
-print "created int64 type"
+tanProperty = QiTypeProperty()
+tanProperty.Id = "Tan"
+tanProperty.QiType = doubleType
 
-listTypes()
+sinhProperty = QiTypeProperty()
+sinhProperty.Id = "Sinh"
+sinhProperty.QiType = doubleType
 
+coshProperty = QiTypeProperty()
+coshProperty.Id = "Cosh"
+coshProperty.QiType = doubleType
 
-#create byte type
-#  QiType(byte)
-#  ├─ QiTypeProperty(DateTime)
-#  └─ QiTypeProperty(Byte)
-byteType = QiType()
-byteType.Id = "byteType"
-byteType.QiTypeCode = QiTypeCode.Byte
-byteProperty = QiTypeProperty()
-byteProperty.Id = "Value"
-byteProperty.QiType = byteType
-dateTimeType = QiType()
-dateTimeType.Id = "dateTimeType"
-dateTimeType.QiTypeCode = QiTypeCode.DateTime
-dateTimeProperty = QiTypeProperty()
-dateTimeProperty.Id = "TimeId"
-dateTimeProperty.QiType = dateTimeType
-dateTimeProperty.IsKey = True
+tanhProperty = QiTypeProperty()
+tanhProperty.Id = "Tanh"
+tanhProperty.QiType = doubleType
 
-type = QiType()
-type.Name = "byte"
-type.Id = "byte"
-type.Description = "more than a nibble"
-type.Properties = [byteProperty, dateTimeProperty]
-createdType = client.createType(type)
-print "created byte type"
+#create a QiType for WaveData Class
+wave = QiType()
+wave.Id = "WaveData"
+wave.Name = "WaveData"
+wave.Description = "This is a sample Qi type for storing WaveData type events"
+wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
+                   cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
 
-listTypes()
-
-#delete byte type
-client.deleteType("byte")
-print "deleted byte type"
-
-listTypes()
-
-
-#stream operations:
-print "Qi stream operations"
-
-#list all Qi streams
-def listStreams():
-    streams = client.getStreams()
-    print "{len} Qi streams found:".format(len = len(streams))
-    print ", ".join("{0} ({1})".format(t.Name, t.TypeId)  for t in streams)
-
-listStreams()
+#create the type in Qi service
+print "Creating the WaveData Qi type in Qi service"
+evtType = client.createType(wave)
+client.listTypes()
 
 #create a stream
+print "Creating a stream in this tenant for the WaveData measurements"
+
 stream = QiStream()
-stream.Id = "tangent"
-stream.Name = "Tangent"
-stream.Description = "More interesting than sinusoid!"
-stream.TypeId = "Double"
-createdStream = client.createStream(stream)
-print "created tangent"
+stream.Id = "WaveStream"
+stream.Name = "WaveStream"
+stream.Description = "A Stream to store the WaveData Qi types events"
+stream.TypeId = "WaveData"
+evtStream = client.createStream(stream)
 
-listStreams()
-
-#edit stream
-createdStream.Name = "Cosine"
-client.editStream(createdStream)
-print "renamed tangent to cosine"
-
-listStreams()
+client.listStreams()
 
 
-#write some data 
-value = {
-    "TimeId" : datetime.datetime.now().isoformat(),
-    "Value": 100.001
-    }
-client.insertValue(createdStream, value)
-print "inserted value: " + str(value)
+#CRUD operations
 
-#read the data 
-print client.getLastValue(createdStream)
+#create events and insert into the new stream
+print"Artificially generating 100 events and inserting them into the Qi Service"
 
-#edit the data
-value["Value"] = 200.002
-client.replaceValue(createdStream, value)
-print "replace value: " + str(value)
+#inserting a single event
+timeSpanFormat = "%H:%M:%S"
+spanStr = "0:0:1"
+span = datetime.datetime.strptime(spanStr, timeSpanFormat)
+evt = WaveData.nextWave(span, 2.0, 0)
 
-#read the data 
-print client.getLastValue(createdStream)
- 
-#delete the data
-client.removeValue(createdStream, value["TimeId"])
-print "removed value at: " + value["TimeId"]
+client.insertValue(evtStream, evt)
 
-#read the data 
-print client.getLastValue(createdStream)
+#get the last inserted event in a stream
+print "Last inserted event is :"
+print client.getLastValue(evtStream)
 
-# write a bunch of data
-values = [{"Value": random.random() * 1000, 
-           "TimeId": (datetime.datetime.now() - datetime.timedelta(minutes=x)).isoformat()} 
-          for x in range(1000)]
+#inserting a list of events
+events = []
+for i in range(1,100):
+    evt = WaveData.nextWave(span, 2.0, i)
+    events.append(evt)
 
-client.insertValues(createdStream, values)
-print "inserted {count} values".format(count = len(values))
-print "Last value is {value}".format(value = client.getLastValue(createdStream))
+client.insertValues(evtStream, events)
 
-#get the last few minutes of values
-print "Recent values are {values}".format(values = 
-        client.getWindowValues(createdStream, 
-        (datetime.datetime.now() - datetime.timedelta(minutes = 100)).isoformat(), 
-        datetime.datetime.now().isoformat()))
+#retrive events
+print "Retrieving inserted events"
 
-#delete stream
-client.deleteStream(stream.Id)
-print "deleted tangent"
+foundEvents = client.getWindowValues(evtStream, 0, 99)
 
-listStreams()
+#update events
+print "Updating events"
 
+#update the first events
+evt = foundEvents[0]
+evt = WaveData.nextWave(span, 4.0, 0)
+client.updateValue(evtStream, evt)
 
+#update the rest of the events
+newEvents = []
+for i in events:
+    evt = WaveData.nextWave(span, 4.0, i.Order)
+    newEvents.append(evt)
 
+client.updateValues(evtStream, newEvents)
 
-print "If you made it this far, everything works!"
+#check the results
+print "Retrieving the updated values"
+
+foundUpdatedEvents = client.getWindowValues(evtStream, 0, 99)
+
+#delete events
+print "deleting events"
+
+#delete single event
+client.removeValue(evtStream, 0)
+
+#delete rest of the events
+client.removeValues(evtStream,0,99)
+
+emptyList = client.getWindowValues(evtStream, 0, 99)
+
+#deleting streams and types
+#delete streams first and then types
+#types being referenced cannot be deleted unless referrer is deleted
+client.deleteStream("WaveStream")
+client.deleteType("WaveData")
+
+print "test.py completed successfully!"

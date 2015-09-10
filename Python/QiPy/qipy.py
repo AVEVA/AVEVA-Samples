@@ -7,4 +7,5 @@ from QiTypeCode import QiTypeCode
 from QiTypeProperty import QiTypeProperty
 from QiStream import QiStream
 from QiError import QiError
-
+from WaveData import WaveData
+from JsonEncoder import Encoder
