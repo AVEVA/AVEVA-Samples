@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using OSIsoft.Qi;
 using OSIsoft.Qi.Http;
 using OSIsoft.Qi.Reflection;
@@ -13,13 +15,17 @@ namespace QiLibsSample
 {
     class Program
     {
-        // VERY IMPORTANT: edit the following values to reflect the tenant and authorization items you were given
-        static string tenantId = "sampletenant";
-        static string target = "change_to_auth_target";
-        static string tenant = "change_to_auth_tenant";
-        static string audience = "change_to_auth_audience";
-        static string clientKey = "change_to_auth_client_key";
-        static string appKey = "change_to_auth_app_key";
+        // VERY IMPORTANT: edit the following values to reflect the authorization items you were given
+
+        static string _resource = "https://pihomemain.onmicrosoft.com/historian";
+        static string _authority = "https://login.windows.net/qimaininternal.onmicrosoft.com";
+        static string _appId = "03277c53-4327-407e-9982-a359de90c5be";
+        static string _appKey = "xNvnD7tnC86dEXiAQcwVTAVPVIyuSH93BaR2sGVWWqw=";
+
+
+        // Azure AD authentication related
+        private static AuthenticationContext _authContext = null;
+        private static AuthenticationResult _authResult = null;
 
         static void Main(string[] args)
         {
@@ -28,24 +34,20 @@ namespace QiLibsSample
             string server = ConfigurationManager.AppSettings["QiServerUrl"];
             QiType evtType = null;
 
+            // acquire an authentication token from Azure AD
+
+            string token = AcquireAuthToken();
+
             // set up a client to the Qi Service -- it is essential that you set the QiTenant header
 
             QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
             clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
-            clientFactory.OnCreated((p) => p.DefaultHeaders.Add("QiTenant", "sampletenant"));
+            //clientFactory.OnCreated((p) => p.DefaultHeaders.Add("QiTenant", "sampletenant"));
+            //clientFactory.OnCreated((p) => p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
             IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
             
             try
             {
-                // TODO -- remove tenant creation when provisioning is accomplished
-
-                Console.WriteLine("Creating a tenant named " + tenantId);
-                QiTenant tenant = new QiTenant(tenantId);
-
-                // submit to Qi Service to create the tenant in storage
-
-                qiclient.GetOrCreateTenant(tenant);
-
                 // Create a Qi Type -- the Qi Libraries let you do this via reflection
                 // First, create a type builder, then pass it the name of the class you are using for events.
                 // This greatly simplifies type creation
@@ -165,7 +167,6 @@ namespace QiLibsSample
 
                     qiclient.DeleteStream("evtStream");
                     qiclient.DeleteType(evtType.Id);
-                    qiclient.DeleteTenant(tenantId);
                 }
                 catch (Exception)
                 {
@@ -174,6 +175,35 @@ namespace QiLibsSample
             }
 
         }
+
+        static protected string AcquireAuthToken()
+        {
+            if (_authContext == null)
+            {
+                _authContext = new AuthenticationContext(_authority);
+            }
+
+            // tokens expire after a certain period of time
+            // If _authResult is null (initial) or ExpiresOn is past (long-lived client), refresh the token
+            if (_authResult == null || _authResult.ExpiresOn < DateTimeOffset.Now)
+            {
+                try
+                {
+
+                    ClientCredential userCred = new ClientCredential(_appId, _appKey);
+                    _authResult = _authContext.AcquireToken(_resource, userCred);
+                    return _authResult.AccessToken;
+                }
+                catch (AdalException)
+                {
+                    return string.Empty;
+                }
+            }
+            else
+                return _authResult.AccessToken;
+
+        }
+
 
         static protected void DumpEvents(IEnumerable<WaveData> evnts)
         {

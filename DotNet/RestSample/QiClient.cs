@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 
 namespace RestSample
@@ -15,6 +16,14 @@ namespace RestSample
     {
         private HttpClient _httpClient;
         private string _baseUrl;
+
+        static string _resource = "https://pihomemain.onmicrosoft.com/historian";
+        static string _authority = "https://login.windows.net/qimaininternal.onmicrosoft.com";
+        static string _appId = "03277c53-4327-407e-9982-a359de90c5be";
+        static string _appKey = "xNvnD7tnC86dEXiAQcwVTAVPVIyuSH93BaR2sGVWWqw=";
+
+        // Azure AD authentication related
+        private static AuthenticationContext _authContext = null;
 
         // REST API url strings
         private string _tenantsBase = @"Qi/Tenants";
@@ -34,7 +43,7 @@ namespace RestSample
         private string _deleteError = "Failed to delete event from stream {0} with index = {1}";
         private string _deleteMultipleError = "Failed to delete events from stream {0} with indices {1}";
 
-        public QiClient(string tenant, string baseUrl)
+        public QiClient(string baseUrl)
         {
             _httpClient = new HttpClient();
             _baseUrl = baseUrl;
@@ -43,7 +52,7 @@ namespace RestSample
 
             _httpClient.BaseAddress = new Uri(_baseUrl); 
             _httpClient.Timeout = new TimeSpan(0, 0, 30);
-            _httpClient.DefaultRequestHeaders.Add("QiTenant", tenant);
+            //_httpClient.DefaultRequestHeaders.Add("QiTenant", tenant);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
         #region Metadata methods
@@ -97,7 +106,8 @@ namespace RestSample
                 Method = HttpMethod.Post,
             };
 
-            //msg.Headers.Authorization = "Bearer: x";
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string content = JsonConvert.SerializeObject(streamDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
@@ -126,6 +136,9 @@ namespace RestSample
                 Method = HttpMethod.Delete,
             };
 
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             await SendAndRespondVoid(msg, _createError, "stream", streamId);
         }
 
@@ -142,7 +155,8 @@ namespace RestSample
                 Method = HttpMethod.Post,
             };
 
-            //msg.Headers.Authorization = "Bearer: x";
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string content = JsonConvert.SerializeObject(typeDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
@@ -171,6 +185,9 @@ namespace RestSample
                 Method = HttpMethod.Delete,
             };
 
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
            await  SendAndRespondVoid(msg, _deleteError, "type", typeId);
         }
         #endregion
@@ -190,6 +207,10 @@ namespace RestSample
                 RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + _insertSingle),
                 Method = HttpMethod.Post
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
             await SendAndRespondVoid(msg, _createError, "data event", streamId);
         }
@@ -207,6 +228,10 @@ namespace RestSample
                 RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + _insertMultiple),
                 Method = HttpMethod.Post
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
             await SendAndRespondVoid(msg, _createError, "data events", streamId);
         }
@@ -229,6 +254,10 @@ namespace RestSample
                 RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + getClause),
                 Method = HttpMethod.Get
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)
             {
@@ -257,6 +286,10 @@ namespace RestSample
                 RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + _updateSingle),
                 Method = HttpMethod.Put
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
             await SendAndRespondVoid(msg, _updateError, "data event", evt);
         }
@@ -274,6 +307,10 @@ namespace RestSample
                 RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + _updateMultiple),
                 Method = HttpMethod.Put
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             msg.Content = new StringContent(evts, Encoding.UTF8, "application/json");
             await SendAndRespondVoid(msg, _updateError, "data events", streamId);
         }
@@ -294,6 +331,10 @@ namespace RestSample
                 RequestUri = new Uri(uri),
                 Method = HttpMethod.Delete
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             await SendAndRespondVoid(msg, _deleteError, streamId, index);
         }
 
@@ -312,6 +353,10 @@ namespace RestSample
                 RequestUri = new Uri(uri),
                 Method = HttpMethod.Delete
             };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             await SendAndRespondVoid(msg, _deleteMultipleError, streamId, startIndex + ", " + endIndex);
         }
 
@@ -324,5 +369,30 @@ namespace RestSample
             }
 
         }
+
+        static protected string AcquireAuthToken()
+        {
+            if (_authContext == null)
+            {
+                _authContext = new AuthenticationContext(_authority);
+            }
+
+            // tokens expire after a certain period of time
+            // You can check this with the ExpiresOn property of AuthenticationResult, but it is not necessary.
+            // ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
+            try
+            {
+                ClientCredential userCred = new ClientCredential(_appId, _appKey);
+                AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+                return authResult.AccessToken;
+            }
+            catch (AdalException)
+            {
+                return string.Empty;
+            }
+
+
+        }
+
     }
 }

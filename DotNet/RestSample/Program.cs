@@ -12,27 +12,19 @@ namespace RestSample
 {
     class Program
     {
-        // VERY IMPORTANT: edit the following values to reflect the tenant and authorization items you were given
-        static string tenantId = "sampletenant";
-        static string target = "change_to_auth_target";
-        static string tenant = "change_to_auth_tenant";
-        static string audience = "change_to_auth_audience";
-        static string clientKey = "change_to_auth_client_key";
-        static string appKey = "change_to_auth_app_key";
+        // VERY IMPORTANT: edit the following values to reflect the authorization items you were given
 
         static void Main(string[] args)
         {
             // Instantiate the REST client
-            string server = ConfigurationManager.AppSettings["QiServerUrl"];
+            Console.WriteLine("Creating a Qi REST API Client...");
 
-            QiClient qiclient = new QiClient("sampletenant", server);
+            string server = ConfigurationManager.AppSettings["QiServerUrl"];
+            QiClient qiclient = new QiClient(server);
             QiType evtType = null;
 
             try
             {
-                // TODO retract when provisioning is complete
-                Console.WriteLine("Creating a tenant named " + tenantId);
-                qiclient.CreateTenant(tenantId).Wait();
 
                 // create types for int and double, then create properties for all the WaveData properties
                 Console.WriteLine("Creating a Qi type for WaveData instances");
@@ -159,6 +151,7 @@ namespace RestSample
                 #endregion
 
                 #region delete events
+                
                 // remove the first value -- index is the timestamp of the event
                 Console.WriteLine();
                 Console.WriteLine("Deleting events");
@@ -191,7 +184,6 @@ namespace RestSample
                 {
                     qiclient.DeleteStream("evtStream").Wait();
                     qiclient.DeleteType(evtType.Id).Wait();
-                    qiclient.DeleteTenant(tenantId).Wait();
                 }
                 catch (Exception)
                 {
@@ -207,5 +199,6 @@ namespace RestSample
                 Console.WriteLine(evnt.ToString());
             }
         }
+
     }
 }
