@@ -61,7 +61,9 @@
     <Compile Include="QiType.cs" />
     <Compile Include="QiTypeCode.cs" />
     <Compile Include="QiTypeProperty.cs" />
-    <Compile Include="WaveData.cs" />
+    <Compile Include="WaveData.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
