@@ -149,6 +149,8 @@ After creating the `HttpRequestMessage` with the proper URL and HTTP method, we 
 
 We've chosen to return the JSON serialization returned from the Qi Service and deserialize it in the main program, a topic we'll return to when we discuss data calls.  Note also that the methods in `QiClient` are async, but the application itself is a simple console application.  `Main` is a static method, so it cannot take advantage of `await`, hence our use of `Result` above, and `Wait` for methods that do not return a value.  A more complicated client application could use the asynchronous methods to greater advantage.
 
+*Note: The various Create methods in Qi will return an HTTP status code of 302 (Found) if you attempt to create an entity (in this case, a type definition) that exists in the system. The client then follows the redirect URI. In the current version of the Qi, this will fail with an HTTP status code of 401 (Unauthorized) rather than succeed following a 302 (Found) result.  This will be corrected in future versions.*
+
 ## Create a Qi Stream
 
 An ordered series of events is stored in a Qi stream.  We've created a `QiStream` class mirroring the properties of the native Qi Service `QiStream` class. All you have to do is create a local QiStream instance, give it an id, assign it a type, and submit it to the Qi Service.  You may optionally assign a stream behavior to the stream.  This is the code to create a stream named `evtStream` for recording events of our sample type.  The value of the `TypeId` property is the value of the QiType `Id` property.  The `CreateStream` method of `QiClient` is similar to `CreateType`, except that it uses a different URL.  Here is how it is called from the main program:
