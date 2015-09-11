@@ -186,7 +186,18 @@ Our CRUD methods are all very similar.  The REST API URL templates are predefine
 The main program creates a single `WaveData` event with the `Order` 0 and inserts it.  Then it creates 99 more sequential events and inserts them with a single call:
 
 ```c#
+    TimeSpan span = new TimeSpan(0, 0, 1);
+    WaveData evt = WaveData.Next(span, 2.0, 0);
 
+    qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+
+    List<WaveData> events = new List<WaveData>();
+    for (int i = 1; i < 100; i++)
+    {
+      evt = WaveData.Next(span, 2.0, i);
+      events.Add(evt);
+    }
+    qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
 ```
 
 ## Retrieve Events
