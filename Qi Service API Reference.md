@@ -37,6 +37,7 @@ Task<QiType> GetTypeAsync(string typeId);
 ```
 
 *Parameters*
+
 ```typeId``` -- id of the type to retrieve
 
 Returns type searched for by typeId
@@ -57,6 +58,7 @@ Task<QiType> GetOrCreateTypeAsync(QiType entity);
 ```
 
 *Parameters*
+
 `entity` -- Qi Type object
 
 Returns a Qi Type object. If entity already exists on the server by Id, that existing type is returned to the caller unchanged.  Otherwise, a new type definition is added to the Qi Service for use by that tenant.
@@ -75,6 +77,7 @@ Task DeleteTypeAsync(string typeId);
 ```
 
 *Parameters*
+
 `typeId` -- string type id of the type to delete
 
 Deletes type from server.. 
@@ -110,6 +113,7 @@ Task<QiStream> GetStreamAsync (string streamId);
 ```
 
 *Parameters*
+
 `streamId` -- string identifying the stream
 
 Returns a QiStream object.
@@ -146,6 +150,7 @@ Task UpdateStreamAsync(string streamId, QiStream entity);
 `entity` -- updated stream object
 
 Permitted changes:
+
 •	Name
 •	BehaviorId
 •	Description
@@ -175,25 +180,89 @@ The default behavior for a stream (when a defined Stream Behavior is not applied
 
 ## Stream Behavior Object
 
-Stream Behavior Object
-        QiStreamExtrapolation ExtrapolationMode
-        string Id
-        QiStreamMode Mode { get; set; }
-        string Name
-        IList<QiStreamBehaviorOverride> Overrides 
-Id -- unique identifier used to reference this behavior
-Name -- Optional descriptor.
-Mode -- behavior setting to be applied to all ‘value’ parameters in the Type of Stream to which this is applied
+```c#
+QiStreamExtrapolation ExtrapolationMode
+string Id
+QiStreamMode Mode { get; set; }
+string Name
+IList<QiStreamBehaviorOverride> Overrides 
+```
+-Id -- unique identifier used to reference this behavior
+
+-Name -- Optional descriptor.
+
+-Mode -- behavior setting to be applied to all ‘value’ parameters in the Type of Stream to which this is applied
 
 `QiStreamMode` is an enumeration whose permissible values are:
+
 1.	Continuous			
 2.	StepwiseContinuousLeading
 3.	StepwiseContinuousTrailing
 4.	Discrete
 
 `QiStreamBehaviorOverride` object
+
 QiStreamMode Mode
 string QiTypePropertyId
+
+## Stream Behavior Modes
+When running a query method, if an index lands between 2 values in the stream, then the stream behavior is used to determine what is returned. The Stream Behavior can be set to one of these values: 
+
+*Continuous:  value is interpolated using previous and next events (see Chart below for exceptions)
+*ContinuousLeading: value is obtained from previous event. 
+*ContinuousTrailing value is obtained from next event. 
+*Discrete:  NULL value is returned
+
+There are cases where ‘null’ cannot be used. For example with a GetValue calls is done on a stream that has a behavior using a Continuous Mode and a element with a Discrete override – then it will attempt to set this Discrete element to ‘null’ But in cases where this cannot be done (i.e. a non-nullable type) then the default value will be used. 
+
+The chart below describes how the Types act when the Behavior is set to Continuous
+| Type	| When Behavior = Continuous and index between events is addressed |
+| ----- | ---------------------------------------------------------------- |
+| Numeric Floating Point Types Single, Double, Decimal | Interpolation |
+| Numeric Integer Types Int16, int32, int64, uint16, uint32, uint64, byte, Sbyte, Char | Interpolation (rounding) |
+| Time related Types DateTime, DateTimeOffset, TimeSpan	| Interpolation |
+| Nullable Types NullableBoolean, NullableChar, NullableSByte, NullableByte, NullableInt16, NullableUInt16, NullableInt32, NullableUInt32, NullableInt64, NullableUInt64, NullableSingle, NullableDouble, NullableDecimal, NullableDateTime, NullableGuid, NullableDateTimeOffset, NullableTimeSpan | Returns null (= Discrete Behavior) |
+| Array and List Types BooleanArray, CharArray, SByteArray,ByteArray, Int16Array, UInt16Array, Int32Array, UInt32Array, Int64Array, UInt64Array, SingleArray,DoubleArray, DecimalArray, DateTimeArray, StringArray, GuidArray, DateTimeOffsetArray, TimeSpanArray, VersionArray, IList | Returns null (= Discrete Behavior) |
+| String | Returns null (= Discrete Behavior) |
+| Boolean | Returns the value of nearest event |
+| Enumeration Types SByteEnum, ByteEnum, Int16Enum, UInt16Enum, Int32Enum, UInt32Enum, Int64Enum,UInt64Enum | Returns ‘0’ which may be the value of a defined enumeration element. |
+| Guid | Returns Guid.Empty   |
+| QiType, QiTypeProperty | Returns null (= Discrete Behavior) |
+| Version | Returns null (= Discrete Behavior) |
+| IDictionary, IEnumerable | Null |
+
+All values in the stream type will be ‘set’ to the Stream Behavior Mode. Continuous is the default if not set. Individual Type Values can be overridden to act as another behavior. In this way the user can have different values within the same event to have a different behavior.  Note that when doing this, the Main Behavior Mode is still used to determine whether an event is returned for an index between data. If the main Behavior Mode is set to ‘Discrete’ then no event is returned for the call, regardless of any overrides.
+
+ExtrapolationMode
+All:  extrapolation done at both start and end of data in stream. <DEFAULT>
+Forward: extrapolation done at the end of the stream (not at the front). 
+Backward: extrapolation done at the front of the stream (not at the end). 
+None: no extrapolation done  
+
+The ExtrapolationMode (stream behavior parameter) comes in to play for a stream in the following conditions:
+-GetValue (and GetValues) when an index is used that is before or after all of the data in the stream
+-GetWindowValues when the start index is before all event in the stream or when the end index  is after all events in the stream
+-GetRangeValues when the ‘start index’ is before all the data (or after all the data)
+-GetIntervals …on indexes on each side of an interval
+
+| Behavior | Extrapolation | Before Start of Stream | After End of Stream | Empty Stream |
+| -------- | ------------- | ---------------------- | ------------------- | ------------ |
+| Continuous | All | First Event Fields | Last Event Fields | Null |
+| Continuous | None | Null | Null | Null |
+| Continuous | Backward | First Event Fields | Null | Null |
+| Continuous | Forward | Null | Last Event Fields | Null |
+| Discrete | All | Null | Null | Null |
+| Discrete | None | Null | Null | Null |
+| Discrete | Backward | Null | Null | Null |
+| Discrete | Forward | Null | Null | Null |
+| StepwiseContinuousLeading | All | Null | Last Event Fields | Null |
+| StepwiseContinuousLeading | None | Null | Null | Null |
+| StepwiseContinuousLeading | Backward | Null | Null | Null |
+| StepwiseContinuousLeading | Forward | Null | Last Event Fields | Null |
+| StepwiseContinuousTrailing | All | First Event Fields | Null | Null |
+| StepwiseContinuousTrailing | None | Null | Null | Null |
+| StepwiseContinuousTrailing | Backward | First Event Fields | Null | Null |
+| StepwiseContinuousTrailing | Forward | Null | Null | Null |
 
 ## Naming Rules for Behavior Identifiers
 1.	Case sensitive
@@ -207,6 +276,7 @@ void DeleteBehavior(string behaviorId);
 Task DeleteBehaviorAsync(string behaviorId);
 ```
 *Parameters*
+
 `behaviorId` -- id of the behavior to delete; the behavior must not be associated with any streams
 
 Deletes behavior from server.
@@ -218,6 +288,7 @@ Task<QiStreamBehavior> GetBehaviorAsync(string behaviorId);
 ```
 
 *Parameters*
+
 `behaviorId` -- id of the behavior definition to retrieve
 
 Gets a behavior object from server.
@@ -236,6 +307,7 @@ QiStreamBehavior GetOrCreateBehavior(QiStreamBehavior entity);
 Task<QiStreamBehavior> GetOrCreateBehaviorAsync(QiStreamBehavior entity);
 ```
 *Parameters*
+
 `entity` -- a QiStream object to add to the Qi Service for the current tenant.  
 Creates a StreamBehavior (or returns it if it already exists). 
 
@@ -253,6 +325,7 @@ Task UpdateBehaviorAsync(string behaviorId, QiStreamBehavior entity);
 `entity` -- updated stream behavior 
 
 Permitted changes: 
+
 •	Override list
 •	BehaviorMode
 •	ExtrapolationMode
@@ -267,13 +340,15 @@ The overrides list is used in cases where the user desires the stream to have di
 
 `Extrapolation`
 QiStreamExtrapolation can have one of 4 values.
+
 1.	All
 2.	None
 3.	Forward
 4.	Backward
+
 This indicates whether indexes that are read before or after all data should attempt to return an event or not.
 
-# Data Retrieval Methods
+# Data Methods
 
 *FindDistinctValue*
 ```c#
@@ -282,11 +357,13 @@ Task<T> FindDistinctValueAsync<T>(string streamId, string index, QiSearchMode mo
 ```
 
 *Parameters*
-`streamId` -- stream against which to perform retrieval
-`index` -- value of the index at which to retrieve a value (e.g., a DateTime if the stream's Type is indexed by a DateTime property)
-`mode` -- search mode enumeration indicating how to find the event
+
+- `streamId` -- stream against which to perform retrieval
+- `index` -- value of the index at which to retrieve a value (e.g., a DateTime if the stream's Type is indexed by a DateTime property)
+- `mode` -- search mode enumeration indicating how to find the event
 
 Search modes
+
 1.	Exact 
 2.	ExactOrNext 
 3.	ExactOrPrevious 
@@ -303,6 +380,7 @@ T GetDistinctValue<T>(string streamId, string index);
 Task<T> GetDistinctValueAsync<T>(string streamId, string index);
 ```
 *Parameters*
+
 `streamId` -- id of the stream to search
 `index` -- index value on which to search
 
@@ -317,6 +395,7 @@ Task<T> GetFirstValueAsync<T>(string streamId);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream to search
 
 Gets the first data event in the stream. If the stream has no data – a ‘null’ is returned (no exception thrown)
@@ -328,6 +407,7 @@ Task<T> GetLastValueAsync<T>(string streamId);
 ```
 
 *Parameters*
+
 `streamId` -- stream identifier
 
 Gets the last data event in the stream. If the stream has no data – a ‘null’ is returned (no exception thrown)
@@ -339,6 +419,7 @@ Task<IEnumerable<QiInterval<T>>> GetIntervalsAsync<T>(string streamId, string st
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream to search
 `startIndex` -- string representation of the index starting value
 `endIndex` -- string representation of the index ending value
@@ -354,7 +435,9 @@ T Start
 A Summaries object corresponds to the fields within the the type for which calculations were made. For example, if a Type was created with a DateTime TimeId property as an index, and two double values and a string value, then a GetIntervals call would include 2 Summaries (one for each of the double elements).
 
 Summaries are made up of the following list of calculations:
+
 Facets show the following 13 calculations for the field for the Interval.
+
 1.	Minimum		(also shows Index where the first instance if this occurred)	
 2.	Maximum		(also shows Index where this first instance if this occurred)
 3.	Range
@@ -381,15 +464,17 @@ Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, 
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int count, QiBoundaryType boundaryType);
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int skip, int count, bool reversed, QiBoundaryType boundaryType);
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int skip, int count, bool reversed, QiBoundaryType boundaryType, string filterExpression);
+```
 
 *Parameters*
-`streamId` -- identifier of the stream to search
-`startIndex` -- string representation of the start value of the stream's index property
-`count` -- number of events to return
-`reversed` -- true to return events in reverse order
-`skip` -- **clarification needed**
-`boundaryType` -- enumeration indicating how to handle events on the boundaries
-`filterExpression` -- string containing an ODATA filter expression (see below)
+
+-`streamId` -- identifier of the stream to search
+- `startIndex` -- string representation of the start value of the stream's index property
+- `count` -- number of events to return
+- `reversed` -- true to return events in reverse order
+- `skip` -- **clarification needed**
+- `boundaryType` -- enumeration indicating how to handle events on the boundaries
+- `filterExpression` -- string containing an ODATA filter expression (see below)
 
 This call is used to obtain events from a stream where a start point is provided and the number of events desired. The many overloads allow the client to indicate where to start, which direction to search, whether to skip any values and also allows a special filter to be applied to the events found.
 
@@ -420,6 +505,7 @@ Task<IEnumerable<T>> GetValuesAsync<T>(string streamId, IEnumerable<string> inde
 ```
 
 *Parameters*
+
 `streamId` -- id denoting the stream to search
 `index` -- value of an index into the stream type's index property.
 `startIndex` -- start index value
@@ -456,6 +542,7 @@ Task<QiResultPage<T>> GetWindowValuesAsync<T>(string streamId, string startIndex
 ```
 
 *Parameters*
+
 `streamId` -- id of stream to search
 `startIndex` -- string representation of the start index value of the range
 `endIndex` -- string representation of the end index value of the range
@@ -473,10 +560,11 @@ Start index must be less than end index.
 BoundaryCondition is ‘Exact’ unless otherwise set 
 
 BoundaryConditions:
-Exact: return values exactly on the start or end index value
-Inside: any value inside the range but not including the boundaries
-Outside: includes 1 value outside the boundary on both sides and any values at or inside the range
-ExactOrCalculated: Will create values for the endpoints given if value at Exact index not found. Behavior for given value is used in calculation (Continuous is default)
+
+-Exact: return values exactly on the start or end index value
+-Inside: any value inside the range but not including the boundaries
+-Outside: includes 1 value outside the boundary on both sides and any values at or inside the range
+-ExactOrCalculated: Will create values for the endpoints given if value at Exact index not found. Behavior for given value is used in calculation (Continuous is default)
 
 Calls against an empty stream will always return a single null regardless of boundary type used. 
 
@@ -491,6 +579,7 @@ Task InsertValueAsync<T>(string streamId, T item);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream into which to insert a value
 `item` -- event to insert, where T is the type of the event and the stream
 Inserts an item into the specified stream. Will throw an exception if the index of item already has an event. 
@@ -502,6 +591,7 @@ Task InsertValuesAsync<T>(string streamId, IList<T> items);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream into which to insert values
 `items` -- list of items of type T
 
@@ -514,6 +604,7 @@ Task PatchValueAsync(string streamId, string selectExpression, T item);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream to update
 `selectExpression` -- expression selecting events for patching
 `item` -- object of the same type, T, as the property to patch
@@ -546,6 +637,7 @@ Task RemoveValueAsync(string streamId, string index);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream on which to operate
 `index` -- index of the value to remove
 
@@ -558,6 +650,7 @@ Task RemoveValuesAsync(string streamId, IEnumerable<string> index);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream from which to remove values
 `index` -- list of indices at which to remove values
 
@@ -597,6 +690,7 @@ Task ReplaceValuesAsync<T>(string streamId, IList<T> items);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream in which to replace values
 `items` -- list of new items to replace existing items in the stream
 
@@ -611,6 +705,7 @@ Task UpdateValueAsync<T>(string streamId, T item);
 ```
 
 *Parameters*
+
 `streamId` -- identifier of the stream in which to update a value
 `item` -- new value to replace an existing value
 
@@ -629,4 +724,172 @@ Task UpdateValuesAsync<T>(string streamId, IList<T> items);
 
 Writes items to specified stream.   Will insert or replace. If any individual index has a problem, the enter set of attempted UpdateValues is rolled back (no updates at all are done). The index that caused the issue can also be determined in the error response.
 
-#
+# ODATA Filter Expressions
+
+Filter text can be included in overloads for the GetRangeValues or GetWindowValues Qi Library methods. This filter is applied to the events that are found by the call, such that the user can effect which events are returned (i.e. conditionally filter out certain events).   
+
+## Supported QiTypeCodes
+
+Fields of the following types can be used within Filter Text.
+
+-Enum
+-Boolean
+-Byte
+-Guid
+-DateTime
+-TimeSpan
+-DateTimeOffset
+-Decimal
+-Double
+-Single
+-ByteArray
+-Long	(Int64)
+-Int	(Int32)
+-Short	(Int16)
+-UInt	(UInt32)
+-ULong	(Uint64)
+-UShort	(Uint16)
+
+## Non-supported QiTypeCodes
+Arrays, IEnumerable, IDictionary, IList, DateTimeOffset, Guid, NullableGuid, QiType, QiTypeProperty
+NullableDateTime, TimeSpan
+
+## Supported logical operators
+
+eq, ne, ge, le, lt. gt, not, (, ), or, and, and also negation (i.e. ‘-‘), 
+
+| operator | Comment |
+| -------- | ------- |
+| eq | Equal to |
+| ne | Not equal |
+| ge | Gerater than or equal to |
+| le | Less than or equal to |
+| lt | Less than |
+| gt | Greater than |
+| ( ) | Parenthesis can be used to effect operation order |
+| or | Or logical operator |
+| and | And logical operator |
+| not | Not logical operator |
+
+### Logical Operator Examples
+
+These examples assume that the event Qi Type includes a field named ‘Value’ of type double. 
+•	"Value eq 1.0"	
+•	"Value ne 15.6"
+•	"Value ge 5.0"
+•	"Value le 8.0"
+•	"Value gt 5.0"
+•	"Value lt 4.0"
+•	"Value gt 2.0 and Value lt 9.0"
+•	"Value gt 6.0 or Value lt 2.0"
+•	"not (Value eq 1.0)"
+
+## Math functions
+add, sub, mul, div, mod, round, floor, ceiling
+
+| function | Comment |
+| -------- | ------- |
+| add | addition |
+| sub | subtract |
+| mul | Multiply |
+| div | Division |
+| mod | Modulo |
+| round | Rounds to nearest numeric component without a decimal with midpoint rounded away from 0.  (e.g. 0.5 rounds to 1, -0.5 rounds to -1) |
+| floor | Rounds down to nearest numeric component without a decimal. |
+| ceiling | Rounds up to nearest numeric component without a decimal. |
+
+### Math Function Examples
+
+These examples assume that the event Qi Type includes a field named ‘Value’ of type double. 
+•	"Value add 3.0 gt 5.0"
+•	"Value sub 5.0 lt 4.0"
+•	"Value mul 2.0 lt 9.0"
+•	"Value div 2.0 eq 3.0"
+•	"Value mod 7.0 eq 0.0"
+•	"Value add -3.0 gt 5.0"
+•	"round(Value) eq 16"
+•	"floor(Value) eq 15"
+•	"ceiling(Value) eq 16"
+
+## String functions:
+endswith, startswith, length, indexof, substring, substringof,  tolower, toupper, trim, concat , replace
+
+String operations are case sensitive.  Character index in a string is 0-based.
+
+| function | Comment |
+| endswith | Compare character at end of input string  |
+| startwith | Compare character at start of input string |
+| length | Looks at string length |
+| indexof | Looks at character starting at given index |
+| substring | Look at characters within another string at specific location |
+| substringof | Look for characters anywhere in another string |
+| tolower | Convert characters to lower case |
+| toupper | Convert characters to upper case |
+| trim | Remove whitespace from front and end of string |
+| concat | Concatenate strings together |
+| replace | Replace one set of characters with another |
+
+###String function examples
+
+These examples assume that the event Qi Type includes a field named ‘sValue’ of type string.
+
+•	"endswith(sValue, 'XYZ’)" 	 –true if Value ends with the characters ‘XYZ’
+•	"startswith(sValue, 'Val')" –true if Value starts with the characters ‘Val’
+•	"length(sValue) eq 11"	 -true of length of string value
+•	"indexof(sValue, 'ab') eq 4"  -true if the 5th and 6th characters are ‘ab’
+•	"substring(sValue, 10) eq 'a b'" –true ‘a b’ is found in sValue at index 10
+•	"substringof('val', Value)"	     -true if characters ‘val’ are anywhere in sValue
+•	"tolower(sValue) eq 'val5'" – Change sValue to lower case and compares to ‘val5’
+•	"toupper(sValue) eq 'ABC'"	– Change sValue to upper case and compares to ‘ABC’
+•	"trim(sValue) eq ‘vall22’" – Trim whitespace from front and end of sValue and compare to ‘val22’
+•	"concat(sValue,'xyz') eq 'dataValue_7xyz' add characters to sValues and compare to ‘dataValue_7xyz’
+•	“replace(sValue,'L','D') eq 'Dog1'"; - replace any ‘L’ in sValue with ‘D’ and compare to ‘Dog1’
+
+## DateTime Functions
+year, month, day, hour, minute, second 
+
+| function | Comment |
+| -------- | ------- |
+| year | Get year value from DateTime |
+| month | Get month value from DateTime |
+| day | Get day value from DateTime |
+| hour | Get hour value from DateTime  |
+| minute | Get minute value from DateTime |
+| second | Get second value from DateTime |
+
+###DateTime Function Examples
+
+These examples assume that the event Qi Type includes a field named ‘TimeId’ of type DateTime.
+
+•	"year(TimeId) eq 2015"
+•	"month(TimeId) eq 11"
+•	"day(TimeId) eq 3"
+•	"hour(TimeId) eq 1"
+•	"minute(TimeId) eq 5"
+•	"second(TimeId) eq 3"
+
+##TimeSpan Functions
+years, days, hours, minutes, seconds
+
+| function | Comment |
+| -------- | ------- |
+| years | Get year value from TimeSpan |
+| days | Get day value from TimeSpan |
+| hours | Get hour value from TimeSpan |
+| minutes | Get minute value from TimeSpan |
+| seconds | Get second value from TimeSpan |
+
+###TimeSpan Function Examples
+
+These examples assume that the event Qi Type includes a field named ‘TimeSpanValue’ of type 
+TimeSpan.
+
+•	"years(TimeSpanValue) eq 1"
+•	"days(TimeSpanValue) eq 22"
+•	"hours(TimeSpanValue) eq 1"
+•	"minutes(TimeSpanValue) eq 1"
+•	"seconds(TimeSpanValue) eq 2"
+
+## OData functions not supported.
+contains, fractionalseconds, has, contains, date, time, totaloffsetminutes, now, maxdatetime, mindatetime, totalseconds, $it,  $root, $expand, $select, $orderby, $skip, $top, $count, $search, $format, any, all, isof, cast, geo.distance, geo.intersects, geo.length
+
