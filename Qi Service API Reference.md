@@ -23,6 +23,13 @@ Qi is capable of storing any data type you care to define.  A Qi Type consists o
 QiType GetStreamType(string streamId);
 Task<QiType> GetStreamTypeAsync(string streamId);
 ```
+
+*REST*
+```C#
+Qi/Streams/{streamId}/Type
+```
+HTTP GET
+
 *Parameters*
 
 `streamId` -- id of the stream associated with a type
@@ -35,6 +42,12 @@ Returns the type definition associated with a stream
 QiType GetType(string typeId);
 Task<QiType> GetTypeAsync(string typeId);
 ```
+*REST*
+```c#
+Qi/Types/{typeId}
+```
+
+HTTP GET
 
 *Parameters*
 
@@ -48,6 +61,13 @@ IEnumerable<QiType> GetTypes();
 Task<IEnumerable<QiType>> GetTypesAsync();
 ```
 
+*REST*
+```c#
+Qi/Types
+```
+
+HTTP GET
+
 Returns IEnumerable of all types for the tenant. 
 
 
@@ -56,6 +76,14 @@ Returns IEnumerable of all types for the tenant.
 QiType GetOrCreateType(QiType entity);
 Task<QiType> GetOrCreateTypeAsync(QiType entity);
 ```
+
+*REST*
+```c#
+Qi/Types
+```
+
+HTTP POST
+Body is serialized QiType entity
 
 *Parameters*
 
@@ -75,6 +103,13 @@ This call is not allowed at this time.
 void DeleteType(string typeId);
 Task DeleteTypeAsync(string typeId);
 ```
+
+*REST*
+```c#
+Qi/Types/{typeId}
+```
+
+HTTP DELETE
 
 *Parameters*
 
@@ -112,6 +147,13 @@ QiStream GetStream(string streamId);
 Task<QiStream> GetStreamAsync (string streamId);
 ```
 
+*REST*
+```C#
+Qi/Streams/{streamId}
+```
+
+HTTP GET
+
 *Parameters*
 
 `streamId` -- string identifying the stream
@@ -124,6 +166,13 @@ IEnumerable<QiStream> GetStreams ();
 Task<IEnumerable<QiStream>> GetStreamsAsync ();
 ```
 
+*REST*
+```c#
+Qi/Streams
+```
+
+HTTP GET
+
 Returns IEnumerable of all streams for the tenant. 
 
 *GetOrCreateStream*
@@ -131,6 +180,14 @@ Returns IEnumerable of all streams for the tenant.
 QiStream GetOrCreateStream (QiStream entity);
 Task<QiStream> GetOrCreateStreamAsync (QiStream entity);
 ```
+
+*REST*
+```c#
+Qi/Streams
+```
+
+HTTP POST
+Body is serialized QiStream entity
 
 *Parameters*
 
@@ -143,6 +200,14 @@ If BehaviorId is not specified, the stream will have the default behavior of Mod
 void UpdateStream(string streamId, QiStream entity);
 Task UpdateStreamAsync(string streamId, QiStream entity);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}
+```
+
+HTTP PUT
+Body isserialized QiStream entity
 
 *Parameters*
 
@@ -163,6 +228,13 @@ UpdateStream method will apply the entire entity. Optional fields left out of th
 void DeleteStream(string streamId);
 Task DeleteStreamAsync(string streamId);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}
+```
+
+HTTP DELETE
 
 *Parameters*
 
@@ -275,6 +347,14 @@ The ExtrapolationMode (stream behavior parameter) comes in to play for a stream 
 void DeleteBehavior(string behaviorId);
 Task DeleteBehaviorAsync(string behaviorId);
 ```
+
+*REST*
+```c#
+Qi/Behaviors/{behaviorId}
+```
+
+HTTP DELETE
+
 *Parameters*
 
 `behaviorId` -- id of the behavior to delete; the behavior must not be associated with any streams
@@ -286,6 +366,12 @@ Deletes behavior from server.
 QiStreamBehavior GetBehavior(string behaviorId);
 Task<QiStreamBehavior> GetBehaviorAsync(string behaviorId);
 ```
+*REST*
+```c#
+Qi/Behaviors/{behaviorId}
+```
+
+HTTP GET
 
 *Parameters*
 
@@ -306,6 +392,15 @@ Returns IEnumerable of all behaviors for the tenant.
 QiStreamBehavior GetOrCreateBehavior(QiStreamBehavior entity);
 Task<QiStreamBehavior> GetOrCreateBehaviorAsync(QiStreamBehavior entity);
 ```
+
+*REST*
+```c#
+Qi/Behaviors
+```
+
+HTTP POST
+Body is serialized QiStreamBehavior entity
+
 *Parameters*
 
 `entity` -- a QiStream object to add to the Qi Service for the current tenant.  
@@ -318,6 +413,13 @@ If `entity` already exists on the server by `Id`, that existing behavior is retu
 void UpdateBehavior(string behaviorId, QiStreamBehavior entity);
 Task UpdateBehaviorAsync(string behaviorId, QiStreamBehavior entity);
 ```
+*REST*
+```c#
+Qi/Behaviors/{behaviorId}
+```
+
+HTTP PUT
+Body is serialized QiStreamBehavior (updated)
 
 *Parameters*
 
@@ -355,7 +457,13 @@ This indicates whether indexes that are read before or after all data should att
 T FindDistinctValue<T>(string streamId, string index, QiSearchMode mode);
 Task<T> FindDistinctValueAsync<T>(string streamId, string index, QiSearchMode mode);
 ```
-
+ *REST*
+ ```c#
+ Qi/Streams/{streamId}/Data/FindDistinctValue?index={index}&mode={mode}
+ ```
+ 
+ HTTP GET
+ 
 *Parameters*
 
 - `streamId` -- stream against which to perform retrieval
@@ -379,6 +487,15 @@ Returns null values for calls that do not find a value (e.g. Search of â€˜Nextâ€
 T GetDistinctValue<T>(string streamId, string index);
 Task<T> GetDistinctValueAsync<T>(string streamId, string index);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetDistinctValue?index={index}
+```
+
+HTTP GET
+
+
 *Parameters*
 
 `streamId` -- id of the stream to search
@@ -394,6 +511,13 @@ T GetFirstValue<T>(string streamId);
 Task<T> GetFirstValueAsync<T>(string streamId);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetFirstValue
+```
+
+HTTP GET
+
 *Parameters*
 
 `streamId` -- identifier of the stream to search
@@ -406,6 +530,13 @@ T GetLastValue<T>(string streamId);
 Task<T> GetLastValueAsync<T>(string streamId);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetLastValue
+```
+
+HTTP GET
+
 *Parameters*
 
 `streamId` -- stream identifier
@@ -417,6 +548,13 @@ Gets the last data event in the stream. If the stream has no data â€“ a â€˜nullâ
 IEnumerable<QiInterval<T>> GetIntervals<T>(string streamId, string startIndex, string endIndex, int count);
 Task<IEnumerable<QiInterval<T>>> GetIntervalsAsync<T>(string streamId, string startIndex, string endIndex, int count);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetIntervals?startIndex={startIndex}&endIndex={endIndex}&count={count}
+```
+
+HTTP GET
 
 *Parameters*
 
@@ -457,7 +595,7 @@ Facets show the following 13 calculations for the field for the Interval.
 IEnumerable<T> GetRangeValues<T>(string streamId, string startIndex, int count);
 IEnumerable<T> GetRangeValues<T>(string streamId, string startIndex, int count, bool reversed);
 IEnumerable<T> GetRangeValues<T>(string streamId, string startIndex, int count, QiBoundaryType boundaryType);
-IEnumerable<T> GetRangeValues<T>(string streamId, string startIndex, int skip, int count, bool reversed, 
+IEnumerable<T> GetRangeValues<T>(string streamId, string startIndex, int skip, int count, bool reversed, QiBoundaryType boundaryType); 
 IEnumerable<T> GetRangeValuesAsync<T>(string streamId, string startIndex, int skip, int count, bool reversed, QiBoundaryType boundaryType, string filterExpression);
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int count);
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int count, bool reversed);
@@ -465,6 +603,21 @@ Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, 
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int skip, int count, bool reversed, QiBoundaryType boundaryType);
 Task<IEnumerable<T>> GetRangeValuesAsync<T>(string streamId, string startIndex, int skip, int count, bool reversed, QiBoundaryType boundaryType, string filterExpression);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&count={count}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&count={count}&reversed={reversed}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&count={count}&boundaryType={boundaryType}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reversed}&boundaryType={boundaryType}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reversed}&boundaryType={boundaryType}&filterExpression={filterExpression}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&count={count}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&count={count}&reversed={reversed}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&count={count}&boundaryType={boundaryType}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reversed}&boundaryType={boundaryType}
+Qi/Streams/{streamId}/Data/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reversed}&boundaryType={boundaryType}&filterExpression={filterExpression}
+```
+HTTP GET
 
 *Parameters*
 
@@ -498,11 +651,18 @@ Filter uses OData query language. Most of the query language is supported.
 ```c#
 T GetValue<T>(string streamId, string index);
 Task<T> GetValueAsync<T>(string streamId, string index);
-
 IEnumerable<T> GetValues<T>(string streamId, IEnumerable<string> index);
 IEnumerable<T> GetValues<T>(string streamId, string startIndex, string endIndex, int count);
 Task<IEnumerable<T>> GetValuesAsync<T>(string streamId, IEnumerable<string> index);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetValue?index={index}
+Qi/Streams/{streamId}/Data/GetValues?startIndex={startIndex}&endIndex={endIndex}&count={count}
+```
+
+HTTP GET
 
 *Parameters*
 
@@ -541,6 +701,18 @@ Task<IEnumerable<T>> GetWindowValuesAsync<T>(string streamId, string startIndex,
 Task<QiResultPage<T>> GetWindowValuesAsync<T>(string streamId, string startIndex, string endIndex, QiBoundaryType boundaryType, string filterExpression, int count, string continuationToken);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/GetWindowValues?startIndex={startIndex}&endIndex={endIndex}
+Qi/Streams/{streamId}/Data/GetWindowValues?startIndex={startIndex}&endIndex={endIndex}&boundaryType={boundaryType}
+Qi/Streams/{streamId}/Data/GetWindowValues?startIndex={startIndex}&endIndex={endIndex}&boundaryType={boundaryType}&filterExpression={filterExpression}
+Qi/Streams/{streamId}/Data/GetWindowValues?startIndex={startIndex}&&endIndex={endIndex}&boundaryType={boundaryType}&count={count}&continuationToken={continuationToken}
+Qi/Streams/{streamId}/Data/GetWindowValues?startIndex={startIndex}&startBoundaryType={startBoundaryType}&endIndex={endIndex}&endBoundaryType={endBoundaryType}&filterExpression={filterExpression}&selectExpression={selectExpression}
+Qi/Streams/{streamId}/Data/GetWindowValues?startIndex={startIndex}&&endIndex={endIndex}&boundaryType={boundaryType}&count={count}&continuationToken={continuationToken}
+```
+
+HTTP GET
+
 *Parameters*
 
 `streamId` -- id of stream to search
@@ -578,6 +750,14 @@ void InsertValue<T>(string streamId, T item);
 Task InsertValueAsync<T>(string streamId, T item);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/InsertValue
+```
+
+HTTP POST
+Body is serialized event of type T
+
 *Parameters*
 
 `streamId` -- identifier of the stream into which to insert a value
@@ -589,6 +769,14 @@ Inserts an item into the specified stream. Will throw an exception if the index 
 void InsertValues<T>(string streamId, IList<T> items);
 Task InsertValuesAsync<T>(string streamId, IList<T> items);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/InsertValues
+```
+
+HTTP POST
+Body is serialized list of events of type T
 
 *Parameters*
 
@@ -602,6 +790,15 @@ Inserts items into the specified stream. Will throw an exception if any index in
 void PatchValue(string streamId, string selectExpression, T item);
 Task PatchValueAsync(string streamId, string selectExpression, T item);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/PatchValue?selectExpression={selectExpression}
+```
+
+HTTP PATCH
+Body is serialized patch property
+
 
 *Parameters*
 
@@ -621,6 +818,14 @@ void PatchValues(string streamId, string selectExpression, IList<T> items);
 Task PatchValuesAsync(string streamId, string selectExpression, IList<T> items);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/PatchValues?selectExpression={selectExpression}
+```
+
+HTTP PATCH
+Body is serialized list of patch property values
+
 *Parameters*
 
 `streamId` -- identifier of the stream on which to operate
@@ -636,6 +841,13 @@ void RemoveValue(string streamId, string index);
 Task RemoveValueAsync(string streamId, string index);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/RemoveValue?index={index}
+```
+
+HTTP DELETE
+
 *Parameters*
 
 `streamId` -- identifier of the stream on which to operate
@@ -649,6 +861,13 @@ void RemoveValues(string streamId, IEnumerable<string> index);
 Task RemoveValuesAsync(string streamId, IEnumerable<string> index);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/RemoveValues?index={index}
+```
+
+HTTP DELETE
+
 *Parameters*
 
 `streamId` -- identifier of the stream from which to remove values
@@ -661,6 +880,13 @@ Removes the value at each index from the specified stream. If any individual ind
 void RemoveWindowValues(string streamId, string startIndex, string endIndex);
 Task RemoveWindowValuesAsync(string streamId, string startIndex, string endIndex);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}
+```
+
+HTTP DELETE
 
 *Parameters*
 
@@ -676,6 +902,14 @@ void ReplaceValue<T>(string streamId, T item);
 Task ReplaceValueAsync<T>(string streamId, T item);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/ReplaceValue
+```
+
+HTTP PUT
+Body is serialzied replacement object
+
 *Parameters*
 
 `streamId` -- identifier of the stream in which to replace value
@@ -688,6 +922,14 @@ Writes an item over an existing value in the specified stream. Throws an excepti
 void ReplaceValues<T>(string streamId, IList<T> items);
 Task ReplaceValuesAsync<T>(string streamId, IList<T> items);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/ReplaceValues
+```
+
+HTTP PUT
+Body is serialized list of replacement values.
 
 *Parameters*
 
@@ -704,6 +946,14 @@ void UpdateValue<T>(string streamId, T item);
 Task UpdateValueAsync<T>(string streamId, T item);
 ```
 
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/UpdateValue
+```
+
+HTTP PUT
+Body is serialized updated value
+
 *Parameters*
 
 `streamId` -- identifier of the stream in which to update a value
@@ -716,6 +966,14 @@ Writes item to specified stream.  Will insert at any index that does not have a 
 void UpdateValues<T>(string streamId, IList<T> items);
 Task UpdateValuesAsync<T>(string streamId, IList<T> items);
 ```
+
+*REST*
+```c#
+Qi/Streams/{streamId}/Data/UpdateValues
+```
+
+HTTP PUT
+Body is serialized list of updated values.
 
 *Parameters*
 
