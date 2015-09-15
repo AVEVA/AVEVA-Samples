@@ -26,10 +26,6 @@ public class QiClient {
 	static String _appId = "Please enter your appId here";
 	static String _appKey = "Please enter your appKey here";
 
-/*	
-	static String _appId = "03277c53-4327-407e-9982-a359de90c5be";
-	static String _appKey = "xNvnD7tnC86dEXiAQcwVTAVPVIyuSH93BaR2sGVWWqw=";
-*/
 
 
 	// REST API url strings
