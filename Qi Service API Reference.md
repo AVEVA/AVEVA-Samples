@@ -625,7 +625,7 @@ HTTP GET
 - `startIndex` -- string representation of the start value of the stream's index property
 - `count` -- number of events to return
 - `reversed` -- true to return events in reverse order
-- `skip` -- **clarification needed**
+- `skip` --  number of values to skip before starting the count to be returned. The filter expression is applied first.
 - `boundaryType` -- enumeration indicating how to handle events on the boundaries
 - `filterExpression` -- string containing an ODATA filter expression (see below)
 
@@ -724,7 +724,7 @@ HTTP GET
 `continuationToken` -- continuation token for handling multiple return data sets
 `startBoundaryType` -- how to handle events near the start of the range
 `endBoundaryType` -- how to handle events near the end of the range
-`selectExpression` -- **needs clarification**
+`selectExpression` -- expression designating which proeprties of the event  should be included in the response. 
 
 These methods are used to obtain data between 2 indices.
 
@@ -742,7 +742,7 @@ Calls against an empty stream will always return a single null regardless of bou
 
 Filter uses OData queries. Please see the section on Filter Text at the end of this document.
 
-Select Expression **clarification needed**
+The select expression is an ODATA syntax expression designating which properties of the event type to return. The index property is always included. Separate multiple fields with a comma. If the select expression is blank, then all fields are included in response. By only selecting fields of interest the call can be made more efficiently. Selection is applied before filtering, so any fields excluded by select expression cannot be used in the filter expression.
 
 *InsertValue*
 ```c#
@@ -832,8 +832,9 @@ Body is serialized list of patch property values
 `selectExpression` -- ODATA expression for selecting values to patch
 `items` -- list of properties to patch
 
-Patches the values at the indexes denoted by the list of T items using the value denoted by selectExpression and the item from the specified stream. Rolls back all patches back to their original state if any of them fail.
-**needs clarification**
+This call is used to modify properties of specific events in a stream.  Only the properties indicated in `selectExpression` are modified. Property names in `selectExpression` are separated by a comma. The events to be modified are indicated by the index value in each member of the `items` collection. The individual events in `items` also holds the new values.  
+                PatchValues is basically a series of PatchValue calls. If there are any problems completing the entire list of ‘patches’ the entire operation is rolled back. 
+
 
 *RemoveValue*
 ```c#
