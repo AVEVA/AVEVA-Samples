@@ -17,7 +17,7 @@ namespace RestSample
             DateTime now = DateTime.UtcNow;
             TimeSpan timeOfDay = now.TimeOfDay;
 
-            double radians = ((timeOfDay.TotalSeconds % interval.TotalSeconds) / interval.TotalSeconds) * 2 * Math.PI;
+            double radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 * Math.PI;
 
             return new WaveData()
             {
