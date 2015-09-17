@@ -94,6 +94,8 @@ Note that `Create` is a generic method, and the type is the name of the class de
 ```
 The Qi Service will assign a unique name and id to the QiType that is returned, and you will need the id when you create a stream, so be sure to capture the returned QiType instance.
 
+*Note: In the current version of the Qi, calls to GetOrCreateX when the entity (in this case, type definition) exists will fail with an HTTP status code of 401 (Unauthorized) rather than succeed following a 302 (Found) result.  This will be corrected in future versions.*
+
 ## Create a Qi Stream
 
 An ordered series of events is stored in a Qi stream.  All you have to do is create a local QiStream instance, give it an id, assign it a type, and submit it to the Qi Service.  You may optionally assign a stream behavior to the stream.  This is the code to create a stream named `evtStream` for recording events of our sample type.  The value of the `TypeId` property is the value of the QiType `Id` property.
