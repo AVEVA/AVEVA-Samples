@@ -32,18 +32,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.2.19.208020213\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.2.19.208020213\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Core">
-      <HintPath>..\packages\OSIsoft.Qi.Core.1.0.0.656\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.658, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\OSIsoft.Qi.Core.1.0.0.658\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Channel">
-      <HintPath>..\packages\OSIsoft.Qi.Http.Channel.1.0.0.656\lib\net45\OSIsoft.Qi.Http.Channel.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.658, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\OSIsoft.Qi.Http.Channel.1.0.0.658\lib\net45\OSIsoft.Qi.Http.Channel.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Client">
-      <HintPath>..\packages\OSIsoft.Qi.Http.Client.1.0.0.656\lib\net45\OSIsoft.Qi.Http.Client.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.658, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\OSIsoft.Qi.Http.Client.1.0.0.658\lib\net45\OSIsoft.Qi.Http.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

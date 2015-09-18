@@ -1,6 +1,6 @@
 #.NET Samples: Building a Client with the Qi Libraries
 
-This sample differs from the other samples in that the client makes use of the OSIsoft Qi libraries, which are available as nuget packages from **placeholder**.  Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
+This sample differs from the other samples in that the client makes use of the OSIsoft Qi libraries, which are available as nuget packages from **placeholder**.  The packages used are `OSIsoft.Qi.Core`, `OSIsoft.Qi.Http.Channel`, and `OSIsoft.Qi.Http.Client`. Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
 
 ## Instantiate a Qi Client
 
@@ -9,12 +9,55 @@ The client works through the `IQiServer` interface.  You instantiate it through 
 ```c#
     QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
     clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
+    clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
     IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
+    
 ```
+
+The call to `OnCreated` establishes a lambda which is invoked upon the creation of the client object.  It sets an authentication header whose value is a string, `token`, which is an authentication token provided for security.  We'll discuss how to obtain such a token next.
 
 ## Obtain an Authentication Token
 
-The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft **placeholder**.
+The Qi Service is secured by obtaining tokens from an Azure Active Directory instance.  The sample applications are examples of a *confidential client*.  Such clients provide a user ID and secret that are authenticated against the directory.   The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft.  The strings are found at the beginning of `Program.cs`.
+
+```c#
+        static string _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        static string _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+        static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+```
+
+At the bottom of `Program.cs` you will find a method called `AcquireAuthToken`.  The first step in obtaining an authorization token is to create an authentication context related to the Azure Active Directory instance providing tokens.  The authority is designated by the URI in `_authority`.
+
+```c#
+    if (_authContext == null)
+    {
+        _authContext = new AuthenticationContext(_authority);
+    }
+```
+
+`AuthenticationContext` instances take care of communicating with the authority and also maintain a local cache of tokens.  Tokens have a fixed lifetime, typically one hour, but they can be refreshed by the authenticating authority for a longer period.  If the refresh period has expired, the credentials have to be presented to the authority again.  Happily, the `AcquireToken` method hides these details from client programmers.  As long as you call `AcquireToken` before each HTTP call, you will have a valid token.  Here is how that is done:
+
+```c#
+    try
+    {
+        ClientCredential userCred = new ClientCredential(_appId, _appKey);
+        AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+        return authResult.AccessToken;
+    }
+    catch (AdalException)
+    {
+        return string.Empty;
+    }
+```
+
+The result returned by `AcquireAuthToken` is the value, `token`, attached to the client object in the line you saw in the previous section:
+
+```c#
+    clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
+```
+
+The current version of the Qi Libraries do not permit you to attach a header prior to making a call on the client.  This does not matter for our sample, but a long-lived client would run into trouble when the token expired.  The proper pattern is to call `AcquireAuthToken` before each call and attach the token returned.  Future versions of the Qi Libraries will support this.
 
 ## Create a Qi Type
 
@@ -49,7 +92,9 @@ Note that `Create` is a generic method, and the type is the name of the class de
 ```c#
     QiType tp = qiclient.GetOrCreateType(evtType);
 ```
-The Qi Service will assign a unique name and id to the QiType that is returned, and you will need the id when you create a stream, so be sure to capture the returned QiType instance.
+The Qi Service will assign a unique name and id to the QiType that is returned, and you will need the id when you create a stream, so be sure to capture the returned QiType instance.  If you assign a value to `Id` before submitting the Type instance to the Qi Service, that value will be maintained.
+
+*Note: In the current version of the Qi, calls to GetOrCreateX when the entity (in this case, type definition) exists will fail with an HTTP status code of 401 (Unauthorized) rather than succeed following a 302 (Found) result.  This will be corrected in future versions.*
 
 ## Create a Qi Stream
 
@@ -68,10 +113,12 @@ Note that we set the `TypeId` property of the stream we created to the value of 
 
 ## Create and Insert Events into the Stream
 
-The `WaveData` class allows us to create events locally.  In an actual production setting, this is where you would interface with your measurements.  We'll use the `Next` method to create values, and assign integers from 0..99 to establish an ordered collection of `WaveData` instances.  There are a number of methods you can use to insert values into the Qi Service.  A single event can be inserted using `InsertValue<T>` or `InsertValueAsync<T>` (all Async methods use .NET TPL, see <https://msdn.microsoft.com/en-us/library/hh191443.aspx>).  You can also submit a collection of events using `InsertValues<T>` or `InsertValuesAsync<T>`.  There is also an overloaded version of `InsertValues` that takes an `IDictionary`.  Here is an edited version of the insertion code:
+The `WaveData` class allows us to create events locally.  In an actual production setting, this is where you would interface with your measurements.  We'll use the `Next` method to create values, and assign even integers from 0..198 to establish an ordered collection of `WaveData` instances.  The use of even integers will set us up for interpolation with stream behaviors later on. 
+
+There are a number of methods you can use to insert values into the Qi Service.  A single event can be inserted using `InsertValue<T>` or `InsertValueAsync<T>` (all Async methods use .NET TPL, see <https://msdn.microsoft.com/en-us/library/hh191443.aspx>).  You can also submit a collection of events using `InsertValues<T>` or `InsertValuesAsync<T>`.  There is also an overloaded version of `InsertValues` that takes an `IDictionary`.  Here is an edited version of the insertion code:
 
 ```c#
-    TimeSpan span = new TimeSpan(0, 0, 1);
+    TimeSpan span = new TimeSpan(0, 1, 0);
     WaveData evt = WaveData.Next(span, 2.0, 0);
 
     qiclient.InsertValue("evtStream", evt);
@@ -81,9 +128,12 @@ The `WaveData` class allows us to create events locally.  In an actual productio
     {
         evt = WaveData.Next(span, 2.0, i);
         events.Add(evt);
+        Thread.Sleep(400);
     }
     qiclient.InsertValues<WaveData>("evtStream", events);
 ```
+
+The delay within the loop ensures that the calculated values (which are time dependent) differ sufficiently from event to event to make it easier for the reader to compare them.
 
 ## Retrieve Events
 
@@ -103,6 +153,34 @@ We'll demonstrate updates by taking the values we created and replacing them wit
     qiclient.UpdateValue<WaveData>("evtStream", evt);
     qiclient.UpdateValues<WaveData>("evtStream", newEvents);
 ```
+## Stream Behaviors
+Stream behaviors allow you to control how interpolation occurs in certain retrieval methods.  `GetWindowValues`, above, does not do interpolation, rather it returns exactly those events found in a particular range.  `GetRangeValues`, however, let's us get interpolated values if the start and end indices do not align with actual recorded events.
+
+If no stream behavior is specified for a given stream and retrieval requires interpolation, a linear interpolation is performed.  Our example will perform a stepwise interpolation.  Before doing anything, use the `GetRangeValues` method to retrieve three values, but specify an initial index value that falls between two events (in this case, a value of 1, where we know that the first two events have Order values of 0 and 2) and request interpolation:
+
+```c#
+    foundEvts = qiclient.GetRangeValues<WaveData>("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
+```
+
+This will show a calculated event with `Order` 1 and interpolated values for the other properties. The next thing is to create a stream behavior object:
+
+```c#
+    QiStreamBehavior behavior = new QiStreamBehavior();
+    behavior.Id = "evtStreamStepLeading";
+    behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
+    behavior = qiclient.GetOrCreateBehavior(behavior);
+```
+
+This creates and submits a unique stream behavior that specifies a stepwise interpolation using the nearest preceding recorded event.  More sophisticated behavior, especially per-property control of interpolation behavior, is also possible.  You are encouraged to read the [Qi API documentation](https://qi-docs.readthedocs.org/en/latest/Overview/).
+
+Next, assign the behavior's id to the stream object's optional `BehaviorId` property and update the stream definition in the Qi Service:
+
+```c#
+    sampleStream.BehaviorId = behavior.Id;
+    qiclient.UpdateStream("evtStream", sampleStream);
+```
+
+Now the code in the sample repeats the `GetRangeValues` call.  You still get a calculated value for the first returned event, but the values of the properties are the same as those for the recroded event with `Order = 0`.
 
 ## Delete Events
 
@@ -116,10 +194,11 @@ The type of the index property is specified as the type of the generic method.
 
 ## Bonus: Deleting Types and Streams
 
-You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
+You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior, and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero, followed by the behavior:
 
 ```c#
     qiclient.DeleteStream("evtStream")
+    qiclient.DeleteBehavior("evtStreamStepLeading");
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly

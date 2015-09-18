@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QiLibsSample
+namespace RestSample
 {
     public class WaveData
     {
@@ -33,8 +32,7 @@ namespace QiLibsSample
                 Tanh = multiplier * Math.Tanh(radians),
             };
         }
-        
-        [Key]
+
         public int Order
         {
             get;
@@ -106,4 +104,3 @@ namespace QiLibsSample
 
     }
 }
-

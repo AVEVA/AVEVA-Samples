@@ -4,14 +4,14 @@ This sample is written using only the Qi REST API.  This API allows for the crea
 
 ## Instantiate a Qi Client
 
-We've created a class wrapping an `HttpClient` instance from the `System.Net.Http` namespace and providing methods for the major CRUD operations we wish to perform. The CRUD methods encapsulate the Qi REST API.  Each call consists of an HTTP request with a specific URL and HTTP verb.  The URL is the server plus the extension specific to the call.  Like all REST APIs, the Qi REST API maps HTTP verbs to CRUD like this:
+We've created a class wrapping an `HttpClient` instance from the `System.Net.Http` namespace and providing methods for the major CRUD operations we wish to perform. The CRUD methods encapsulate the Qi REST API.  Each call consists of an HTTP request with a specific URL and HTTP method.  The URL is the server plus the extension specific to the call.  Like all REST APIs, the Qi REST API maps HTTP methods to CRUD like this:
 
-| HTTP Verb | CRUD Operation | Content Found In |
-|-----------|----------------|------------------|
-| POST      | Create         | message body     |
-| GET       | Retrieve       | URL parameters   |
-| PUT       | Update         | message body     |
-| DELETE    | Delete         | URL parameters   |
+| HTTP Method | CRUD Operation | Content Found In |
+|-------------|----------------|------------------|
+| POST        | Create         | message body     |
+| GET         | Retrieve       | URL parameters   |
+| PUT         | Update         | message body     |
+| DELETE      | Delete         | URL parameters   |
 
 The constructor for our QiClient class takes the base URL (i.e., protocol plus server and port number) and ensures it ends with a forward slash.  This makes our job easier when it comes time to compose the URL for a specific REST call.  Next, the constructor establishes a thirty second timeout and indicates that the client accepts JSON format responses:
 
@@ -31,7 +31,38 @@ The constructor for our QiClient class takes the base URL (i.e., protocol plus s
 
 ## Obtain an Authentication Token
 
-The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft **placeholder**.
+The Qi Service is secured by obtaining tokens from an Azure Active Directory instance.  The sample applications are examples of a *confidential client*.  Such clients provide a user ID and secret that are authenticated against the directory.   The sample code includes several placeholder strings.  You must replace these with the authentication-related values you received from OSIsoft.  The strings are found at the beginning of `QiClient.cs`.
+
+```c#
+        static string _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        static string _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+        static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+```
+
+At the bottom of `QiClient.cs` you will find a method called `AcquireAuthToken`.  The first step in obtaining an authorization token is to create an authentication context related to the Azure Active Directory instance providing tokens.  The authority is designated by the URI in `_authority`.
+
+```c#
+    if (_authContext == null)
+    {
+        _authContext = new AuthenticationContext(_authority);
+    }
+```
+
+`AuthenticationContext` instances take care of communicating with the authority and also maintain a local cache of tokens.  Tokens have a fixed lifetime, typically one hour, but they can be refreshed by the authenticating authority for a longer period.  If the refresh period has expired, the credentials have to be presented to the authority again.  Happily, the `AcquireToken` method hides these details from client programmers.  As long as you call `AcquireToken` before each HTTP call, you will have a valid token.  Here is how that is done:
+
+```c#
+    try
+    {
+        ClientCredential userCred = new ClientCredential(_appId, _appKey);
+        AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+        return authResult.AccessToken;
+    }
+    catch (AdalException)
+    {
+        return string.Empty;
+    }
+```
 
 ## Create a Qi Type
 
@@ -91,7 +122,8 @@ All this creates a type definition locally, but it has to be submitted in a REST
                 Method = HttpMethod.Post,
             };
 
-            //msg.Headers.Authorization = "Bearer: x";
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string content = JsonConvert.SerializeObject(typeDef);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
@@ -108,7 +140,7 @@ All this creates a type definition locally, but it has to be submitted in a REST
         }
 ```
 
-The main program calls the method like this:
+After creating the `HttpRequestMessage` with the proper URL and HTTP method, we call `AcquireAuthToken` and attach the result to the message as a header.  This ensures that each call always has a valid authentication token. The main program calls the method like this:
 
 ```c#
   string evtTypeString = qiclient.CreateType(type).Result;
@@ -116,6 +148,8 @@ The main program calls the method like this:
 ```
 
 We've chosen to return the JSON serialization returned from the Qi Service and deserialize it in the main program, a topic we'll return to when we discuss data calls.  Note also that the methods in `QiClient` are async, but the application itself is a simple console application.  `Main` is a static method, so it cannot take advantage of `await`, hence our use of `Result` above, and `Wait` for methods that do not return a value.  A more complicated client application could use the asynchronous methods to greater advantage.
+
+*Note: The various Create methods in Qi will return an HTTP status code of 302 (Found) if you attempt to create an entity (in this case, a type definition) that exists in the system. The client then follows the redirect URI. In the current version of the Qi, this will fail with an HTTP status code of 401 (Unauthorized) rather than succeed following a 302 (Found) result.  This will be corrected in future versions.*
 
 ## Create a Qi Stream
 
@@ -149,10 +183,22 @@ Our CRUD methods are all very similar.  The REST API URL templates are predefine
   }
 ```
 
-The main program creates a single `WaveData` event with the `Order` 0 and inserts it.  Then it creates 99 more sequential events and inserts them with a single call:
+The main program creates a single `WaveData` event with the `Order` 0 and inserts it.  Then it creates 99 more sequential events and inserts them with a single call. The events have even numbered index values to allow us to demonstrate interpolation with stream behaviors in a subsequent section:
 
 ```c#
+    TimeSpan span = new TimeSpan(0, 1, 0);
+    WaveData evt = WaveData.Next(span, 2.0, 0);
 
+    qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+
+    List<WaveData> events = new List<WaveData>();
+    for (int i = 2; i < 200; i+=2)
+    {
+      evt = WaveData.Next(span, 2.0, i);
+      events.Add(evt);
+      Thread.Sleep(400);
+    }
+    qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
 ```
 
 ## Retrieve Events
@@ -180,22 +226,52 @@ We'll demonstrate updates by taking the values we created and replacing them wit
 
 Note that we are serializing the event or event collection and passing the string into the update method as a parameter.
 
+##Stream Behaviors
+Only recorded values are returned by `GetWindowValues`.  If you want to get a particular range of values and interpolate events at the endpoints of the range, you may use `GetRangeValues`.  The nature of the interpolation performed is determined by the stream behavior assigned to the stream.  if you do not specify one, a linear interpolation is assumed.  This example demonstrates a stepwise interpolation using stream behaviors.  More sophisticated behavior is possible, including the specification of interpolation behavior at the level of individual event type properties.  This is discussed in the [Qi API Reference](https://qi-docs.readthedocs.org/en/latest/Overview/).  First, before changing the stream's retrieval behavior, call `GetRangeValues` specifying a start index value of 1 (between the first and second events in the stream) and calculated values:
+
+```c#
+  jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+  foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+```
+
+This gives you a calculated event with linear interpolation at index 1.
+
+Now, we define a new stream behavior object and submit it to the Qi Service:
+
+```c#
+  QiStreamBehavior behavior = new QiStreamBehavior();
+  behavior.Id = "evtStreamStepLeading";
+  behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
+  string behaviorString = qiclient.CreateBehavior(behavior).Result;
+  behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
+```
+
+By setting the `Mode` property to `StepwiseContinuousLeading` we ensure that any calculated event will have an interpolated index, but every other property will have the value of the recorded event immediately preceding that index.  Now attach this behavior to the existing stream by setting the `BehaviorId` property of the stream and updating the stream definition in the Qi Service:
+
+```c#
+  evtStream.BehaviorId = behavior.Id;
+  qiclient.UpdateStream("evtStream", evtStream).Wait();
+```
+
+The sample repeats the call to `GetRangeValues` with the same parameters as before, allowing you to compare the values of the event at `Order=1`.
+
 ## Delete Events
 
 As with insertion, deletion of events is managed by specifying a single index or a range of index values over the type's key property. Here we are removing the single event whose `Order` property has the value 0, then removing any event on the range 1..99:    
 
 ```c#
   qiclient.RemoveValue("evtStream", "0").Wait();
-  qiclient.RemoveWindowValues("evtStream", "1", "99").Wait();
+  qiclient.RemoveWindowValues("evtStream", "1", "198").Wait();
 ```
 The index values are expressed as string representations of the underlying type.  DateTime index values must be expressed as ISO 8601 strings.
 
 ## Bonus: Deleting Types and Streams
 
-You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
+You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior, and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
 
 ```c#
   qiclient.DeleteStream("evtStream");
+  qiclient.DeleteBehavior("evtStreamStepLeading").Wait();
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly
