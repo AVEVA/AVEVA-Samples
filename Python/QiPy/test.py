@@ -1,8 +1,14 @@
 ﻿from qipy import *
 import datetime
-import random
 
-client = QiClient("localhost:12345", "my api key")
+authItems = {'resource' : "RESOURCE-URL",
+             'authority' : "AUTHORIZATION-URL/oauth2/token",
+             'appId' : "CLIENT-ID",
+             'appKey' : "CLIENT-SECRET"}
+
+QiServerUrl = "historiandevsecurity.cloudapp.net:3380"
+
+client = QiClient(QiServerUrl, authItems)
 
 print "Qi type operations"
 
@@ -55,8 +61,8 @@ tanhProperty.QiType = doubleType
 
 #create a QiType for WaveData Class
 wave = QiType()
-wave.Id = "WaveData"
-wave.Name = "WaveData"
+wave.Id = "WaveDataPy"
+wave.Name = "WaveDataPy"
 wave.Description = "This is a sample Qi type for storing WaveData type events"
 wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
                    cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
@@ -70,10 +76,10 @@ client.listTypes()
 print "Creating a stream in this tenant for the WaveData measurements"
 
 stream = QiStream()
-stream.Id = "WaveStream"
-stream.Name = "WaveStream"
+stream.Id = "WaveStreamPy"
+stream.Name = "WaveStreamPy"
 stream.Description = "A Stream to store the WaveData Qi types events"
-stream.TypeId = "WaveData"
+stream.TypeId = "WaveDataPy"
 evtStream = client.createStream(stream)
 
 client.listStreams()
@@ -134,7 +140,7 @@ foundUpdatedEvents = client.getWindowValues(evtStream, 0, 99)
 print "deleting events"
 
 #delete single event
-client.removeValue(evtStream, 0)
+client.removeValue(evtStream, 1)
 
 #delete rest of the events
 client.removeValues(evtStream,0,99)
@@ -144,7 +150,7 @@ emptyList = client.getWindowValues(evtStream, 0, 99)
 #deleting streams and types
 #delete streams first and then types
 #types being referenced cannot be deleted unless referrer is deleted
-client.deleteStream("WaveStream")
-client.deleteType("WaveData")
+client.deleteStream("WaveStreamPy")
+client.deleteType("WaveDataPy")
 
 print "test.py completed successfully!"

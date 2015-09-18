@@ -102,7 +102,7 @@ class WaveData:
         now = datetime.datetime.now()
         totalSecondsDay = (now - now.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds()
 
-        radians = ((totalSecondsDay % interval.second) / interval.second) * 2 * math.pi;
+        radians = ((totalSecondsDay % interval.second) / interval.second) * 2 * math.pi
         
         newWave = WaveData()
         newWave.Order = order
