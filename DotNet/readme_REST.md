@@ -183,19 +183,20 @@ Our CRUD methods are all very similar.  The REST API URL templates are predefine
   }
 ```
 
-The main program creates a single `WaveData` event with the `Order` 0 and inserts it.  Then it creates 99 more sequential events and inserts them with a single call:
+The main program creates a single `WaveData` event with the `Order` 0 and inserts it.  Then it creates 99 more sequential events and inserts them with a single call. The events have even numbered index values to allow us to demonstrate interpolation with stream behaviors in a subsequent section:
 
 ```c#
-    TimeSpan span = new TimeSpan(0, 0, 1);
+    TimeSpan span = new TimeSpan(0, 1, 0);
     WaveData evt = WaveData.Next(span, 2.0, 0);
 
     qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
     List<WaveData> events = new List<WaveData>();
-    for (int i = 1; i < 100; i++)
+    for (int i = 2; i < 200; i+=2)
     {
       evt = WaveData.Next(span, 2.0, i);
       events.Add(evt);
+      Thread.Sleep(400);
     }
     qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
 ```
@@ -225,22 +226,52 @@ We'll demonstrate updates by taking the values we created and replacing them wit
 
 Note that we are serializing the event or event collection and passing the string into the update method as a parameter.
 
+##Stream Behaviors
+Only recorded values are returned by `GetWindowValues`.  If you want to get a particular range of values and interpolate events at the endpoints of the range, you may use `GetRangeValues`.  The nature of the interpolation performed is determined by the stream behavior assigned to the stream.  if you do not specify one, a linear interpolation is assumed.  This example demonstrates a stepwise interpolation using stream behaviors.  More sophisticated behavior is possible, including the specification of interpolation behavior at the level of individual event type properties.  This is discussed in the [Qi API Reference](https://qi-docs.readthedocs.org/en/latest/Overview/).  First, before changing the stream's retrieval behavior, call `GetRangeValues` specifying a start index value of 1 (between the first and second events in the stream) and calculated values:
+
+```c#
+  jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+  foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+```
+
+This gives you a calculated event with linear interpolation at index 1.
+
+Now, we define a new stream behavior object and submit it to the Qi Service:
+
+```c#
+  QiStreamBehavior behavior = new QiStreamBehavior();
+  behavior.Id = "evtStreamStepLeading";
+  behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
+  string behaviorString = qiclient.CreateBehavior(behavior).Result;
+  behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
+```
+
+By setting the `Mode` property to `StepwiseContinuousLeading` we ensure that any calculated event will have an interpolated index, but every other property will have the value of the recorded event immediately preceding that index.  Now attach this behavior to the existing stream by setting the `BehaviorId` property of the stream and updating the stream definition in the Qi Service:
+
+```c#
+  evtStream.BehaviorId = behavior.Id;
+  qiclient.UpdateStream("evtStream", evtStream).Wait();
+```
+
+The sample repeats the call to `GetRangeValues` with the same parameters as before, allowing you to compare the values of the event at `Order=1`.
+
 ## Delete Events
 
 As with insertion, deletion of events is managed by specifying a single index or a range of index values over the type's key property. Here we are removing the single event whose `Order` property has the value 0, then removing any event on the range 1..99:    
 
 ```c#
   qiclient.RemoveValue("evtStream", "0").Wait();
-  qiclient.RemoveWindowValues("evtStream", "1", "99").Wait();
+  qiclient.RemoveWindowValues("evtStream", "1", "198").Wait();
 ```
 The index values are expressed as string representations of the underlying type.  DateTime index values must be expressed as ISO 8601 strings.
 
 ## Bonus: Deleting Types and Streams
 
-You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
+You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior, and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
 
 ```c#
   qiclient.DeleteStream("evtStream");
+  qiclient.DeleteBehavior("evtStreamStepLeading").Wait();
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly

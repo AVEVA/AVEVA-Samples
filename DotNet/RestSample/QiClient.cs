@@ -28,12 +28,13 @@ namespace RestSample
         private static AuthenticationContext _authContext = null;
 
         // REST API url strings
-        private string _tenantsBase = @"Qi/Tenants";
         private string _typesBase = @"Qi/Types";
         private string _streamsBase = @"Qi/Streams";
+        private string _behaviorsBase = @"Qi/Behaviors";
         private string _insertSingle = @"/Data/InsertValue";
         private string _insertMultiple = @"/Data/InsertValues";
         private string _getTemplate = @"/Data/GetWindowValues?startIndex={0}&endIndex={1}";
+        private string _getRangeTemplate = @"/Data/GetRangeValues?startIndex={0}&skip={1}&count={2}&reversed={3}&boundaryType={4}";
         private string _updateSingle = @"/Data/UpdateValue";
         private string _updateMultiple = @"/Data/UpdateValues";
         private string _removeSingleTemplate = @"/{0}/Data/RemoveValue?index={1}";
@@ -57,42 +58,6 @@ namespace RestSample
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
         #region Metadata methods
-        // TODO retract when provisioning is complete
-        public async Task CreateTenant(string tenantId)
-        {
-            QiTenant tenant = new QiTenant(tenantId);
-            HttpRequestMessage msg = new HttpRequestMessage
-            {
-                RequestUri = new Uri(_baseUrl + _tenantsBase),
-                Method = HttpMethod.Post,
-            };
-
-            //msg.Headers.Authorization = "Bearer: x";
-            
-            string content = JsonConvert.SerializeObject(tenant);
-            msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await _httpClient.SendAsync(msg);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new QiError(response.StatusCode, "Failed to create tenant with Id = " + tenantId);
-            }
-        }
-
-        public async Task DeleteTenant(string tenantId)
-        {
-            HttpRequestMessage msg = new HttpRequestMessage
-            {
-                RequestUri = new Uri(_baseUrl + _tenantsBase + @"/" + tenantId),
-                Method = HttpMethod.Delete
-            };
-
-            HttpResponseMessage response = await _httpClient.SendAsync(msg);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new QiError(response.StatusCode, "Failed to create tenant with Id = " + tenantId);
-            }
-        }
 
         /// <summary>
         /// Create a stream on the target Qi Service
@@ -122,6 +87,23 @@ namespace RestSample
             {
                 return await response.Content.ReadAsStringAsync();
             }
+        }
+
+        public async Task UpdateStream(string streamId, QiStream streamDef)
+        {
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId),
+                Method = HttpMethod.Put,
+            };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            string content = JsonConvert.SerializeObject(streamDef);
+            msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+            await SendAndRespondVoid(msg, _updateError, "stream", streamId);
         }
 
         /// <summary>
@@ -191,6 +173,46 @@ namespace RestSample
 
            await  SendAndRespondVoid(msg, _deleteError, "type", typeId);
         }
+
+        public async Task<string> CreateBehavior(QiStreamBehavior behavior)
+        {
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + _behaviorsBase),
+                Method = HttpMethod.Post,
+            };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            string content = JsonConvert.SerializeObject(behavior);
+            msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new QiError(response.StatusCode, "Error creating Type with id " + behavior.Id);
+            }
+            else
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public async Task DeleteBehavior(string behaviorId)
+        {
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + _behaviorsBase + @"/" + behaviorId),
+                Method = HttpMethod.Delete,
+            };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            await SendAndRespondVoid(msg, _deleteError, "type", behaviorId);
+        }
+
         #endregion
 
         #region Create Methods for Data (Insert)
@@ -268,6 +290,30 @@ namespace RestSample
             else
             {
                 throw new QiError(response.StatusCode, "Error getting windows values: " + response.ReasonPhrase);
+            }
+        }
+
+        public async Task<string> GetRangeValues(string streamId, string startIndex, int skip, int count, bool reverse, QiBoundaryType boundaryType)
+        {
+            string getClause = string.Format(_getRangeTemplate, startIndex, skip, count, reverse, boundaryType);
+            HttpRequestMessage msg = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + _streamsBase + @"/" + streamId + getClause),
+                Method = HttpMethod.Get
+            };
+
+            string token = AcquireAuthToken();
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResults = await response.Content.ReadAsStringAsync();
+                return jsonResults;
+            }
+            else
+            {
+                throw new QiError(response.StatusCode, "Error getting range values: " + response.ReasonPhrase);
             }
         }
 

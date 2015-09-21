@@ -54,9 +54,14 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QiBoundaryType.cs" />
     <Compile Include="QiClient.cs" />
     <Compile Include="QiError.cs" />
     <Compile Include="QiStream.cs" />
+    <Compile Include="QiStreamBehavior.cs" />
+    <Compile Include="QiStreamBehaviorOverride.cs" />
+    <Compile Include="QiStreamExtrapolation.cs" />
+    <Compile Include="QiStreamMode.cs" />
     <Compile Include="QiTenant.cs" />
     <Compile Include="QiType.cs" />
     <Compile Include="QiTypeCode.cs" />

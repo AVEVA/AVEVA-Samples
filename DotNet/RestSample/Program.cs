@@ -76,7 +76,7 @@ namespace RestSample
                 // Create a QiType for our WaveData class; the metadata proeprties are the ones we just created
                 QiType type = new QiType();
                 type.Name = "WaveData";
-                type.Id = "WaveData";
+                type.Id = "WaveDataType";
                 type.Description = "This is a sample stream for storing WaveData type events";
                 QiTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty}; 
                 type.Properties = props;
@@ -97,17 +97,18 @@ namespace RestSample
                 Console.WriteLine("Artificially generating 100 events and inserting them into the Qi Service");
 
                 // How to insert a single event
-                TimeSpan span = new TimeSpan(0, 0, 1);
+                TimeSpan span = new TimeSpan(0, 1, 0);
                 WaveData evt = WaveData.Next(span, 2.0, 0);
 
                 qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
                 List<WaveData> events = new List<WaveData>();
                 // how to insert an a collection of events
-                for (int i = 1; i < 100; i++)
+                for (int i = 2; i < 200; i+=2)
                 {
                     evt = WaveData.Next(span, 2.0, i);
                     events.Add(evt);
+                    Thread.Sleep(400);
                 }
                 qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
                 Thread.Sleep(2000);
@@ -118,7 +119,7 @@ namespace RestSample
                 #region Retrieve events
                 Console.WriteLine("Retrieving the inserted events");
                 Console.WriteLine("==============================");
-                string jCollection = qiclient.GetWindowValues("evtStream", "0", "99").Result;
+                string jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
                 WaveData[] foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -137,6 +138,7 @@ namespace RestSample
                 {
                     WaveData newEvt = WaveData.Next(span, 4.0, evnt.Order);
                     newEvents.Add(newEvt);
+                    Thread.Sleep(500);
                 }
                 qiclient.UpdateValues("evtStream", JsonConvert.SerializeObject(events)).Wait();
                 Thread.Sleep(2000);
@@ -144,26 +146,56 @@ namespace RestSample
                 // check the results
                 Console.WriteLine("Retrieving the updated values");
                 Console.WriteLine("=============================");
-                jCollection = qiclient.GetWindowValues("evtStream", "0", "99").Result;
+                jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
+                foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+                DumpEvents(foundEvents);
+                #endregion
+
+                #region stream behavior
+
+                // illustrate how stream behaviors modify retrieval
+                // First, pull three items back with GetRangeValues for range values between events.
+                // The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
+                Console.WriteLine();
+                Console.WriteLine(@"Retrieving three events without a stream behavior");
+                jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+                DumpEvents(foundEvents);
+
+                // now, create a stream behavior with Discrete and attach it to the existing stream
+                QiStreamBehavior behavior = new QiStreamBehavior();
+                behavior.Id = "evtStreamStepLeading";
+                behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
+                string behaviorString = qiclient.CreateBehavior(behavior).Result;
+                behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
+
+                // update the stream to include this behavior
+                evtStream.BehaviorId = behavior.Id;
+                qiclient.UpdateStream("evtStream", evtStream).Wait();
+
+                // repeat the retrieval
+                Console.WriteLine();
+                Console.WriteLine("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
+                jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
 
                 #region delete events
-                
+
                 // remove the first value -- index is the timestamp of the event
                 Console.WriteLine();
                 Console.WriteLine("Deleting events");
                 qiclient.RemoveValue("evtStream", "0").Wait();
 
                 // remove the rest -- start and end time indices
-                qiclient.RemoveWindowValues("evtStream", "1", "99").Wait();
+                qiclient.RemoveWindowValues("evtStream", "1", "198").Wait();
                 Thread.Sleep(2000);
 
                 Console.WriteLine("Checking for events");
                 Console.WriteLine("===================");
 
-                jCollection = qiclient.GetWindowValues("evtStream", "0", "99").Result;
+                jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -182,6 +214,7 @@ namespace RestSample
                 try
                 {
                     qiclient.DeleteStream("evtStream").Wait();
+                    qiclient.DeleteBehavior("evtStreamStepLeading").Wait();
                     qiclient.DeleteType(evtType.Id).Wait();
                 }
                 catch (Exception)

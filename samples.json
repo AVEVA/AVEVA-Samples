@@ -1,10 +1,14 @@
 [
-{"Title":"Python sample",
-"Description":"DEscription here plaesae",
+{"Title":"Python",
+"Description":"Sample Qi client written in Python language",
 "Url": "https://github.com/osisoft/Qi-Samples/tree/master/Python"
 },
-{"Title":".NET sample",
-"Description":"DEscription here plaesae",
+{"Title":".NET",
+"Description":"Sample Qi client written in C#",
 "Url": "https://github.com/osisoft/Qi-Samples/tree/master/DotNet"
+},
+{"Title":"Java",
+"Description":"Sample Qi client written in Java",
+"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Java/samples"
 }
 ]
