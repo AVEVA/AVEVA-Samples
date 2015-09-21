@@ -4,13 +4,77 @@ This sample demonstrates how Qi REST APIs are invoked using python.
 
 ## Creating a connection
 
-The sample uses *httplib* module to connect a service endpoint. A new connection is opened as follows:
+The sample uses `httplib` module to connect a service endpoint. A new connection is opened as follows:
 
 ```python
 	conn = httplib.HTTPConnection(url-name)
 ```
 
-* url-name is the service endpoint (Ex: "localhost:12345").
+* url-name is the service endpoint (Ex: "localhost:12345"). The connection is used by the `QiClient` class.  This class encapsulates the REST API and performs authentication.
+
+## Obtain an Authentication Token
+
+The Qi Service is secured by obtaining tokens from an Azure Active Directory instance. The sample applications are examples of a *confidential client*. Such clients provide a user ID and secret that are authenticated against the directory. The sample code includes several placeholder strings. You must replace these with the authentication-related values you received from OSIsoft. The strings are found at the beginning of `test.py`:
+
+```python
+authItems = {'resource' : "RESOURCE-URL",
+             'authority' : "AUTHORIZATION-URL/oauth2/token",
+             'appId' : "CLIENT-ID",
+             'appKey' : "CLIENT-SECRET"}
+```
+
+You will need to replace `resource`, `appId`, and `appKey`.  The `authItems` array is passed to the `QiClient` constructor.
+
+The Python sample is unique in that it is using raw OAuth 2 calls to obtain an authentication token.  The other samples use libraries from Microsoft that perform the same service, but such a library is not available for Python at this time.  Since OAuth uses HTTP headers, however, it is not hard to do the work yourself if you understand OAuth.  
+
+During initialization, `QiClient` makes the following calls:
+
+```python
+self.__getToken()
+if not self.__token:
+    return
+```
+
+The first call, `__getToken`, makes the OAuth call to the Azure ActiveDirectory instance to get a token, then assigns the value (assuming the application is successfully authenticated) to the member variable `__token`.  Thus, following the call to `__getToken`, QiClient checks to ensure it has an authentication token. Calls would fail in the absence of one, hence the return if no token is found.  This is the code for `__getToken`:
+
+```python
+    def __getToken(self):     
+        if self.__expiration < (time.time()/100):
+            return
+            
+        response = requests.post(self.__authItems['authority'], 
+                                 data = { 'grant_type' : 'client_credentials',
+                                         'client_id' : self.__authItems['appId'],
+                                            'client_secret' : self.__authItems['appKey'],
+                                            'resource' : self.__authItems['resource']
+                                            })
+        if response.status_code == 200:
+            self.__token = response.json()['access_token']
+            self.__expiration = response.json()['expires_on']
+        else:
+            self.__token = ""
+            print "Authentication Failure : "+response.reason
+```
+
+Authentication tokens do expire, however, so the token should be periodically refreshed. The first lines of `__getToken` check to see if the token requires a new call and returns if it does not.  Otherwise, the request is made specifying the type of credentials offered and the resource for which the token is sought.  The `__getToken` method is called before each REST API call, and the token is passed as part of the headers:
+
+```python
+conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertMultiple, 
+     payload, self.__qi_headers())
+```
+
+`__qi_headers`, in turn, looks like this:
+
+```python
+def __qi_headers(self):
+    return {
+        "Authorization" : "bearer %s" % self.__token,
+        "Content-type": "application/json", 
+        "Accept": "text/plain"
+    }
+```
+
+Note how the value of the `Authorization` header is the word `bearer`, followed by a space, and followed by the token value itself.
 
 ## Creating a Qi type
 
