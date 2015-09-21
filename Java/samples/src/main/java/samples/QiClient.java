@@ -20,11 +20,10 @@ public class QiClient {
 	Gson mGson =  null; 
 	private String baseUrl = null; 
 	private String tenantName = null;
-	static String _resource = "https://pihomemain.onmicrosoft.com/historian";
-	static String _authority = "https://login.windows.net/qimaininternal.onmicrosoft.com";
-	
-	static String _appId = "Please enter your appId here";
-	static String _appKey = "Please enter your appKey here";
+	static String _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+    static String _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+    static String _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+    static String _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
 
 
 
@@ -32,6 +31,7 @@ public class QiClient {
 	private String tenantsBase = "/Qi/Tenants";
 	private String typesBase = "/Qi/Types";
 	private String streamsBase = "/Qi/Streams";
+	private String behaviorsBase = "/Qi/Behaviors";
 	private String insertSingle = "/Data/InsertValue";
 	private String insertMultiple = "/Data/InsertValues";
 	private String getTemplate = "/Data/GetWindowValues?";
@@ -121,6 +121,229 @@ public class QiClient {
 
 
 	}
+	
+	public void UpdateStream(String streamId, QiStream streamDef){
+		
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+		
+
+		try
+		{
+			url = new URL(baseUrl + streamsBase + "/" +streamId );
+
+			urlConnection = getConnection(url,"PUT");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}catch (IllegalStateException e) {
+			e.getMessage();
+		}        
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		
+		try{
+			String body = mGson.toJson(streamDef);           
+			OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+			OutputStreamWriter writer = new OutputStreamWriter(out);
+			writer.write(body);
+			writer.close();
+
+			int HttpResult = urlConnection.getResponseCode();
+
+			if (HttpResult == HttpURLConnection.HTTP_OK)
+			{
+				System.out.println("Update Stream request succeded");
+			}
+
+
+			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+			{
+				throw new QiError(urlConnection, "Stream update  failed");
+			}
+
+		}catch (Exception e){
+
+			e.printStackTrace();
+
+		}
+			
+	}
+	
+	public String CreateBehavior(QiStreamBehavior behavior){
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		try
+		{
+			url = new URL(baseUrl + behaviorsBase );
+
+			urlConnection = getConnection(url,"POST");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}catch (IllegalStateException e) {
+			e.getMessage();
+		}        
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		try{
+			String body = mGson.toJson(behavior);           
+			OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+			OutputStreamWriter writer = new OutputStreamWriter(out);
+			writer.write(body);
+			writer.close();
+
+			int HttpResult = urlConnection.getResponseCode();
+
+
+
+
+			if (HttpResult == HttpURLConnection.HTTP_OK)
+			{
+				System.out.println("behavior creation request succeded");
+			}
+
+
+			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+			{
+				throw new QiError(urlConnection, "behavior creation failed");
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(urlConnection.getInputStream()));
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+
+
+
+		}catch (Exception e){
+
+			e.printStackTrace();
+
+		}
+
+		return response.toString();
+		
+		
+	}
+
+	public void DeleteBehavior(String behaviorId){
+
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+
+
+		try
+		{
+			url = new URL(baseUrl + behaviorsBase + "/" + behaviorId);
+
+			urlConnection = getConnection(url,"DELETE");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}catch (IllegalStateException e) {
+			e.getMessage();
+		}        
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+	   try
+	   {
+
+		   int HttpResult = urlConnection.getResponseCode();
+
+		   if (HttpResult == HttpURLConnection.HTTP_OK)
+		   {
+			   System.out.println("behavior creation request succeded");
+		   }
+
+		   if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+		   {
+			   throw new QiError(urlConnection, "delete behavior request failed");
+		   }
+
+	   }catch (Exception e){
+
+		   e.printStackTrace();
+
+	   }
+
+
+
+	}
+
+	public String getRangeValues(String streamId, String startIndex, int skip, int count, boolean reverse, QiBoundaryType boundaryType)
+	{
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		try
+		{
+			url = new URL(baseUrl +streamsBase+ "/" +streamId + "/Data/GetRangeValues?startIndex="+startIndex+"&skip="+skip+"&count="+count+"&reversed="+reverse+"&boundaryType="+boundaryType );
+
+			urlConnection = getConnection(url,"GET");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}catch (IllegalStateException e) {
+			e.getMessage();
+		}        
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		
+		try{
+			
+		   int HttpResult = urlConnection.getResponseCode();
+
+			if (HttpResult == HttpURLConnection.HTTP_OK)
+			{
+				System.out.println("get range values request succeded");
+			}
+
+			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+			{
+				throw new QiError(urlConnection, "get range values request failed");
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(urlConnection.getInputStream()));
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+
+		}catch (Exception e){
+
+			e.printStackTrace();
+
+		}
+
+		return response.toString();
+		
+	
+	}
+	
+	
 	public String CreateType(QiType typeDef)
 	{
 
@@ -310,10 +533,8 @@ public class QiClient {
 
 			}
 
-
-
 		}catch (Exception e){
-
+             e.printStackTrace();
 
 
 		}
@@ -755,66 +976,7 @@ public class QiClient {
 
 
 
-	public void deleteTenant(String tenantId) {
 
-
-		java.net.URL url = null;
-		java.net.HttpURLConnection urlConnection = null;
-		String inputLine;
-		try
-		{
-			url = new URL(baseUrl + tenantsBase + "/" + tenantId );
-		}
-		catch (MalformedURLException mal)
-		{
-			System.out.println("MalformedURLException for delete tenant");
-		}
-
-
-		try
-		{
-			urlConnection = (java.net.HttpURLConnection) url.openConnection();
-			urlConnection.setDoOutput(true);
-			urlConnection.setChunkedStreamingMode(0);
-			urlConnection.setRequestMethod("DELETE");
-			urlConnection.setUseCaches(false);
-			urlConnection.setConnectTimeout(10000);
-			urlConnection.setReadTimeout(10000);
-			urlConnection.setRequestProperty("Content-Type", "application/json");
-			urlConnection.setRequestProperty("QiTenant",tenantName );  
-
-
-
-			int HttpResult = urlConnection.getResponseCode();
-			if (HttpResult == HttpURLConnection.HTTP_OK)
-			{
-				System.out.println("deleteTenant request succeded");
-			}
-
-
-			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
-			{
-
-				System.out.println("deleteTenant request failed");
-				BufferedReader in = new BufferedReader(
-						new InputStreamReader(urlConnection.getErrorStream()));
-
-
-				while ((inputLine = in.readLine()) != null) {
-					System.out.println(inputLine);
-				}
-
-				in.close();
-			}
-
-		}catch (Exception e){
-
-
-
-		}
-
-
-	}
 
 
 

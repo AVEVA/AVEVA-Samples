@@ -150,8 +150,11 @@ public class WaveData {
 		Calendar cal =  new GregorianCalendar();
 
 		double sec =  seconds(cal);
+		int intervalInMilliSec = interval * 60 *1000;
 
-		double radians = ((sec % interval) / interval ) * 2 * Math.PI;
+		
+		//fixme: change to milli sec 
+		double radians = ((sec % interval) / intervalInMilliSec ) * 2 * Math.PI;
 
 		return new WaveData(multiplier, radians, order);
 
@@ -163,13 +166,13 @@ public class WaveData {
 	public static double seconds (Calendar cal){
 
 		double sec = 0; 
-		sec += cal.get(Calendar.HOUR_OF_DAY)* 60 * 60;
+		sec += cal.get(Calendar.HOUR_OF_DAY)* 60 * 60* 1000;
 
-		sec += cal.get(Calendar.MINUTE) * 60;
+		sec += cal.get(Calendar.MINUTE) * 60 * 1000 ;
 
-		sec += cal.get(Calendar.SECOND);
+		sec += cal.get(Calendar.SECOND)* 1000;
 
-		sec += cal.get(Calendar.MILLISECOND) / 1000;
+		sec += (double)cal.get(Calendar.MILLISECOND);
 
 		return sec;
 	}
