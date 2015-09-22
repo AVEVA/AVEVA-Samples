@@ -17,7 +17,7 @@ public class Program {
 		QiStream evtStream = null;
 
 		try{
-			String server = "http://localhost:3380";
+			String server = "https://qi-data.osisoft.com:3380";
 			//String server = "http://historiantest.cloudapp.net:3380";
 			qiclient = new QiClient( server);
 
@@ -178,8 +178,8 @@ public class Program {
             behavior = qiclient.mGson.fromJson(behaviorString, QiStreamBehavior.class);
             
             // update the stream to include this behavior
-            evtStream.setBehaviorId("evtStreamStepLeading") ; //fixme
-            //evtStream.setBehaviorId(behavior.getId()) ;
+            //evtStream.setBehaviorId("evtStreamStepLeading") ;
+            evtStream.setBehaviorId(behavior.getId()) ;
             qiclient.UpdateStream("evtStreamJ", evtStream);
 
             // repeat the retrieval
@@ -239,7 +239,7 @@ public class Program {
 	private static void DumpEvents(ArrayList<WaveData> foundEvents) {
 
 
-		System.out.println("Found" +foundEvents.size() + "events, writing");
+		System.out.println("Found " +foundEvents.size() + " events, writing");
 
 		for( WaveData evnt : foundEvents)
 		{

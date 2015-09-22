@@ -19,13 +19,16 @@ public class QiClient {
 
 	Gson mGson =  null; 
 	private String baseUrl = null; 
-	private String tenantName = null;
+	private String tenantName = null;/*
 	static String _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
     static String _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
     static String _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
     static String _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
-
-
+*/
+    static String _resource = "https://qihomeprod.onmicrosoft.com/historian";
+    static String _authority = "https://login.windows.net/qitenant1prod.onmicrosoft.com";
+    static String _appId = "64f52acc-4a02-40ad-a059-7dcd1d38be68";
+    static String _appKey = "GjqVItbTHEgW1f8u3zaPUAqP8wDjDHrZpMUq8Mb8ZNo=";
 
 	// REST API url strings
 	private String tenantsBase = "/Qi/Tenants";
