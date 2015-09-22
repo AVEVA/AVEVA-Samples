@@ -344,9 +344,9 @@ As with insertion, deletion of events is managed by specifying a single index or
 ```
 The index values are expressed as string representations of the underlying type.  DateTime index values must be expressed as ISO 8601 strings.
 
-## Bonus: Deleting Types and Streams
+## Cleanup: Deleting Types and Streams
 
-You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
+You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior and Qi type it created before terminating, thereby resetting your tenant environment to the state before running the sample.  The stream goes first so that the reference count on the type goes to zero:
 
 ```Java
    qiclient.deleteStream("evtStreamJ");
