@@ -99,13 +99,13 @@ public class Program {
 			System.out.println("Artificially generating 100 events and inserting them into the Qi Service");
 
 			// How to insert a single event
-            //fixme: span 
+     
 			WaveData evt = WaveData.next(1, 2.0, 0);
 			qiclient.CreateEvent(evtStream.getId(), qiclient.mGson.toJson(evt));
 
 
 
-            //fixme : span
+      
 			List<WaveData> events = new ArrayList<WaveData>();
 			// how to insert an a collection of events
 			for (int i = 1; i < 200; i+=2)
