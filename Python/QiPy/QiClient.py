@@ -1,7 +1,4 @@
-﻿# qipy
-# chad@osisoft.com and test
-
-from urlparse import urlparse
+﻿from urlparse import urlparse
 import urllib
 import httplib as http
 import json
@@ -38,6 +35,7 @@ class QiClient(object):
         self.__getToken()
         if not self.__token:
             return
+
         print "----------------------------------"
         print "  ___  _ ____"        
         print " / _ \(_)  _ \ _   _ "
