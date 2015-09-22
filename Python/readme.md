@@ -209,7 +209,7 @@ Updating multiple events is similar but the payload has an array of event object
 ##Stream Behaviors
 Recorded values are returned by `GetWindowValues`.  If you want to get a particular range of values and interpolate events at the endpoints of the range, you may use `GetRangeValues`.  The nature of the interpolation performed is determined by the stream behavior assigned to the stream.  if you do not specify one, a linear interpolation is assumed.  This example demonstrates a stepwise interpolation using stream behaviors.  More sophisticated behavior is possible, including the specification of interpolation behavior at the level of individual event type properties.  This is discussed in the [Qi API Reference](https://qi-docs.readthedocs.org/en/latest/Overview/).  First, before changing the stream's retrieval behavior, call `GetRangeValues` specifying a start index value of 1 (between the first and second events in the stream) and calculated values:
 
-``Python
+```python
   jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
   foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
 ```
@@ -218,7 +218,7 @@ This gives you a calculated event with linear interpolation at index 1.
 
 Now, we define a new stream behavior object and submit it to the Qi Service:
 
-```Python
+```python
   QiStreamBehavior behavior = new QiStreamBehavior();
   behavior.Id = "evtStreamStepLeading";
   behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
@@ -228,7 +228,7 @@ Now, we define a new stream behavior object and submit it to the Qi Service:
 
 By setting the `Mode` property to `StepwiseContinuousLeading` we ensure that any calculated event will have an interpolated index, but every other property will have the value of the recorded event immediately preceding that index.  Now attach this behavior to the existing stream by setting the `BehaviorId` property of the stream and updating the stream definition in the Qi Service:
 
-```c#
+```python
   evtStream.BehaviorId = behavior.Id;
   qiclient.UpdateStream("evtStream", evtStream).Wait();
 ```
