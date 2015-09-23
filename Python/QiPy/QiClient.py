@@ -529,7 +529,7 @@ class QiClient(object):
 
         if response.status != 200:            
             conn.close()
-            raise QiError("Failed to get last value for QiStream {stream_id}. {status}:{reason}".
+            raise QiError("Failed to get window values for QiStream {stream_id}. {status}:{reason}".
                           format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
@@ -553,7 +553,7 @@ class QiClient(object):
 
         if response.status != 200:            
             conn.close()
-            raise QiError("Failed to get last value for QiStream {stream_id}. {status}:{reason}".
+            raise QiError("Failed to get range values for QiStream {stream_id}. {status}:{reason}".
                           format(stream_id = streamId, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
