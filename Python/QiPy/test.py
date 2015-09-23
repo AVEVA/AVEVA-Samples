@@ -5,12 +5,20 @@ authItems = {'resource' : "RESOURCE-URL",
              'authority' : "AUTHORIZATION-URL/oauth2/token",
              'appId' : "CLIENT-ID",
              'appKey' : "CLIENT-SECRET"}
+#print method for returned events
+def dumpEvents(foundEvents):
+    print "Total Events found: "+ str(len(foundEvents))
+    for i in foundEvents:
+        print i
 
-QiServerUrl = "historiandevsecurity.cloudapp.net:3380"
+QiServerUrl = "qi-data.osisoft.com:3380"
 
 client = QiClient(QiServerUrl, authItems)
 
-print "Qi type operations"
+######################################################################################################
+# QiType creation
+######################################################################################################
+print "Qi type creation"
 
 #create Qi types for double and int, then create properties for all the wavedata properties
 print "Creating Qi type for WaveData instances"
@@ -72,6 +80,10 @@ print "Creating the WaveData Qi type in Qi service"
 evtType = client.createType(wave)
 client.listTypes()
 
+######################################################################################################
+# Qi Stream creation
+######################################################################################################
+
 #create a stream
 print "Creating a stream in this tenant for the WaveData measurements"
 
@@ -84,15 +96,16 @@ evtStream = client.createStream(stream)
 
 client.listStreams()
 
-
-#CRUD operations
+######################################################################################################
+# CRUD operations for events
+######################################################################################################
 
 #create events and insert into the new stream
 print"Artificially generating 100 events and inserting them into the Qi Service"
 
 #inserting a single event
 timeSpanFormat = "%H:%M:%S"
-spanStr = "0:0:1"
+spanStr = "0:1:0"
 span = datetime.datetime.strptime(spanStr, timeSpanFormat)
 evt = WaveData.nextWave(span, 2.0, 0)
 
@@ -104,7 +117,7 @@ print client.getLastValue(evtStream)
 
 #inserting a list of events
 events = []
-for i in range(1,100):
+for i in range(1,200,2):
     evt = WaveData.nextWave(span, 2.0, i)
     events.append(evt)
 
@@ -114,6 +127,9 @@ client.insertValues(evtStream, events)
 print "Retrieving inserted events"
 
 foundEvents = client.getWindowValues(evtStream, 0, 99)
+
+#print all the events
+dumpEvents(foundEvents)
 
 #update events
 print "Updating events"
@@ -136,6 +152,36 @@ print "Retrieving the updated values"
 
 foundUpdatedEvents = client.getWindowValues(evtStream, 0, 99)
 
+#print all the events
+dumpEvents(foundUpdatedEvents)
+
+######################################################################################################
+#stream behaviour
+######################################################################################################
+
+#illustrate how stream behaviors modify retrieval
+#First, pull three items back with GetRangeValues for range values between events.
+#The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
+print "Retrieving three events without a stream behaviour"
+
+foundEvents = client.getRangeValues("WaveStreamPy", "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
+dumpEvents(foundEvents)
+
+#create a stream behavior with Discrete and attach it to the existing stream
+behaviour = QiStreamBehaviour()
+behaviour.Id = "evtStreamStepLeading";
+behaviour.Mode = QiStreamMode.StepwiseContinuousLeading.value;
+behaviour = client.createBehaviour(behaviour)
+
+#update stream to inlude this behaviour
+evtStream.BehaviourId = behaviour.Id
+client.updateStream(evtStream)
+
+#repeat the retrieval
+print "Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval"
+foundEvents = client.getRangeValues("WaveStreamPy", "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
+dumpEvents(foundEvents)
+
 #delete events
 print "deleting events"
 
@@ -143,9 +189,13 @@ print "deleting events"
 client.removeValue(evtStream, 1)
 
 #delete rest of the events
-client.removeValues(evtStream,0,99)
+client.removeValues(evtStream,0, 200)
 
-emptyList = client.getWindowValues(evtStream, 0, 99)
+emptyList = client.getWindowValues(evtStream, 0, 200)
+
+######################################################################################################
+# QiType and QiStream deletion
+######################################################################################################
 
 #deleting streams and types
 #delete streams first and then types
