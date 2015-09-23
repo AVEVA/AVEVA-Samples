@@ -108,7 +108,7 @@ public class Program {
       
 			List<WaveData> events = new ArrayList<WaveData>();
 			// how to insert an a collection of events
-			for (int i = 1; i < 200; i+=2)
+			for (int i = 2; i < 200; i+=2)
 			{
 		        evt = WaveData.next(1, 2.0, i);
 				events.add(evt);
