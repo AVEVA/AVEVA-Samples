@@ -6,7 +6,7 @@ This sample demonstrates how Qi REST APIs are invoked using JavaScript. It has f
 
 ## Steps to run the sample:
 1. Make a local copy of the git repo
-2. Install node.js, if you have'nt already
+2. Install node.js, if you haven't already
 3. Install request-promise
     The `request-promise` node package can be installed as follows :
 ```javascript
