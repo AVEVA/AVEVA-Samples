@@ -34,7 +34,7 @@ module.exports = {
         this.insertSingle = "/Data/InsertValue";
         this.insertMultiple = "/Data/InsertValues";
         this.getTemplate = "/{0}/Data/GetWindowValues?startIndex={1}&endIndex={2}";
-        this.getRangeTemplate = "/Data/GetRangeValues?startIndex={0}&skip={1}&count={2}&reversed={3}&boundaryType={4}";
+        this.getRangeTemplate = "/{0}/Data/GetRangeValues?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}";
         this.updateSingle = "/Data/UpdateValue";
         this.updateMultiple = "/Data/UpdateValues";
         this.removeSingleTemplate = "/{0}/Data/RemoveValue?index={1}";
@@ -88,11 +88,6 @@ module.exports = {
                                             });
         };
 
-        //get a single Qi type based on the QiType ID
-        this.getType = function(typeId){
-
-        };
-
         //delete a type
         this.deleteType = function(typeId){
                                 return restCall({
@@ -110,11 +105,6 @@ module.exports = {
                                             headers : this.getHeaders(),
                                             body : JSON.stringify(qiStream).toString()
                                         });
-        };
-
-        //get a stream's property based on the stream Id
-        this.getStream = function(streamId){
-
         };
 
         //get all the streams under the tenant's Qi Service
@@ -153,11 +143,6 @@ module.exports = {
                                             headers : this.getHeaders(),
                                             body : JSON.stringify(behaviour)
                                         });
-        };
-
-        //get the last inserted value in the Qi Service
-        this.getLastValue = function(){
-
         };
 
         //insert an event into a stream

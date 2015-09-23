@@ -171,7 +171,7 @@ dumpEvents(foundEvents)
 #create a stream behavior with Discrete and attach it to the existing stream
 behaviour = QiStreamBehaviour()
 behaviour.Id = "evtStreamStepLeading";
-behaviour.Mode = QiStreamMode.StepwiseContinuousLeading.value;
+behaviour.Mode = QiStreamMode.StepwiseContinuousLeading.value
 behaviour = client.createBehaviour(behaviour)
 
 #update stream to inlude this behaviour

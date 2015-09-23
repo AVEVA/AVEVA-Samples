@@ -65,7 +65,7 @@ class QiStreamBehaviour(object):
             dictionary["Mode"] = self.__Mode
 
         if self.__ExtrapolationMode is not None:
-            dictionary["ExtrapolationMode"] = self.ExtrapolationMode
+            dictionary["ExtrapolationMode"] = self.__ExtrapolationMode
         
         if self.__Overrides is not None:
             dictionary["Overrides"] = self.__Overrides
@@ -91,8 +91,8 @@ class QiStreamBehaviour(object):
         if "Name" in content:
             behaviour.Name = content["Name"]
 
-        if "Description" in content:
-            behaviour.Mode = content["Mode"]
+        if "Mode" in content:
+            behaviour.Mode = QiStreamMode(content["Mode"])
 
         if "TypeId" in content:
             behaviour.ExtrapolationMode = content["ExtrapolationMode"]

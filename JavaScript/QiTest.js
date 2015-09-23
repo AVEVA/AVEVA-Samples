@@ -153,7 +153,6 @@ http.createServer(function(request1, response) {
 	var interval = new Date();
 	interval.setHours(0,1,0,0);
 	var evt = qiObjs.NextWave(interval, 2.0, 0);
-	console.log(JSON.stringify(evt));
 
 	var insertValueSuccess = listStreamsSuccess.then(
 													//GET all streams successful
@@ -231,7 +230,7 @@ http.createServer(function(request1, response) {
 										var obj = JSON.parse(res);
 										foundEvents = obj;
 										obj.forEach(function(elem, index){
-											//console.log("Event No. "+ index + " : "+JSON.stringify(elem));
+											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
 										});
 
 										console.log("\nUpdate a single event at index 1");
@@ -297,7 +296,7 @@ http.createServer(function(request1, response) {
 										var obj = JSON.parse(res);
 										foundEvents = obj;
 										obj.forEach(function(elem, index){
-											//console.log("Event No. "+ index + " : "+JSON.stringify(elem));
+											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
 										});
 
 										console.log("\nRetrieving three events without a stream behaviour");
@@ -305,20 +304,25 @@ http.createServer(function(request1, response) {
 											return checkTokenExpired(client).then(
 																	function(res){
 																		refreshToken(res, client);
-																		return client.getRangeValues(stream, 1, 0, 3, False, qiObjs.qiBoundaryType.ExactOrCalculated);
+																		return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 																	}).catch(function(err){logError(err)});
 										}else{
-											return client.getRangeValues(stream, 1, 0, 3, False, qiObjs.qiBoundaryType.ExactOrCalculated);
+											return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 										}
 									}).catch(function(err){logError(err)});
 
 	//stream behaviour tests
 	var behaviour = new qiObjs.QiBehaviour({"Mode":qiObjs.qiStreamMode.Continuous});
 	behaviour.Id = "evtStreamStepLeading";
-	behaviour.Mode = qiObjs.qiStreamMode.StepWiseContinuousLeading;
-	
+	behaviour.Mode = qiObjs.qiStreamMode.StepwiseContinuousLeading;
+
 	var createBehaviourSuccess = getRangeEvents.then(
 									function(res){
+										var obj = JSON.parse(res);
+										foundEvents = obj;
+										obj.forEach(function(elem, index){
+											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
+										});
 										console.log("\nCreating Qistream behaviour");
 										if(client.tokenExpires < nowSeconds){
 											return checkTokenExpired(client).then(
@@ -334,7 +338,7 @@ http.createServer(function(request1, response) {
 	//update stream with the behaviour
 	var updateStream = createBehaviourSuccess.then(
 									function(res){
-										console.log("\nUpdating Qi stream with the new behaviour");
+										console.log("\nUpdating Qi stream with the new behaviour ");
 										stream.BehaviourId = behaviour.Id;
 										if(client.tokenExpires < nowSeconds){
 											return checkTokenExpired(client).then(
@@ -354,15 +358,20 @@ http.createServer(function(request1, response) {
 											return checkTokenExpired(client).then(
 																	function(res){
 																		refreshToken(res, client);
-																		return client.getRangeValues(stream, 1, 0, 3, False, qiObjs.qiBoundaryType.ExactOrCalculated);
+																		return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 																	}).catch(function(err){logError(err)});
 										}else{
-											return client.getRangeValues(stream, 1, 0, 3, False, qiObjs.qiBoundaryType.ExactOrCalculated);
+											return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 										}
 									}).catch(function(err){logError(err)});
 
 	var deleteEvent = getRangeEvents.then(
 									function(res){
+										var obj = JSON.parse(res);
+										foundEvents = obj;
+										obj.forEach(function(elem, index){
+											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
+										});
 										//delete an event
 										console.log("\nDeleting event at index 0");
 										if(client.tokenExpires < nowSeconds){
@@ -431,4 +440,4 @@ http.createServer(function(request1, response) {
 
 	response.end();
 }).listen(8080);
-console.log("Server is listening to "+QiServerUrl);
+console.log("Server is listening at http://localhost:8080/");
