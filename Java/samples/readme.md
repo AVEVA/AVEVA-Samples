@@ -360,3 +360,7 @@ Note that we've passed the id of the stream, not the stream object.  Similarly
 ```
 
 deletes the type from the Qi Service.  Recall that `evtType` is the QiType instance returned by the Qi Service when the type was created. 
+
+## Development environment
+This project is bulit as a `Maven` project. You would need to have maven installed. 
+All the necesssary dependencies are sepcified as part of pom.xml file. 
