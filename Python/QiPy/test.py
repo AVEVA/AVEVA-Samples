@@ -118,7 +118,7 @@ print client.getLastValue(evtStream)
 
 #inserting a list of events
 events = []
-for i in range(1,200,2):
+for i in range(2, 200, 2):
     evt = WaveData.nextWave(span, 2.0, i)
     events.append(evt)
 
@@ -127,7 +127,7 @@ client.insertValues(evtStream, events)
 #retrive events
 print "Retrieving inserted events"
 
-foundEvents = client.getWindowValues(evtStream, 0, 99)
+foundEvents = client.getWindowValues(evtStream, 0, 198)
 
 #print all the events
 dumpEvents(foundEvents)
@@ -151,7 +151,7 @@ client.updateValues(evtStream, newEvents)
 #check the results
 print "Retrieving the updated values"
 
-foundUpdatedEvents = client.getWindowValues(evtStream, 0, 99)
+foundUpdatedEvents = client.getWindowValues(evtStream, 0, 198)
 
 #print all the events
 dumpEvents(foundUpdatedEvents)
@@ -187,10 +187,10 @@ dumpEvents(foundEvents)
 print "deleting events"
 
 #delete single event
-client.removeValue(evtStream, 1)
+client.removeValue(evtStream, 0)
 
 #delete rest of the events
-client.removeValues(evtStream,0, 200)
+client.removeValues(evtStream,1, 199)
 
 emptyList = client.getWindowValues(evtStream, 0, 200)
 
