@@ -7,10 +7,10 @@ def dumpEvents(foundEvents):
     for i in foundEvents:
         print i
 
-authItems = {'resource' : "https://qihomeprod.onmicrosoft.com/historian",
-             'authority' : "https://login.windows.net/qitenant1prod.onmicrosoft.com/oauth2/token",
-             'appId' : "64f52acc-4a02-40ad-a059-7dcd1d38be68",
-             'appKey' : "GjqVItbTHEgW1f8u3zaPUAqP8wDjDHrZpMUq8Mb8ZNo="}
+authItems = {'resource' : "RESOURCE-URL",
+             'authority' : "https://login.windows.net/TENANT-URL/oauth2/token",
+             'appId' : "CLIENT-ID",
+             'appKey' : "CLIENT-KEY"}
 
 QiServerUrl = "qi-data.osisoft.com:3380"
 
