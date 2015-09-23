@@ -364,3 +364,10 @@ deletes the type from the Qi Service.  Recall that `evtType` is the QiType insta
 ## Development environment
 This project is bulit as a `Maven` project. You would need to have maven installed. 
 All the necesssary dependencies are sepcified as part of pom.xml file. 
+
+##Steps to Run
+1.Clone a local copy of Git repo.
+2.Install Maven
+3.If using Eclipse choose file -> import -> Maven-> Existing maven project and select the local copy.
+
+
