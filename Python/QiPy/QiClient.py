@@ -1,7 +1,4 @@
-﻿# qipy
-# chad@osisoft.com and test
-
-from urlparse import urlparse
+﻿from urlparse import urlparse
 import urllib
 import httplib as http
 import json
@@ -41,6 +38,7 @@ class QiClient(object):
         self.__getToken()
         if not self.__token:
             return
+
         print "----------------------------------"
         print "  ___  _ ____"        
         print " / _ \(_)  _ \ _   _ "
@@ -593,7 +591,7 @@ class QiClient(object):
             
     def __qi_headers(self):
         return {
-            "QiTenant" : "localtenant",
+            "QiTenant" : "b36cfd3b-8749-4898-9d6d-db0e18747472",
             "Authorization" : "bearer %s" % self.__token,
             "Content-type": "application/json", 
             "Accept": "text/plain"

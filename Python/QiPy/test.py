@@ -1,15 +1,16 @@
 ﻿from qipy import *
 import datetime
 
-authItems = {'resource' : "RESOURCE-URL",
-             'authority' : "AUTHORIZATION-URL/oauth2/token",
-             'appId' : "CLIENT-ID",
-             'appKey' : "CLIENT-SECRET"}
 #print method for returned events
 def dumpEvents(foundEvents):
     print "Total Events found: "+ str(len(foundEvents))
     for i in foundEvents:
         print i
+
+authItems = {'resource' : "https://qihomeprod.onmicrosoft.com/historian",
+             'authority' : "https://login.windows.net/qitenant1prod.onmicrosoft.com/oauth2/token",
+             'appId' : "64f52acc-4a02-40ad-a059-7dcd1d38be68",
+             'appKey' : "GjqVItbTHEgW1f8u3zaPUAqP8wDjDHrZpMUq8Mb8ZNo="}
 
 QiServerUrl = "qi-data.osisoft.com:3380"
 
