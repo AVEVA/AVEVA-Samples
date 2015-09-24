@@ -121,6 +121,7 @@ print client.getLastValue(evtStream)
 #inserting a list of events
 events = []
 for i in range(2,200,2):
+for i in range(2, 200, 2):
     evt = WaveData.nextWave(span, 2.0, i)
     time.sleep(.2)
     events.append(evt)
@@ -156,6 +157,7 @@ client.updateValues(evtStream, newEvents)
 print "Retrieving the updated values"
 
 foundUpdatedEvents = client.getWindowValues(evtStream, 0, 99)
+foundUpdatedEvents = client.getWindowValues(evtStream, 0, 198)
 
 #print all the events
 dumpEvents(foundUpdatedEvents)
@@ -195,6 +197,7 @@ client.removeValue(evtStream, 0)
 
 #delete rest of the events
 client.removeValues(evtStream,0, 200)
+client.removeValues(evtStream,1, 199)
 
 emptyList = client.getWindowValues(evtStream, 0, 200)
 
@@ -209,4 +212,4 @@ client.deleteStream("WaveStreamPySample")
 client.deleteType("WaveDataPySample")
 client.deleteBehavior("evtStreamStepLeading")
 
-print "test.py completed successfully!"
+print "test.py completed successfully!"print "test.py completed successfully!"
