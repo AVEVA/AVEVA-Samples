@@ -1,5 +1,6 @@
 ﻿from qipy import *
 import datetime
+import time
 
 #print method for returned events
 def dumpEvents(foundEvents):
@@ -70,8 +71,8 @@ tanhProperty.QiType = doubleType
 
 #create a QiType for WaveData Class
 wave = QiType()
-wave.Id = "WaveDataPy"
-wave.Name = "WaveDataPy"
+wave.Id = "WaveDataPySample"
+wave.Name = "WaveDataPySample"
 wave.Description = "This is a sample Qi type for storing WaveData type events"
 wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
                    cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
@@ -89,10 +90,11 @@ client.listTypes()
 print "Creating a stream in this tenant for the WaveData measurements"
 
 stream = QiStream()
-stream.Id = "WaveStreamPy"
-stream.Name = "WaveStreamPy"
+stream.Id = "WaveStreamPySample"
+stream.Name = "WaveStreamPySample"
 stream.Description = "A Stream to store the WaveData Qi types events"
-stream.TypeId = "WaveDataPy"
+stream.TypeId = "WaveDataPySample"
+stream.BehaviorId = None
 evtStream = client.createStream(stream)
 
 client.listStreams()
@@ -118,8 +120,9 @@ print client.getLastValue(evtStream)
 
 #inserting a list of events
 events = []
-for i in range(1,200,2):
+for i in range(2,200,2):
     evt = WaveData.nextWave(span, 2.0, i)
+    time.sleep(.2)
     events.append(evt)
 
 client.insertValues(evtStream, events)
@@ -127,7 +130,7 @@ client.insertValues(evtStream, events)
 #retrive events
 print "Retrieving inserted events"
 
-foundEvents = client.getWindowValues(evtStream, 0, 99)
+foundEvents = client.getWindowValues(evtStream, 0, 198)
 
 #print all the events
 dumpEvents(foundEvents)
@@ -144,6 +147,7 @@ client.updateValue(evtStream, evt)
 newEvents = []
 for i in events:
     evt = WaveData.nextWave(span, 4.0, i.Order)
+    time.sleep(.2)
     newEvents.append(evt)
 
 client.updateValues(evtStream, newEvents)
@@ -157,37 +161,37 @@ foundUpdatedEvents = client.getWindowValues(evtStream, 0, 99)
 dumpEvents(foundUpdatedEvents)
 
 ######################################################################################################
-#stream behaviour
+#stream behavior
 ######################################################################################################
 
 #illustrate how stream behaviors modify retrieval
 #First, pull three items back with GetRangeValues for range values between events.
 #The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
-print "Retrieving three events without a stream behaviour"
+print "Retrieving three events without a stream behavior"
 
-foundEvents = client.getRangeValues("WaveStreamPy", "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
+foundEvents = client.getRangeValues(evtStream.Id, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
 dumpEvents(foundEvents)
 
 #create a stream behavior with Discrete and attach it to the existing stream
-behaviour = QiStreamBehaviour()
-behaviour.Id = "evtStreamStepLeading";
-behaviour.Mode = QiStreamMode.StepwiseContinuousLeading.value
-behaviour = client.createBehaviour(behaviour)
+behavior = QiStreamBehavior()
+behavior.Id = "evtStreamStepLeading";
+behavior.Mode = QiStreamMode.StepwiseContinuousLeading.value
+behavior = client.createBehavior(behavior)
 
-#update stream to inlude this behaviour
-evtStream.BehaviourId = behaviour.Id
+#update stream to inlude this behavior
+evtStream.BehaviorId = behavior.Id
 client.updateStream(evtStream)
 
 #repeat the retrieval
 print "Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval"
-foundEvents = client.getRangeValues("WaveStreamPy", "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
+foundEvents = client.getRangeValues(evtStream.Id, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
 dumpEvents(foundEvents)
 
 #delete events
-print "deleting events"
+print "Deleting events"
 
 #delete single event
-client.removeValue(evtStream, 1)
+client.removeValue(evtStream, 0)
 
 #delete rest of the events
 client.removeValues(evtStream,0, 200)
@@ -201,7 +205,8 @@ emptyList = client.getWindowValues(evtStream, 0, 200)
 #deleting streams and types
 #delete streams first and then types
 #types being referenced cannot be deleted unless referrer is deleted
-client.deleteStream("WaveStreamPy")
-client.deleteType("WaveDataPy")
+client.deleteStream("WaveStreamPySample")
+client.deleteType("WaveDataPySample")
+client.deleteBehavior("evtStreamStepLeading")
 
 print "test.py completed successfully!"

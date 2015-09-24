@@ -30,7 +30,7 @@ module.exports = {
         this.tenantsBase = "/Qi/Tenants";
         this.typesBase = "/Qi/Types";
         this.streamsBase = "/Qi/Streams";
-        this.behaviourBase = "/Qi/Behaviors";
+        this.behaviorBase = "/Qi/Behaviors";
         this.insertSingle = "/Data/InsertValue";
         this.insertMultiple = "/Data/InsertValues";
         this.getTemplate = "/{0}/Data/GetWindowValues?startIndex={1}&endIndex={2}";
@@ -108,6 +108,15 @@ module.exports = {
         };
 
         //get all the streams under the tenant's Qi Service
+        this.getStream = function(qiStream){
+                                return restCall({
+                                            url : this.url+this.streamsBase+"/"+qiStream.Id,
+                                            method : 'GET',
+                                            headers : this.getHeaders()
+                                        });
+        };
+
+        //get all the streams under the tenant's Qi Service
         this.getStreams = function(){
                                 return restCall({
                                             url : this.url+this.streamsBase,
@@ -135,13 +144,13 @@ module.exports = {
                                         });
         };
 
-        //create behaviour
-        this.createBehaviour = function(behaviour){
+        //create behavior
+        this.createBehavior = function(behavior){
                                 return restCall({
-                                            url : this.url+this.behaviourBase,
+                                            url : this.url+this.behaviorBase,
                                             method : 'POST',
                                             headers : this.getHeaders(),
-                                            body : JSON.stringify(behaviour)
+                                            body : JSON.stringify(behavior)
                                         });
         };
 

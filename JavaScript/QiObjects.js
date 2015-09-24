@@ -89,13 +89,13 @@ module.exports = {
 		this.Name = qiStream.Name;
 		this.Description = qiStream.Description;
 		this.TypeId = qiStream.TypeId;
-		if(qiStream.BehaviourId){
-			this.BehaviourId = qiStream.BehaviourId;
+		if(qiStream.BehaviorId){
+			this.BehaviorId = qiStream.BehaviorId;
 		}
 	},
 
-	//Qi Behaviour object
-	QiBehaviour : function(qiBehavour){
+	//Qi Behavior object
+	QiBehavior : function(qiBehavour){
 		this.Id = null;
 		this.Name = null;
 		this.Mode = qiBehavour.Mode;

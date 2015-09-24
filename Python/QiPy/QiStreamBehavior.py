@@ -1,55 +1,55 @@
-﻿import json
+from QiStreamMode import QiStreamMode
+import json
 
 class QiStreamBehavior(object):
-    """description of class"""
-
+    
     def __init__(self):
-        self.__Id = 0
+        self.__Id = None
         self.__Name = None
-        self.__Mode = None
+        self.__Mode = QiStreamMode.Continuous
         self.__ExtrapolationMode = None
-        self.__Overrides = None
-
+        self.__Overrides = []
+        
     def getId(self):
         return self.__Id
-
+    
     def setId(self, Id):
         self.__Id = Id
-
+    
     Id = property(getId, setId)
-
+    
     def getName(self):
         return self.__Name
-
+    
     def setName(self, Name):
         self.__Name = Name
-
+    
     Name = property(getName, setName)
-
+    
     def getMode(self):
         return self.__Mode
-
+    
     def setMode(self, Mode):
         self.__Mode = Mode
-
+    
     Mode = property(getMode, setMode)
-
+    
     def getExtrapolationMode(self):
         return self.__ExtrapolationMode
-
+    
     def setExtrapolationMode(self, ExtrapolationMode):
         self.__ExtrapolationMode = ExtrapolationMode
-
+    
     ExtrapolationMode = property(getExtrapolationMode, setExtrapolationMode)
-
+    
     def getOverrides(self):
         return self.__Overrides
-
+    
     def setOverrides(self, Overrides):
         self.__Overrides = Overrides
-
+    
     Overrides = property(getOverrides, setOverrides)
-
+    
     def toString(self):
         return json.dumps(self.toDictionary())
 
@@ -66,12 +66,12 @@ class QiStreamBehavior(object):
 
         if self.__ExtrapolationMode is not None:
             dictionary["ExtrapolationMode"] = self.__ExtrapolationMode
-
+        
         if self.__Overrides is not None:
             dictionary["Overrides"] = self.__Overrides
 
         return dictionary
-
+        
     @staticmethod
     def fromString(content):
          dictionary = json.loads(content)
@@ -83,22 +83,21 @@ class QiStreamBehavior(object):
         behavior = QiStreamBehavior()
 
         if len(content) == 0:
-            return typeProperty
+            return None
 
         if "Id" in content:
-            stream.Id = content["Id"]
+            behavior.Id = content["Id"]
 
         if "Name" in content:
-            stream.Name = content["Name"]
+            behavior.Name = content["Name"]
 
         if "Mode" in content:
-            behavior.Mode = content["Mode"]
+            behavior.Mode = QiStreamMode(content["Mode"])
 
-        if "ExtrapolationMode" in content:
+        if "TypeId" in content:
             behavior.ExtrapolationMode = content["ExtrapolationMode"]
-
-        if "Overrides" in content:
+        
+        if "BehaviorId" in content:
             behavior.Overrides = content["Overrides"]
             
         return behavior
-

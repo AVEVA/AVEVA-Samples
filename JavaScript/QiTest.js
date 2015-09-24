@@ -1,6 +1,7 @@
 var http = require("http");
 var restCall = require("request-promise");
 
+
 //change these values to the credentials given
 var QiServerUrl = "https://qi-data.osisoft.com:3380";
 var authItems = {'resource' : "RESOURCE-URL",
@@ -12,7 +13,7 @@ var authItems = {'resource' : "RESOURCE-URL",
 var logError = function(err){
 								if((typeof(err.statusCode) !== "undefined" && err.statusCode != 302) || 
 								(typeof(err.StatusCodeError) !== "undefined" && err.StatusCodeError != 302)){
-									//console.log("Error Status : " + (typeof(err.statusCode) !== "undefined" ? err.statusCode:err.StatusCodeError) +", Msg : "+err.message);
+									console.log("Error Status : " + (typeof(err.statusCode) !== "undefined" ? err.statusCode:err.StatusCodeError) +", Msg : "+err.message);
 									throw err;
 								}else{
 									console.log("Qi Object already present in the Service\n");
@@ -28,6 +29,20 @@ var refreshToken = function(res, client){
 								var obj = JSON.parse(res);
 								client.token = obj.access_token;
 								client.tokenExpires = obj.expires_on;
+};
+
+var dumpEvents = function(obj){
+							obj.forEach(function(elem, index){
+													console.log("Event No. "+ index + " : {"+"Order: "+elem.Order+
+														" Tau: "+elem.Tau+
+														" Radians: "+elem.Radians+
+														" Sin: "+elem.Sin+
+														" Cos: "+elem.Cos+
+														" Tan: "+elem.Tan+
+														" Sinh: "+elem.Sinh+
+														" Cosh: "+elem.Cosh+
+														" Tanh:"+elem.Tanh+"}");
+												});
 };
 
 http.createServer(function(request1, response) { 
@@ -122,7 +137,7 @@ http.createServer(function(request1, response) {
 																console.log("Qi Type "+ index +" :"+elem.Name);
 															});
 														console.log("");
-
+														console.log("Creating a Qi Stream "+ stream.Name);
 														if(client.tokenExpires < nowSeconds){
 															return checkTokenExpired(client).then(
 																					function(res){
@@ -152,7 +167,7 @@ http.createServer(function(request1, response) {
 	//creating an event
 	var interval = new Date();
 	interval.setHours(0,1,0,0);
-	var evt = qiObjs.NextWave(interval, 2.0, 0);
+	var evt = null;
 
 	var insertValueSuccess = listStreamsSuccess.then(
 													//GET all streams successful
@@ -166,6 +181,7 @@ http.createServer(function(request1, response) {
 														console.log("");
 
 														console.log("Inserting a single event");
+														evt = qiObjs.NextWave(interval, 2.0, 0);
 														if(client.tokenExpires < nowSeconds){
 															return checkTokenExpired(client).then(
 																					function(res){
@@ -180,18 +196,46 @@ http.createServer(function(request1, response) {
 	//create multiple events and insert
 	var events = [];
 	var evt1 = null;
-	for (var i = 1; i < 200; i+=2) {
-		evt1 = qiObjs.NextWave(interval, 2.0, i);
-		events.push(evt1);
+
+	//Minimize delay to hurry up the generation
+	var delay = 50;
+	var evtCount = 2;
+	var mutliplier = 2;
+	var callback = null;
+
+	var loopDelay = function (){
+	setTimeout(function(){
+			if(evtCount < 200){
+				evt1 = qiObjs.NextWave(interval, mutliplier, evtCount);
+				events.push(evt1);
+				process.stdout.clearLine();
+				process.stdout.cursorTo(0);
+				process.stdout.write("Total random events " + evtCount);
+				evtCount += 2;
+				loopDelay();
+			}else{
+				callback();
+			}
+		}, delay);
 	};
 
-	var insertMultipleSuccess = insertValueSuccess.then(
+	var createRandomEvents = insertValueSuccess.then(
+												function(res){
+													console.log("Single event insert successful");
+													console.log("");
+													console.log("Artificially generating 100 events and inserting them into the Qi Service");
+													console.log("Generating random events...");
+													var prom = new Promise(function(resolve, reject){
+																			callback = resolve;
+																			loopDelay();
+																		});
+													return prom;
+
+												}).catch(function(err){logError(err)});
+	
+	var insertMultipleSuccess = createRandomEvents.then(
 														//insert randomly generated values
-														function(res){
-															console.log("Single event insert successful");
-															console.log("");
-															
-															console.log("Artificially generating 100 events and inserting them into the Qi Service");
+														function(){
 															if(client.tokenExpires < nowSeconds){
 																return checkTokenExpired(client).then(
 																						function(res){
@@ -206,7 +250,7 @@ http.createServer(function(request1, response) {
 	var listEvents = insertMultipleSuccess.then(
 												function(res){
 													//if insert passed list all events
-													console.log("Multiple events insertion successful");
+													console.log("\nMultiple events insertion successful");
 													console.log("");
 
 													console.log("Retrieveing all the events in the Qi stream");
@@ -214,10 +258,10 @@ http.createServer(function(request1, response) {
 														return checkTokenExpired(client).then(
 																				function(res){
 																					refreshToken(res, client);
-																					return client.getWindowValues(stream, 0, 99);
+																					return client.getWindowValues(stream, 0, 198);
 																				}).catch(function(err){logError(err)});
 													}else{
-														return client.getWindowValues(stream, 0, 99);
+														return client.getWindowValues(stream, 0, 198);
 													}
 												}).catch(function(err){logError(err)});
 
@@ -229,11 +273,9 @@ http.createServer(function(request1, response) {
 										//list all the events
 										var obj = JSON.parse(res);
 										foundEvents = obj;
-										obj.forEach(function(elem, index){
-											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
-										});
+										dumpEvents(obj);
 
-										console.log("\nUpdate a single event at index 1");
+										console.log("\nUpdate a single event at index 0");
 										evt = foundEvents[0];
 										evt = qiObjs.NextWave(interval, 4.0, 0);
 										if(client.tokenExpires < nowSeconds){
@@ -247,33 +289,41 @@ http.createServer(function(request1, response) {
 										}
 									}).catch(function(err){logError(err)});
 
-	var newEvents = [];
-	var updateEvents = updateEvent.then(
+	createRandomEvents = updateEvent.then(
+										function(res){
+											console.log("Single event update successful");
+											console.log("Update multiple events");
+											console.log("");
+											console.log("Updating random events...");
+											mutliplier = 4.0;
+											events = [];
+											evtCount = 2;
+											var prom = new Promise(function(resolve, reject){
+																	callback = resolve;
+																	loopDelay();
+																});
+											return prom;
+										}).catch(function(err){logError(err)});
+
+	var updateEvents = createRandomEvents.then(
 									//if update event passed
 									//test update of events
 									function(res){
-										console.log("Single event update successful");
-										
-										console.log("\nUpdate multiple events");
-										for (var i = 1; i < 100; i++) {
-											evt1 = qiObjs.NextWave(interval, 4.0, i);
-											newEvents.push(evt1);
-										};
 										if(client.tokenExpires < nowSeconds){
 											return checkTokenExpired(client).then(
 																	function(res){
 																		refreshToken(res, client);
-																		return client.updateEvents(stream, newEvents);
+																		return client.updateEvents(stream, events);
 																	}).catch(function(err){logError(err)});
 										}else{
-											return client.updateEvents(stream, newEvents);
+											return client.updateEvents(stream, events);
 										}
 									}).catch(function(err){logError(err)});
 
 	listEvents = updateEvents.then(
 									function(res){
 										//if insert passed list all events
-										console.log("Multiple events update successful");
+										console.log("\nMultiple events update successful");
 										console.log("");
 
 										console.log("Retrieveing all the events in the Qi stream");
@@ -281,10 +331,10 @@ http.createServer(function(request1, response) {
 											return checkTokenExpired(client).then(
 																	function(res){
 																		refreshToken(res, client);
-																		return client.getWindowValues(stream, 0, 99);
+																		return client.getWindowValues(stream, 0, 198);
 																	}).catch(function(err){logError(err)});
 										}else{
-											return client.getWindowValues(stream, 0, 99);
+											return client.getWindowValues(stream, 0, 198);
 										}
 									}).catch(function(err){logError(err)});
 
@@ -295,11 +345,9 @@ http.createServer(function(request1, response) {
 										//list all the events
 										var obj = JSON.parse(res);
 										foundEvents = obj;
-										obj.forEach(function(elem, index){
-											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
-										});
+										dumpEvents(obj);
 
-										console.log("\nRetrieving three events without a stream behaviour");
+										console.log("\nRetrieving three events without a stream behavior");
 										if(client.tokenExpires < nowSeconds){
 											return checkTokenExpired(client).then(
 																	function(res){
@@ -311,35 +359,34 @@ http.createServer(function(request1, response) {
 										}
 									}).catch(function(err){logError(err)});
 
-	//stream behaviour tests
-	var behaviour = new qiObjs.QiBehaviour({"Mode":qiObjs.qiStreamMode.Continuous});
-	behaviour.Id = "evtStreamStepLeading";
-	behaviour.Mode = qiObjs.qiStreamMode.StepwiseContinuousLeading;
+	//stream behavior tests
+	var behavior = new qiObjs.QiBehavior({"Mode":qiObjs.qiStreamMode.Continuous});
+	behavior.Id = "evtStreamStepLeading";
+	behavior.Mode = qiObjs.qiStreamMode.StepwiseContinuousLeading;
 
-	var createBehaviourSuccess = getRangeEvents.then(
+	var createBehaviorSuccess = getRangeEvents.then(
 									function(res){
 										var obj = JSON.parse(res);
 										foundEvents = obj;
-										obj.forEach(function(elem, index){
-											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
-										});
-										console.log("\nCreating Qistream behaviour");
+										dumpEvents(obj);
+										
+										console.log("\nCreating Qistream behavior");
 										if(client.tokenExpires < nowSeconds){
 											return checkTokenExpired(client).then(
 																	function(res){
 																		refreshToken(res, client);
-																		return client.createBehaviour(behaviour);
+																		return client.createBehavior(behavior);
 																	}).catch(function(err){logError(err)});
 										}else{
-											return client.createBehaviour(behaviour);
+											return client.createBehavior(behavior);
 										}
 									}).catch(function(err){logError(err)});
 
-	//update stream with the behaviour
-	var updateStream = createBehaviourSuccess.then(
+	//update stream with the behavior
+	var updateStream = createBehaviorSuccess.then(
 									function(res){
-										console.log("\nUpdating Qi stream with the new behaviour ");
-										stream.BehaviourId = behaviour.Id;
+										console.log("\nUpdating Qi stream with the new behavior ");
+										stream.BehaviorId = behavior.Id;
 										if(client.tokenExpires < nowSeconds){
 											return checkTokenExpired(client).then(
 																	function(res){
@@ -369,9 +416,8 @@ http.createServer(function(request1, response) {
 									function(res){
 										var obj = JSON.parse(res);
 										foundEvents = obj;
-										obj.forEach(function(elem, index){
-											console.log("Event No. "+ index + " : "+JSON.stringify(elem));
-										});
+										dumpEvents(obj);
+
 										//delete an event
 										console.log("\nDeleting event at index 0");
 										if(client.tokenExpires < nowSeconds){
@@ -392,10 +438,10 @@ http.createServer(function(request1, response) {
 											return checkTokenExpired(client).then(
 																	function(res){
 																		refreshToken(res, client);
-																		return client.deleteWindowEvents(stream, 0, 99);
+																		return client.deleteWindowEvents(stream, 0, 198);
 																	}).catch(function(err){logError(err)});
 										}else{
-											return client.deleteWindowEvents(stream, 0, 99);
+											return client.deleteWindowEvents(stream, 0, 198);
 										}
 									}).catch(function(err){logError(err)});
 
@@ -430,7 +476,7 @@ http.createServer(function(request1, response) {
 	//One catch to rule all the errors
 	var finalCatch = deleteType.then(
 											function(res){
-												console.log("Test successful!");
+												console.log("\nTest successful!");
 												process.exit(1);
 											})
 										.catch(
