@@ -13,7 +13,7 @@ var authItems = {'resource' : "RESOURCE-URL",
 var logError = function(err){
 	if((typeof(err.statusCode) !== "undefined" && err.statusCode != 302) || 
 	(typeof(err.StatusCodeError) !== "undefined" && err.StatusCodeError != 302)){
-		console.log("Error Status : " + (typeof(err.statusCode) !== "undefined" ? err.statusCode:err.StatusCodeError) +", Msg : "+err.message);
+		//console.log("Error Status : " + (typeof(err.statusCode) !== "undefined" ? err.statusCode:err.StatusCodeError) +", Msg : "+err.message);
 		throw err;
 	}else{
 		console.log("Qi Object already present in the Service\n");
