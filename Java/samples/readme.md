@@ -305,6 +305,34 @@ We'll demonstrate updates by taking the values we created and replacing them wit
 ```
 
 Note that we are serializing the event or event collection and passing the string into the update method as a parameter.
+##Stream Behaviors
+Only recorded values are returned by `GetWindowValues`.  If you want to get a particular range of values and interpolate events at the endpoints of the range, you may use `GetRangeValues`.  The nature of the interpolation performed is determined by the stream behavior assigned to the stream.  if you do not specify one, a linear interpolation is assumed.  This example demonstrates a stepwise interpolation using stream behaviors.  More sophisticated behavior is possible, including the specification of interpolation behavior at the level of individual event type properties.  This is discussed in the [Qi API Reference](https://qi-docs.readthedocs.org/en/latest/Overview/).  First, before changing the stream's retrieval behavior, call `GetRangeValues` specifying a start index value of 1 (between the first and second events in the stream) and calculated values:
+
+```Java      
+          jCollection = qiclient.getRangeValues("evtStreamJ", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
+          foundEvents = qiclient.mGson.fromJson(jCollection, listType);
+```
+
+This gives you a calculated event with linear interpolation at index 1.
+
+Now, we define a new stream behavior object and submit it to the Qi Service:
+
+```Java
+  QiStreamBehavior behavior = new QiStreamBehavior();
+  behavior.setId("evtStreamStepLeading") ;
+  behavior.setMode(QiStreamMode.StepwiseContinuousLeading);
+  String behaviorString = qiclient.CreateBehavior(behavior);
+  behavior = qiclient.mGson.fromJson(behaviorString, QiStreamBehavior.class);
+```
+
+By setting the `Mode` property to `StepwiseContinuousLeading` we ensure that any calculated event will have an interpolated index, but every other property will have the value of the recorded event immediately preceding that index.  Now attach this behavior to the existing stream by setting the `BehaviorId` property of the stream and updating the stream definition in the Qi Service:
+
+```Java#
+   evtStream.setBehaviorId("evtStreamStepLeading");
+   qiclient.UpdateStream("evtStreamJ", evtStream);
+```
+
+The sample repeats the call to `GetRangeValues` with the same parameters as before, allowing you to compare the values of the event at `Order=1`.
 
 ## Delete Events
 
@@ -316,18 +344,19 @@ As with insertion, deletion of events is managed by specifying a single index or
 ```
 The index values are expressed as string representations of the underlying type.  DateTime index values must be expressed as ISO 8601 strings.
 
-## Bonus: Deleting Types and Streams
+## Cleanup: Deleting Types and Streams
 
-You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream and Qi type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
+You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior and Qi type it created before terminating, thereby resetting your tenant environment to the state before running the sample.  The stream goes first so that the reference count on the type goes to zero:
 
 ```Java
    qiclient.deleteStream("evtStreamJ");
+    qiclient.DeleteBehavior("evtStreamStepLeading");
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly
 
 ```Java
-   qiclient.deleteType("WaveDataJ");
+   qiclient.deleteType("evtType.getId()");
 ```
 
 deletes the type from the Qi Service.  Recall that `evtType` is the QiType instance returned by the Qi Service when the type was created. 

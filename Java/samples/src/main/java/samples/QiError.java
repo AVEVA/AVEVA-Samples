@@ -31,13 +31,13 @@ public class QiError extends Exception{
 
 				in.close();
 			} 
-
+			
 		}catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-	}
+		}
 
 
 	public int getHttpStatusCode() {

@@ -215,3 +215,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+##############
+## JavaScript
+##############
+
+JavaScript/node_modules
