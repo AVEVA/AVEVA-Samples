@@ -110,16 +110,11 @@ class QiType(object):
     @staticmethod
     def fromString(content):
          dictionary = json.loads(content)
-#         print "fromString"
-#         print dictionary
-#         print len(dictionary)
          return QiType.fromDictionary(dictionary)
 
     @staticmethod
     def fromDictionary(content):
-#        print "fromDict"
-#        print content
-#        print len(content)
+        
         type = QiType()
 
         if len(content) == 0:

@@ -8,7 +8,6 @@ class QiStream(object):
         self.__Name = None
         self.__Description = None
         self.__TypeId = None
-        self.__BehaviourId = None
     
     def getId(self):
         return self.__Id
@@ -45,14 +44,6 @@ class QiStream(object):
 
     TypeId = property(getTypeId, setTypeId)
 
-    def getBehaviourId(self):
-        return self.__BehaviourId
-
-    def setBehaviourId(self, BehaviourId):
-        self.__BehaviourId = BehaviourId
-
-    BehaviourId = property(getBehaviourId, setBehaviourId)
-    
     def toString(self):
         return json.dumps(self.toDictionary())
 
@@ -69,9 +60,6 @@ class QiStream(object):
 
         if self.__TypeId is not None:
             dictionary["TypeId"] = self.TypeId
-        
-        if self.__BehaviourId is not None:
-            dictionary["BehaviourId"] = self.__BehaviourId
 
         return dictionary
 
@@ -99,9 +87,6 @@ class QiStream(object):
 
         if "TypeId" in content:
             stream.TypeId = content["TypeId"]
-        
-        if "BehaviourId" in content:
-            stream.BehaviourId = content["BehaviourId"]
             
         return stream
 
