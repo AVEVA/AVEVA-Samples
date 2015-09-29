@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2824cc1c-788d-4fe0-aa1e-4071263ddeaf}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>test.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="QiClient.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiError.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="qipy.py" />
+    <Compile Include="QiStream.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiType.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiTypeCode.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QiTypeProperty.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test.py" />
+    <Compile Include="__init__.py" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
