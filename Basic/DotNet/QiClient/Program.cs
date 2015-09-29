@@ -36,7 +36,6 @@ namespace QiLibsSample
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
             clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
-            //clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
 
             IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
             IQiClientProxy proxy = (IQiClientProxy)qiclient;
