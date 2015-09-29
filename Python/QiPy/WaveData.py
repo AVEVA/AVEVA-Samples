@@ -100,9 +100,9 @@ class WaveData:
     @staticmethod
     def nextWave(interval, multiplier, order):
         now = datetime.datetime.now()
-        totalSecondsDay = (now - now.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds()
-
-        radians = ((totalSecondsDay % interval.second) / interval.second) * 2 * math.pi;
+        totalSecondsDay = (now - now.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds() * 1000
+        intervalSeconds = (interval - interval.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds() * 1000
+        radians = ((totalSecondsDay % intervalSeconds ) / intervalSeconds) * 2 * math.pi
         
         newWave = WaveData()
         newWave.Order = order

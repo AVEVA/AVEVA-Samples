@@ -1,10 +1,18 @@
 [
 {"Title":"Python sample",
-"Description":"DEscription here plaesae",
-"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Python"
+"Description":"Python sample",
+"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/Python"
 },
 {"Title":".NET sample",
-"Description":"DEscription here plaesae",
-"Url": "https://github.com/osisoft/Qi-Samples/tree/master/DotNet"
+"Description":"Qi Libraries and AspNet samples",
+"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/DotNet"
+}
+{"Title":".Java sample",
+"Description":"Java in Eclipse",
+"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/DotNet"
+}
+{"Title":".NodeJs sample",
+"Description":"NodeJs javascript sample",
+"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/NodeJs"
 }
 ]
