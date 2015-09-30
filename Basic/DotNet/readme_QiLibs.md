@@ -4,17 +4,26 @@ This sample differs from the other samples in that the client makes use of the O
 
 ## Instantiate a Qi Client
 
-The client works through the `IQiServer` interface.  You instantiate it through a client factory on which you set a timeout for REST calls.  You must add two headers to every REST call, a `QiTenant` whose value is your tenant id and a `Bearer` authentication header whose value is the token returned by Azure Active Directory.  Here's the code:
+The client works through the `IQiServer` interface.  You instantiate it through a client factory on which you set a timeout for REST calls.  You must add an `Authorization` header to every REST call. The value of this header is the scheme keyword `Bearer` followed by the token returned by Azure Active Directory.  Here's the code:
 
 ```c#
     QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
     clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
-    clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
+
     IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
+    IQiClientProxy proxy = (IQiClientProxy)qiclient;
+    proxy.OnBeforeInvoke((handler)=>{
+        string token = AcquireAuthToken();
+        if (proxy.Client.DefaultHeaders.Contains("Authorization"))
+        {
+             proxy.Client.DefaultHeaders.Remove("Authorization");
+        }
+        proxy.Client.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString());
+    });
     
 ```
 
-The call to `OnCreated` establishes a lambda which is invoked upon the creation of the client object.  It sets an authentication header whose value is a string, `token`, which is an authentication token provided for security.  We'll discuss how to obtain such a token next.
+The cast of the client object to `IQiClientProxy` gives you access to the `OnBeforeInvoke` delegate. Since security tokens expire, we give the authentication libraries a chance to refresh the token, if needed, before every call. The lambda implementing this calls `AcquireAuthToken`, which we'll describe in the next section, then turns to the `DefaultHeaders` collection.  This collection will throw an exception if you try to add more than one `Authorization` header, so we remove any existing header before attaching the new one.
 
 ## Obtain an Authentication Token
 
