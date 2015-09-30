@@ -98,8 +98,9 @@ print client.getLastValue(evtStream)
 
 #inserting a list of events
 events = []
-for i in range(1,100):
+for i in range(2, 200, 2):
     evt = WaveData.nextWave(span, 2.0, i)
+    time.sleep(.2)
     events.append(evt)
 
 client.insertValues(evtStream, events)
