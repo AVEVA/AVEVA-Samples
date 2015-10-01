@@ -1,6 +1,6 @@
-#JavaScript Samples: Building a Client to make REST API Calls to the Qi Service.
+#NodeJs Samples: Building a Client to make REST API Calls to the Qi Service.
 
-This sample demonstrates how Qi REST APIs are invoked using JavaScript. It has following dependencies:
+This sample demonstrates how Qi REST APIs are invoked using NodeJs and JavaScript. It has the following dependencies:
 * node.js, installation instructions are available at [node.js](https://nodejs.org/en/)
 * Request-Promise, HTTP client Request with Promises/A+ compliance. [request-promise](https://www.npmjs.com/package/request-promise)
 
