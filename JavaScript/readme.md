@@ -114,7 +114,7 @@ if(client.tokenExpires < nowSeconds){
                                 }else{
                                     return client.createType(wave);
                                 }
-```javascript
+```
 
 The token received from `getToken` is then stored and passed as part of the headers
 `getHeaders`, in turn, looks like this:
