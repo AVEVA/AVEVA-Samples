@@ -1,42 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestSample
+﻿namespace RestSample
 {
     public class QiStream
     {
-        public string Id
-        {
-            get;
-            set;
-        }
-        public string Name
-        {
-            get;
-            set;
-        }
-        public string Description
-        {
-            get;
-            set;
-        }
-        public string TypeId
-        {
-            get;
-            set;
-        }
-        public string BehaviorId
-        {
-            get;
-            set;
-        }
+        #region Public Constructors
 
         public QiStream()
         {
-        
         }
 
         public QiStream(string name, string typeid)
@@ -54,5 +23,18 @@ namespace RestSample
             Description = description;
             BehaviorId = behavior;
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public string BehaviorId { get; set; }
+        public string Description { get; set; }
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+        public string TypeId { get; set; }
+
+        #endregion Public Properties
     }
 }

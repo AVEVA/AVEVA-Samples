@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestSample
+﻿namespace RestSample
 {
     public enum QiStreamMode
     {
@@ -12,6 +6,6 @@ namespace RestSample
         Continuous = 0,
         StepwiseContinuousLeading = 1,
         StepwiseContinuousTrailing = 2,
-        Discrete = 3,
+        Discrete = 3
     }
 }

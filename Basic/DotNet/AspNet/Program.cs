@@ -2,109 +2,148 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-
 using Newtonsoft.Json;
 
 namespace RestSample
 {
-    class Program
+    internal class Program
     {
+        #region Protected Methods
 
-        static void Main(string[] args)
+        protected static void DumpEvents(IEnumerable<WaveData> evnts)
+        {
+            var waveDatas = evnts as WaveData[] ?? evnts.ToArray();
+            Console.WriteLine("Found {0} events, writing", waveDatas.Count());
+            foreach (var evnt in waveDatas)
+            {
+                Console.WriteLine(evnt.ToString());
+            }
+        }
+
+        #endregion Protected Methods
+
+        #region Private Methods
+
+        private static void Main(string[] args)
         {
             // Instantiate the REST client
             Console.WriteLine("Creating a Qi REST API Client...");
 
-            string server = ConfigurationManager.AppSettings["QiServerUrl"];
-            QiClient qiclient = new QiClient(server);
+            var server = ConfigurationManager.AppSettings["QiServerUrl"];
+            var qiclient = new QiClient(server);
             QiType evtType = null;
 
             try
             {
-
                 // create types for int and double, then create properties for all the WaveData properties
                 Console.WriteLine("Creating a Qi type for WaveData instances");
-                QiType intType = new QiType();
-                intType.Id = "intType";
-                intType.QiTypeCode = QiTypeCode.Int32;
+                var intType = new QiType
+                {
+                    Id = "intType",
+                    QiTypeCode = QiTypeCode.Int32
+                };
 
-                QiType doubleType = new QiType();
-                doubleType.Id = "doubleType";
-                doubleType.QiTypeCode = QiTypeCode.Double;
+                var doubleType = new QiType
+                {
+                    Id = "doubleType",
+                    QiTypeCode = QiTypeCode.Double
+                };
 
-                QiTypeProperty orderProperty = new QiTypeProperty();
-                orderProperty.Id = "Order";
-                orderProperty.QiType = intType;
-                orderProperty.IsKey = true;
+                var orderProperty = new QiTypeProperty
+                {
+                    Id = "Order",
+                    QiType = intType,
+                    IsKey = true
+                };
 
-                QiTypeProperty tauProperty = new QiTypeProperty();
-                tauProperty.Id = "Tau";
-                tauProperty.QiType = doubleType;
+                var tauProperty = new QiTypeProperty
+                {
+                    Id = "Tau",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty radiansProperty = new QiTypeProperty();
-                radiansProperty.Id = "Radians";
-                radiansProperty.QiType = doubleType;
+                var radiansProperty = new QiTypeProperty
+                {
+                    Id = "Radians",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty sinProperty = new QiTypeProperty();
-                sinProperty.Id = "Sin";
-                sinProperty.QiType = doubleType;
+                var sinProperty = new QiTypeProperty
+                {
+                    Id = "Sin",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty cosProperty = new QiTypeProperty();
-                cosProperty.Id = "Cos";
-                cosProperty.QiType = doubleType;
+                var cosProperty = new QiTypeProperty
+                {
+                    Id = "Cos",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty tanProperty = new QiTypeProperty();
-                tanProperty.Id = "Tan";
-                tanProperty.QiType = doubleType;
+                var tanProperty = new QiTypeProperty
+                {
+                    Id = "Tan",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty sinhProperty = new QiTypeProperty();
-                sinhProperty.Id = "Sinh";
-                sinhProperty.QiType = doubleType;
+                var sinhProperty = new QiTypeProperty
+                {
+                    Id = "Sinh",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty coshProperty = new QiTypeProperty();
-                coshProperty.Id = "cosh";
-                coshProperty.QiType = doubleType;
+                var coshProperty = new QiTypeProperty
+                {
+                    Id = "cosh",
+                    QiType = doubleType
+                };
 
-                QiTypeProperty tanhProperty = new QiTypeProperty();
-                tanhProperty.Id = "Tanh";
-                tanhProperty.QiType = doubleType;
-                
+                var tanhProperty = new QiTypeProperty
+                {
+                    Id = "Tanh",
+                    QiType = doubleType
+                };
 
                 // Create a QiType for our WaveData class; the metadata proeprties are the ones we just created
-                QiType type = new QiType();
-                type.Name = "WaveData";
-                type.Id = "WaveDataType";
-                type.Description = "This is a sample stream for storing WaveData type events";
-                QiTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty}; 
+                var type = new QiType
+                {
+                    Name = "WaveData",
+                    Id = "WaveDataType",
+                    Description = "This is a sample stream for storing WaveData type events"
+                };
+                QiTypeProperty[] props =
+                {
+                    orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty,
+                    tanProperty, sinhProperty, coshProperty, tanhProperty
+                };
                 type.Properties = props;
 
                 // create the type in the Qi Service
-                string evtTypeString = qiclient.CreateType(type).Result;
+                var evtTypeString = qiclient.CreateType(type).Result;
                 evtType = JsonConvert.DeserializeObject<QiType>(evtTypeString);
 
                 // create a stream named evtStream
                 Console.WriteLine("Creating a stream in this tenant for simple event measurements");
-                QiStream stream = new QiStream("evtStream", evtType.Id);
-                string evtStreamString = qiclient.CreateStream(stream).Result;
-                QiStream evtStream = JsonConvert.DeserializeObject<QiStream>(evtStreamString);
+                var stream = new QiStream("evtStream", evtType.Id);
+                var evtStreamString = qiclient.CreateStream(stream).Result;
+                var evtStream = JsonConvert.DeserializeObject<QiStream>(evtStreamString);
 
                 #region CRUD operations
+
                 #region Create (Insert)
 
                 Console.WriteLine("Artificially generating 100 events and inserting them into the Qi Service");
 
                 // How to insert a single event
-                TimeSpan span = new TimeSpan(0, 1, 0);
-                WaveData evt = WaveData.Next(span, 2.0, 0);
+                var span = new TimeSpan(0, 1, 0);
+                var evt = WaveData.Next(span, 2.0, 0);
 
                 qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
-                List<WaveData> events = new List<WaveData>();
+                var events = new List<WaveData>();
                 // how to insert an a collection of events
-                for (int i = 2; i < 200; i+=2)
+                for (var i = 2; i < 200; i += 2)
                 {
                     evt = WaveData.Next(span, 2.0, i);
                     events.Add(evt);
@@ -113,30 +152,31 @@ namespace RestSample
                 qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
                 Thread.Sleep(2000);
 
-
-                #endregion
+                #endregion Create (Insert)
 
                 #region Retrieve events
+
                 Console.WriteLine("Retrieving the inserted events");
                 Console.WriteLine("==============================");
-                string jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
-                WaveData[] foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
+                var jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
+                var foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
-                #endregion
+
+                #endregion Retrieve events
 
                 #region Update events
+
                 Console.WriteLine();
                 Console.WriteLine("Updating values");
-                // take the first value inserted and update 
-                evt = foundEvents.First<WaveData>();
+                // take the first value inserted and update
+                evt = foundEvents.First();
                 evt = WaveData.Next(span, 4.0, 0);
                 qiclient.UpdateValue("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
                 // update the remaining events (same span, multiplier, order)
-                List<WaveData> newEvents = new List<WaveData>();
-                foreach (WaveData evnt in events)
+                var newEvents = new List<WaveData>();
+                foreach (var newEvt in events.Select(evnt => WaveData.Next(span, 4.0, evnt.Order)))
                 {
-                    WaveData newEvt = WaveData.Next(span, 4.0, evnt.Order);
                     newEvents.Add(newEvt);
                     Thread.Sleep(500);
                 }
@@ -149,7 +189,8 @@ namespace RestSample
                 jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
-                #endregion
+
+                #endregion Update events
 
                 #region stream behavior
 
@@ -158,15 +199,16 @@ namespace RestSample
                 // The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
                 Console.WriteLine();
                 Console.WriteLine(@"Retrieving three events without a stream behavior");
-                jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                jCollection =
+                    qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
 
                 // now, create a stream behavior with Discrete and attach it to the existing stream
-                QiStreamBehavior behavior = new QiStreamBehavior();
+                var behavior = new QiStreamBehavior();
                 behavior.Id = "evtStreamStepLeading";
                 behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
-                string behaviorString = qiclient.CreateBehavior(behavior).Result;
+                var behaviorString = qiclient.CreateBehavior(behavior).Result;
                 behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
 
                 // update the stream to include this behavior
@@ -175,11 +217,14 @@ namespace RestSample
 
                 // repeat the retrieval
                 Console.WriteLine();
-                Console.WriteLine("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
-                jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                Console.WriteLine(
+                    "Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
+                jCollection =
+                    qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
-                #endregion
+
+                #endregion stream behavior
 
                 #region delete events
 
@@ -198,14 +243,14 @@ namespace RestSample
                 jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
-                #endregion
-                #endregion
 
+                #endregion delete events
 
+                #endregion CRUD operations
             }
             catch (QiError qerr)
             {
-                Console.WriteLine("Error, status code = " + qerr.Code.ToString() + "; " + qerr.Message);
+                Console.WriteLine("Error, status code = " + qerr.Code + "; " + qerr.Message);
                 Console.WriteLine("Press ENTER to terminate");
                 Console.ReadLine();
             }
@@ -219,18 +264,11 @@ namespace RestSample
                 }
                 catch (Exception)
                 {
+                    // ignored
                 }
             }
         }
 
-        static protected void DumpEvents(IEnumerable<WaveData> evnts)
-        {
-            Console.WriteLine(string.Format("Found {0} events, writing", evnts.Count<WaveData>()));
-            foreach (WaveData evnt in evnts)
-            {
-                Console.WriteLine(evnt.ToString());
-            }
-        }
-
+        #endregion Private Methods
     }
 }

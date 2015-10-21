@@ -1,26 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace QiLibsSample
 {
     public class WaveData
     {
-        public WaveData()
-        {
-        }
+        #region Public Properties
+
+        public double Cos { get; set; }
+
+        public double Cosh { get; set; }
+
+        [Key]
+        public int Order { get; set; }
+
+        public double Radians { get; set; }
+        public double Sin { get; set; }
+        public double Sinh { get; set; }
+        public double Tan { get; set; }
+        public double Tanh { get; set; }
+        public double Tau { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public static WaveData Next(TimeSpan interval, double multiplier, int order)
         {
-            DateTime now = DateTime.UtcNow;
-            TimeSpan timeOfDay = now.TimeOfDay;
+            var now = DateTime.UtcNow;
+            var timeOfDay = now.TimeOfDay;
 
-            double radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 * Math.PI;
+            var radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 *
+                          Math.PI;
 
-            return new WaveData()
+            return new WaveData
             {
                 Order = order,
                 Radians = radians,
@@ -30,80 +44,25 @@ namespace QiLibsSample
                 Tan = multiplier * Math.Tan(radians),
                 Sinh = multiplier * Math.Sinh(radians),
                 Cosh = multiplier * Math.Cosh(radians),
-                Tanh = multiplier * Math.Tanh(radians),
+                Tanh = multiplier * Math.Tanh(radians)
             };
-        }
-        
-        [Key]
-        public int Order
-        {
-            get;
-            set;
-        }
-
-        public double Tau
-        {
-            get;
-            set;
-        }
-
-        public double Radians
-        {
-            get;
-            set;
-        }
-
-        public double Sin
-        {
-            get;
-            set;
-        }
-
-        public double Cos
-        {
-            get;
-            set;
-        }
-
-        public double Tan
-        {
-            get;
-            set;
-        }
-
-        public double Sinh
-        {
-            get;
-            set;
-        }
-
-        public double Cosh
-        {
-            get;
-            set;
-        }
-
-        public double Tanh
-        {
-            get;
-            set;
         }
 
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine(String.Format("Order = {0}", Order));
-            builder.AppendLine(String.Format("Radians = {0}", Radians));
-            builder.AppendLine(String.Format("Tau     = {0}", Tau));
-            builder.AppendLine(String.Format("Sine    = {0}", Sin));
-            builder.AppendLine(String.Format("Cosine  = {0}", Cos));
-            builder.AppendLine(String.Format("Tangent = {0}", Tan));
-            builder.AppendLine(String.Format("Sinh    = {0}", Sinh));
-            builder.AppendLine(String.Format("Cosh    = {0}", Cosh));
-            builder.AppendLine(String.Format("Tanh    = {0}", Tanh));
+            var builder = new StringBuilder();
+            builder.AppendLine($"Order = {Order}");
+            builder.AppendLine($"Radians = {Radians}");
+            builder.AppendLine($"Tau     = {Tau}");
+            builder.AppendLine($"Sine    = {Sin}");
+            builder.AppendLine($"Cosine  = {Cos}");
+            builder.AppendLine($"Tangent = {Tan}");
+            builder.AppendLine($"Sinh    = {Sinh}");
+            builder.AppendLine($"Cosh    = {Cosh}");
+            builder.AppendLine($"Tanh    = {Tanh}");
             return builder.ToString();
         }
 
+        #endregion Public Methods
     }
 }
-

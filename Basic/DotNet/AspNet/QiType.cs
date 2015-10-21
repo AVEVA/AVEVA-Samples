@@ -1,42 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestSample
+﻿namespace RestSample
 {
     public class QiType
     {
-        public string Id
-        {
-            get;
-            set;
-        }
+        #region Public Properties
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Description { get; set; }
+        public string Id { get; set; }
 
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
+        public QiTypeProperty[] Properties { get; set; }
+        public QiTypeCode QiTypeCode { get; set; }
 
-        public QiTypeCode QiTypeCode
-        {
-            get;
-            set;
-        }
-
-        public QiTypeProperty[] Properties
-        {
-            get;
-            set;
-        }
-
+        #endregion Public Properties
     }
 }

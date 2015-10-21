@@ -1,27 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestSample
+﻿namespace RestSample
 {
     public class QiStreamBehaviorOverride
     {
-        public string QiTypePropertyId
-        {
-            get;
-            set;
-        }
+        #region Public Properties
 
-        public QiStreamMode Mode
-        {
-            get;
-            set;
-        }
+        public QiStreamMode Mode { get; set; }
+        public string QiTypePropertyId { get; set; }
 
-        public QiStreamBehaviorOverride()
-        {
-        }
+        #endregion Public Properties
     }
 }
