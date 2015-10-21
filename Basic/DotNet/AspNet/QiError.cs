@@ -19,7 +19,7 @@ namespace RestSample
 
         public HttpStatusCode Code { get; private set; }
 
-        public string Message { get; private set; }
+        public new string Message { get; private set; }
 
         #endregion Public Properties
     }

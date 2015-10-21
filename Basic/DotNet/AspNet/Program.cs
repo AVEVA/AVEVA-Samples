@@ -205,9 +205,11 @@ namespace RestSample
                 DumpEvents(foundEvents);
 
                 // now, create a stream behavior with Discrete and attach it to the existing stream
-                var behavior = new QiStreamBehavior();
-                behavior.Id = "evtStreamStepLeading";
-                behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
+                var behavior = new QiStreamBehavior
+                {
+                    Id = "evtStreamStepLeading",
+                    Mode = QiStreamMode.StepwiseContinuousLeading
+                };
                 var behaviorString = qiclient.CreateBehavior(behavior).Result;
                 behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
 
