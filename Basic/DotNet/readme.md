@@ -1,7 +1,5 @@
 #.NET Samples
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ulsl9rha67n3i9bu?svg=true)](https://ci.appveyor.com/project/manastalukdar/qi-samples)
-
 There are two .NET samples, both written in C#.
 
 ##QiLibs
