@@ -371,9 +371,12 @@ namespace RestSample
                 Method = HttpMethod.Post
             };
 
+            var streamId = requestUrl.Replace(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/", string.Empty);
+            streamId = streamId.Split('/')[0];
+
             msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
             msg.Content = new StringContent(eventData, Encoding.UTF8, "application/json");
-            await SendAndRespondVoidAsync(msg, RestSampleStrings.CreateErrorTemplate, "event data", streamId); <<<< FIX THIS
+            await SendAndRespondVoidAsync(msg, RestSampleStrings.CreateErrorTemplate, "event data", streamId);
         }
 
     }
