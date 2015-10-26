@@ -1,6 +1,6 @@
 #Welcome
 
-.NET: [![Build status](https://ci.appveyor.com/api/projects/status/ulsl9rha67n3i9bu?svg=true)](https://ci.appveyor.com/project/manastalukdar/qi-samples)
+.NET => [![Build status](https://ci.appveyor.com/api/projects/status/ulsl9rha67n3i9bu?svg=true)](https://ci.appveyor.com/project/manastalukdar/qi-samples)
 
 The Qi Client samples are introductory, language-specific examples of programming against the Qi storage service..  They are intended as instructional samples only.  
 
