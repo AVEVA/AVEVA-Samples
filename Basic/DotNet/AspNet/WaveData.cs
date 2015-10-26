@@ -1,36 +1,79 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RestSample
 {
     public class WaveData
     {
-        #region Public Properties
+        public WaveData()
+        {
+        }
 
-        public double Cos { get; set; }
-        public double Cosh { get; set; }
-        public int Order { get; set; }
+        public int Order
+        {
+            get;
+            set;
+        }
 
-        public double Radians { get; set; }
-        public double Sin { get; set; }
-        public double Sinh { get; set; }
-        public double Tan { get; set; }
-        public double Tanh { get; set; }
-        public double Tau { get; set; }
+        public double Tau
+        {
+            get;
+            set;
+        }
 
-        #endregion Public Properties
+        public double Radians
+        {
+            get;
+            set;
+        }
 
-        #region Public Methods
+        public double Sin
+        {
+            get;
+            set;
+        }
+
+        public double Cos
+        {
+            get;
+            set;
+        }
+
+        public double Tan
+        {
+            get;
+            set;
+        }
+
+        public double Sinh
+        {
+            get;
+            set;
+        }
+
+        public double Cosh
+        {
+            get;
+            set;
+        }
+
+        public double Tanh
+        {
+            get;
+            set;
+        }
 
         public static WaveData Next(TimeSpan interval, double multiplier, int order)
         {
-            var now = DateTime.UtcNow;
-            var timeOfDay = now.TimeOfDay;
+            DateTime now = DateTime.UtcNow;
+            TimeSpan timeOfDay = now.TimeOfDay;
 
-            var radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 *
-                          Math.PI;
+            double radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 * Math.PI;
 
-            return new WaveData
+            return new WaveData()
             {
                 Order = order,
                 Radians = radians,
@@ -40,25 +83,23 @@ namespace RestSample
                 Tan = multiplier * Math.Tan(radians),
                 Sinh = multiplier * Math.Sinh(radians),
                 Cosh = multiplier * Math.Cosh(radians),
-                Tanh = multiplier * Math.Tanh(radians)
+                Tanh = multiplier * Math.Tanh(radians),
             };
         }
 
         public override string ToString()
         {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Order = {Order}");
-            builder.AppendLine($"Radians = {Radians}");
-            builder.AppendLine($"Tau     = {Tau}");
-            builder.AppendLine($"Sine    = {Sin}");
-            builder.AppendLine($"Cosine  = {Cos}");
-            builder.AppendLine($"Tangent = {Tan}");
-            builder.AppendLine($"Sinh    = {Sinh}");
-            builder.AppendLine($"Cosh    = {Cosh}");
-            builder.AppendLine($"Tanh    = {Tanh}");
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine(string.Format("Order = {0}", Order));
+            builder.AppendLine(string.Format("Radians = {0}", Radians));
+            builder.AppendLine(string.Format("Tau     = {0}", Tau));
+            builder.AppendLine(string.Format("Sine    = {0}", Sin));
+            builder.AppendLine(string.Format("Cosine  = {0}", Cos));
+            builder.AppendLine(string.Format("Tangent = {0}", Tan));
+            builder.AppendLine(string.Format("Sinh    = {0}", Sinh));
+            builder.AppendLine(string.Format("Cosh    = {0}", Cosh));
+            builder.AppendLine(string.Format("Tanh    = {0}", Tanh));
             return builder.ToString();
         }
-
-        #endregion Public Methods
     }
 }

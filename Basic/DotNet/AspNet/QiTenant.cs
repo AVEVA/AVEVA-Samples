@@ -1,9 +1,13 @@
-﻿namespace RestSample
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RestSample
 {
     public class QiTenant
     {
-        #region Public Constructors
-
         public QiTenant(string id)
         {
             Id = id;
@@ -14,12 +18,10 @@
             Id = string.Empty;
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
-        public string Id { get; set; }
-
-        #endregion Public Properties
+        public string Id
+        {
+            get;
+            set;
+        }
     }
 }

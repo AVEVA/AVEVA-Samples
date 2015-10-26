@@ -1,12 +1,27 @@
-﻿namespace RestSample
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RestSample
 {
     public class QiStreamBehaviorOverride
     {
-        #region Public Properties
+        public QiStreamBehaviorOverride()
+        {
+        }
 
-        public QiStreamMode Mode { get; set; }
-        public string QiTypePropertyId { get; set; }
+        public string QiTypePropertyId
+        {
+            get;
+            set;
+        }
 
-        #endregion Public Properties
+        public QiStreamMode Mode
+        {
+            get;
+            set;
+        }
     }
 }

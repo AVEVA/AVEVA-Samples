@@ -1,10 +1,16 @@
-﻿namespace RestSample
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RestSample
 {
     public enum QiTypeCode
     {
         Empty = 0,
         Object = 1,
-        DbNull = 2,
+        DBNull = 2,
         Boolean = 3,
         Char = 4,
         SByte = 5,

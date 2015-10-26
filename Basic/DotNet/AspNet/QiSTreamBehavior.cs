@@ -1,27 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RestSample
 {
     public class QiStreamBehavior
     {
-        #region Public Constructors
-
         public QiStreamBehavior()
         {
             Mode = QiStreamMode.Continuous;
         }
 
-        #endregion Public Constructors
+        public string Id
+        {
+            get;
+            set;
+        }
 
-        #region Public Properties
+        public string Name
+        {
+            get;
+            set;
+        }
 
-        public QiStreamExtrapolation ExtrapolationMode { get; set; }
-        public string Id { get; set; }
+        public QiStreamMode Mode
+        {
+            get;
+            set;
+        }
 
-        public QiStreamMode Mode { get; set; }
-        public string Name { get; set; }
-        public IList<QiStreamBehaviorOverride> Overrides { get; set; }
+        public QiStreamExtrapolation ExtrapolationMode
+        {
+            get;
+            set;
+        }
 
-        #endregion Public Properties
+        public IList<QiStreamBehaviorOverride> Overrides
+        {
+            get;
+            set;
+        }
     }
 }

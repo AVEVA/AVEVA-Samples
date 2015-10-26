@@ -1,26 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RestSample
 {
     public class QiError : Exception
     {
-        #region Public Constructors
-
         public QiError(HttpStatusCode code, string msg)
+            : base(msg)
         {
             Code = code;
-            Message = msg;
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
-
-        public HttpStatusCode Code { get; private set; }
-
-        public new string Message { get; private set; }
-
-        #endregion Public Properties
+        public HttpStatusCode Code
+        {
+            get;
+            private set;
+        }
     }
 }
