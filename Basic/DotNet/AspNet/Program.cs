@@ -10,10 +10,9 @@ using Newtonsoft.Json;
 
 namespace RestSample
 {
-    class Program
+    public class Program
     {
-
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // Instantiate the REST client
             Console.WriteLine("Creating a Qi REST API Client...");
@@ -24,7 +23,6 @@ namespace RestSample
 
             try
             {
-
                 // create types for int and double, then create properties for all the WaveData properties
                 Console.WriteLine("Creating a Qi type for WaveData instances");
                 QiType intType = new QiType();
@@ -72,23 +70,22 @@ namespace RestSample
                 tanhProperty.Id = "Tanh";
                 tanhProperty.QiType = doubleType;
                 
-
                 // Create a QiType for our WaveData class; the metadata proeprties are the ones we just created
                 QiType type = new QiType();
                 type.Name = "WaveData";
                 type.Id = "WaveDataType";
                 type.Description = "This is a sample stream for storing WaveData type events";
-                QiTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty}; 
+                QiTypeProperty[] props = { orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty }; 
                 type.Properties = props;
 
                 // create the type in the Qi Service
-                string evtTypeString = qiclient.CreateType(type).Result;
+                string evtTypeString = qiclient.CreateTypeAsync(type).Result;
                 evtType = JsonConvert.DeserializeObject<QiType>(evtTypeString);
 
                 // create a stream named evtStream
                 Console.WriteLine("Creating a stream in this tenant for simple event measurements");
                 QiStream stream = new QiStream("evtStream", evtType.Id);
-                string evtStreamString = qiclient.CreateStream(stream).Result;
+                string evtStreamString = qiclient.CreateStreamAsync(stream).Result;
                 QiStream evtStream = JsonConvert.DeserializeObject<QiStream>(evtStreamString);
 
                 #region CRUD operations
@@ -100,26 +97,26 @@ namespace RestSample
                 TimeSpan span = new TimeSpan(0, 1, 0);
                 WaveData evt = WaveData.Next(span, 2.0, 0);
 
-                qiclient.CreateEvent("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+                qiclient.CreateEventAsync("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
-                List<WaveData> events = new List<WaveData>();
                 // how to insert an a collection of events
-                for (int i = 2; i < 200; i+=2)
+                List<WaveData> events = new List<WaveData>();
+                for (int i = 2; i < 200; i += 2)
                 {
                     evt = WaveData.Next(span, 2.0, i);
                     events.Add(evt);
                     Thread.Sleep(400);
                 }
-                qiclient.CreateEvents("evtStream", JsonConvert.SerializeObject(events)).Wait();
-                Thread.Sleep(2000);
 
+                qiclient.CreateEventsAsync("evtStream", JsonConvert.SerializeObject(events)).Wait();
+                Thread.Sleep(2000);
 
                 #endregion
 
                 #region Retrieve events
                 Console.WriteLine("Retrieving the inserted events");
                 Console.WriteLine("==============================");
-                string jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
+                string jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
                 WaveData[] foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -127,10 +124,11 @@ namespace RestSample
                 #region Update events
                 Console.WriteLine();
                 Console.WriteLine("Updating values");
+                
                 // take the first value inserted and update 
                 evt = foundEvents.First<WaveData>();
                 evt = WaveData.Next(span, 4.0, 0);
-                qiclient.UpdateValue("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+                qiclient.UpdateValueAsync("evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
                 // update the remaining events (same span, multiplier, order)
                 List<WaveData> newEvents = new List<WaveData>();
@@ -140,13 +138,14 @@ namespace RestSample
                     newEvents.Add(newEvt);
                     Thread.Sleep(500);
                 }
-                qiclient.UpdateValues("evtStream", JsonConvert.SerializeObject(events)).Wait();
+
+                qiclient.UpdateValuesAsync("evtStream", JsonConvert.SerializeObject(events)).Wait();
                 Thread.Sleep(2000);
 
                 // check the results
                 Console.WriteLine("Retrieving the updated values");
                 Console.WriteLine("=============================");
-                jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
+                jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -154,11 +153,11 @@ namespace RestSample
                 #region stream behavior
 
                 // illustrate how stream behaviors modify retrieval
-                // First, pull three items back with GetRangeValues for range values between events.
+                // First, pull three items back with GetRangeValuesAsync for range values between events.
                 // The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
                 Console.WriteLine();
                 Console.WriteLine(@"Retrieving three events without a stream behavior");
-                jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                jCollection = qiclient.GetRangeValuesAsync("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
 
@@ -166,17 +165,17 @@ namespace RestSample
                 QiStreamBehavior behavior = new QiStreamBehavior();
                 behavior.Id = "evtStreamStepLeading";
                 behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
-                string behaviorString = qiclient.CreateBehavior(behavior).Result;
+                string behaviorString = qiclient.CreateBehaviorAsync(behavior).Result;
                 behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
 
                 // update the stream to include this behavior
                 evtStream.BehaviorId = behavior.Id;
-                qiclient.UpdateStream("evtStream", evtStream).Wait();
+                qiclient.UpdateStreamAsync(evtStream).Wait();
 
                 // repeat the retrieval
                 Console.WriteLine();
                 Console.WriteLine("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
-                jCollection = qiclient.GetRangeValues("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                jCollection = qiclient.GetRangeValuesAsync("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -186,22 +185,20 @@ namespace RestSample
                 // remove the first value -- index is the timestamp of the event
                 Console.WriteLine();
                 Console.WriteLine("Deleting events");
-                qiclient.RemoveValue("evtStream", "0").Wait();
+                qiclient.RemoveValueAsync("evtStream", "0").Wait();
 
                 // remove the rest -- start and end time indices
-                qiclient.RemoveWindowValues("evtStream", "1", "198").Wait();
+                qiclient.RemoveWindowValuesAsync("evtStream", "1", "198").Wait();
                 Thread.Sleep(2000);
 
                 Console.WriteLine("Checking for events");
                 Console.WriteLine("===================");
 
-                jCollection = qiclient.GetWindowValues("evtStream", "0", "198").Result;
+                jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
                 #endregion
-
-
             }
             catch (QiError qerr)
             {
@@ -213,9 +210,9 @@ namespace RestSample
             {
                 try
                 {
-                    qiclient.DeleteStream("evtStream").Wait();
-                    qiclient.DeleteBehavior("evtStreamStepLeading").Wait();
-                    qiclient.DeleteType(evtType.Id).Wait();
+                    qiclient.DeleteStreamAsync("evtStream").Wait();
+                    qiclient.DeleteBehaviorAsync("evtStreamStepLeading").Wait();
+                    qiclient.DeleteTypeAsync(evtType.Id).Wait();
                 }
                 catch (Exception)
                 {
@@ -223,7 +220,7 @@ namespace RestSample
             }
         }
 
-        static protected void DumpEvents(IEnumerable<WaveData> evnts)
+        protected static void DumpEvents(IEnumerable<WaveData> evnts)
         {
             Console.WriteLine(string.Format("Found {0} events, writing", evnts.Count<WaveData>()));
             foreach (WaveData evnt in evnts)
@@ -231,6 +228,5 @@ namespace RestSample
                 Console.WriteLine(evnt.ToString());
             }
         }
-
     }
 }

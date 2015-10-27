@@ -12,27 +12,6 @@ namespace RestSample
         {
         }
 
-        public static WaveData Next(TimeSpan interval, double multiplier, int order)
-        {
-            DateTime now = DateTime.UtcNow;
-            TimeSpan timeOfDay = now.TimeOfDay;
-
-            double radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 * Math.PI;
-
-            return new WaveData()
-            {
-                Order = order,
-                Radians = radians,
-                Tau = radians / (2 * Math.PI),
-                Sin = multiplier * Math.Sin(radians),
-                Cos = multiplier * Math.Cos(radians),
-                Tan = multiplier * Math.Tan(radians),
-                Sinh = multiplier * Math.Sinh(radians),
-                Cosh = multiplier * Math.Cosh(radians),
-                Tanh = multiplier * Math.Tanh(radians),
-            };
-        }
-
         public int Order
         {
             get;
@@ -87,20 +66,40 @@ namespace RestSample
             set;
         }
 
+        public static WaveData Next(TimeSpan interval, double multiplier, int order)
+        {
+            DateTime now = DateTime.UtcNow;
+            TimeSpan timeOfDay = now.TimeOfDay;
+
+            double radians = ((timeOfDay.TotalMilliseconds % interval.TotalMilliseconds) / interval.TotalMilliseconds) * 2 * Math.PI;
+
+            return new WaveData()
+            {
+                Order = order,
+                Radians = radians,
+                Tau = radians / (2 * Math.PI),
+                Sin = multiplier * Math.Sin(radians),
+                Cos = multiplier * Math.Cos(radians),
+                Tan = multiplier * Math.Tan(radians),
+                Sinh = multiplier * Math.Sinh(radians),
+                Cosh = multiplier * Math.Cosh(radians),
+                Tanh = multiplier * Math.Tanh(radians),
+            };
+        }
+
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine(String.Format("Order = {0}", Order));
-            builder.AppendLine(String.Format("Radians = {0}", Radians));
-            builder.AppendLine(String.Format("Tau     = {0}", Tau));
-            builder.AppendLine(String.Format("Sine    = {0}", Sin));
-            builder.AppendLine(String.Format("Cosine  = {0}", Cos));
-            builder.AppendLine(String.Format("Tangent = {0}", Tan));
-            builder.AppendLine(String.Format("Sinh    = {0}", Sinh));
-            builder.AppendLine(String.Format("Cosh    = {0}", Cosh));
-            builder.AppendLine(String.Format("Tanh    = {0}", Tanh));
+            builder.AppendLine(string.Format("Order = {0}", Order));
+            builder.AppendLine(string.Format("Radians = {0}", Radians));
+            builder.AppendLine(string.Format("Tau     = {0}", Tau));
+            builder.AppendLine(string.Format("Sine    = {0}", Sin));
+            builder.AppendLine(string.Format("Cosine  = {0}", Cos));
+            builder.AppendLine(string.Format("Tangent = {0}", Tan));
+            builder.AppendLine(string.Format("Sinh    = {0}", Sinh));
+            builder.AppendLine(string.Format("Cosh    = {0}", Cosh));
+            builder.AppendLine(string.Format("Tanh    = {0}", Tanh));
             return builder.ToString();
         }
-
     }
 }

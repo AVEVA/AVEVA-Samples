@@ -14,14 +14,13 @@ using OSIsoft.Qi.Reflection;
 
 namespace QiLibsSample
 {
-    class Program
+    public class Program
     {
         // VERY IMPORTANT: edit the following values to reflect the authorization items you were given
-
-        static string _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
-        static string _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
-        static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
-        static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+        private const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        private const string SecurityAuthority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
+        private const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        private const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
 
         // Azure AD authentication related
         private static AuthenticationContext _authContext = null;
@@ -36,10 +35,10 @@ namespace QiLibsSample
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             QiHttpClientFactory<IQiServer> clientFactory = new QiHttpClientFactory<IQiServer>();
             clientFactory.ProxyTimeout = new TimeSpan(0, 1, 0);
-
             IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
             IQiClientProxy proxy = (IQiClientProxy)qiclient;
-            proxy.OnBeforeInvoke((handler)=>{
+
+            proxy.OnBeforeInvoke((handler) => {
                 string token = AcquireAuthToken();
                 if (proxy.Client.DefaultHeaders.Contains("Authorization"))
                 {
@@ -47,30 +46,26 @@ namespace QiLibsSample
                 }
                     
                 proxy.Client.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString());
-
             });
             
             try
             {
-                // Create a Qi Type -- the Qi Libraries let you do this via reflection
-                // First, create a type builder, then pass it the name of the class you are using for events.
-                // This greatly simplifies type creation
-
+                // Create a Qi Type to reflect the event data being stored in Qi.
+                // The Qi Client Libraries provide QiTypeBuilder which constructs a QiType object 
+                // based upon a class you define in your code.  
                 Console.WriteLine("Creating a Qi type for WaveData instances");
                 QiTypeBuilder typeBuilder = new QiTypeBuilder();
                 evtType = typeBuilder.Create<WaveData>();
                 evtType.Id = "WaveType";
                 QiType tp = qiclient.GetOrCreateType(evtType);
 
-                Console.WriteLine("Creating a stream in this tenant for simple event measurements");
-
+                // now let's create the stream to contain the events
+                // specify the type id of the QiType created above in the TypeId property of the QiStream object
+                // All events submitted to this stream must be of this type
+                Console.WriteLine("Creating a stream for simple event measurements");
                 QiStream sampleStream = new QiStream();
                 sampleStream.Name = "evtStream";
                 sampleStream.Id = "evtStream";
-
-                // set the TypeId property to the value of the Id property of the type you submitted
-                // All events submitted to this stream must be of this type
-                // Note there are Async versions of the client methods, too, using .NET TPL
                 sampleStream.TypeId = tp.Id;
                 sampleStream.Description = "This is a sample stream for storing WaveData type measurements";
                 QiStream strm = qiclient.GetOrCreateStream(sampleStream);
@@ -81,15 +76,15 @@ namespace QiLibsSample
 
                 Console.WriteLine("Artificially generating 100 events and inserting them into the Qi Service");
 
-                // How to insert a single event
+                // Insert a single event into a stream
                 TimeSpan span = new TimeSpan(0, 1, 0);
                 WaveData evt = WaveData.Next(span, 2.0, 0);
 
                 qiclient.InsertValue("evtStream", evt);
 
+                // Inserting a collection of events into a stream
                 List<WaveData> events = new List<WaveData>();
-                // how to insert an a collection of events
-                for (int i = 2; i < 200; i+=2)
+                for (int i = 2; i < 200; i += 2)
                 {
                     WaveData newEvt = WaveData.Next(span, 2.0, i);
                     events.Add(newEvt);
@@ -100,7 +95,6 @@ namespace QiLibsSample
                 Thread.Sleep(2000);
 
                 #endregion
-
 
                 #region Retrieve events for a time range
 
@@ -119,7 +113,6 @@ namespace QiLibsSample
                 // take the first value inserted and update the value using a multiplier of 4, while retaining the order
                 evt = foundEvts.First<WaveData>();
                 evt = WaveData.Next(span, 4.0, evt.Order);
-
                 qiclient.UpdateValue<WaveData>("evtStream", evt);
 
                 // update the collection of events (same span, multiplier of 4, retain order)
@@ -178,7 +171,6 @@ namespace QiLibsSample
                 DumpEvents(foundEvts);
                 #endregion
                 #endregion
-
             }
             catch (QiHttpClientException qiex)
             {
@@ -194,24 +186,21 @@ namespace QiLibsSample
                 // all entities are reference counted, so you must delete the stream, then the type it uses
                 try
                 {
-
                     qiclient.DeleteStream("evtStream");
                     qiclient.DeleteBehavior("evtStreamStepLeading");
                     qiclient.DeleteType(evtType.Id);
                 }
                 catch (Exception)
                 {
-                    
                 }
             }
-
         }
 
-        static protected string AcquireAuthToken()
+        protected static string AcquireAuthToken()
         {
             if (_authContext == null)
             {
-                _authContext = new AuthenticationContext(_authority);
+                _authContext = new AuthenticationContext(SecurityAuthority);
             }
 
             // tokens expire after a certain period of time
@@ -219,8 +208,8 @@ namespace QiLibsSample
             // ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
             try
             {
-                ClientCredential userCred = new ClientCredential(_appId, _appKey);
-                AuthenticationResult authResult = _authContext.AcquireToken(_resource, userCred);
+                ClientCredential userCred = new ClientCredential(SecurityAppId, SecurityAppKey);
+                AuthenticationResult authResult = _authContext.AcquireToken(SecurityResource, userCred);
                 return authResult.AccessToken;
             }
             catch (AdalException)
@@ -229,8 +218,7 @@ namespace QiLibsSample
             }
         }
 
-
-        static protected void DumpEvents(IEnumerable<WaveData> evnts)
+        protected static void DumpEvents(IEnumerable<WaveData> evnts)
         {
             Console.WriteLine(string.Format("Found {0} events, writing", evnts.Count<WaveData>()));
             foreach (WaveData evnt in evnts)

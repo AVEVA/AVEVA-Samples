@@ -8,6 +8,10 @@ namespace RestSample
 {
     public class QiStreamBehaviorOverride
     {
+        public QiStreamBehaviorOverride()
+        {
+        }
+
         public string QiTypePropertyId
         {
             get;
@@ -18,10 +22,6 @@ namespace RestSample
         {
             get;
             set;
-        }
-
-        public QiStreamBehaviorOverride()
-        {
         }
     }
 }

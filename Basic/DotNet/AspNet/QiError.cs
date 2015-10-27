@@ -7,24 +7,18 @@ using System.Threading.Tasks;
 
 namespace RestSample
 {
-    public class QiError: Exception
+    public class QiError : Exception
     {
+        public QiError(HttpStatusCode code, string msg)
+            : base(msg)
+        {
+            Code = code;
+        }
+
         public HttpStatusCode Code
         {
             get;
             private set;
-        }
-
-        public String Message
-        {
-            get;
-            private set;
-        }
-
-        public QiError(HttpStatusCode code, string msg)
-        {
-            Code = code;
-            Message = msg;
         }
     }
 }

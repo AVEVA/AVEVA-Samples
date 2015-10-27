@@ -8,35 +8,8 @@ namespace RestSample
 {
     public class QiStream
     {
-        public string Id
-        {
-            get;
-            set;
-        }
-        public string Name
-        {
-            get;
-            set;
-        }
-        public string Description
-        {
-            get;
-            set;
-        }
-        public string TypeId
-        {
-            get;
-            set;
-        }
-        public string BehaviorId
-        {
-            get;
-            set;
-        }
-
         public QiStream()
         {
-        
         }
 
         public QiStream(string name, string typeid)
@@ -53,6 +26,36 @@ namespace RestSample
             TypeId = typeid;
             Description = description;
             BehaviorId = behavior;
+        }
+
+        public string Id
+        {
+            get;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        public string TypeId
+        {
+            get;
+            set;
+        }
+        
+        public string BehaviorId
+        {
+            get;
+            set;
         }
     }
 }

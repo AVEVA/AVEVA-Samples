@@ -8,12 +8,6 @@ namespace RestSample
 {
     public class QiTenant
     {
-        public string Id
-        {
-            get;
-            set;
-        }
-
         public QiTenant(string id)
         {
             Id = id;
@@ -22,6 +16,12 @@ namespace RestSample
         public QiTenant()
         {
             Id = string.Empty;
+        }
+
+        public string Id
+        {
+            get;
+            set;
         }
     }
 }

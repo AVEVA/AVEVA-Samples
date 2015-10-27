@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace RestSample
 {
-
     public class QiStreamBehavior
     {
+        public QiStreamBehavior()
+        {
+            Mode = QiStreamMode.Continuous;
+        }
+
         public string Id
         {
             get;
@@ -37,11 +41,6 @@ namespace RestSample
         {
             get;
             set;
-        }
-
-        public QiStreamBehavior()
-        {
-            Mode = QiStreamMode.Continuous;
         }
     }
 }
