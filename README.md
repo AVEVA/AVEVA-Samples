@@ -1,5 +1,7 @@
 #Welcome
 
+[![Build status](__https://ci.appveyor.com/api/projects/status/yaqvw895872r5a4e?svg=true)](__ https://ci.appveyor.com/project/osisoft92585/qi-samples)
+
 The Qi Client samples are introductory, language-specific examples of programming against the Qi storage service..  They are intended as instructional samples only.  
 
 #Sample Pattern
