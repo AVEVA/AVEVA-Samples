@@ -4,5 +4,10 @@ environment:
   matrix:
   - solution_name: Basic/DotNet/DotNet.sln
   - solution_name: Basic/Python/QiPy/QiPy.sln
+configuration:
+  - Debug
+  - Release
+platform:
+  - Any CPU
 build_script:
   - msbuild %solution_name%
