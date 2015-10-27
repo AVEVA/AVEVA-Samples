@@ -1,9 +1,5 @@
 #Welcome
 
-[![Join the chat at https://gitter.im/manastalukdar/Qi-Samples](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/manastalukdar/Qi-Samples?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/ulsl9rha67n3i9bu?svg=true)](https://ci.appveyor.com/project/manastalukdar/qi-samples)
-
 The Qi Client samples are introductory, language-specific examples of programming against the Qi storage service..  They are intended as instructional samples only.  
 
 #Sample Pattern
