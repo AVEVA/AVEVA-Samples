@@ -19,6 +19,7 @@ public class QiClient {
 
 	Gson mGson =  null; 
 	private String baseUrl = null; 
+	@SuppressWarnings("unused")
 	private String tenantName = null;
 	static String _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
         static String _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
@@ -26,6 +27,7 @@ public class QiClient {
         static String _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
    
 	// REST API url strings
+	@SuppressWarnings("unused")
 	private String tenantsBase = "/Qi/Tenants";
 	private String typesBase = "/Qi/Types";
 	private String streamsBase = "/Qi/Streams";
@@ -35,7 +37,9 @@ public class QiClient {
 	private String getTemplate = "/Data/GetWindowValues?";
 	private String updateSingle = "/Data/UpdateValue";
 	private String updateMultiple = "/Data/UpdateValues";
+	@SuppressWarnings("unused")
 	private String removeSingleTemplate = "/{0}/Data/RemoveValue?index={1}";
+	@SuppressWarnings("unused")
 	private String removeMultipleTemplate = "/{0}/Data/RemoveWindowValues?startIndex={1}&endIndex={2}";
 	private static AuthenticationContext _authContext = null;
 	private static ExecutorService service = null;

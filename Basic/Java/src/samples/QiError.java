@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 
 public class QiError extends Exception{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int httpStatusCode;
 	private StringBuffer httpErrorMessage;
 	private String qiErrorMessage;
