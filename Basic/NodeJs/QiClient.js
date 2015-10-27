@@ -25,12 +25,12 @@ String.prototype.format = function (args) {
 
 module.exports = {
     QiClient : function(url){
-    	this.url = url;
+        this.url = url;
         this.version = 0.1;
         this.tenantsBase = "/Qi/Tenants";
         this.typesBase = "/Qi/Types";
         this.streamsBase = "/Qi/Streams";
-        this.behaviourBase = "/Qi/Behaviors";
+        this.behaviorBase = "/Qi/Behaviors";
         this.insertSingle = "/Data/InsertValue";
         this.insertMultiple = "/Data/InsertValues";
         this.getTemplate = "/{0}/Data/GetWindowValues?startIndex={1}&endIndex={2}";
@@ -64,9 +64,9 @@ module.exports = {
 
         //parse urls
         this.getLocation = function(location){
-        	var temp = document.createElement("a");
-        	temp.href = location;
-        	return temp.pathname;
+            var temp = document.createElement("a");
+            temp.href = location;
+            return temp.pathname;
         };
 
         //method to create QiTypes
@@ -108,6 +108,15 @@ module.exports = {
         };
 
         //get all the streams under the tenant's Qi Service
+        this.getStream = function(qiStream){
+                                return restCall({
+                                            url : this.url+this.streamsBase+"/"+qiStream.Id,
+                                            method : 'GET',
+                                            headers : this.getHeaders()
+                                        });
+        };
+
+        //get all the streams under the tenant's Qi Service
         this.getStreams = function(){
                                 return restCall({
                                             url : this.url+this.streamsBase,
@@ -135,13 +144,13 @@ module.exports = {
                                         });
         };
 
-        //create behaviour
-        this.createBehaviour = function(behaviour){
+        //create behavior
+        this.createBehavior = function(behavior){
                                 return restCall({
-                                            url : this.url+this.behaviourBase,
+                                            url : this.url+this.behaviorBase,
                                             method : 'POST',
                                             headers : this.getHeaders(),
-                                            body : JSON.stringify(behaviour)
+                                            body : JSON.stringify(behavior)
                                         });
         };
 

@@ -1,6 +1,6 @@
-#NodeJs Samples: Building a Client to make REST API Calls to the Qi Service.
+#JavaScript Samples: Building a Client to make REST API Calls to the Qi Service.
 
-This sample demonstrates how Qi REST APIs are invoked using NodeJs and JavaScript. It has the following dependencies:
+This sample demonstrates how Qi REST APIs are invoked using JavaScript. It has following dependencies:
 * node.js, installation instructions are available at [node.js](https://nodejs.org/en/)
 * Request-Promise, HTTP client Request with Promises/A+ compliance. [request-promise](https://www.npmjs.com/package/request-promise)
 
@@ -114,7 +114,7 @@ if(client.tokenExpires < nowSeconds){
                                 }else{
                                     return client.createType(wave);
                                 }
-```javascript
+```
 
 The token received from `getToken` is then stored and passed as part of the headers
 `getHeaders`, in turn, looks like this:
@@ -148,7 +148,7 @@ The Qi type "Id" is the identifier for a particular type. "Name" is string prope
 
 A Qi types can have multiple properties, which are again Qi types with the exception that they describe only a single datatype and do not contain multiple properties. Atleast one of the Qi type has to be a key, determined by a boolean value, which is used to index the values to be stored. For example, time can be used as key in order store time based data. Qi allows the use of non-time indices, and also permits compound indices.
 
-From QiTypeProperty.py:
+From QiObjects.js:
 ```javascript
    QiType : function (qiType){
         if(qiType.Id){

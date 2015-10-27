@@ -1,27 +1,29 @@
-﻿# qipy
-# chad@osisoft.com and test
-
-from urlparse import urlparse
+﻿from urlparse import urlparse
 import urllib
 import httplib as http
 import json
 from QiType import QiType
 from QiStream import QiStream
+from QiStreamBehavior import QiStreamBehavior
 from QiError import QiError
 from JsonEncoder import Encoder
+import requests
+import time
 
 class QiClient(object):
     """description of class"""
 
-    def __init__(self, url, apikey):
+    def __init__(self, url, authItems):
         self.url = url
         version = 0.1
         self.__tenantsBase = "/Qi/Tenants"
         self.__typesBase = "/Qi/Types"
         self.__streamsBase = "/Qi/Streams"
+        self.__behaviorBase = "/Qi/Behaviors"
         self.__insertSingle = "/Data/InsertValue"
         self.__insertMultiple = "/Data/InsertValues"
         self.__getTemplate = "/{stream_id}/Data/GetWindowValues?{start}&{end}"
+        self.__getRangeTemplate = "/Data/GetRangeValues?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}"
         self.__updateSingle = "/Data/UpdateValue"
         self.__updateMultiple = "/Data/UpdateValues"
         self.__removeSingleTemplate = "/{stream_id}/Data/RemoveValue?{param}"
@@ -29,7 +31,14 @@ class QiClient(object):
         self.__getLast = "/data/getlastvalue"
         self.__replaceValue = "/data/replaceValue"
         self.__replaceValues = "/data/replaceValues"
-        self.__tenant_id = "00000000-0000-0000-0000-000000000002"
+        self.__authItems = authItems
+        self.__token = ""
+        self.__expiration = ""
+        
+        self.__getToken()
+        if not self.__token:
+            return
+
         print "----------------------------------"
         print "  ___  _ ____"        
         print " / _ \(_)  _ \ _   _ "
@@ -57,17 +66,20 @@ class QiClient(object):
        
         if not isinstance(qi_type, QiType):
             return
-  
-        conn = http.HTTPConnection(self.url)
+        
+        self.__getToken()
+        
+        conn = http.HTTPSConnection(self.url)
+        
         conn.request("POST", self.__typesBase, qi_type.toString(), self.__qi_headers())
         response = conn.getresponse()
         
-        if response.status == 302: # Found                         
-            url = urlparse(response.getheader("Location"))       
-            conn = http.HTTPConnection(self.url)
+        if response.status == 302: # Found                      
+            url = urlparse(response.getheader("Location"))
+            conn = http.HTTPSConnection(self.url)
             conn.request("GET", url.path, headers = self.__qi_headers())            
             response = conn.getresponse()
-
+        
         if response.status == 200 or response.status == 201:
             type = QiType.fromString(response.read().decode())
             conn.close()
@@ -77,7 +89,8 @@ class QiClient(object):
             raise QiError("Failed to create type. {status}:{reason}".format(status = response.status, reason = response.reason))
     
     def getTypes(self):
-        conn = http.HTTPConnection(self.url)
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
         
         conn.request("GET", self.__typesBase, headers = self.__qi_headers())
         response = conn.getresponse()
@@ -96,7 +109,8 @@ class QiClient(object):
         return returnlist
 
     def getType(self, type_id):
-        conn = http.HTTPConnection(self.url)
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
         
         conn.request("GET", self.__typesBase + '/' + type_id, headers = self.__qi_headers())
         response = conn.getresponse()
@@ -110,39 +124,75 @@ class QiClient(object):
         return QiType.fromString(typesresponse)        
                 
     def deleteType(self, type_id):
+        self.__getToken()
         if type_id is None:
             return
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request('DELETE', self.__typesBase + '/' +  type_id, headers = self.__qi_headers())
         response = conn.getresponse()
         
-        if response.status != 200:            
+        if response.status != 200:
             conn.close()
             raise QiError("Failed to delete QiType, {type_id}. {status}:{reason}".
                           format(type_id = type_id, status = response.status, reason = response.reason))
 
+    def createBehavior(self, behavior):
+        self.__getToken()
+        if not isinstance(behavior, QiStreamBehavior):
+            return
+        conn = http.HTTPSConnection(self.url)
+        
+        payload = behavior.toString()
+        conn.request("POST", self.__behaviorBase, payload, self.__qi_headers())
+        response = conn.getresponse()
 
+        if response.status == 302: # Found                      
+            url = urlparse(response.getheader("Location"))
+            conn = http.HTTPSConnection(self.url)
+            conn.request("GET", url.path, headers = self.__qi_headers())            
+            response = conn.getresponse()
+        if response.status == 200 or response.status == 201:
+            string = response.read().decode()
+            type = QiStreamBehavior.fromString(string)
+            conn.close()
+            return type
+        else:
+            conn.close()
+            raise QiError("Failed to create behavior. {status}:{reason}".format(status = response.status, reason = response.reason))
+            
+    def deleteBehavior(self, behaviorId):
+        self.__getToken()
+        if behaviorId is None:
+            return
+        conn = http.HTTPSConnection(self.url)
+        conn.request('DELETE', self.__behaviorBase + '/' +  behaviorId, headers = self.__qi_headers())
+        response = conn.getresponse()
+        
+        if response.status != 200:
+            conn.close()
+            raise QiError("Failed to delete QiType, {behaviorId}. {status}:{reason}".
+                            format(behaviorId = behaviorId, status = response.status, reason = response.reason))
+                          
     # Qi Stream
-
     def createStream(self, qi_stream):
+        self.__getToken()
         if qi_stream is None:
             return
 
         if not isinstance(qi_stream, QiStream):
             return
    
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
+        
         conn.request("POST", self.__streamsBase, qi_stream.toString(), self.__qi_headers())
 
         response = conn.getresponse()
-     
+        
         if response.status == 302:
             url =  urlparse(response.getheader("Location"))
-            response.close()
-
+            conn = http.HTTPSConnection(self.url)
             conn.request("GET", url.path, headers = self.__qi_headers())
             response = conn.getresponse()
-
         if response.status == 200 or response.status == 201:
             stream = QiStream.fromString(response.read().decode())
             conn.close()
@@ -154,7 +204,8 @@ class QiClient(object):
         
 
     def getStream(self, stream_id):
-        conn = http.HTTPConnection(self.url)
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
         
         conn.request("GET", self.__streamsBase + '/' + stream_id, headers = self.__qi_headers())
         response = conn.getresponse()
@@ -169,7 +220,8 @@ class QiClient(object):
         return QiStream.fromDictionary(json.loads(streamResponse))        
 
     def getStreams(self):
-        conn = http.HTTPConnection(self.url)
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
         
         conn.request("GET", self.__streamsBase, headers = self.__qi_headers())
         response = conn.getresponse()
@@ -188,14 +240,15 @@ class QiClient(object):
         
         return returnlist
 
-    def editStream(self, qi_stream): 
+    def updateStream(self, qi_stream): 
+        self.__getToken()
         if qi_stream is None:
             return
 
         if not isinstance(qi_stream, QiStream):
             return
-   
-        conn = http.HTTPConnection(self.url)
+        
+        conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id, qi_stream.toString(), self.__qi_headers())
 
         response = conn.getresponse()
@@ -204,12 +257,12 @@ class QiClient(object):
             conn.close()
             raise QiError("Failed to edit QiStream, {stream_id}. {status}:{reason}".
                           format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-
         conn.close()
 
 
     def deleteStream(self, stream_id):
-        conn = http.HTTPConnection(self.url)
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
         
         conn.request("DELETE", self.__streamsBase + '/' + stream_id, headers = self.__qi_headers())
         response = conn.getresponse()
@@ -227,11 +280,12 @@ class QiClient(object):
     def getLastValue(self, qi_stream):
         if qi_stream is None:
             return
-
+        
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-         
-        conn = http.HTTPConnection(self.url)
+            
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
         conn.request("GET", self.__streamsBase + '/' + qi_stream.Id + self.__getLast, 
                      headers = self.__qi_headers())
         response = conn.getresponse()
@@ -257,11 +311,11 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-        
-        
+            
+        self.__getToken()
         payload = json.dumps(value, cls = Encoder)
         
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertSingle, 
                      payload, self.__qi_headers())
 
@@ -281,11 +335,11 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-        
-        
+            
+        self.__getToken()
         payload = json.dumps(value, cls = Encoder)
         
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__updateSingle, 
                      payload, self.__qi_headers())
 
@@ -305,10 +359,11 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-
+            
+        self.__getToken()
         payload = json.dumps(value, cls = Encoder)
 
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__updateMultiple, 
                      payload, self.__qi_headers())
 
@@ -331,10 +386,11 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-
+            
+        self.__getToken()
         payload = json.dumps(value)
 
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__replaceValue, 
                      payload, self.__qi_headers())
 
@@ -357,9 +413,10 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-               
+            
+        self.__getToken()
         params = urllib.urlencode({"index": index})
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("DELETE", self.__streamsBase + '/' + self.__removeSingleTemplate.format(stream_id = qi_stream.Id, param = params), 
                      headers = self.__qi_headers())
 
@@ -383,10 +440,11 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-
+            
+        self.__getToken()
         payload = json.dumps(values, cls = Encoder)
         
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertMultiple, 
                      payload, self.__qi_headers())
 
@@ -409,9 +467,10 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-
+            
+        self.__getToken()
         payload = json.dumps(value)
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__replaceValues, 
                      payload, self.__qi_headers())
 
@@ -434,9 +493,10 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-               
+            
+        self.__getToken()
         #params = urllib.urlencode({"startIndex": start, "endIndex": end}) 
-        conn = http.HTTPConnection(self.url)
+        conn = http.HTTPSConnection(self.url)
         conn.request("DELETE", self.__streamsBase + '/' + 
                         self.__removeMultipleTemplate.format(stream_id = qi_stream.Id, 
                         start = urllib.urlencode({"startIndex": start}),
@@ -455,9 +515,10 @@ class QiClient(object):
 
         if not isinstance(qi_stream, QiStream):
             raise TypeError("stream must be a valid QiStream")
-         
-        conn = http.HTTPConnection(self.url)
-        #params = urllib.urlencode({"startIndex": start, "endIndex": end})  
+            
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
+
         conn.request("GET", self.__streamsBase + '/' + 
                         self.__getTemplate.format(stream_id = qi_stream.Id, 
                                                  start = urllib.urlencode({"startIndex": start}), 
@@ -467,8 +528,32 @@ class QiClient(object):
 
         if response.status != 200:            
             conn.close()
-            raise QiError("Failed to get last value for QiStream {stream_id}. {status}:{reason}".
+            raise QiError("Failed to get window values for QiStream {stream_id}. {status}:{reason}".
                           format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+        
+        streamResponse = response.read().decode()
+        conn.close()
+        return json.loads(streamResponse)
+
+    def getRangeValues(self, streamId, start, skip, count, reverse, boundaryType):
+            
+        self.__getToken()
+        conn = http.HTTPSConnection(self.url)
+
+        conn.request("GET", self.__streamsBase + '/' + 
+                        streamId +
+                        self.__getRangeTemplate.format(start = start, 
+                                                    skip = str(skip),
+                                                    count = str(count),
+                                                    reverse = str(reverse),
+                                                    boundaryType = str(boundaryType)), 
+                        headers = self.__qi_headers())
+        response = conn.getresponse()
+
+        if response.status != 200:            
+            conn.close()
+            raise QiError("Failed to get range values for QiStream {stream_id}. {status}:{reason}".
+                          format(stream_id = streamId, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
         conn.close()
@@ -484,26 +569,28 @@ class QiClient(object):
     def listStreams(self):
         streams = self.getStreams()
         print "{len} Qi streams found:".format(len = len(streams))
-        print ", ".join("{0} ({1})".format(t.Name, t.TypeId)  for t in streams)
-
-    # Batched data
-
-    def inserValues(self, values):
-        print "*** inserValues not implemented***"
-
+        print ",\n".join("{0} ({1})".format(t.Name, t.TypeId)  for t in streams)
         
-    #def updateValues(self, values):
-    #    print "*** updateValues not implemented***"
-
-        
-    def deleteValues(self, values):
-        print "*** deleteValues not implemented***"
-
     # private methods
-    
+    def __getToken(self):     
+        if (self.__expiration and self.__expiration < (time.time()/100)):
+            return
+        response = requests.post(self.__authItems['authority'], 
+                                 data = { 'grant_type' : 'client_credentials',
+                                         'client_id' : self.__authItems['appId'],
+                                            'client_secret' : self.__authItems['appKey'],
+                                            'resource' : self.__authItems['resource']
+                                            })
+        if response.status_code == 200:
+            self.__token = response.json()['access_token']
+            self.__expiration = response.json()['expires_on']
+        else:
+            self.__token = ""
+            print "Authentication Failure : "+response.reason
+            
     def __qi_headers(self):
         return {
-            "QiTenant" : self.__tenant_id,
+            "Authorization" : "bearer %s" % self.__token,
             "Content-type": "application/json", 
             "Accept": "text/plain"
             }

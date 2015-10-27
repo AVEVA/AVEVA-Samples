@@ -14,12 +14,6 @@ namespace RestSample
 {
     public class QiClient
     {
-        // VERY IMPORTANT: edit the following values to reflect the authorization items you were given
-        private const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
-        private const string SecurityAuthority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
-        private const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
-        private const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
-
         private HttpClient _httpClient;
         private string _baseUrl;
 
@@ -266,7 +260,7 @@ namespace RestSample
         {
             if (_authContext == null)
             {
-                _authContext = new AuthenticationContext(SecurityAuthority);
+                _authContext = new AuthenticationContext(Constants.SecurityAuthority);
             }
 
             // tokens expire after a certain period of time
@@ -274,8 +268,8 @@ namespace RestSample
             // ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
             try
             {
-                ClientCredential userCred = new ClientCredential(SecurityAppId, SecurityAppKey);
-                AuthenticationResult authResult = _authContext.AcquireToken(SecurityResource, userCred);
+                ClientCredential userCred = new ClientCredential(Constants.SecurityAppId, Constants.SecurityAppKey);
+                AuthenticationResult authResult = _authContext.AcquireToken(Constants.SecurityResource, userCred);
                 return authResult.AccessToken;
             }
             catch (AdalException)
