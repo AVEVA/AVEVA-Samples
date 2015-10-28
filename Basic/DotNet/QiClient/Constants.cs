@@ -10,7 +10,7 @@ namespace QiLibsSample
     {
         //// VERY IMPORTANT: edit the following values to reflect the authorization items you were given
         public const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
-        public const string SecurityAuthority = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        public const string SecurityAuthority = "PLACEHOLDER_REPLACE_WITH_RESOURCE"; //Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com"
         public const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
         public const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
     }
