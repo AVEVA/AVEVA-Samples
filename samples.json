@@ -9,7 +9,7 @@
 },
 {"Title":"Java",
 "Description":"Sample Qi client written in Java",
-"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/Java/src/main/java/samples"
+"Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/Java"
 },
 {"Title":"NodeJs",
 "Description":"Sample Qi client written in NodeJs",
