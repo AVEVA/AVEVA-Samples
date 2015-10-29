@@ -1,6 +1,6 @@
 #.NET Samples: Building a Client with the Qi Libraries
 
-This sample differs from the other samples in that the client makes use of the OSIsoft Qi libraries, which are available as nuget packages from **placeholder**.  The packages used are `OSIsoft.Qi.Core`, `OSIsoft.Qi.Http.Channel`, and `OSIsoft.Qi.Http.Client`. Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
+This sample differs from the other samples in that the client makes use of the OSIsoft Qi libraries, which are available as nuget packages from <https://osisoft.myget.org/F/qi/>.  The packages used are `OSIsoft.Qi.Core`, `OSIsoft.Qi.Http.Channel`, and `OSIsoft.Qi.Http.Client`. Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
 
 ## Instantiate a Qi Client
 
