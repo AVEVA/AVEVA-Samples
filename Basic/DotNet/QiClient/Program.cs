@@ -85,7 +85,7 @@ namespace QiLibsSample
                     Thread.Sleep(400);
                 }
 
-                qiclient.InsertValues<WaveData>("evtStream", events);
+                qiclient.InsertValues("evtStream", events);
                 Thread.Sleep(2000);
 
                 #endregion
@@ -105,9 +105,9 @@ namespace QiLibsSample
                 Console.WriteLine("Updating values");
 
                 // take the first value inserted and update the value using a multiplier of 4, while retaining the order
-                evt = foundEvts.First<WaveData>();
+                evt = foundEvts.First();
                 evt = WaveData.Next(span, 4.0, evt.Order);
-                qiclient.UpdateValue<WaveData>("evtStream", evt);
+                qiclient.UpdateValue("evtStream", evt);
 
                 // update the collection of events (same span, multiplier of 4, retain order)
                 List<WaveData> newEvents = new List<WaveData>();
@@ -118,7 +118,7 @@ namespace QiLibsSample
                     Thread.Sleep(500);
                 }
 
-                qiclient.UpdateValues<WaveData>("evtStream", newEvents);
+                qiclient.UpdateValues("evtStream", newEvents);
                 Thread.Sleep(2000);
 
                 Console.WriteLine("Retrieving the updated values");
@@ -156,8 +156,8 @@ namespace QiLibsSample
 
                 Console.WriteLine();
                 Console.WriteLine("Deleting events");
-                qiclient.RemoveValue<int>("evtStream", 0);
-                qiclient.RemoveWindowValues<int>("evtStream", 2, 198);
+                qiclient.RemoveValue("evtStream", 0);
+                qiclient.RemoveWindowValues("evtStream", 2, 198);
                 Thread.Sleep(2000);
                 Console.WriteLine("Checking for events");
                 Console.WriteLine("===================");
