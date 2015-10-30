@@ -277,7 +277,7 @@ namespace RestSample
                 AuthenticationResult authResult = _authContext.AcquireToken(Constants.SecurityResource, userCred);
                 return authResult.AccessToken;
             }
-            catch (AdalException)
+            catch (AdalException ex)
             {
                 return string.Empty;
             }
@@ -327,7 +327,7 @@ namespace RestSample
                 response = await _httpClient.SendAsync(msg);
                 if ((int) response.StatusCode == 302)
                 {
-                    Console.WriteLine("THe Qi Object already exists under the tenant. Fetching the object...");
+                    Console.WriteLine("The Qi Object already exists under the tenant. Fetching the object...");
                     msg = new HttpRequestMessage
                     {
                         RequestUri = response.Headers.Location,
@@ -338,7 +338,7 @@ namespace RestSample
                     response = await _httpClient.SendAsync(msg);
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw;
             }
