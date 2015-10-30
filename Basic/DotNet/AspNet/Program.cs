@@ -75,7 +75,7 @@ namespace RestSample
                 QiType type = new QiType();
                 type.Name = "WaveData";
                 type.Id = "WaveDataType";
-                type.Description = "This is a sample stream for storing WaveData type events";
+                type.Description = "This is a type for WaveData events";
                 QiTypeProperty[] props = { orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty }; 
                 type.Properties = props;
 

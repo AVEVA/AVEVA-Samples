@@ -27,6 +27,7 @@ namespace RestSample
             {
                 AllowAutoRedirect = false
             };
+
             _httpClient = new HttpClient(_httpClientHandler);
             _baseUrl = baseUrl;
             if (_baseUrl.Substring(_baseUrl.Length - 1).CompareTo(@"/") != 0)
@@ -342,6 +343,7 @@ namespace RestSample
             {
                 throw;
             }
+
             if (!response.IsSuccessStatusCode)
             {
                 throw new QiError(response.StatusCode, string.Format(RestSampleStrings.CreateObjectErrorTemplate, objectUrl));
@@ -404,6 +406,5 @@ namespace RestSample
             msg.Content = new StringContent(eventData, Encoding.UTF8, "application/json");
             await SendAndRespondVoidAsync(msg, RestSampleStrings.CreateErrorTemplate, "event data", streamId);
         }
-
     }
 }
