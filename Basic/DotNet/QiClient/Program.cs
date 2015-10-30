@@ -194,6 +194,7 @@ namespace QiLibsSample
             }
         }
 
+        //Acquires Bearer token from the resource
         protected static string AcquireAuthToken()
         {
             if (_authContext == null)
