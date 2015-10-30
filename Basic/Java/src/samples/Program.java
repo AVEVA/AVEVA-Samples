@@ -15,7 +15,7 @@ public class Program
 
 		try
 		{
-			String server = "https://qi-data.osisoft.com:3380";
+			String server = Constants._qiServerUrl;
 			//String server = "http://historiantest.cloudapp.net:3380";
 			qiclient = new QiClient( server);
 

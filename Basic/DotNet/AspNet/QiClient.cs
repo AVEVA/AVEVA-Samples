@@ -15,6 +15,7 @@ namespace RestSample
     public class QiClient
     {
         private HttpClient _httpClient;
+        private HttpClientHandler _httpClientHandler;
         private string _baseUrl;
 
         // Azure AD authentication related
@@ -22,7 +23,11 @@ namespace RestSample
 
         public QiClient(string baseUrl)
         {
-            _httpClient = new HttpClient();
+            _httpClientHandler = new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            };
+            _httpClient = new HttpClient(_httpClientHandler);
             _baseUrl = baseUrl;
             if (_baseUrl.Substring(_baseUrl.Length - 1).CompareTo(@"/") != 0)
             {
@@ -281,7 +286,11 @@ namespace RestSample
         private async Task SendAndRespondVoidAsync(HttpRequestMessage msg, string errorTemplate, string entityType, string id)
         {
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
-            if (!response.IsSuccessStatusCode)
+            if((int)response.StatusCode == 409)
+            {
+                Console.WriteLine("{0} already contains the event",id);
+            }
+            else if (!response.IsSuccessStatusCode)
             {
                 throw new QiError(response.StatusCode, string.Format(errorTemplate, entityType, id));
             }
@@ -290,7 +299,11 @@ namespace RestSample
         private async Task SendAndRespondVoidAsync(HttpRequestMessage msg, string errorTemplate, string objectUrl)
         {
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
-            if (!response.IsSuccessStatusCode)
+            if ((int)response.StatusCode == 409)
+            {
+                Console.WriteLine("The Qi Object already exists");
+            }
+            else if (!response.IsSuccessStatusCode)
             {
                 throw new QiError(response.StatusCode, string.Format(errorTemplate, objectUrl));
             }
@@ -301,15 +314,34 @@ namespace RestSample
             HttpRequestMessage msg = new HttpRequestMessage
             {
                 RequestUri = new Uri(objectUrl),
-                Method = HttpMethod.Post,
+                Method = HttpMethod.Post
             };
 
             msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
 
             string content = JsonConvert.SerializeObject(objectDefinition);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _httpClient.SendAsync(msg);
+                if ((int) response.StatusCode == 302)
+                {
+                    Console.WriteLine("THe Qi Object already exists under the tenant. Fetching the object...");
+                    msg = new HttpRequestMessage
+                    {
+                        RequestUri = response.Headers.Location,
+                        Method = HttpMethod.Get
+                    };
 
-            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+                    msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+                    response = await _httpClient.SendAsync(msg);
+                }
+            }
+            catch
+            {
+                throw;
+            }
             if (!response.IsSuccessStatusCode)
             {
                 throw new QiError(response.StatusCode, string.Format(RestSampleStrings.CreateObjectErrorTemplate, objectUrl));

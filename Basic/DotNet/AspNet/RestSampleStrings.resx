@@ -136,10 +136,10 @@
     <value>Failed to delete Qi resource {0}</value>
   </data>
   <data name="GetRangeValuesUrlTemplate" xml:space="preserve">
-    <value>/Data/GetRangeValuesAsync?startIndex={0}&amp;skip={1}&amp;count={2}&amp;reversed={3}&amp;boundaryType={4}</value>
+    <value>/Data/GetRangeValues?startIndex={0}&amp;skip={1}&amp;count={2}&amp;reversed={3}&amp;boundaryType={4}</value>
   </data>
   <data name="GetWindowValuesUrlTemplate" xml:space="preserve">
-    <value>/Data/GetWindowValuesAsync?startIndex={0}&amp;endIndex={1}</value>
+    <value>/Data/GetWindowValues?startIndex={0}&amp;endIndex={1}</value>
   </data>
   <data name="InsertMultipleBaseUrl" xml:space="preserve">
     <value>/Data/InsertValues</value>
@@ -148,10 +148,10 @@
     <value>/Data/InsertValue</value>
   </data>
   <data name="RemoveMultipleUrlTemplate" xml:space="preserve">
-    <value>/{0}/Data/RemoveWindowValuesAsync?startIndex={1}&amp;endIndex={2}</value>
+    <value>/{0}/Data/RemoveWindowValues?startIndex={1}&amp;endIndex={2}</value>
   </data>
   <data name="RemoveSingleUrlTemplate" xml:space="preserve">
-    <value>/{0}/Data/RemoveValueAsync?index={1}</value>
+    <value>/{0}/Data/RemoveValue?index={1}</value>
   </data>
   <data name="StreamsBaseUrl" xml:space="preserve">
     <value>Qi/Streams</value>
@@ -163,12 +163,12 @@
     <value>Failed to update {0} with Id = {1}</value>
   </data>
   <data name="UpdateMultipleBaseUrl" xml:space="preserve">
-    <value>/Data/UpdateValuesAsync</value>
+    <value>/Data/UpdateValues</value>
   </data>
   <data name="UpdateObjectErrorTemplate" xml:space="preserve">
     <value>Failed to update Qi resource {0}</value>
   </data>
   <data name="UpdateSingleBaseUrl" xml:space="preserve">
-    <value>/Data/UpdateValueAsync</value>
+    <value>/Data/UpdateValue</value>
   </data>
 </root>

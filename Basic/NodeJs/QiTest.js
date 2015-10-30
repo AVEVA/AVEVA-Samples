@@ -3,7 +3,7 @@ var restCall = require("request-promise");
 var constants = require("./Constants.js");
 
 //change these values to the credentials given
-var QiServerUrl = "https://qi-data.osisoft.com:3380";
+var QiServerUrl = constants.qiServerUrl;
 var authItems = constants.authItems;
 
 

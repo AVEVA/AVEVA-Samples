@@ -23,7 +23,7 @@ namespace QiLibsSample
         {
             Console.WriteLine("Creating a .NET Qi Client...");
 
-            string server = ConfigurationManager.AppSettings["QiServerUrl"];
+            string server = Constants.QiServerUrl;
             QiType evtType = null;
 
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
@@ -163,6 +163,10 @@ namespace QiLibsSample
                 Console.WriteLine("===================");
                 foundEvts = qiclient.GetWindowValues<WaveData>("evtStream", "0", "198");
                 DumpEvents(foundEvts);
+                Console.WriteLine("Test ran successfully");
+                Console.WriteLine("====================");
+                Console.WriteLine("Press any button to shutdown");
+                Console.ReadLine();
                 #endregion
                 #endregion
             }

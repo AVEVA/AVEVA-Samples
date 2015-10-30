@@ -8,11 +8,7 @@ def dumpEvents(foundEvents):
     for i in foundEvents:
         print i
 
-authItems = Constants.authItems
-
-QiServerUrl = "qi-data.osisoft.com:3380"
-
-client = QiClient(QiServerUrl, authItems)
+client = QiClient(Constants.QiServerUrl, Constants.authItems)
 
 ######################################################################################################
 # QiType creation

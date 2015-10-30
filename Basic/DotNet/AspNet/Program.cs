@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using System.Net;
 
 namespace RestSample
 {
@@ -17,7 +18,7 @@ namespace RestSample
             // Instantiate the REST client
             Console.WriteLine("Creating a Qi REST API Client...");
 
-            string server = ConfigurationManager.AppSettings["QiServerUrl"];
+            string server = Constants.QiServerUrl;
             QiClient qiclient = new QiClient(server);
             QiType evtType = null;
 
@@ -78,6 +79,8 @@ namespace RestSample
                 QiTypeProperty[] props = { orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty }; 
                 type.Properties = props;
 
+                //used when working against the local devonebox
+                //ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
                 // create the type in the Qi Service
                 string evtTypeString = qiclient.CreateTypeAsync(type).Result;
                 evtType = JsonConvert.DeserializeObject<QiType>(evtTypeString);
@@ -197,6 +200,10 @@ namespace RestSample
                 jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
+                Console.WriteLine("Test ran successfully");
+                Console.WriteLine("====================");
+                Console.WriteLine("Press any button to shutdown");
+                Console.ReadLine();
                 #endregion
                 #endregion
             }
