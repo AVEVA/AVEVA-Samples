@@ -3,7 +3,8 @@ os:
 - Windows Server 2012 R2
 environment:
   matrix:
-  - solution_name: Basic/DotNet/DotNet.sln
+  - solution_name: Basic/DotNet/QiClientLibraries/QiClientLibraries.sln
+  - solution_name: Basic/DotNet/QiRestApi/QiRestApi.sln
 configuration:
   - Debug
   - Release
