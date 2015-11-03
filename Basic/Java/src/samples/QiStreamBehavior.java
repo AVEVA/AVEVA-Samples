@@ -2,82 +2,67 @@ package samples;
 
 import java.util.List;
 
-public class QiStreamBehavior {
-
+public class QiStreamBehavior 
+{
 	private String Id;
 	private String Name;
 	private QiStreamMode Mode;
-	
 	private QiStreamExtrapolation ExtrapolationMode;
 	private List<QiStreamBehaviorOverride> Overrides;
 	
-	
-	
-	public String getId() {
+	public String getId() 
+	{
 		return Id;
 	}
 
-
-
-	public void setId(String id) {
+	public void setId(String id) 
+	{
 		this.Id = id;
 	}
-
-
-
-	public String getName() {
+	
+	public String getName() 
+	{
 		return Name;
 	}
 
-
-
-	public void setName(String name) {
+	public void setName(String name) 
+	{
 		this.Name = name;
 	}
 
-
-
-	public QiStreamMode getMode() {
+	public QiStreamMode getMode()
+	{
 		return Mode;
 	}
 
-
-
-	public void setMode(QiStreamMode mode) {
+	public void setMode(QiStreamMode mode)
+	{
 		this.Mode = mode;
 	}
 
-
-
-	public QiStreamExtrapolation getExtrapolationMode() {
+	public QiStreamExtrapolation getExtrapolationMode() 
+	{
 		return ExtrapolationMode;
 	}
 
-
-
-	public void setExtrapolationMode(QiStreamExtrapolation extrapolationMode) {
+	public void setExtrapolationMode(QiStreamExtrapolation extrapolationMode)
+	{
 		ExtrapolationMode = extrapolationMode;
 	}
 
-
-
-	public List<QiStreamBehaviorOverride> getOverrides() {
+	public List<QiStreamBehaviorOverride> getOverrides()
+	{
 		return Overrides;
 	}
 
-
-
-	public void setOverrides(List<QiStreamBehaviorOverride> overrides) {
+	public void setOverrides(List<QiStreamBehaviorOverride> overrides)
+	{
 		this.Overrides = overrides;
 	}
 
-
-
-	public QiStreamBehavior(){
+	public QiStreamBehavior()
+	{
 		this.Mode = QiStreamMode.Continuous;
 		
 	}
-	
-	
-	
 }
