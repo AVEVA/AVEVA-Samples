@@ -89,7 +89,6 @@ public class Program
 			System.out.println("Artificially generating 100 events and inserting them into the Qi Service");
 
 			// How to insert a single event
-     
 			WaveData evt = WaveData.next(1, 2.0, 0);
 			qiclient.CreateEvent(evtStream.getId(), qiclient.mGson.toJson(evt));
 
@@ -158,7 +157,7 @@ public class Program
             		evtStream.setBehaviorId(behavior.getId()) ;
             		qiclient.UpdateStream("evtStreamJ", evtStream);
 
-        		 // repeat the retrieval
+        		// repeat the retrieval
             		System.out.println();
             		System.out.println("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
             		jCollection = qiclient.getRangeValues("evtStreamJ", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
@@ -168,7 +167,7 @@ public class Program
 			System.out.println();
 			System.out.println("Deleting events");
 			qiclient.removeValue(evtStream.getId(), "0");
-
+			
 			// remove the first value -- index is the timestamp of the event
 			qiclient.removeWindowValues(evtStream.getId(), "1", "198");
 			Thread.sleep(2000);
@@ -178,7 +177,7 @@ public class Program
 			jCollection = qiclient.GetWindowValues(evtStream.getId(), "0", "198");
 			Type listType1 = new TypeToken<ArrayList<WaveData>>() {
 			}.getType();
-			// List<YourClass> yourClassList = new Gson().fromJson(jsonArray, listType);     
+		     
 			foundEvents = qiclient.mGson.fromJson(jCollection, listType1);
 			DumpEvents(foundEvents); 
 		}
@@ -204,24 +203,15 @@ public class Program
 			{				
 				e.printStackTrace();
 			}
-
-
 		}  
-
 	}
 
-	private static void DumpEvents(ArrayList<WaveData> foundEvents) {
-
-
+	private static void DumpEvents(ArrayList<WaveData> foundEvents)
+	{
 		System.out.println("Found " +foundEvents.size() + " events, writing");
-
 		for( WaveData evnt : foundEvents)
 		{
 			System.out.println(evnt.toString());
 		}
-
-
 	}
-
-
 }
