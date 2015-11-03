@@ -2,7 +2,8 @@ package samples;
 
 
 
-public class QiType {
+public class QiType 
+{
 
 	private String Id;
 	private String Name;
@@ -10,44 +11,53 @@ public class QiType {
 	private QiTypeCode QiTypeCode;
 	private QiTypeProperty[] Properties;
 	
-	public String getId() {
+	public String getId() 
+	{
 		return Id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.Id = id;
 	}
 
-	public String getName() {
+	public String getName() 
+	{
 		return Name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.Name = name;
 	}
 
-	public String getDescription() {
+	public String getDescription() 
+	{
 		return Description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(String description) 
+	{
 		this.Description = description;
 	}
 
-	public QiTypeCode getQiTypeCode() {
+	public QiTypeCode getQiTypeCode() 
+	{
 		return QiTypeCode;
 	}
 
-	public void setQiTypeCode(QiTypeCode qiTypeCode) {
+	public void setQiTypeCode(QiTypeCode qiTypeCode)
+	{
 		this.QiTypeCode = qiTypeCode;
 	}
 
-	public QiTypeProperty[] getProperties() {
+	public QiTypeProperty[] getProperties() 
+	{
 		return Properties;
 	}
-	public void setProperties(QiTypeProperty[] properties) {
+	
+	public void setProperties(QiTypeProperty[] properties) 
+	{
 		this.Properties = properties;
 	}
-
-
 }
