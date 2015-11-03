@@ -17,20 +17,21 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-//import com.google.gson.JsonSyntaxException;
 
 class UTCDateTypeAdapter implements JsonSerializer<GregorianCalendar>, JsonDeserializer<GregorianCalendar> 
 {
 	private final DateFormat dateFormat;
 
-	UTCDateTypeAdapter() {
+	UTCDateTypeAdapter() 
+	{
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 
 	public synchronized JsonElement serialize(GregorianCalendar calendar, Type type,
-			JsonSerializationContext jsonSerializationContext) {
+			JsonSerializationContext jsonSerializationContext) 
+	{
 		synchronized (dateFormat)
 		{
 			String buffer = new String();
@@ -71,13 +72,13 @@ class UTCDateTypeAdapter implements JsonSerializer<GregorianCalendar>, JsonDeser
 		}
 	}
 
-	private static String twoDigit(int i) {
-		if (i >= 0 && i < 10) {
+	private static String twoDigit(int i) 
+	{
+		if (i >= 0 && i < 10) 
+		{
 			return "0" + String.valueOf(i);
 		}
 		return String.valueOf(i);
 	}
-
-
 }
 
