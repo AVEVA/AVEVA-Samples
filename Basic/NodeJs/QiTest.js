@@ -1,13 +1,10 @@
 var http = require("http");
 var restCall = require("request-promise");
-
+var constants = require("./Constants.js");
 
 //change these values to the credentials given
-var QiServerUrl = "https://qi-data.osisoft.com:3380";
-var authItems = {'resource' : "RESOURCE-URL",
-             'authority' : "https://login.windows.net/TENANT-URL/oauth2/token",
-             'appId' : "CLIENT-ID",
-             'appKey' : "CLIENT-KEY"};
+var QiServerUrl = constants.qiServerUrl;
+var authItems = constants.authItems;
 
 
 var logError = function(err){

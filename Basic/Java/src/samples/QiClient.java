@@ -21,10 +21,6 @@ public class QiClient {
 	private String baseUrl = null; 
 	@SuppressWarnings("unused")
 	private String tenantName = null;
-	static String _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
-        static String _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
-        static String _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
-        static String _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
    
 	// REST API url strings
 	@SuppressWarnings("unused")
@@ -990,15 +986,15 @@ public class QiClient {
 		{
 			if (_authContext == null)
 			{
-				_authContext = new AuthenticationContext(_authority, true , service);
+				_authContext = new AuthenticationContext(Constants._authority, true , service);
 			}
 
 			// tokens expire after a certain period of time
 			// You can check this with the ExpiresOn property of AuthenticationResult, but it is not necessary.
 			// ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
 
-			ClientCredential userCred = new ClientCredential(_appId, _appKey);
-			Future<AuthenticationResult> authResult = _authContext.acquireToken(_resource, userCred, null);
+			ClientCredential userCred = new ClientCredential(Constants._appId, Constants._appKey);
+			Future<AuthenticationResult> authResult = _authContext.acquireToken(Constants._resource, userCred, null);
 
 			//AcquireToken(_resource, userCred);
 			result = authResult.get();
