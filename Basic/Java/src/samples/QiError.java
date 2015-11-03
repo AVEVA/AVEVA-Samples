@@ -68,10 +68,4 @@ public class QiError extends Exception
 	{
 		this.qiErrorMessage = qiErrorMessage;
 	}
-
-
-
-
-
-
 }
