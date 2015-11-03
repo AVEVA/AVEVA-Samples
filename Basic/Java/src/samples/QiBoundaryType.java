@@ -1,6 +1,7 @@
 package samples;
 
-public enum QiBoundaryType {
+public enum QiBoundaryType
+{
 
 	Exact(0),
 	Inside(1),
@@ -9,18 +10,12 @@ public enum QiBoundaryType {
 	
 	private final int QiBoundaryType;
 	
-	
 	private QiBoundaryType(int id) {
 	this.QiBoundaryType = id;
 	}
 	
-	public int getValue(){
-		
-	return QiBoundaryType;	
-		
+	public int getValue()
+	{
+	   return QiBoundaryType;	
 	}
-	
-	
-	
-	
 }
