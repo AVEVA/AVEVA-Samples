@@ -1,3 +1,12 @@
+## Development environment
+This project is bulit as a `Maven` project. You would need to have maven installed. 
+All the necesssary dependencies are sepcified as part of pom.xml file. 
+
+##Steps to Run
+1.Clone a local copy of Git repo.
+2.Install Maven
+3.If using Eclipse choose file -> import -> Maven-> Existing maven project and select the local copy.
+
 #Java Samples: Building a Client with the Qi REST API
 
 This sample is written using only the Qi REST API.  This API allows for the creation of Qi Service clients in any language that can make HTTP calls and does not require access to any OSIsoft libraries.  Objects are passed as JSON strings.  We're using the Gson library for the Java client, but any method of creating a JSON representation of objects will work.
@@ -18,8 +27,8 @@ The constructor for our QiClient class takes the base URL (i.e., protocol plus s
 ```Java
 	public QiClient(String baseUrl)
 	{
-	
- 	  java.net.URL url = null;
+		mGson = new GsonBuilder().registerTypeAdapter(GregorianCalendar.class, new UTCDateTypeAdapter()).setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		this.baseUrl =  baseUrl;
 		
@@ -27,7 +36,25 @@ The constructor for our QiClient class takes the base URL (i.e., protocol plus s
 		{
 			url = new URL(this.baseUrl);		
 			urlConnection = getConnection(url, "POST");
-		}	
+			urlConnection.setDoOutput(true);
+			urlConnection.setRequestMethod("POST");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}
+		catch (IllegalStateException e) 
+		{
+			e.getMessage();
+		}
+		catch (ProtocolException e)
+		{
+			e.getMessage();
+		}         
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}	
 ```
 
@@ -108,9 +135,8 @@ If you wanted to nest a user defined type within another QiType, you would begin
 All this creates a type definition locally, but it has to be submitted in a REST call before it becomes available to the Qi Service for the creation of streams. The create call URL has the extention `/Qi/Types`, and the body of the request message is the JSON format serialization of the `QiType` just created.  This is wrapped in the `CreateType` method of `QiClient`:
 
 ```Java
-       public String CreateType(QiType typeDef)
+       	public String CreateType(QiType typeDef)
 	{
-
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		String inputLine;
@@ -119,22 +145,23 @@ All this creates a type definition locally, but it has to be submitted in a REST
 		try
 		{
 			url = new URL(baseUrl + typesBase );
-
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
 		{
 			System.out.println("MalformedURLException");
-		}catch (IllegalStateException e) {
+		}
+		catch (IllegalStateException e) 
+		{
 			e.getMessage();
 		}        
-		catch (Exception e) {
+		catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
 
-
-
-		try{
+		try
+		{
 			String body = mGson.toJson(typeDef);           
 			OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
 			OutputStreamWriter writer = new OutputStreamWriter(out);
@@ -142,15 +169,10 @@ All this creates a type definition locally, but it has to be submitted in a REST
 			writer.close();
 
 			int HttpResult = urlConnection.getResponseCode();
-
-
-
-
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
 				System.out.println("type creation request succeded");
 			}
-
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
 			{
@@ -160,21 +182,17 @@ All this creates a type definition locally, but it has to be submitted in a REST
 			BufferedReader in = new BufferedReader(
 					new InputStreamReader(urlConnection.getInputStream()));
 
-			while ((inputLine = in.readLine()) != null) {
+			while ((inputLine = in.readLine()) != null) 
+			{
 				response.append(inputLine);
 			}
-
-
-
-		}catch (Exception e){
-
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
-
 		}
 
 		return response.toString();
-
-
 	}
 ```
 
@@ -208,7 +226,7 @@ It would be possible to pass in a `WaveData` instance (or array of instances), b
 Our CRUD methods are all very similar.  The REST API URL templates are predefined strings.  Each method fills in the template with the parameters specific to the call, adds the protocol, server, and port of the remote Qi Service, and sets the appropriate HTTP verb.  If the call is unsuccessful, a QiError is thrown.  Here is the call to create a single event in a data stream:
 
 ```Java
-	public void CreateEvent(String streamId, String evt)
+        public void CreateEvent(String streamId, String evt)
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -216,27 +234,23 @@ Our CRUD methods are all very similar.  The REST API URL templates are predefine
 		try
 		{
 			url = new URL(baseUrl + streamsBase + "/" + streamId + insertSingle);
-
 			urlConnection = getConnection(url,"POST");
-
-
 		}
 		catch (MalformedURLException mal)
 		{
 			System.out.println("MalformedURLException");
-		}catch (IllegalStateException e) {
+		}
+		catch (IllegalStateException e) 
+		{
 			e.getMessage();
 		}      
-		catch (Exception e) {
+		catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
-
-
-
+		
 		try
 		{
-
-
 			OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
 			OutputStreamWriter writer = new OutputStreamWriter(out);
 			writer.write(evt);
@@ -248,21 +262,18 @@ Our CRUD methods are all very similar.  The REST API URL templates are predefine
 				System.out.println("Event creation request succeded");
 			}
 
-
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
 			{
 				throw new QiError(urlConnection, "Event creation failed");
 
 			}
-
-
-
-		}catch (Exception e){
-             e.printStackTrace();
-
-
+		}
+		catch (Exception e)
+		{
+                        e.printStackTrace();
 		}
 	}
+
 ```
 
 The main program creates a single `WaveData` event with the `Order` 0 and inserts it.  Then it creates 99 more sequential events and inserts them with a single call:
@@ -285,14 +296,14 @@ The main program creates a single `WaveData` event with the `Order` 0 and insert
 There are many methods in the Qi REST API allowing for the retrieval of events from a stream.  The retrieval methods take string type start and end values; in our case, these the start and end ordinal indices expressed as strings ("0" and "99", respectively).  The index values must capable of conversion to the type of the index assigned in the QiType.  Timestamp keys are expressed as ISO 8601 format strings. Compound indices are values concatenated with a pipe ('|') separator.  `QiClient` implements one of the available retrieval methods:
 
 ```Java
-   public String GetWindowValues (String streamId, String startIndex, String endIndex)throws QiError
+    public String GetWindowValues (String streamId, String startIndex, String endIndex)throws QiError
 ```
 You can use this to get a collection of events on a time range like this:
 
 ```Java
-   String jCollection = qiclient.GetWindowValues(evtStream.getId(), "0", "99");
-   Type listType = new TypeToken<ArrayList<WaveData>>() {}.getType();
-   ArrayList<WaveData> foundEvents = qiclient.mGson.fromJson(jCollection, listType);
+    String jCollection = qiclient.GetWindowValues(evtStream.getId(), "0", "99");
+    Type listType = new TypeToken<ArrayList<WaveData>>() {}.getType();
+    ArrayList<WaveData> foundEvents = qiclient.mGson.fromJson(jCollection, listType);
 ```
 
 ## Update Events
@@ -300,8 +311,8 @@ You can use this to get a collection of events on a time range like this:
 We'll demonstrate updates by taking the values we created and replacing them with new values.  Once you've modified the events client-side, you submit them to the Qi Service with `UpdateValue` or `UpdateValues`:
 
 ```Java
-   qiclient.updateValue(evtStream.getId(), qiclient.mGson.toJson(evt));
-   qiclient.updateValues(evtStream.getId(),qiclient.mGson.toJson(events));
+    qiclient.updateValue(evtStream.getId(), qiclient.mGson.toJson(evt));
+    qiclient.updateValues(evtStream.getId(),qiclient.mGson.toJson(events));
 ```
 
 Note that we are serializing the event or event collection and passing the string into the update method as a parameter.
@@ -318,18 +329,18 @@ This gives you a calculated event with linear interpolation at index 1.
 Now, we define a new stream behavior object and submit it to the Qi Service:
 
 ```Java
-  QiStreamBehavior behavior = new QiStreamBehavior();
-  behavior.setId("evtStreamStepLeading") ;
-  behavior.setMode(QiStreamMode.StepwiseContinuousLeading);
-  String behaviorString = qiclient.CreateBehavior(behavior);
-  behavior = qiclient.mGson.fromJson(behaviorString, QiStreamBehavior.class);
+    QiStreamBehavior behavior = new QiStreamBehavior();
+    behavior.setId("evtStreamStepLeading") ;
+    behavior.setMode(QiStreamMode.StepwiseContinuousLeading);
+    String behaviorString = qiclient.CreateBehavior(behavior);
+    behavior = qiclient.mGson.fromJson(behaviorString, QiStreamBehavior.class);
 ```
 
 By setting the `Mode` property to `StepwiseContinuousLeading` we ensure that any calculated event will have an interpolated index, but every other property will have the value of the recorded event immediately preceding that index.  Now attach this behavior to the existing stream by setting the `BehaviorId` property of the stream and updating the stream definition in the Qi Service:
 
 ```Java#
-   evtStream.setBehaviorId("evtStreamStepLeading");
-   qiclient.UpdateStream("evtStreamJ", evtStream);
+    evtStream.setBehaviorId("evtStreamStepLeading");
+    qiclient.UpdateStream("evtStreamJ", evtStream);
 ```
 
 The sample repeats the call to `GetRangeValues` with the same parameters as before, allowing you to compare the values of the event at `Order=1`.
@@ -339,8 +350,8 @@ The sample repeats the call to `GetRangeValues` with the same parameters as befo
 As with insertion, deletion of events is managed by specifying a single index or a range of index values over the type's key property. Here we are removing the single event whose `Order` property has the value 0, then removing any event on the range 1..99:    
 
 ```Java
-   qiclient.removeValue(evtStream.getId(), "0");
-   qiclient.removeWindowValues(evtStream.getId(), "1", "99");
+    qiclient.removeValue(evtStream.getId(), "0");
+    qiclient.removeWindowValues(evtStream.getId(), "1", "99");
 ```
 The index values are expressed as string representations of the underlying type.  DateTime index values must be expressed as ISO 8601 strings.
 
@@ -349,25 +360,18 @@ The index values are expressed as string representations of the underlying type.
 You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream, stream behavior and Qi type it created before terminating, thereby resetting your tenant environment to the state before running the sample.  The stream goes first so that the reference count on the type goes to zero:
 
 ```Java
-   qiclient.deleteStream("evtStreamJ");
+    qiclient.deleteStream("evtStreamJ");
     qiclient.DeleteBehavior("evtStreamStepLeading");
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly
 
 ```Java
-   qiclient.deleteType("evtType.getId()");
+    qiclient.deleteType("evtType.getId()");
 ```
 
 deletes the type from the Qi Service.  Recall that `evtType` is the QiType instance returned by the Qi Service when the type was created. 
 
-## Development environment
-This project is bulit as a `Maven` project. You would need to have maven installed. 
-All the necesssary dependencies are sepcified as part of pom.xml file. 
 
-##Steps to Run
-1.Clone a local copy of Git repo.
-2.Install Maven
-3.If using Eclipse choose file -> import -> Maven-> Existing maven project and select the local copy.
 
 

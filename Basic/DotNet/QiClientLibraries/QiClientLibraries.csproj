@@ -42,17 +42,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.687, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.712, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OSIsoft.Qi.Core.1.0.0.687\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Qi.Core.1.0.0.712\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.687, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.712, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OSIsoft.Qi.Http.Channel.1.0.0.687\lib\net45\OSIsoft.Qi.Http.Channel.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Qi.Http.Channel.1.0.0.712\lib\net45\OSIsoft.Qi.Http.Channel.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.687, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.712, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OSIsoft.Qi.Http.Client.1.0.0.687\lib\net45\OSIsoft.Qi.Http.Client.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Qi.Http.Client.1.0.0.712\lib\net45\OSIsoft.Qi.Http.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

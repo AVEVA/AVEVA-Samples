@@ -1,17 +1,16 @@
 package samples;
 
-public class QiTenant {
-
+public class QiTenant
+{
 	private String Id;
 
-
-
-
-	public String getId() {
+	public String getId() 
+	{
 		return Id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id) 
+	{
 		Id = id;
 	}
 
@@ -24,7 +23,4 @@ public class QiTenant {
 	{
 		this.Id = "";
 	}
-
-
-
 }

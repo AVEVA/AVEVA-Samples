@@ -4,11 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class QiError extends Exception{
-
-	/**
-	 * 
-	 */
+public class QiError extends Exception
+{
 	private static final long serialVersionUID = 1L;
 	private int httpStatusCode;
 	private StringBuffer httpErrorMessage;
@@ -22,50 +19,53 @@ public class QiError extends Exception{
 
 		try {
 			this.httpStatusCode = urlConnection.getResponseCode();
-			if (urlConnection.getErrorStream()!= null ){
+			
+			if (urlConnection.getErrorStream()!= null )
+			{
 				BufferedReader in = new BufferedReader(
 						new InputStreamReader(urlConnection.getErrorStream()));
 
-
-
-				while ((inputLine = in.readLine()) != null) {
+				while ((inputLine = in.readLine()) != null) 
+				{
 					this.httpErrorMessage.append(inputLine);
 				}
-
-
 				in.close();
 			} 
 			
-		}catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
 		}
+		catch (IOException e) 
+		{		
+			e.printStackTrace();
+		}
+	}
 
-
-	public int getHttpStatusCode() {
+	public int getHttpStatusCode() 
+	{
 		return httpStatusCode;
 	}
-	public void setHttpStatusCode(int httpStatusCode) {
+	
+	public void setHttpStatusCode(int httpStatusCode)
+	{
 		this.httpStatusCode = httpStatusCode;
 	}
-	public StringBuffer getHttpErrorMessage() {
+	
+	public StringBuffer getHttpErrorMessage()
+	{
 		return httpErrorMessage;
 	}
-	public void setHttpErrorMessage(StringBuffer httpErrorMessage) {
+	
+	public void setHttpErrorMessage(StringBuffer httpErrorMessage)
+	{
 		this.httpErrorMessage = httpErrorMessage;
 	}
-	public String getQiErrorMessage() {
+	
+	public String getQiErrorMessage()
+	{
 		return qiErrorMessage;
 	}
-	public void setQiErrorMessage(String qiErrorMessage) {
+	
+	public void setQiErrorMessage(String qiErrorMessage)
+	{
 		this.qiErrorMessage = qiErrorMessage;
 	}
-
-
-
-
-
-
 }

@@ -2,20 +2,20 @@ package samples;
 
 import java.util.List;
 
-public class QiStream {
+public class QiStream 
+{
 	private String Id;
 	private String Name;
 	private String Description;
 	private String TypeId;
 	private String BehaviorId;
-
 	private List<QiTypeProperty> Properties;
 
-	public QiStream(String name, String typeid){
+	public QiStream(String name, String typeid)
+	{
 		this.Id = name;
 		this.Name = name;
 		this.TypeId = typeid;
-
 	}
 
 	public QiStream(String name, String typeid, String description, String behavior)
@@ -27,53 +27,63 @@ public class QiStream {
 		this.BehaviorId = behavior;
 	}
 
-	public String getId() {
+	public String getId() 
+	{
 		return Id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.Id = id;
 	}
 
-	public String getName() {
+	public String getName() 
+	{
 		return Name;
 	}
-	public void setName(String name) {
+	
+	public void setName(String name) 
+	{
 		this.Name = name;
 	}
 
-	public String getDescription() {
+	public String getDescription()
+	{
 		return Description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(String description) 
+	{
 		this.Description = description;
 	}
 
-	public String getTypeId() {
+	public String getTypeId() 
+	{
 		return TypeId;
 	}
 
-	public void setTypeId(String typeId) {
+	public void setTypeId(String typeId)
+	{
 		TypeId = typeId;
 	}
 
-	public String getBehaviorId() {
+	public String getBehaviorId() 
+	{
 		return BehaviorId;
 	}
 
-	public void setBehaviorId(String behaviorId) {
+	public void setBehaviorId(String behaviorId)
+	{
 		BehaviorId = behaviorId;
 	}
 
-	public List<QiTypeProperty> getProperties() {
+	public List<QiTypeProperty> getProperties() 
+	{
 		return Properties;
 	}
 
-	public void setProperties(List<QiTypeProperty> properties) {
+	public void setProperties(List<QiTypeProperty> properties)
+	{
 		this.Properties = properties;
 	}
-
-
-
 }
