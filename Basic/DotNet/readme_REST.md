@@ -81,7 +81,7 @@ QiStreams represent open-ended collections of strongly-typed, ordered events. Qi
 
 Each data stream is associated with a QiType, so that only events conforming to that type can be inserted into the stream.  The first step in Qi programming, then, is to define the types for your tenant.   
 
-Because we are using the Qi REST API, we must build our own type definitions. A type definition in Qi consists of one or more properties.  Each property has its own Qi type.  This can be a simple data type like integer or string, or a previously defined complex Qi data type. This allows for the creation of nested data types - QiTypes whose properties may be user-defined types.  Our sample `WaveData` class is a series of simple types.  We have created `QiType` and `QiTypeProperty` classes that match those in the Qi Client Libraries.  Simple types are denoted by an enumeration specified in `QiTypeCode.cs`.  The ordinal values in the latter file are those the Qi service expects, so if you wish to create you own classes you must specify these values.
+Because we are using the Qi REST API, we must build our own type definitions. A type definition in Qi consists of one or more properties.  Each property has its own type.  This can be a simple data type like integer or string, or a previously defined complex QiType. This allows for the creation of nested data types - QiTypes whose properties may be user-defined types.  Our sample `WaveData` class is a series of simple types.  We have created `QiType` and `QiTypeProperty` classes that match those in the Qi Client Libraries.  Simple types are denoted by an enumeration specified in `QiTypeCode.cs`.  The ordinal values in the latter file are those the Qi service expects, so if you wish to create you own classes you must specify these values.
 
 `WaveData` has one integer property and a series of double value properties.  To start, then, we create a QiType instance for each of these simple types:
 
@@ -195,7 +195,7 @@ There are many methods in the Qi REST API allowing for the retrieval of events f
 
 ## Update Events
 
-We'll demonstrate updates by taking the values we created and replacing them with new values.  Once you've modified the events client-side, you submit them to the Qi Service with `UpdateValueAsync` or `UpdateValuesAsync`:
+We'll demonstrate updates by taking the values we created and replacing them with new values.  Once you've modified the events client-side, you submit them to the Qi service with `UpdateValueAsync` or `UpdateValuesAsync`:
 
 ```c#
 	qiclient.UpdateValueAsync("evtStream", JsonConvert.SerializeObject(evt)).Wait();
