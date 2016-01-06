@@ -8,5 +8,6 @@
         public const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
         public const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
         public const string QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL";
+
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
+using RestSample;
 
 namespace QiRestApiSample
 {
@@ -336,7 +337,7 @@ namespace QiRestApiSample
                     response = await _httpClient.SendAsync(msg);
                 }
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 throw;
             }
