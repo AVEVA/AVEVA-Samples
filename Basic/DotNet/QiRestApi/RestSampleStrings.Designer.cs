@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace QiRestApiSample {
+namespace RestSample {
     using System;
     
     

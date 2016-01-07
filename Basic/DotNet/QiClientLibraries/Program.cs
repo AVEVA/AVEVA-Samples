@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using OSIsoft.Qi;
 using OSIsoft.Qi.Http;
 using OSIsoft.Qi.Reflection;
+using System.Net;
 
 namespace QiClientLibsSample
 {
