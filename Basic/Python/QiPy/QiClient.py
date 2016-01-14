@@ -14,7 +14,7 @@ class QiClient(object):
     """description of class"""
 
     def __init__(self, url, authItems):
-        self.url = url
+        self.url = self.__validateUri(url)
         version = 0.1
         self.__tenantsBase = "/Qi/Tenants"
         self.__typesBase = "/Qi/Types"
@@ -594,3 +594,7 @@ class QiClient(object):
             "Content-type": "application/json", 
             "Accept": "text/plain"
             }
+    #check if uri contains http        
+    def __validateUri(self, url):
+        splitUri = urlparse(url)
+        return splitUri.netloc+splitUri.path
