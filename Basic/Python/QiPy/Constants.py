@@ -7,5 +7,7 @@ class Constants(object):
                  'authority' : "PLACEHOLDER_REPLACE_WITH_AUTHORITY", #Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token,
                  'appId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
                  'appKey' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
-    
-    QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL" #Ex: ApplicationUri:3380 (No http necessary)
+                 
+    ###IMPORTANT: For QiServerUrl No "http" is necessary
+    ###Ex: "ApplicationUri:3380" instead of "https://ApplicationUri:3380"
+    QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"
