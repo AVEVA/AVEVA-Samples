@@ -153,9 +153,9 @@ Inserting multiple values is similar, but the payload has list of events and the
 
 There are many methods in the Qi REST API that allow for the retrieval of events from a stream. The retrieval methods take string-type start and end values; in this case, the start and end ordinal indices are expressed as strings ("0" and "99", respectively). The index values must be capable of conversion to the type of the index that is assigned in the QiType. Timestamp keys are expressed as ISO 8601 format strings. Compound indices are values concatenated with a pipe ('|') separator. `QiClient` implements three of the many available retrieval methods: `getLastValue`, `getWindowValues`, and `getRangeValues`. 
 
-'GetWindowValues' can be used to get events over a specific index range. 'GetRangeValues' can be used to obtain a specified number of events from a starting index point.
+`GetWindowValues` can be used to get events over a specific index range. `GetRangeValues` can be used to obtain a specified number of events from a starting index point.
 
-Here is the code for the `GetWindowValues` call:
+Shown below is the code for the `GetWindowValues` call:
 
 ```python
 	conn = http.HTTPSConnection(self.url)
@@ -169,7 +169,7 @@ Here is the code for the `GetWindowValues` call:
 
 ## Update Events
 
-Updating events is handled by PUT REST call as shown here:
+Updating events is handled by `PUT` REST call as shown below:
 
 ```python
 	conn = http.HTTPSConnection(self.url)
