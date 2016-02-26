@@ -234,7 +234,7 @@ Delete can also be done over a range of index values, as in the following `remov
 
 ## Cleanup: Deleting Types, Behaviors, and Streams
 
-So that it can run repeatedly without name collisions, the sample performs some cleanup before exiting. Deleting streams, stream behaviors, and types can be achieved by a `DELETE` REST call and passing the corresponding ID.  Note that types and behaviors cannot be deleted until any streams that reference them are deleted first.
+To prevent name collisions if the sample program is run repeadly, some cleanup is required before exiting. Deleting streams, stream behaviors, and types is done using a `DELETE` REST call and passing the corresponding ID. Note that types and behaviors cannot be deleted until any streams that reference those types and behaviors are deleted first.
 
 ```python
 	conn.request("DELETE", self.__streamsBase + '/' + stream_id, headers = self.__qi_headers())
