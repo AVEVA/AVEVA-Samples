@@ -20,9 +20,9 @@ Sample Setup
 
        npm install request-promise
 
-4. Open Command Prompt in Windows
-5. Goto folder where js files are located
-6. Type the following command to run the test file in the local server
+1. Open Command Prompt in Windows
+2. Goto folder where js files are located
+3. Type the following command to run the test file in the local server
 
    .. code:: javascript
 
