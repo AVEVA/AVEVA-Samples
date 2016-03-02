@@ -1,24 +1,25 @@
 Development environment
 =======================
 
-This project is bulit as a ``Maven`` project. You would need to have
-maven installed. All the necesssary dependencies are sepcified as part
-of pom.xml file.
+This project is bulit as a ``Maven`` project, which requires you to have
+maven installed. All of the necesssary dependencies are specified as part
+of the pom.xml file.
 
 Steps to Run
 ============
 
-1.Clone a local copy of Git repo. 2.Install Maven 3.If using Eclipse
-choose file -> import -> Maven-> Existing maven project and select the
+1. Clone a local copy of Git repo. 
+2. Install Maven 
+3. If using Eclipse, choose ``File -> import -> Maven-> Existing maven project`` and select the
 local copy.
 
 Java Samples: Building a Client with the Qi REST API
 ====================================================
 
-This sample is written using only the Qi REST API. This API allows for
-the creation of Qi Service clients in any language that can make HTTP
+This sample is written using only the Qi REST API. The API allows you to 
+create Qi Service clients in any language that can make HTTP
 calls and does not require access to any OSIsoft libraries. Objects are
-passed as JSON strings. We're using the Gson library for the Java
+passed as JSON strings. The sample uses the Gson library for the Java
 client, but any method of creating a JSON representation of objects will
 work.
 
@@ -26,9 +27,9 @@ Instantiate a Qi Client
 -----------------------
 
 The CRUD methods encapsulate the Qi REST API. Each call consists of an
-HTTP request with a specific URL and HTTP method. The URL is the server
+HTTP request along with a specific URL and HTTP method. The URL is the server
 plus the extension specific to the call. Like all REST APIs, the Qi REST
-API maps HTTP methods to CRUD like this:
+API maps HTTP methods to CRUD as in the following table:
 
 +---------------+------------------+--------------------+
 | HTTP Method   | CRUD Operation   | Content Found In   |
@@ -42,8 +43,8 @@ API maps HTTP methods to CRUD like this:
 | DELETE        | Delete           | URL parameters     |
 +---------------+------------------+--------------------+
 
-The constructor for our QiClient class takes the base URL (i.e.,
-protocol plus server and port number).
+The constructor for the QiClient class takes the base URL (that is,
+the protocol plus the server and port number).
 
 .. code:: java
 
@@ -86,8 +87,8 @@ The Qi Service is secured by obtaining tokens from an Azure Active
 Directory instance. The sample applications are examples of a
 *confidential client*. Such clients provide a user ID and secret that
 are authenticated against the directory. The sample code includes
-several placeholder strings. You must replace these with the
-authentication-related values you received from OSIsoft. The strings are
+several placeholder strings. You must replace these placeholders with the
+authentication values you received from OSIsoft. The strings are
 found at the beginning of ``QiClient.Java``.
 
 .. code:: java
@@ -97,10 +98,10 @@ found at the beginning of ``QiClient.Java``.
       static string _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
       static string _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
 
-At the bottom of ``QiClient.Java`` you will find a method called
+Near the end ``QiClient.Java`` iw a method called
 ``AcquireAuthToken``. The first step in obtaining an authorization token
-is to create an authentication context related to the Azure Active
-Directory instance providing tokens. The authority is designated by the
+is to create an authentication context that is related to the Azure Active
+Directory instance. The authority is designated by the
 URI in ``_authority``.
 
 .. code:: java
@@ -110,14 +111,14 @@ URI in ``_authority``.
             _authContext = new AuthenticationContext(_authority);
         }
 
-``AuthenticationContext`` instances take care of communicating with the
-authority and also maintain a local cache of tokens. Tokens have a fixed
-lifetime, typically one hour, but they can be refreshed by the
+``AuthenticationContext`` instances are responsible for communicating with the
+authority and also for maintaining a local cache of tokens. Tokens have a fixed
+lifetime, typically one hour, but can be refreshed by the
 authenticating authority for a longer period. If the refresh period has
-expired, the credentials have to be presented to the authority again.
-Happily, the ``AcquireToken`` method hides these details from client
+expired, the credentials must be presented to the authority again.
+To streamline development, the ``AcquireToken`` method hides these details from client
 programmers. As long as you call ``AcquireToken`` before each HTTP call,
-you will have a valid token. Here is how that is done:
+you will have a valid token. The following code shows how this is done:
 
 .. code:: java
 
@@ -130,29 +131,29 @@ Create a Qi Type
 
 Qi data streams represent open-ended collections of strongly-typed,
 ordered events. Qi is capable of storing any data type you care to
-define. The only requirement is that your data type have one or more
+define. The only requirement is that your data type must have one or more
 properties that constitute an ordered key. While a timestamp is a very
-common type of key, any ordered value is permitted. Our sample type uses
+common type of key, any ordered value is permitted. The sample type uses
 an integer.
 
 Each data stream is associated with a Qi type, so that only events
-conforming to that type can be inserted into the stream. The first step
+that conform to the associated Qi type can be inserted into the stream. The first step
 in Qi programming, then, is to define the types for your tenant.
 
-Since we are using the REST API, we must build our own type definitions.
+Because the example uses the REST API, you must build your own type definitions.
 A type definition in Qi consists of one or more properties. Each
-property has its own Qi type. This can be a simple data type like
-integer or string, or a complex Qi data type previously defined. This
-allows for the creation of nested data types, where proeprties can be
-user-defined types. Our sample ``WaveData`` class is a series of simple
-types. We have created ``QiType`` and ``QiTypeProperty`` classes that
+property has its own Qi type. The Qi type can be a simple data type such as 
+integer or string, or a complex Qi data type that was previously defined. You can also
+create nested data types, where proeprties can be
+user-defined types. The sample ``WaveData`` class is a series of simple
+types. The sample creates ``QiType`` and ``QiTypeProperty`` classes that
 match those in the Qi Libraries. Simple types are denoted by an
 enumeration specified in ``QiTypeCode.Java``. The ordinal values in the
 latter file are those the Qi Service expects, so if you wish to create
-you own classes you must specify these values.
+your own classes you must specify these values.
 
 ``WaveData`` has one integer property and a series of double value
-properties. To start, then, we create a QiType instance for each of
+properties. To start, then, you create a QiType instance for each of
 these simple types:
 
 .. code:: java
@@ -165,7 +166,7 @@ these simple types:
         doubleType.Id = "doubleType";
         doubleType.QiTypeCode = QiTypeCode.Double;
 
-Now let's create our key property, which is an integer type and is named
+Now you create the key property, which is an integer type named
 ``Order``.
 
 .. code:: java
@@ -175,9 +176,9 @@ Now let's create our key property, which is an integer type and is named
         orderProperty.QiType = intType;
         orderProperty.IsKey = true;
 
-We've specified the id, used the intType ``QiType`` we created, and most
-importantly set IsKey to ``true``. The double value properties are
-created similarly. Here is the code creating the ``Radians`` property:
+You have specified the ID, used the intType ``QiType`` you created, and most
+importantly, set IsKey to ``true``. The double value properties are
+created in the same way. The following is the code that creates the ``Radians`` property:
 
 .. code:: java
 
@@ -185,9 +186,9 @@ created similarly. Here is the code creating the ``Radians`` property:
         radiansProperty.Id = "Radians";
         radiansProperty.QiType = doubleType;
 
-Once all the necessary properties are created, it is necessary to assign
-them to a ``QiType`` defining the overall ``WaveData`` class. This is
-done by created an array of ``QiProperty`` instances and assigning it to
+After all of the necessary properties are created, you must assign
+them to a ``QiType``, which defines the overall ``WaveData`` class. This is
+done by creating an array of ``QiProperty`` instances and assigning it to
 the ``Properties`` property of ``QiType``:
 
 .. code:: java
@@ -199,14 +200,14 @@ the ``Properties`` property of ``QiType``:
         QiTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty}; 
         type.Properties = props;
 
-If you wanted to nest a user defined type within another QiType, you
-would begin by defining the contained type as a ``QiType`` using the
-methods illustrated above, then create a ``QiProperty`` with that type
+If you wanted to nest a user-defined type within another QiType, you
+begin by defining the contained type as a ``QiType`` using the
+methods illustrated previously, then create a ``QiProperty`` with that type
 and assign it to the containing class.
 
-All this creates a type definition locally, but it has to be submitted
+All the preceeding steps create a type definition locally, but the definition must be submitted
 in a REST call before it becomes available to the Qi Service for the
-creation of streams. The create call URL has the extention
+creation of streams. The create call URL has the extension
 ``/Qi/Types``, and the body of the request message is the JSON format
 serialization of the ``QiType`` just created. This is wrapped in the
 ``CreateType`` method of ``QiClient``:
@@ -274,9 +275,9 @@ serialization of the ``QiType`` just created. This is wrapped in the
         }
 
 After creating the ``HttpURLConnection`` with the proper URL and HTTP
-method, we call ``AcquireAuthToken`` and attach the result to the
+method, you call ``AcquireAuthToken`` and attach the result to the
 message as a header. This ensures that each call always has a valid
-authentication token. The main program calls the method like this.
+authentication token. The main program calls the method as in the following:
 
 .. code:: java
 
