@@ -5,7 +5,7 @@ var constants = require("./Constants.js");
 //change these values to the credentials given
 var QiServerUrl = constants.qiServerUrl;
 var authItems = constants.authItems;
-
+var tenantId = constants.tenantId;
 
 var logError = function(err){
 	if((typeof(err.statusCode) !== "undefined" && err.statusCode != 302) || 
@@ -53,6 +53,8 @@ http.createServer(function(request1, response) {
 	var qiObjs = require("./QiObjects.js");
 	var clientObj = require("./QiClient.js");
 	
+	var namespaceId = "QiNamespace"
+	
 	Object.freeze(qiObjs.qiTypeCodeMap);
 	Object.freeze(qiObjs.qiBoundaryType);
 	Object.freeze(qiObjs.qiStreamMode);
@@ -72,6 +74,9 @@ http.createServer(function(request1, response) {
 	var coshProperty = new qiObjs.QiTypeProperty({"Id" : "Cosh", "QiType" : doubleType});
 	var tanhProperty = new qiObjs.QiTypeProperty({"Id" : "Tanh", "QiType" : doubleType});
 
+	//create a QiNamespace
+	var namespace = new qiObjs.QiNamespace(namespaceId);
+	
 	//create a QiType for WaveData Class
 	var wave = new qiObjs.QiType({"Id" : "WaveDataJs", "Name" : "WaveDataJs", 
 					"Description" : "This is a sample Qi type for storing WaveData type events",
@@ -86,8 +91,24 @@ http.createServer(function(request1, response) {
 	var nowSeconds;
 	var checkTokenExpired;
 	
+	var createNamespaceSuccess = getTokenSuccess.then(
+		function(res) {
+			console.log("\nCreating a QiNamespace : "+ namespaceId);
+			refreshToken(res, client);
+			nowSeconds = Date.now()/1000;
+			if(client.tokenExpires < nowSeconds) {
+				return checkTokenExpired(client).then(
+					function(res) {
+						refreshToken(res, client);
+						return client.createNamespace(tenantId, namespace);
+					}).catch(function(err){logError(err)});
+			}else{
+				return client.createNamespace(tenantId, namespace);
+			}
+		}
+	)
 
-	var createTypeSuccess = getTokenSuccess.then(
+	var createTypeSuccess = createNamespaceSuccess.then(
 		function(res){
 			console.log("\nCreating a QiType : "+ wave.Name);
 			refreshToken(res, client);
@@ -96,10 +117,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.createType(wave);
+						return client.createType(tenantId, namespaceId, wave);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createType(wave);
+				return client.createType(tenantId, namespaceId, wave);
 			}
 		})
 		.catch(function(err){logError(err)});
@@ -112,10 +133,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getTypes();
+						return client.getTypes(tenantId, namespaceId);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getTypes();
+				return client.getTypes(tenantId, namespaceId);
 			}
 		})
 		.catch(function(err){logError(err)});
@@ -139,10 +160,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.createStream(stream);
+						return client.createStream(tenantId, namespaceId, stream);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createStream(stream);
+				return client.createStream(tenantId, namespaceId, stream);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -154,10 +175,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getStreams();
+						return client.getStreams(tenantId, namespaceId);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getStreams();
+				return client.getStreams(tenantId, namespaceId);
 			}
 		}).catch(function(err){logError(err)});
 	
@@ -183,10 +204,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.insertEvent(stream, evt);
+						return client.insertEvent(tenantId, namespaceIdstream, evt);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.insertEvent(stream, evt);
+				return client.insertEvent(tenantId, namespaceId, stream, evt);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -237,10 +258,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.insertEvents(stream, events);
+						return client.insertEvents(tenantId, namespaceId, stream, events);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.insertEvents(stream, events);
+				return client.insertEvents(tenantId, namespaceId, stream, events);
 			}
 	}).catch(function(err){logError(err)});
 
@@ -255,10 +276,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getWindowValues(stream, 0, 198);
+						return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getWindowValues(stream, 0, 198);
+				return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -279,10 +300,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.updateEvent(stream, evt);
+						return client.updateEvent(tenantId, namespaceId, stream, evt);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.updateEvent(stream, evt);
+				return client.updateEvent(tenantId, namespaceId, stream, evt);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -310,10 +331,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.updateEvents(stream, events);
+						return client.updateEvents(tenantId, namespaceId, stream, events);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.updateEvents(stream, events);
+				return client.updateEvents(tenantId, namespaceId, stream, events);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -328,10 +349,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getWindowValues(stream, 0, 198);
+						return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getWindowValues(stream, 0, 198);
+				return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -349,10 +370,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+						return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+				return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -372,10 +393,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.createBehavior(behavior);
+						return client.createBehavior(tenantId, namespaceId, behavior);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createBehavior(behavior);
+				return client.createBehavior(tenantId, namespaceId, behavior);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -388,10 +409,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.updateStream(stream);
+						return client.updateStream(tenantId, namespaceId, stream);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.updateStream(stream);
+				return client.updateStream(tenantId, namespaceId, stream);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -402,10 +423,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+						return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getRangeValues(stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+				return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -421,10 +442,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.deleteEvent(stream, 0);
+						return client.deleteEvent(tenantId, namespaceId, stream, 0);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteEvent(stream, 0);
+				return client.deleteEvent(tenantId, namespaceId, stream, 0);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -435,10 +456,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.deleteWindowEvents(stream, 0, 198);
+						return client.deleteWindowEvents(tenantId, namespaceId, stream, 0, 198);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteWindowEvents(stream, 0, 198);
+				return client.deleteWindowEvents(tenantId, namespaceId, stream, 0, 198);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -449,10 +470,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.deleteStream(stream.Id);
+						return client.deleteStream(tenantId, namespaceId, stream.Id);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteStream(stream.Id);
+				return client.deleteStream(tenantId, namespaceId, stream.Id);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -463,15 +484,15 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 						function(res){
 							refreshToken(res, client);
-							return client.deleteType(wave.Id);
+							return client.deleteType(tenantId, namespaceId, wave.Id);
 						}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteType(wave.Id);
+				return client.deleteType(tenantId, namespaceId, wave.Id);
 			}
 		}).catch(function(err){logError(err)});
 
 	//One catch to rule all the errors
-	var finalCatch = deleteType.then(
+	var finalCatch = deleteStream.then(
 		function(res){
 			console.log("\nTest successful!");
 			process.exit(1);

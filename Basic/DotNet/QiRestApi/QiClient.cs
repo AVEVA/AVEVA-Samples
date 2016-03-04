@@ -41,73 +41,100 @@ namespace QiRestApiSample
         #region Metadata methods
 
         /// <summary>
+        /// Create a namespace on the target Qi Service
+        /// </summary>
+        /// <param name="namespaceDef">QiNamespace object to be created</param>
+        /// <returns></returns>
+        public async Task<string> CreateNamespaceAsync(string tenantId, QiNamespace namespaceDef)
+        {
+            return await CreateQiObjectAsync<QiNamespace>(_baseUrl + string.Format(RestSampleStrings.NamespacesBaseUrl, Constants.TenantId), namespaceDef);
+        }
+
+        /// <summary>
+        /// Delete a namespace on the target Qi Service
+        /// </summary>
+        /// <param name="namespaceId">The id of the QiNamespace</param>
+        /// <returns></returns>
+        public async Task DeleteNamespaceAsync(string tenantId, string namespaceId)
+        {
+            await DeleteQiObjectAsync(_baseUrl + string.Format(RestSampleStrings.NamespacesBaseUrl, tenantId) + @"/" + namespaceId);
+        }
+
+        /// <summary>
         /// Create a stream on the target Qi Service
         /// </summary>
+        /// <param name="namespaceId">The Id of the QiNamespace to create the stream on</param>
         /// <param name="streamDef">QiStream object with name, Id, type</param>
         /// <returns>void</returns>
-        public async Task<string> CreateStreamAsync(QiStream streamDef)
+        public async Task<string> CreateStreamAsync(string tenantId, string namespaceId, QiStream streamDef)
         {
-            return await CreateQiObjectAsync<QiStream>(_baseUrl + RestSampleStrings.StreamsBaseUrl, streamDef);
+            return await CreateQiObjectAsync<QiStream>(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId), streamDef);
         }
 
         /// <summary>
         /// Updates a stream's definition
         /// </summary>
+        /// <param name="namespaceId">The Id of the QiNamespace to update the stream on</param>
         /// <param name="streamDef">Updated definition</param>
         /// <returns>void</returns>
-        public async Task UpdateStreamAsync(QiStream streamDef)
+        public async Task UpdateStreamAsync(string tenantId, string namespaceId, QiStream streamDef)
         {
-            await UpdateQiObject<QiStream>(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamDef.Id, streamDef);
+            await UpdateQiObject<QiStream>(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamDef.Id, streamDef);
         }
 
         /// <summary>
         /// Deletes the stream whose Id is passed
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace to delete the stream on</param>
         /// <param name="streamId">Id of the QiStream to be deleted</param>
         /// <returns>void</returns>
-        public async Task DeleteStreamAsync(string streamId)
+        public async Task DeleteStreamAsync(string tenantId, string namespaceId, string streamId)
         {
-            await DeleteQiObjectAsync(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId);
+            await DeleteQiObjectAsync(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId);
         }
 
         /// <summary>
         /// Creates a QiType in the remote Qi Service.  QiTypes are required by QiStreams and cannot be deleted while so referenced.
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace to create the type on</param>
         /// <param name="typeDef">QiType object defining a user-defined type with properties</param>
         /// <returns>void</returns>
-        public async Task<string> CreateTypeAsync(QiType typeDef)
+        public async Task<string> CreateTypeAsync(string tenantId, string namespaceId, QiType typeDef)
         {
-            return await CreateQiObjectAsync<QiType>(_baseUrl + RestSampleStrings.TypesBaseUrl, typeDef);
+            return await CreateQiObjectAsync<QiType>(_baseUrl + string.Format(RestSampleStrings.TypesBaseUrl, tenantId, namespaceId), typeDef);
         }
 
         /// <summary>
         /// Deletes a QiType in the remote Qi Service
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace to delete the type on</param>
         /// <param name="typeId">Id of the QiType to delete</param>
         /// <returns>void</returns>
-        public async Task DeleteTypeAsync(string typeId)
+        public async Task DeleteTypeAsync(string tenantId, string namespaceId, string typeId)
         {
-            await DeleteQiObjectAsync(_baseUrl + RestSampleStrings.TypesBaseUrl + @"/" + typeId);
+            await DeleteQiObjectAsync(_baseUrl + string.Format(RestSampleStrings.TypesBaseUrl, tenantId, namespaceId) + @"/" + typeId);
         }
 
         /// <summary>
         /// Create a stream behavior on the target Qi Service
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace to create the behavior on</param>
         /// <param name="behavior">QiStreamBehavior object to be created</param>
         /// <returns>void</returns>
-        public async Task<string> CreateBehaviorAsync(QiStreamBehavior behavior)
+        public async Task<string> CreateBehaviorAsync(string tenantId, string namespaceId, QiStreamBehavior behavior)
         {
-            return await CreateQiObjectAsync<QiStreamBehavior>(_baseUrl + RestSampleStrings.BehaviorsBaseUrl, behavior);
+            return await CreateQiObjectAsync<QiStreamBehavior>(_baseUrl + string.Format(RestSampleStrings.BehaviorsBaseUrl, tenantId, namespaceId), behavior);
         }
 
         /// <summary>
         /// Deletes a QiStreamBehavior in the remote Qi Service
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace to delete the behavior on</param>
         /// <param name="behaviorId">Id of the QiStreamBehavior to delete</param>
         /// <returns>void</returns>
-        public async Task DeleteBehaviorAsync(string behaviorId)
+        public async Task DeleteBehaviorAsync(string tenantId, string namespaceId, string behaviorId)
         {
-            await DeleteQiObjectAsync(_baseUrl + RestSampleStrings.BehaviorsBaseUrl + @"/" + behaviorId);
+            await DeleteQiObjectAsync(_baseUrl + string.Format(RestSampleStrings.BehaviorsBaseUrl, tenantId, namespaceId) + @"/" + behaviorId);
         }
 
         #endregion
@@ -117,25 +144,27 @@ namespace QiRestApiSample
         /// <summary>
         /// Insert single event into the identified Qi Stream
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace where the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="singleEvent">JSON serialization of the object to store</param>
         /// <returns></returns>
-        public async Task CreateEventAsync(string streamId, string singleEvent)
+        public async Task CreateEventAsync(string tenantId, string namespaceId, string streamId, string singleEvent)
         {
-            string requestUrl = _baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId + RestSampleStrings.InsertSingleBaseUrl;
-            await InsertEventDataIntoStreamAsync(requestUrl, singleEvent);
+            string requestUrl = _baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId + RestSampleStrings.InsertSingleBaseUrl;
+            await InsertEventDataIntoStreamAsync(tenantId, namespaceId, requestUrl, singleEvent);
         }
 
         /// <summary>
         /// Insert multiple events into the identified Qi Stream
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace where the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="events">JSON serialization of an array of events</param>
         /// <returns>void</returns>
-        public async Task CreateEventsAsync(string streamId, string events)
+        public async Task CreateEventsAsync(string tenantId, string namespaceId, string streamId, string events)
         {
-            string requestUrl = _baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId + RestSampleStrings.InsertMultipleBaseUrl;
-            await InsertEventDataIntoStreamAsync(requestUrl, events);
+            string requestUrl = _baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId + RestSampleStrings.InsertMultipleBaseUrl;
+            await InsertEventDataIntoStreamAsync(tenantId, namespaceId, requestUrl, events);
         }
 
         #endregion
@@ -144,16 +173,17 @@ namespace QiRestApiSample
         /// <summary>
         /// Gets all values in the range identified by the start and end indices
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace where the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="startIndex">string representation of a value related to the streams key; for a DateTime key, an ISO 8601 time reference</param>
         /// <param name="endIndex">string representaion of a value related to the stream's key denoting the end of the desired range</param>
         /// <returns>JSON serialized array of events</returns>
-        public async Task<string> GetWindowValuesAsync(string streamId, string startIndex, string endIndex)
+        public async Task<string> GetWindowValuesAsync(string tenantId, string namespaceId, string streamId, string startIndex, string endIndex)
         {
             string getClause = string.Format(RestSampleStrings.GetWindowValuesUrlTemplate, startIndex, endIndex);
             HttpRequestMessage msg = new HttpRequestMessage
             {
-                RequestUri = new Uri(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId + getClause),
+                RequestUri = new Uri(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId + getClause),
                 Method = HttpMethod.Get
             };
 
@@ -170,12 +200,23 @@ namespace QiRestApiSample
             }
         }
 
-        public async Task<string> GetRangeValuesAsync(string streamId, string startIndex, int skip, int count, bool reverse, QiBoundaryType boundaryType)
+        /// <summary>
+        /// Gets all values in the range identified by the start and end indices except for the items that are skipped.  Can also be reversed
+        /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace from which the stream is located</param>
+        /// <param name="streamId">Id of the QiStream from which the data is located</param>
+        /// <param name="startIndex">The start index of the range of data</param>
+        /// <param name="skip">The number of items to skip in the range</param>
+        /// <param name="count">The number of items to return</param>
+        /// <param name="reverse">Determines whethere the list is reversed or not</param>
+        /// <param name="boundaryType">Determines if extrapolated values should be counted</param>
+        /// <returns></returns>
+        public async Task<string> GetRangeValuesAsync(string tenantId, string namespaceId, string streamId, string startIndex, int skip, int count, bool reverse, QiBoundaryType boundaryType)
         {
             string getClause = string.Format(RestSampleStrings.GetRangeValuesUrlTemplate, startIndex, skip, count, reverse, boundaryType);
             HttpRequestMessage msg = new HttpRequestMessage
             {
-                RequestUri = new Uri(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId + getClause),
+                RequestUri = new Uri(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId + getClause),
                 Method = HttpMethod.Get
             };
 
@@ -198,14 +239,15 @@ namespace QiRestApiSample
         /// <summary>
         /// Updates a single event if found
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace from which the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="evt">JSON serialization of the updated event</param>
         /// <returns></returns>
-        public async Task UpdateValueAsync(string streamId, string evt)
+        public async Task UpdateValueAsync(string tenantId, string namespaceId, string streamId, string evt)
         {
             HttpRequestMessage msg = new HttpRequestMessage
             {
-                RequestUri = new Uri(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId + RestSampleStrings.UpdateSingleBaseUrl),
+                RequestUri = new Uri(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId + RestSampleStrings.UpdateSingleBaseUrl),
                 Method = HttpMethod.Put
             };
 
@@ -217,14 +259,15 @@ namespace QiRestApiSample
         /// <summary>
         /// Updates an array of events in a stream (replaces an event with the same key value)
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace from which the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="evts">JSON serialization of an array of updated events</param>
         /// <returns>void</returns>
-        public async Task UpdateValuesAsync(string streamId, string evts)
+        public async Task UpdateValuesAsync(string tenantId, string namespaceId, string streamId, string evts)
         {
             HttpRequestMessage msg = new HttpRequestMessage
             {
-                RequestUri = new Uri(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/" + streamId + RestSampleStrings.UpdateMultipleBaseUrl),
+                RequestUri = new Uri(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/" + streamId + RestSampleStrings.UpdateMultipleBaseUrl),
                 Method = HttpMethod.Put
             };
 
@@ -238,25 +281,27 @@ namespace QiRestApiSample
         /// <summary>
         /// removes a single value from the stream if the index is found
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace from which the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="index">value of the key of the event to be deleted (for DateTime, ISO 8601 string)</param>
         /// <returns>void</returns>
-        public async Task RemoveValueAsync(string streamId, string index)
+        public async Task RemoveValueAsync(string tenantId, string namespaceId, string streamId, string index)
         {
-            string valueUrl = _baseUrl + RestSampleStrings.StreamsBaseUrl + string.Format(RestSampleStrings.RemoveSingleUrlTemplate, streamId, index);
+            string valueUrl = _baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + string.Format(RestSampleStrings.RemoveSingleUrlTemplate, streamId, index);
             await DeleteQiObjectAsync(valueUrl);
         }
 
         /// <summary>
         /// Removes all events within a range in a stream
         /// </summary>
+        /// <param name="namespaceId">Id of the QiNamespace from which the stream is located</param>
         /// <param name="streamId">stream identifier</param>
         /// <param name="startIndex">start key value for the range</param>
         /// <param name="endIndex">end key value for the range</param>
         /// <returns>void</returns>
-        public async Task RemoveWindowValuesAsync(string streamId, string startIndex, string endIndex)
+        public async Task RemoveWindowValuesAsync(string tenantId, string namespaceId, string streamId, string startIndex, string endIndex)
         {
-            string valuesUrl = _baseUrl + RestSampleStrings.StreamsBaseUrl + string.Format(RestSampleStrings.RemoveMultipleUrlTemplate, streamId, startIndex, endIndex);
+            string valuesUrl = _baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + string.Format(RestSampleStrings.RemoveMultipleUrlTemplate, streamId, startIndex, endIndex);
             await DeleteQiObjectAsync(valuesUrl);
         }
 
@@ -389,7 +434,7 @@ namespace QiRestApiSample
             }
         }
 
-        private async Task InsertEventDataIntoStreamAsync(string requestUrl, string eventData)
+        private async Task InsertEventDataIntoStreamAsync(string tenantId, string namespaceId, string requestUrl, string eventData)
         {
             HttpRequestMessage msg = new HttpRequestMessage
             {
@@ -397,7 +442,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Post
             };
 
-            var streamId = requestUrl.Replace(_baseUrl + RestSampleStrings.StreamsBaseUrl + @"/", string.Empty);
+            var streamId = requestUrl.Replace(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/", string.Empty);
             streamId = streamId.Split('/')[0];
 
             msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());

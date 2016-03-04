@@ -62,6 +62,7 @@
     <Compile Include="QiBoundaryType.cs" />
     <Compile Include="QiClient.cs" />
     <Compile Include="QiError.cs" />
+    <Compile Include="QiNamespace.cs" />
     <Compile Include="QiStream.cs" />
     <Compile Include="QiStreamBehavior.cs" />
     <Compile Include="QiStreamBehaviorOverride.cs" />

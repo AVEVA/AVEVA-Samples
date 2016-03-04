@@ -28,9 +28,10 @@ module.exports = {
         this.url = url;
         this.version = 0.1;
         this.tenantsBase = "/Qi/Tenants";
-        this.typesBase = "/Qi/Types";
-        this.streamsBase = "/Qi/Streams";
-        this.behaviorBase = "/Qi/Behaviors";
+		this.namespacesBase = "/Qi/{0}/Namespaces"
+        this.typesBase = "/Qi/{0}/{1}/Types";
+        this.streamsBase = "/Qi/{0}/{1}/Streams";
+        this.behaviorBase = "/Qi/{0}/{1}/Behaviors";
         this.insertSingle = "/Data/InsertValue";
         this.insertMultiple = "/Data/InsertValues";
         this.getTemplate = "/{0}/Data/GetWindowValues?startIndex={1}&endIndex={2}";
@@ -68,11 +69,30 @@ module.exports = {
             temp.href = location;
             return temp.pathname;
         };
+		
+		//method to create QiNamespaces
+		this.createNamespace = function(tenantId, namespace) {
+								return restCall({
+												url : this.url+this.namespacesBase.format([tenantId]),
+												method : 'POST',
+												headers : this.getHeaders(),
+												body : JSON.stringify(namespace).toString()
+											});
+		}
+		
+		//method to delete QiNamespaces
+		this.deleteNamespace = function(tenantId, namespaceId) {
+								return restCall({
+												url : this.url+this.namespacesBase.format([tenantId])+"/"+namespaceId,
+												method : 'DELETE',
+												headers : this.getHeaders()
+											});
+		}
 
         //method to create QiTypes
-        this.createType = function(wave){
+        this.createType = function(tenantId, namespaceId, wave){
                                 return restCall({
-                                                url : this.url+this.typesBase,
+                                                url : this.url+this.typesBase.format([tenantId, namespaceId]),
                                                 method: 'POST',
                                                 headers : this.getHeaders(),
                                                 body : JSON.stringify(wave).toString()
@@ -80,27 +100,27 @@ module.exports = {
         };
 
         //method to get all the Qi types under a tenant Qi Service
-        this.getTypes = function(){
+        this.getTypes = function(tenantId, namespaceId){
                                 return restCall({
-                                                url : this.url+this.typesBase,
+                                                url : this.url+this.typesBase.format([tenantId, namespaceId]),
                                                 method: 'GET',
                                                 headers : this.getHeaders()
                                             });
         };
 
         //delete a type
-        this.deleteType = function(typeId){
+        this.deleteType = function(tenantId, namespaceId, typeId){
                                 return restCall({
-                                            url : this.url+this.typesBase+"/"+typeId,
+                                            url : this.url+this.typesBase.format([tenantId, namespaceId])+"/"+typeId,
                                             method : 'DELETE',
                                             headers : this.getHeaders()
                                         });
         };
 
         //create a stream under the Qi Service
-        this.createStream = function(qiStream){
+        this.createStream = function(tenantId, namespaceId, qiStream){
                                 return restCall({
-                                            url : this.url+this.streamsBase,
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId]),
                                             method : 'POST',
                                             headers : this.getHeaders(),
                                             body : JSON.stringify(qiStream).toString()
@@ -108,27 +128,27 @@ module.exports = {
         };
 
         //get all the streams under the tenant's Qi Service
-        this.getStream = function(qiStream){
+        this.getStream = function(tenantId, namespaceId, qiStream){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+qiStream.Id,
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+qiStream.Id,
                                             method : 'GET',
                                             headers : this.getHeaders()
                                         });
         };
 
         //get all the streams under the tenant's Qi Service
-        this.getStreams = function(){
+        this.getStreams = function(tenantId, namespaceId){
                                 return restCall({
-                                            url : this.url+this.streamsBase,
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId]),
                                             method : 'GET',
                                             headers : this.getHeaders()
                                         });
         };
 
         //update a stream
-        this.updateStream = function(qiStream){
+        this.updateStream = function(tenantId, namespaceId, qiStream){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+qiStream.Id,
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+qiStream.Id,
                                             method : 'PUT',
                                             headers : this.getHeaders(),
                                             body : JSON.stringify(qiStream).toString()
@@ -136,18 +156,18 @@ module.exports = {
         };
 
         //delete a stream
-        this.deleteStream = function(streamId){
+        this.deleteStream = function(tenantId, namespaceId, streamId){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+streamId,
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+streamId,
                                             method : 'DELETE',
                                             headers : this.getHeaders()
                                         });
         };
 
         //create behavior
-        this.createBehavior = function(behavior){
+        this.createBehavior = function(tenantId, namespaceId, behavior){
                                 return restCall({
-                                            url : this.url+this.behaviorBase,
+                                            url : this.url+this.behaviorBase.format([tenantId, namespaceId]),
                                             method : 'POST',
                                             headers : this.getHeaders(),
                                             body : JSON.stringify(behavior)
@@ -155,9 +175,9 @@ module.exports = {
         };
 
         //insert an event into a stream
-        this.insertEvent = function(qiStream, evt){
+        this.insertEvent = function(tenantId, namespaceId, qiStream, evt){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+
                                                     qiStream.Id+this.insertSingle,
                                             method : 'POST',
                                             headers : this.getHeaders(),
@@ -166,9 +186,9 @@ module.exports = {
         };
 
         //insert an array of events
-        this.insertEvents = function(qiStream, events){
+        this.insertEvents = function(tenantId, namespaceId, qiStream, events){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+
                                                     qiStream.Id+this.insertMultiple,
                                             method : 'POST',
                                             headers : this.getHeaders(),
@@ -177,9 +197,9 @@ module.exports = {
         };
 
         //update an event
-        this.updateEvent = function(qiStream, evt){
+        this.updateEvent = function(tenantId, namespaceId, qiStream, evt){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+
                                                     qiStream.Id+this.updateSingle,
                                             method : 'PUT',
                                             headers : this.getHeaders(),
@@ -188,9 +208,9 @@ module.exports = {
         };
 
         //update an array of events
-        this.updateEvents = function(qiStream, events){
+        this.updateEvents = function(tenantId, namespaceId, qiStream, events){
                                 return restCall({
-                                            url : this.url+this.streamsBase+"/"+
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+
                                                     qiStream.Id+this.updateMultiple,
                                             method : 'PUT',
                                             headers : this.getHeaders(),
@@ -199,36 +219,36 @@ module.exports = {
         };
 
         //delete an event
-        this.deleteEvent = function(qiStream, index){
+        this.deleteEvent = function(tenantId, namespaceId, qiStream, index){
                                 return restCall({
-                                            url : this.url+this.streamsBase+this.removeSingleTemplate.format([qiStream.Id, index]),
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+this.removeSingleTemplate.format([qiStream.Id, index]),
                                             method : 'DELETE',
                                             headers : this.getHeaders()
                                         });
         };
 
         //delete a window of events
-        this.deleteWindowEvents = function(qiStream, start, end){
+        this.deleteWindowEvents = function(tenantId, namespaceId, qiStream, start, end){
                                 return restCall({
-                                            url : this.url+this.streamsBase+this.removeMultipleTemplate.format([qiStream.Id, start, end]),
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+this.removeMultipleTemplate.format([qiStream.Id, start, end]),
                                             method : 'DELETE',
                                             headers : this.getHeaders()
                                         });
         };
 
         //retrieve a window of events
-        this.getWindowValues = function(qiStream, start, end){
+        this.getWindowValues = function(tenantId, namespaceId, qiStream, start, end){
                                 return restCall({
-                                            url : this.url+this.streamsBase+this.getTemplate.format([qiStream.Id,start,end]),
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+this.getTemplate.format([qiStream.Id,start,end]),
                                             method : 'GET',
                                             headers : this.getHeaders()
                                         });
         };
 
         //retrieve a range of value based on boundary type
-        this.getRangeValues = function(qiStream, start, skip, count, reverse, boundaryType){
+        this.getRangeValues = function(tenantId, namespaceId, qiStream, start, skip, count, reverse, boundaryType){
                                 return restCall({
-                                            url : this.url+this.streamsBase+this.getRangeTemplate.format([qiStream.Id,start,skip,count,reverse,boundaryType]),
+                                            url : this.url+this.streamsBase.format([tenantId, namespaceId])+this.getRangeTemplate.format([qiStream.Id,start,skip,count,reverse,boundaryType]),
                                             method : 'GET',
                                             headers : this.getHeaders()
                                         });

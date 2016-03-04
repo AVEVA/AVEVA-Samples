@@ -16,9 +16,14 @@ namespace QiRestApiSample
             string server = Constants.QiServerUrl;
             QiClient qiclient = new QiClient(server);
             QiType evtType = null;
+            QiNamespace qiNamespace = new QiNamespace("QiNamespace");
 
             try
             {
+                // create a QiNamespace
+                Console.WriteLine("Creating a Qi Container");
+                string evtNamespaceString = qiclient.CreateNamespaceAsync(Constants.TenantId, qiNamespace).Result;
+
                 // create types for int and double, then create properties for all the WaveData properties
                 Console.WriteLine("Creating a Qi type for WaveData instances");
                 QiType intType = new QiType();
@@ -77,13 +82,13 @@ namespace QiRestApiSample
                 //used when working against the local devonebox
                 //ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
                 // create the type in the Qi Service
-                string evtTypeString = qiclient.CreateTypeAsync(type).Result;
+                string evtTypeString = qiclient.CreateTypeAsync(Constants.TenantId, qiNamespace.Id, type).Result;
                 evtType = JsonConvert.DeserializeObject<QiType>(evtTypeString);
 
                 // create a stream named evtStream
                 Console.WriteLine("Creating a stream in this tenant for simple event measurements");
                 QiStream stream = new QiStream("evtStream", evtType.Id);
-                string evtStreamString = qiclient.CreateStreamAsync(stream).Result;
+                string evtStreamString = qiclient.CreateStreamAsync(Constants.TenantId, qiNamespace.Id, stream).Result;
                 QiStream evtStream = JsonConvert.DeserializeObject<QiStream>(evtStreamString);
 
                 #region CRUD operations
@@ -95,7 +100,7 @@ namespace QiRestApiSample
                 TimeSpan span = new TimeSpan(0, 1, 0);
                 WaveData evt = WaveData.Next(span, 2.0, 0);
 
-                qiclient.CreateEventAsync("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+                qiclient.CreateEventAsync(Constants.TenantId, qiNamespace.Id, "evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
                 // how to insert an a collection of events
                 List<WaveData> events = new List<WaveData>();
@@ -106,7 +111,7 @@ namespace QiRestApiSample
                     Thread.Sleep(400);
                 }
 
-                qiclient.CreateEventsAsync("evtStream", JsonConvert.SerializeObject(events)).Wait();
+                qiclient.CreateEventsAsync(Constants.TenantId, qiNamespace.Id, "evtStream", JsonConvert.SerializeObject(events)).Wait();
                 Thread.Sleep(2000);
 
                 #endregion
@@ -114,7 +119,7 @@ namespace QiRestApiSample
                 #region Retrieve events
                 Console.WriteLine("Retrieving the inserted events");
                 Console.WriteLine("==============================");
-                string jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
+                string jCollection = qiclient.GetWindowValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "0", "198").Result;
                 WaveData[] foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -126,7 +131,7 @@ namespace QiRestApiSample
                 // take the first value inserted and update 
                 evt = foundEvents.First<WaveData>();
                 evt = WaveData.Next(span, 4.0, 0);
-                qiclient.UpdateValueAsync("evtStream", JsonConvert.SerializeObject(evt)).Wait();
+                qiclient.UpdateValueAsync(Constants.TenantId, qiNamespace.Id, "evtStream", JsonConvert.SerializeObject(evt)).Wait();
 
                 // update the remaining events (same span, multiplier, order)
                 List<WaveData> newEvents = new List<WaveData>();
@@ -137,13 +142,13 @@ namespace QiRestApiSample
                     Thread.Sleep(500);
                 }
 
-                qiclient.UpdateValuesAsync("evtStream", JsonConvert.SerializeObject(events)).Wait();
+                qiclient.UpdateValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", JsonConvert.SerializeObject(events)).Wait();
                 Thread.Sleep(2000);
 
                 // check the results
                 Console.WriteLine("Retrieving the updated values");
                 Console.WriteLine("=============================");
-                jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
+                jCollection = qiclient.GetWindowValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -155,7 +160,7 @@ namespace QiRestApiSample
                 // The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
                 Console.WriteLine();
                 Console.WriteLine(@"Retrieving three events without a stream behavior");
-                jCollection = qiclient.GetRangeValuesAsync("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                jCollection = qiclient.GetRangeValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
 
@@ -163,17 +168,17 @@ namespace QiRestApiSample
                 QiStreamBehavior behavior = new QiStreamBehavior();
                 behavior.Id = "evtStreamStepLeading";
                 behavior.Mode = QiStreamMode.StepwiseContinuousLeading;
-                string behaviorString = qiclient.CreateBehaviorAsync(behavior).Result;
+                string behaviorString = qiclient.CreateBehaviorAsync(Constants.TenantId, qiNamespace.Id, behavior).Result;
                 behavior = JsonConvert.DeserializeObject<QiStreamBehavior>(behaviorString);
 
                 // update the stream to include this behavior
                 evtStream.BehaviorId = behavior.Id;
-                qiclient.UpdateStreamAsync(evtStream).Wait();
+                qiclient.UpdateStreamAsync(Constants.TenantId, qiNamespace.Id, evtStream).Wait();
 
                 // repeat the retrieval
                 Console.WriteLine();
                 Console.WriteLine("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
-                jCollection = qiclient.GetRangeValuesAsync("evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
+                jCollection = qiclient.GetRangeValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 #endregion
@@ -183,22 +188,23 @@ namespace QiRestApiSample
                 // remove the first value -- index is the timestamp of the event
                 Console.WriteLine();
                 Console.WriteLine("Deleting events");
-                qiclient.RemoveValueAsync("evtStream", "0").Wait();
+                qiclient.RemoveValueAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "0").Wait();
 
                 // remove the rest -- start and end time indices
-                qiclient.RemoveWindowValuesAsync("evtStream", "1", "198").Wait();
+                qiclient.RemoveWindowValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "1", "198").Wait();
                 Thread.Sleep(2000);
 
                 Console.WriteLine("Checking for events");
                 Console.WriteLine("===================");
 
-                jCollection = qiclient.GetWindowValuesAsync("evtStream", "0", "198").Result;
+                jCollection = qiclient.GetWindowValuesAsync(Constants.TenantId, qiNamespace.Id, "evtStream", "0", "198").Result;
                 foundEvents = JsonConvert.DeserializeObject<WaveData[]>(jCollection);
                 DumpEvents(foundEvents);
                 Console.WriteLine("Test ran successfully");
                 Console.WriteLine("====================");
                 Console.WriteLine("Press any button to shutdown");
                 Console.ReadLine();
+
                 #endregion
                 #endregion
             }
@@ -212,12 +218,13 @@ namespace QiRestApiSample
             {
                 try
                 {
-                    qiclient.DeleteStreamAsync("evtStream").Wait();
-                    qiclient.DeleteBehaviorAsync("evtStreamStepLeading").Wait();
-                    qiclient.DeleteTypeAsync(evtType.Id).Wait();
+                    qiclient.DeleteStreamAsync(Constants.TenantId, qiNamespace.Id, "evtStream").Wait();
+                    qiclient.DeleteBehaviorAsync(Constants.TenantId, qiNamespace.Id, "evtStreamStepLeading").Wait();
+                    qiclient.DeleteTypeAsync(Constants.TenantId, qiNamespace.Id, evtType.Id).Wait();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e.ToString());
                 }
             }
         }
