@@ -8,6 +8,7 @@ public class Constants {
 	public final static String _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY"; //Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com";
 	public final static String _appId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
 	public final static String _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
-	public final static String _qiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL";
-	
+	public final static String _qiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"; // a Guid (not the app Id)
+	public final static String _tenantId = "PLACEHOLDER_REPLACE_WITH_TENANT_ID";
+
 }

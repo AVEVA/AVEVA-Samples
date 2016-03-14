@@ -5,8 +5,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.io.*;
 
+import java.io.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,7 +16,6 @@ import com.microsoft.aad.adal4j.ClientCredential;
 
 
 public class QiClient {
-
 	Gson mGson =  null; 
 	private String baseUrl = null; 
 	@SuppressWarnings("unused")
@@ -24,10 +23,11 @@ public class QiClient {
    
 	// REST API url strings
 	@SuppressWarnings("unused")
-	private String tenantsBase = "/Qi/Tenants";
-	private String typesBase = "/Qi/Types";
-	private String streamsBase = "/Qi/Streams";
-	private String behaviorsBase = "/Qi/Behaviors";
+	private String tenantsBase = "Qi/Tenants";
+	private String namespacesBase = "Qi/{tenantId}/Namespaces";
+	private String typesBase = "Qi/{tenantId}/{namespaceId}/Types";
+	private String streamsBase = "Qi/{tenantId}/{namespaceId}/Streams";
+	private String behaviorsBase = "Qi/{tenantId}/{namespaceId}/Behaviors";
 	private String insertSingle = "/Data/InsertValue";
 	private String insertMultiple = "/Data/InsertValues";
 	private String getTemplate = "/Data/GetWindowValues?";
@@ -49,11 +49,13 @@ public class QiClient {
 		try
 		{
 			urlConnection = (java.net.HttpURLConnection) url.openConnection();
+			urlConnection.setRequestProperty("Accept", "*/*; q=1");
 			urlConnection.setRequestMethod(method);
 			urlConnection.setUseCaches(false);
-			urlConnection.setConnectTimeout(10000);
-			urlConnection.setReadTimeout(10000);
+			urlConnection.setConnectTimeout(50000);
+			urlConnection.setReadTimeout(50000);
 			urlConnection.setRequestProperty("Content-Type", "application/json");
+			
 			urlConnection.setRequestProperty( "Authorization", token.getAccessTokenType()+ " "+ token.getAccessToken());
 			if (method == "POST" || method == "PUT" || method == "DELETE")
 			{  	
@@ -87,7 +89,7 @@ public class QiClient {
 
 
 	public QiClient(String baseUrl)
-	{
+	{	
 		mGson = new GsonBuilder().registerTypeAdapter(GregorianCalendar.class, new UTCDateTypeAdapter()).setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -116,14 +118,9 @@ public class QiClient {
 		{
 			e.printStackTrace();
 		}
-
-
-
-
-
 	}
 	
-	public void UpdateStream(String streamId, QiStream streamDef){
+	public void updateStream(String tenantId, String namespaceId, String streamId, QiStream streamDef){
 		
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -131,7 +128,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" +streamId );
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" +streamId );
 			urlConnection = getConnection(url,"PUT");
 		}
 		catch (MalformedURLException mal)
@@ -173,7 +170,118 @@ public class QiClient {
 		}
 	}
 	
-	public String CreateBehavior(QiStreamBehavior behavior){
+	public String createNamespace(String tenantId, QiNamespace namespace) 
+	{
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+		
+		try
+		{
+			url = new URL(baseUrl + namespacesBase.replace("{tenantId}", tenantId));
+			urlConnection = getConnection(url,"POST");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}
+		catch (IllegalStateException e) 
+		{
+			e.getMessage();
+		}        
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		try
+		{
+			String body = mGson.toJson(namespace);
+			OutputStream stream = urlConnection.getOutputStream();
+			OutputStream out = new BufferedOutputStream(stream);
+			OutputStreamWriter writer = new OutputStreamWriter(out);
+			writer.write(body);
+			writer.close();
+
+			int HttpResult = urlConnection.getResponseCode();
+			if (HttpResult == 302)
+			{
+				System.out.println("Namespace object already exists under the tenant.  Fetching the object...");
+				String location = urlConnection.getHeaderField("Location");
+				url = new URL(location);
+				urlConnection = getConnection(url, "GET");
+				
+				HttpResult = urlConnection.getResponseCode();
+			}
+
+			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+			{
+				throw new QiError(urlConnection, "Namespace creation failed");
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(urlConnection.getInputStream()));
+
+			while ((inputLine = in.readLine()) != null) 
+			{
+				response.append(inputLine);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		urlConnection.disconnect();
+
+		return response.toString();
+	}
+	
+	public void deleteNamespace(String tenantId, String namespaceId) 
+	{
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+
+		try
+		{
+			url = new URL(baseUrl + namespacesBase.replace("{tenantId}", tenantId) + "/" + namespaceId);
+			urlConnection = getConnection(url,"DELETE");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}
+		catch (IllegalStateException e)
+		{
+			e.getMessage();
+		}        
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	   try
+	   {
+		   int HttpResult = urlConnection.getResponseCode();
+
+		   if (HttpResult == HttpURLConnection.HTTP_OK)
+		   {
+			   System.out.println("Namespace deletion request succeded");
+		   }
+
+		   if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+		   {
+			   throw new QiError(urlConnection, "Namespace deletion request failed");
+		   }
+	   }
+	   catch (Exception e)
+	   {
+		   e.printStackTrace();
+	   }
+	}
+	
+	public String createBehavior(String tenantId, String namespaceId, QiStreamBehavior behavior){
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		String inputLine;
@@ -181,7 +289,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + behaviorsBase );
+			url = new URL(baseUrl + behaviorsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) );
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -232,14 +340,14 @@ public class QiClient {
 		return response.toString();
 	}
 
-	public void DeleteBehavior(String behaviorId)
+	public void deleteBehavior(String tenantId, String namespaceId, String behaviorId)
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + behaviorsBase + "/" + behaviorId);
+			url = new URL(baseUrl + behaviorsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + behaviorId);
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -275,7 +383,7 @@ public class QiClient {
 	   }
 	}
 
-	public String getRangeValues(String streamId, String startIndex, int skip, int count, boolean reverse, QiBoundaryType boundaryType)
+	public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, QiBoundaryType boundaryType)
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -284,7 +392,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl +streamsBase+ "/" +streamId + "/Data/GetRangeValues?startIndex="+startIndex+"&skip="+skip+"&count="+count+"&reversed="+reverse+"&boundaryType="+boundaryType );
+			url = new URL(baseUrl +streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)+ "/" +streamId + "/Data/GetRangeValues?startIndex="+startIndex+"&skip="+skip+"&count="+count+"&reversed="+reverse+"&boundaryType="+boundaryType );
 			urlConnection = getConnection(url,"GET");
 		}
 		catch (MalformedURLException mal)
@@ -331,7 +439,7 @@ public class QiClient {
 	}
 	
 	
-	public String CreateType(QiType typeDef)
+	public String createType(String tenantId, String namespaceId, QiType typeDef)
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -340,7 +448,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + typesBase );
+			url = new URL(baseUrl + typesBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) );
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -358,7 +466,7 @@ public class QiClient {
 
 		try
 		{
-			String body = mGson.toJson(typeDef);           
+			String body = mGson.toJson(typeDef);
 			OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
 			OutputStreamWriter writer = new OutputStreamWriter(out);
 			writer.write(body);
@@ -392,7 +500,7 @@ public class QiClient {
 	}
 
 
-	public String CreateStream(QiStream streamDef)
+	public String createStream(String tenantId, String namespaceId, QiStream streamDef)
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -401,7 +509,7 @@ public class QiClient {
 		
 		try
 		{
-			url = new URL(baseUrl + streamsBase );
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) );
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -456,14 +564,14 @@ public class QiClient {
 
 
 
-	public void CreateEvent(String streamId, String evt)
+	public void createEvent(String tenantId, String namespaceId, String streamId, String evt)
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + insertSingle);
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + insertSingle);
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -506,14 +614,14 @@ public class QiClient {
 
 
 
-	public void CreateEvents(String streamId, String json) throws QiError
+	public void createEvents(String tenantId, String namespaceId, String streamId, String json) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		int HttpResult = 0; 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + insertMultiple);
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + insertMultiple);
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -555,7 +663,7 @@ public class QiClient {
 
 
 
-	public String GetWindowValues (String streamId, String startIndex, String endIndex)throws QiError
+	public String getWindowValues (String tenantId, String namespaceId, String streamId, String startIndex, String endIndex)throws QiError
 	{   
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -564,7 +672,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + getTemplate +  "startIndex=" + startIndex + "&" + "endIndex=" + endIndex);
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + getTemplate +  "startIndex=" + startIndex + "&" + "endIndex=" + endIndex);
 			urlConnection = getConnection(url,"GET");
 		}
 		catch (MalformedURLException mal)
@@ -614,14 +722,14 @@ public class QiClient {
 
 
 
-	public void updateValue(String streamId, String json)throws QiError 
+	public void updateValue(String tenantId, String namespaceId, String streamId, String json)throws QiError 
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + updateSingle);
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + updateSingle);
 			urlConnection = getConnection(url,"PUT");
 		}
 		catch (MalformedURLException mal)
@@ -663,14 +771,14 @@ public class QiClient {
 	}
 
 
-	public void updateValues(String streamId, String json) 
+	public void updateValues(String tenantId, String namespaceId, String streamId, String json) 
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + updateMultiple);
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + updateMultiple);
 			urlConnection = getConnection(url,"PUT");
 		}
 		catch (MalformedURLException mal)
@@ -712,14 +820,14 @@ public class QiClient {
 
 
 
-	public void removeValue(String streamId, String index) throws QiError
+	public void removeValue(String tenantId, String namespaceId, String streamId, String index) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + "/" + "/Data/RemoveValue?index=" + index);
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + "/" + "/Data/RemoveValue?index=" + index);
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -754,14 +862,14 @@ public class QiClient {
 		}
 	}
 
-	public void removeWindowValues(String streamId, String startIndex, String endIndex) 
+	public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) 
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId + "/Data/RemoveWindowValues?startIndex=" + startIndex + "&" + "endIndex=" + endIndex );
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + "/Data/RemoveWindowValues?startIndex=" + startIndex + "&" + "endIndex=" + endIndex );
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -796,14 +904,14 @@ public class QiClient {
 		}
 	}
 
-	public void deleteStream(String streamId) 
+	public void deleteStream(String tenantId, String namespaceId, String streamId) 
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		
 		try
 		{
-			url = new URL(baseUrl + streamsBase + "/" + streamId );
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId );
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -839,14 +947,14 @@ public class QiClient {
 	}
 
 
-	public void deleteType(String typeId) 
+	public void deleteType(String tenantId, String namespaceId, String typeId) 
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + typesBase + "/" + typeId );
+			url = new URL(baseUrl + typesBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + typeId );
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -874,13 +982,11 @@ public class QiClient {
 			{
 				throw new QiError(urlConnection, "Delete type failed");
 			}
-
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-
 	}
 
 	static protected AuthenticationResult AcquireAuthToken()
@@ -903,8 +1009,6 @@ public class QiClient {
 
 			//AcquireToken(_resource, userCred);
 			result = authResult.get();
-
-
 		}
 		catch (Exception e)
 		{
@@ -915,7 +1019,5 @@ public class QiClient {
 			service.shutdown();
 		}
 		return result;  
-
 	}
-
 }
