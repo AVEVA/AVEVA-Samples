@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OSIsoft.Qi;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -12,55 +13,63 @@ namespace QiClientLibsSample
 
         // The use of the KeyAttribute specifies that this data member is to be treated
         // as the key for data within streams that use this type
-        [Key]
+        [QiMember(IsKey = true)]
         public int Order
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Tau
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Radians
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Sin
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Cos
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Tan
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Sinh
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Cosh
         {
             get;
             set;
         }
 
+        [QiMember]
         public double Tanh
         {
             get;
