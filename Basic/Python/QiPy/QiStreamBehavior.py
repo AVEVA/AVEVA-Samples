@@ -92,7 +92,8 @@ class QiStreamBehavior(object):
             behavior.Name = content["Name"]
 
         if "Mode" in content:
-            behavior.Mode = QiStreamMode(content["Mode"])
+            #behavior.Mode = QiStreamMode(content["Mode"])
+            behavior.Mode = content["Mode"]
 
         if "TypeId" in content:
             behavior.ExtrapolationMode = content["ExtrapolationMode"]

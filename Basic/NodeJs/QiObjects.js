@@ -39,6 +39,14 @@ module.exports = {
 		    Discrete : 3,
 		    Default : 0
 	},
+	
+	//Qi Namespace
+	
+	QiNamespace : function (qiNamespace) {
+		if(qiNamespace.Id) {
+			this.Id = qiNamespace.Id;
+		}
+	},
 
 	//Qi Type
 
