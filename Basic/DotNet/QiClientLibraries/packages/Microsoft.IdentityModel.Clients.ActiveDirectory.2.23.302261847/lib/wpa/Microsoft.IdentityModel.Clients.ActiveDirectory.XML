@@ -792,6 +792,12 @@
              Initializes a new instance of the exception class.
             </summary>
         </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalSilentTokenAcquisitionException.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the exception class.
+            </summary>
+            <param name="exception">inner exception</param>
+        </member>
         <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalIdParameter.Product">
             <summary>
             ADAL Flavor: .NET or WinRT
