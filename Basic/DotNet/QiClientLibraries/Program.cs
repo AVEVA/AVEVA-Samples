@@ -14,10 +14,10 @@ namespace QiClientLibsSample
     {
         public static void Main(string[] args)
         {
-            string sampleNamespaceId = "WaveDataSampleNamespace";
-            string sampleTypeId = "WaveType";
-            string sampleStreamId = "evtStream";
-            string sampleBehaviorId = "evtStreamStepLeading";
+            string sampleNamespaceId = "WaveData_SampleNamespace";
+            string sampleTypeId = "WaveData_SampleType";
+            string sampleStreamId = "WaveData_SampleStream";
+            string sampleBehaviorId = "WaveData_SampleBehavior";
 
             Console.WriteLine("Creating a .NET Qi Administration Service...");
             IQiAdministrationService qiAdministrationService = GetQiAdministrationService();
@@ -34,7 +34,7 @@ namespace QiClientLibsSample
                 Console.WriteLine("Creating a QiNamespace to hold the streams, types, and behaviors");
                 QiNamespace sampleNamespace = new QiNamespace(sampleNamespaceId);
                 sampleNamespace = qiAdministrationService.GetOrCreateNamespaceAsync(sampleNamespace).GetAwaiter().GetResult();
-
+                
                 DelayForQiConsistency();
 
                 // Create a Qi Type to reflect the event data being stored in Qi.

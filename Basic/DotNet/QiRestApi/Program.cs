@@ -11,10 +11,10 @@ namespace QiRestApiSample
     {
         public static void Main(string[] args)
         {
-            const string sampleNamespaceId = "WaveDataSampleNamespace";
-            const string sampleTypeId = "WaveType";
-            const string sampleStreamId = "evtStream";
-            const string sampleBehaviorId = "evtStreamStepLeading";
+            const string sampleNamespaceId = "WaveData_SampleNamespace";
+            const string sampleTypeId = "WaveData_SampleType";
+            const string sampleStreamId = "WaveData_SampleStream";
+            const string sampleBehaviorId = "WaveData_SampleBehavior";
 
             // Instantiate the REST client
             Console.WriteLine("Creating a Qi REST API Client...");

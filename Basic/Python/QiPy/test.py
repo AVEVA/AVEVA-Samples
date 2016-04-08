@@ -8,25 +8,45 @@ def dumpEvents(foundEvents):
     for i in foundEvents:
         print i
 
-client = QiClient(Constants.QiServerUrl, Constants.authItems)
+#prints a formatted error using the errorDescription and the error itself
+def printError(errorDescription, error):
+    if errorDescription is None or not isinstance(errorDescription, str):
+        raise TypeError("errorDescription is not an instantiated string")
 
-try:
-    namespace = QiNamespace()
-    namespace.Id = "QiNamespace"
+    if error is None or not isinstance(error, BaseException):
+        raise TypeError("error is not an instantiated BaseException")
 
-    ######################################################################################################
-    # QiNamespace creation
-    ######################################################################################################
-    print "Qi Namespace Creation"
-    client.createNamespace(Constants.TenantId, namespace)
+    print "\n\n======= " + errorDescription + " ======="
+    print error
+    print "======= End of " + errorDescription + " ======="
 
-    ######################################################################################################
-    # QiType creation
-    ######################################################################################################
+#trys to make a call and catches a qi error or regular exception
+def handleQiCall(qiCall):
+    if qiCall is None or not callable(qiCall):
+        raise TypeError("Must be a callable function")
+
+    try:
+        qiCall()
+    except QiError as qe:
+        printError("Error in Qi Service", qe)
+    except BaseException as e:
+        printError("Unknown Error", e)
+
+#delays the program for an amount of time to allow the multiple servers on Qi to become consistent with recent calls
+def delayForQiConsistency():
+    millisecondsToWait = 5000;
+    seconds = millisecondsToWait / 1000.0
+
+    print "Waiting for " + str(seconds) + " seconds in order to allow the multiple servers on Qi to become consistent with recent calls...\n"
+    time.sleep(seconds)
+
+#returns a type that represents the wave data
+def getWaveDataType(sampleTypeId):
+    if sampleTypeId is None or not isinstance(sampleTypeId, str):
+        raise TypeError("sampleTypeId is not an instantiated string")
+
     print "Qi type creation"
 
-    #create Qi types for double and int, then create properties for all the wavedata properties
-    print "Creating Qi type for WaveData instances"
     doubleType = QiType()
     doubleType.Id = "doubleType"
     doubleType.QiTypeCode = QiTypeCode.Double
@@ -74,16 +94,46 @@ try:
 
     #create a QiType for WaveData Class
     wave = QiType()
-    wave.Id = "WaveDataPySample"
+    wave.Id = sampleTypeId
     wave.Name = "WaveDataPySample"
     wave.Description = "This is a sample Qi type for storing WaveData type events"
     wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
                        cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
 
+    return wave
+
+client = QiClient(Constants.QiServerUrl, Constants.authItems)
+sampleNamespaceId = "WaveData_SampleNamespace"
+sampleTypeId = "WaveData_SampleType"
+sampleStreamId = "WaveData_SampleStream"
+sampleBehaviorId = "WaveData_SampleBehavior"
+
+
+try:
+    sampleNamespace = QiNamespace()
+    sampleNamespace.Id = sampleNamespaceId
+
+    ######################################################################################################
+    # QiNamespace creation
+    ######################################################################################################
+    print "Qi Namespace Creation"
+    client.createNamespace(Constants.TenantId, sampleNamespace)
+    
+    delayForQiConsistency()
+    
+    ######################################################################################################
+    # QiType creation
+    ######################################################################################################
+    #create Qi types for double and int, then create properties for all the wavedata properties
+    print "Creating Qi type for WaveData instances"
+    sampleType = getWaveDataType(sampleTypeId)
+
     #create the type in Qi service
     print "Creating the WaveData Qi type in Qi service"
-    evtType = client.createType(Constants.TenantId, namespace.Id, wave)
-    client.listTypes(Constants.TenantId, namespace.Id)
+    sampleType = client.createType(Constants.TenantId, sampleNamespaceId, sampleType)
+    client.listTypes(Constants.TenantId, sampleNamespaceId)
+
+    delayForQiConsistency()
 
     ######################################################################################################
     # Qi Stream creation
@@ -92,15 +142,17 @@ try:
     #create a stream
     print "Creating a stream in this tenant for the WaveData measurements"
 
-    stream = QiStream()
-    stream.Id = "WaveStreamPySample"
-    stream.Name = "WaveStreamPySample"
-    stream.Description = "A Stream to store the WaveData Qi types events"
-    stream.TypeId = "WaveDataPySample"
-    stream.BehaviorId = None
-    evtStream = client.createStream(Constants.TenantId, namespace.Id, stream)
+    sampleStream = QiStream()
+    sampleStream.Id = sampleStreamId
+    sampleStream.Name = "WaveStreamPySample"
+    sampleStream.Description = "A Stream to store the WaveData Qi types events"
+    sampleStream.TypeId = sampleTypeId
+    sampleStream.BehaviorId = None
+    sampleStream = client.createStream(Constants.TenantId, sampleNamespaceId, sampleStream)
 
-    client.listStreams(Constants.TenantId, namespace.Id)
+    delayForQiConsistency()
+
+    client.listStreams(Constants.TenantId, sampleNamespaceId)
 
     ######################################################################################################
     # CRUD operations for events
@@ -113,29 +165,36 @@ try:
     timeSpanFormat = "%H:%M:%S"
     spanStr = "0:1:0"
     span = datetime.datetime.strptime(spanStr, timeSpanFormat)
-    evt = WaveData.nextWave(span, 2.0, 0)
+    waveDataEvent = WaveData.nextWave(span, 2.0, 0)
 
-    client.insertValue(Constants.TenantId, namespace.Id, evtStream, evt)
+    print "Inserting the first event"
+    client.insertValue(Constants.TenantId, sampleNamespaceId, sampleStream, waveDataEvent)
+
+    delayForQiConsistency()
+
+    #inserting a list of events
+    waveDataEvents = []
+
+    for i in range(2, 200, 2):
+        waveDataEvent = WaveData.nextWave(span, 2.0, i)
+        time.sleep(.2)
+        waveDataEvents.append(waveDataEvent)
+
+    print "Inserting the rest of the events"
+
+    client.insertValues(Constants.TenantId, sampleNamespaceId, sampleStream, waveDataEvents)
+
+    delayForQiConsistency()
 
     #get the last inserted event in a stream
     print "Last inserted event is :"
-    lastValue = client.getLastValue(Constants.TenantId, namespace.Id, evtStream)
+    lastValue = client.getLastValue(Constants.TenantId, sampleNamespaceId, sampleStream)
     print lastValue
-
-    #inserting a list of events
-    events = []
-
-    for i in range(2, 200, 2):
-        evt = WaveData.nextWave(span, 2.0, i)
-        time.sleep(.2)
-        events.append(evt)
-
-    client.insertValues(Constants.TenantId, namespace.Id, evtStream, events)
 
     #retrive events
     print "Retrieving inserted events"
 
-    foundEvents = client.getWindowValues(Constants.TenantId, namespace.Id, evtStream, 0, 198)
+    foundEvents = client.getWindowValues(Constants.TenantId, sampleNamespaceId, sampleStream, 0, 198)
 
     #print all the events
     dumpEvents(foundEvents)
@@ -144,23 +203,25 @@ try:
     print "Updating events"
 
     #update the first events
-    evt = foundEvents[0]
-    evt = WaveData.nextWave(span, 4.0, 0)
-    client.updateValue(Constants.TenantId, namespace.Id, evtStream, evt)
+    waveDataEvent = foundEvents[0]
+    waveDataEvent = WaveData.nextWave(span, 4.0, 0)
+    client.updateValue(Constants.TenantId, sampleNamespaceId, sampleStream, waveDataEvent)
 
     #update the rest of the events
     newEvents = []
-    for i in events:
-        evt = WaveData.nextWave(span, 4.0, i.Order)
+    for i in waveDataEvents:
+        waveDataEvent = WaveData.nextWave(span, 4.0, i.Order)
         time.sleep(.2)
-        newEvents.append(evt)
+        newEvents.append(waveDataEvent)
 
-    client.updateValues(Constants.TenantId, namespace.Id, evtStream, newEvents)
+    client.updateValues(Constants.TenantId, sampleNamespaceId, sampleStream, newEvents)
+
+    delayForQiConsistency()
 
     #check the results
     print "Retrieving the updated values"
 
-    foundUpdatedEvents = client.getWindowValues(Constants.TenantId, namespace.Id, evtStream, 0, 198)
+    foundUpdatedEvents = client.getWindowValues(Constants.TenantId, sampleNamespaceId, sampleStream, 0, 198)
 
     #print all the events
     dumpEvents(foundUpdatedEvents)
@@ -174,36 +235,48 @@ try:
     #The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
     print "Retrieving three events without a stream behavior"
 
-    foundEvents = client.getRangeValues(Constants.TenantId, namespace.Id, evtStream.Id, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
+    foundEvents = client.getRangeValues(Constants.TenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
     dumpEvents(foundEvents)
 
     #create a stream behavior with Discrete and attach it to the existing stream
-    behavior = QiStreamBehavior()
-    behavior.Id = "evtStreamStepLeading";
-    behavior.Mode = QiStreamMode.StepwiseContinuousLeading
-    behavior = client.createBehavior(Constants.TenantId, namespace.Id, behavior)
+    print "Creating a stream behavior..."
+    sampleBehavior = QiStreamBehavior()
+    sampleBehavior.Id = sampleBehaviorId;
+    sampleBehavior.Mode = QiStreamMode.StepwiseContinuousLeading
+    sampleBehavior = client.createBehavior(Constants.TenantId, sampleNamespaceId, sampleBehavior)
+
+    delayForQiConsistency()
 
     #update stream to inlude this behavior
-    evtStream.BehaviorId = behavior.Id
-    client.updateStream(Constants.TenantId, namespace.Id, evtStream)
+    sampleStream.BehaviorId = sampleBehaviorId
+    client.updateStream(Constants.TenantId, sampleNamespaceId, sampleStream)
+
+    delayForQiConsistency()
 
     #repeat the retrieval
     print "Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval"
-    foundEvents = client.getRangeValues(Constants.TenantId, namespace.Id, evtStream.Id, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
+    foundEvents = client.getRangeValues(Constants.TenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
     dumpEvents(foundEvents)
 
     #delete events
     print "Deleting events"
 
     #delete single event
-    client.removeValue(Constants.TenantId, namespace.Id, evtStream, 0)
+    client.removeValue(Constants.TenantId, sampleNamespaceId, sampleStream, 0)
 
     #delete rest of the events
-    client.removeValues(Constants.TenantId, namespace.Id, evtStream,0, 200)
-    client.removeValues(Constants.TenantId, namespace.Id, evtStream,1, 199)
+    client.removeValues(Constants.TenantId, sampleNamespaceId, sampleStream, 0, 200)
+    client.removeValues(Constants.TenantId, sampleNamespaceId, sampleStream, 1, 199)
 
-    emptyList = client.getWindowValues(Constants.TenantId, namespace.Id, evtStream, 0, 200)
+    delayForQiConsistency()
 
+    emptyList = client.getWindowValues(Constants.TenantId, sampleNamespaceId, sampleStream, 0, 200)
+
+except QiError as qe:
+    printError("Error in Qi Service", qe)
+except Exception as e:
+    printError("Unknown Error", e)
+finally:
     ######################################################################################################
     # QiType and QiStream deletion
     ######################################################################################################
@@ -212,11 +285,13 @@ try:
     #delete streams first and then types
     #types being referenced cannot be deleted unless referrer is deleted
 
-except Exception as e:
-    print e
-finally:
-    client.deleteStream(Constants.TenantId, namespace.Id, evtStream.Id)
-    client.deleteType(Constants.TenantId, namespace.Id, evtType.Id)
-    client.deleteBehavior(Constants.TenantId, namespace.Id, behavior.Id)
+    print "Deleting the stream"
+    handleQiCall(lambda: client.deleteStream(Constants.TenantId, sampleNamespaceId, sampleStreamId))
+
+    print "Deleting the type"
+    handleQiCall(lambda: client.deleteType(Constants.TenantId, sampleNamespaceId, sampleTypeId))
+
+    print "Deleting the behavior"
+    handleQiCall(lambda: client.deleteBehavior(Constants.TenantId, sampleNamespaceId, sampleBehaviorId))
 
 print "test.py completed successfully!"
