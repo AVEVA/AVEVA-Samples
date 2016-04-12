@@ -13,11 +13,11 @@ The Qi service is secured by obtaining tokens from an Azure Active Directory ins
 
 .. code:: c#
 
-			public const string TenantId = "PLACEHOLDER_REPLACE_WITH_TENANT_ID"; // A guid for the Id of the tenant --- NOT the SecurityAppId
-            public const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
-            public const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
-            public const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
-            public const string QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL";
+	public const string TenantId = "PLACEHOLDER_REPLACE_WITH_TENANT_ID";
+        public const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
+        public const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
+        public const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+        public const string QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL";
 
 At the bottom of ``Program.cs`` is a method called ``GetQiSecurityHandler``, which returns a QiSecurityHandler for token acquisition based on the user-configured constants.
 
@@ -33,12 +33,12 @@ The following code block demonstrates setting up an IQiDataService with the QiSe
 
 .. code-block:: c#
 
-		QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey);
+	QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey);
         Uri address = new Uri(Constants.QiServerUrl);
         
-		IQiDataService qiDataService = QiService.GetDataService(address, Constants.TenantId, namespaceId, qiSecurityHandler);
+	IQiDataService qiDataService = QiService.GetDataService(address, Constants.TenantId, namespaceId, qiSecurityHandler);
 
-		qiDataService.GetProxy().Client.Timeout = TimeSpan.FromMinutes(1);              
+	qiDataService.GetProxy().Client.Timeout = TimeSpan.FromMinutes(1);              
 	
 A similar pattern is followed in the sample to set up the IQiAdministrationService and IQiMetadataService.
 
@@ -69,7 +69,7 @@ In ``Program.cs``, a type builder object is created and used to create an instan
 
 .. code:: c#
 
-		QiTypeBuilder typeBuilder = new QiTypeBuilder();
+	QiTypeBuilder typeBuilder = new QiTypeBuilder();
         QiType sampleType = typeBuilder.Create<WaveData>();
 
 Note that ``Create`` is a generic method, and the type is the class that is defining the desired QiType. While a QiType was created and configured locally, nothing has yet been created in the Qi service. To do so, the type is assigned an identifier and submitted like as in the following code:
@@ -174,6 +174,6 @@ You should run the sample more than once. To avoid collisions with types, behavi
 .. code:: c#
 
         qiMetadataService.DeleteStreamAsync(sampleStreamId)).GetAwaiter().GetResult();
-		qiMetadataService.DeleteBehaviorAsync(sampleBehaviorId)).GetAwaiter().GetResult();
-		qiMetadataService.DeleteTypeAsync(sampleTypeId)).GetAwaiter().GetResult();
+	qiMetadataService.DeleteBehaviorAsync(sampleBehaviorId)).GetAwaiter().GetResult();
+	qiMetadataService.DeleteTypeAsync(sampleTypeId)).GetAwaiter().GetResult();
 
