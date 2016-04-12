@@ -15,8 +15,8 @@ The Qi service is secured by obtaining tokens from an Azure Active Directory ins
 
 	public const string TenantId = "PLACEHOLDER_REPLACE_WITH_TENANT_ID";
         public const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
-        public const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
-        public const string SecurityAppKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
+        public const string SecurityClientId = "PLACEHOLDER_REPLACE_WITH_CLIENT_ID";
+        public const string SecurityClientSecret = "PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET";
         public const string QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL";
 
 At the bottom of ``Program.cs`` is a method called ``GetQiSecurityHandler``, which returns a QiSecurityHandler for token acquisition based on the user-configured constants.
