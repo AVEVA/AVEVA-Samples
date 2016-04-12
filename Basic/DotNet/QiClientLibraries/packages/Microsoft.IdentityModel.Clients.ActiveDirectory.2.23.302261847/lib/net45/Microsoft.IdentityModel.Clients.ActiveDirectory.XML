@@ -183,6 +183,12 @@
              Initializes a new instance of the exception class.
             </summary>
         </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalSilentTokenAcquisitionException.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the exception class.
+            </summary>
+            <param name="exception">inner exception</param>
+        </member>
         <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalSilentTokenAcquisitionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
             Initializes a new instance of the exception class with serialized data.

@@ -53,7 +53,10 @@ http.createServer(function(request1, response) {
 	var qiObjs = require("./QiObjects.js");
 	var clientObj = require("./QiClient.js");
 	
-	var namespaceId = "QiNamespace"
+	var sampleNamespaceId = "WaveData_SampleNamespace";
+	var sampleTypeId = "WaveData_SampleType";
+	var sampleStreamId = "WaveData_SampleStream";
+	var sampleBehaviorId = "WaveData_SampleBehavior";
 	
 	Object.freeze(qiObjs.qiTypeCodeMap);
 	Object.freeze(qiObjs.qiBoundaryType);
@@ -73,12 +76,12 @@ http.createServer(function(request1, response) {
 	var sinhProperty = new qiObjs.QiTypeProperty({"Id" : "Sinh", "QiType" : doubleType});
 	var coshProperty = new qiObjs.QiTypeProperty({"Id" : "Cosh", "QiType" : doubleType});
 	var tanhProperty = new qiObjs.QiTypeProperty({"Id" : "Tanh", "QiType" : doubleType});
-
+	
 	//create a QiNamespace
-	var namespace = new qiObjs.QiNamespace(namespaceId);
+	var sampleNamespace = new qiObjs.QiNamespace({"Id":sampleNamespaceId});
 	
 	//create a QiType for WaveData Class
-	var wave = new qiObjs.QiType({"Id" : "WaveDataJs", "Name" : "WaveDataJs", 
+	var sampleType = new qiObjs.QiType({"Id" : sampleTypeId, "Name" : "WaveDataJs", 
 					"Description" : "This is a sample Qi type for storing WaveData type events",
 					"Properties" : [orderProperty, tauProperty, radiansProperty, sinProperty, 
 	               cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]});
@@ -93,34 +96,34 @@ http.createServer(function(request1, response) {
 	
 	var createNamespaceSuccess = getTokenSuccess.then(
 		function(res) {
-			console.log("\nCreating a QiNamespace : "+ namespaceId);
+			console.log("\nCreating a QiNamespace : "+ sampleNamespaceId);
 			refreshToken(res, client);
 			nowSeconds = Date.now()/1000;
 			if(client.tokenExpires < nowSeconds) {
 				return checkTokenExpired(client).then(
 					function(res) {
 						refreshToken(res, client);
-						return client.createNamespace(tenantId, namespace);
+						return client.createNamespace(tenantId, sampleNamespace);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createNamespace(tenantId, namespace);
+				return client.createNamespace(tenantId, sampleNamespace);
 			}
 		}
 	)
 
 	var createTypeSuccess = createNamespaceSuccess.then(
 		function(res){
-			console.log("\nCreating a QiType : "+ wave.Name);
+			console.log("\nCreating a QiType : "+ sampleType.Name);
 			refreshToken(res, client);
 			nowSeconds = Date.now()/1000;
 			if(client.tokenExpires < nowSeconds){
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.createType(tenantId, namespaceId, wave);
+						return client.createType(tenantId, sampleNamespaceId, sampleType);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createType(tenantId, namespaceId, wave);
+				return client.createType(tenantId, sampleNamespaceId, sampleType);
 			}
 		})
 		.catch(function(err){logError(err)});
@@ -133,18 +136,18 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getTypes(tenantId, namespaceId);
+						return client.getTypes(tenantId, sampleNamespaceId);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getTypes(tenantId, namespaceId);
+				return client.getTypes(tenantId, sampleNamespaceId);
 			}
 		})
 		.catch(function(err){logError(err)});
 
 	//create a stream object
-	var stream = new qiObjs.QiStream({"Id":"WaveStreamJs", "Name":"WaveStreamJs",
+	var sampleStream = new qiObjs.QiStream({"Id":sampleStreamId, "Name":"WaveStreamJs",
 					"Description":"A Stream to store the WaveData Qi types events", 
-					"TypeId":"WaveDataJs"});
+					"TypeId":sampleTypeId});
 
 	var createStreamSuccess = listTypesSuccess.then(
 		//POST method to create a stream
@@ -155,15 +158,15 @@ http.createServer(function(request1, response) {
 					console.log("Qi Type "+ index +" :"+elem.Name);
 				});
 			console.log("");
-			console.log("Creating a Qi Stream "+ stream.Name);
+			console.log("Creating a Qi Stream "+ sampleStream.Name);
 			if(client.tokenExpires < nowSeconds){
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.createStream(tenantId, namespaceId, stream);
+						return client.createStream(tenantId, sampleNamespaceId, sampleStream);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createStream(tenantId, namespaceId, stream);
+				return client.createStream(tenantId, sampleNamespaceId, sampleStream);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -175,10 +178,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getStreams(tenantId, namespaceId);
+						return client.getStreams(tenantId, sampleNamespaceId);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getStreams(tenantId, namespaceId);
+				return client.getStreams(tenantId, sampleNamespaceId);
 			}
 		}).catch(function(err){logError(err)});
 	
@@ -204,10 +207,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.insertEvent(tenantId, namespaceIdstream, evt);
+						return client.insertEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.insertEvent(tenantId, namespaceId, stream, evt);
+				return client.insertEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -258,10 +261,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.insertEvents(tenantId, namespaceId, stream, events);
+						return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.insertEvents(tenantId, namespaceId, stream, events);
+				return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
 			}
 	}).catch(function(err){logError(err)});
 
@@ -276,10 +279,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
+						return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
+				return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -300,10 +303,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.updateEvent(tenantId, namespaceId, stream, evt);
+						return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.updateEvent(tenantId, namespaceId, stream, evt);
+				return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -331,10 +334,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.updateEvents(tenantId, namespaceId, stream, events);
+						return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.updateEvents(tenantId, namespaceId, stream, events);
+				return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -349,10 +352,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
+						return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getWindowValues(tenantId, namespaceId, stream, 0, 198);
+				return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -370,17 +373,17 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+						return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+				return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 			}
 		}).catch(function(err){logError(err)});
 
 	//stream behavior tests
-	var behavior = new qiObjs.QiBehavior({"Mode":qiObjs.qiStreamMode.Continuous});
-	behavior.Id = "evtStreamStepLeading";
-	behavior.Mode = qiObjs.qiStreamMode.StepwiseContinuousLeading;
+	var sampleBehavior = new qiObjs.QiBehavior({"Mode":qiObjs.qiStreamMode.Continuous});
+	sampleBehavior.Id = sampleBehaviorId;
+	sampleBehavior.Mode = qiObjs.qiStreamMode.StepwiseContinuousLeading;
 
 	var createBehaviorSuccess = getRangeEvents.then(
 		function(res){
@@ -393,10 +396,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.createBehavior(tenantId, namespaceId, behavior);
+						return client.createBehavior(tenantId, sampleNamespaceId, sampleBehavior);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.createBehavior(tenantId, namespaceId, behavior);
+				return client.createBehavior(tenantId, sampleNamespaceId, sampleBehavior);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -404,15 +407,15 @@ http.createServer(function(request1, response) {
 	var updateStream = createBehaviorSuccess.then(
 		function(res){
 			console.log("\nUpdating Qi stream with the new behavior ");
-			stream.BehaviorId = behavior.Id;
+			sampleStream.BehaviorId = sampleBehaviorId;
 			if(client.tokenExpires < nowSeconds){
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.updateStream(tenantId, namespaceId, stream);
+						return client.updateStream(tenantId, sampleNamespaceId, sampleStream);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.updateStream(tenantId, namespaceId, stream);
+				return client.updateStream(tenantId, sampleNamespaceId, sampleStream);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -423,10 +426,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+						return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.getRangeValues(tenantId, namespaceId, stream, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+				return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -442,10 +445,10 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.deleteEvent(tenantId, namespaceId, stream, 0);
+						return client.deleteEvent(tenantId, sampleNamespaceId, sampleStreamId, 0);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteEvent(tenantId, namespaceId, stream, 0);
+				return client.deleteEvent(tenantId, sampleNamespaceId, sampleStreamId, 0);
 			}
 		}).catch(function(err){logError(err)});
 
@@ -456,38 +459,38 @@ http.createServer(function(request1, response) {
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.deleteWindowEvents(tenantId, namespaceId, stream, 0, 198);
+						return client.deleteWindowEvents(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteWindowEvents(tenantId, namespaceId, stream, 0, 198);
+				return client.deleteWindowEvents(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
 			}
 		}).catch(function(err){logError(err)});
 
 	var deleteStream = deleteWindowEvents.then(
 		function(res){
-			console.log("\nDeleting Qi Stream "+ stream.Name);
+			console.log("\nDeleting Qi Stream "+ sampleStream.Name);
 			if(client.tokenExpires < nowSeconds){
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
-						return client.deleteStream(tenantId, namespaceId, stream.Id);
+						return client.deleteStream(tenantId, sampleNamespaceId, sampleStreamId);
 					}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteStream(tenantId, namespaceId, stream.Id);
+				return client.deleteStream(tenantId, sampleNamespaceId, sampleStreamId);
 			}
 		}).catch(function(err){logError(err)});
 
 	var deleteType = deleteStream.then(
 		function(res){
-			console.log("\nDeleting QiType "+ wave.Name);
+			console.log("\nDeleting QiType "+ sampleType.Name);
 			if(client.tokenExpires < nowSeconds){
 				return checkTokenExpired(client).then(
 						function(res){
 							refreshToken(res, client);
-							return client.deleteType(tenantId, namespaceId, wave.Id);
+							return client.deleteType(tenantId, sampleNamespaceId, sampleTypeId);
 						}).catch(function(err){logError(err)});
 			}else{
-				return client.deleteType(tenantId, namespaceId, wave.Id);
+				return client.deleteType(tenantId, sampleNamespaceId, sampleTypeId);
 			}
 		}).catch(function(err){logError(err)});
 

@@ -17,7 +17,7 @@ namespace QiRestApiSample
         private string _baseUrl;
 
         // Azure AD authentication related
-        private static AuthenticationContext _authContext = null;
+        private static AuthenticationContext _authenticationToken = null;
 
         public QiClient(string baseUrl)
         {
@@ -187,7 +187,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Get
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
 
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)
@@ -220,7 +220,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Get
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
 
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)
@@ -236,6 +236,7 @@ namespace QiRestApiSample
         #endregion
 
         #region Update Methods for Data
+
         /// <summary>
         /// Updates a single event if found
         /// </summary>
@@ -251,7 +252,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Put
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
             msg.Content = new StringContent(evt, Encoding.UTF8, "application/json");
             await SendAndRespondVoidAsync(msg, RestSampleStrings.UpdateErrorTemplate, "data event", evt);
         }
@@ -271,7 +272,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Put
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
             msg.Content = new StringContent(evts, Encoding.UTF8, "application/json");
             await SendAndRespondVoidAsync(msg, RestSampleStrings.UpdateErrorTemplate, "data events", streamId);
         }
@@ -305,11 +306,15 @@ namespace QiRestApiSample
             await DeleteQiObjectAsync(valuesUrl);
         }
 
-        protected static string AcquireAuthToken()
+        /// <summary>
+        ///     Acquires Authentication tokens to place in the header of the HTTP requests
+        /// </summary>
+        /// <returns></returns>
+        protected static string AcquireAuthenticationToken()
         {
-            if (_authContext == null)
+            if (_authenticationToken == null)
             {
-                _authContext = new AuthenticationContext(Constants.SecurityAuthority);
+                _authenticationToken = new AuthenticationContext(Constants.SecurityAuthority);
             }
 
             // tokens expire after a certain period of time
@@ -317,9 +322,9 @@ namespace QiRestApiSample
             // ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
             try
             {
-                ClientCredential userCred = new ClientCredential(Constants.SecurityAppId, Constants.SecurityAppKey);
-                AuthenticationResult authResult = _authContext.AcquireToken(Constants.SecurityResource, userCred);
-                return authResult.AccessToken;
+                ClientCredential userCredential = new ClientCredential(Constants.SecurityAppId, Constants.SecurityAppKey);
+                AuthenticationResult authenticationResult = _authenticationToken.AcquireToken(Constants.SecurityResource, userCredential);
+                return authenticationResult.AccessToken;
             }
             catch (AdalException)
             {
@@ -327,12 +332,21 @@ namespace QiRestApiSample
             }
         }
 
-        private async Task SendAndRespondVoidAsync(HttpRequestMessage msg, string errorTemplate, string entityType, string id)
+        /// <summary>
+        ///     Used to make void data requests
+        /// </summary>
+        /// <param name="message">The HttpRequestMessage to be sent to Qi</param>
+        /// <param name="errorTemplate">The template for an exception string</param>
+        /// <param name="entityType">a description of the entity type</param>
+        /// <param name="id">the id of the container of the event</param>
+        /// <exception cref="QiError">Throws when the response does not indicate success</exception>
+        /// <returns></returns>
+        private async Task SendAndRespondVoidAsync(HttpRequestMessage message, string errorTemplate, string entityType, string id)
         {
-            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+            HttpResponseMessage response = await _httpClient.SendAsync(message);
             if((int)response.StatusCode == 409)
             {
-                Console.WriteLine("{0} already contains the event",id);
+                Console.WriteLine("{0} already contains the event", id);
             }
             else if (!response.IsSuccessStatusCode)
             {
@@ -340,9 +354,17 @@ namespace QiRestApiSample
             }
         }
 
-        private async Task SendAndRespondVoidAsync(HttpRequestMessage msg, string errorTemplate, string objectUrl)
+        /// <summary>
+        ///     Used to make void Namespace, Streams, Types, and Behavior requests
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="errorTemplate"></param>
+        /// <param name="objectUrl"></param>
+        /// <exception cref="QiError">Throws when the response does not indicate success</exception>
+        /// <returns></returns>
+        private async Task SendAndRespondVoidAsync(HttpRequestMessage message, string errorTemplate, string objectUrl)
         {
-            HttpResponseMessage response = await _httpClient.SendAsync(msg);
+            HttpResponseMessage response = await _httpClient.SendAsync(message);
             if ((int)response.StatusCode == 409)
             {
                 Console.WriteLine("The Qi Object already exists");
@@ -353,6 +375,13 @@ namespace QiRestApiSample
             }
         }
 
+        /// <summary>
+        ///     Used to make POST namespace, stream, type, or behavior requests
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objectUrl"></param>
+        /// <param name="objectDefinition"></param>
+        /// <returns></returns>
         private async Task<string> CreateQiObjectAsync<T>(string objectUrl, T objectDefinition)
         {
             HttpRequestMessage msg = new HttpRequestMessage
@@ -361,7 +390,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Post
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
 
             string content = JsonConvert.SerializeObject(objectDefinition);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
@@ -378,7 +407,7 @@ namespace QiRestApiSample
                         Method = HttpMethod.Get
                     };
 
-                    msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+                    msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
                     response = await _httpClient.SendAsync(msg);
                 }
             }
@@ -405,7 +434,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Put,
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
 
             string content = JsonConvert.SerializeObject(objectDefinition);
             msg.Content = new StringContent(content, Encoding.UTF8, "application/json");
@@ -425,7 +454,7 @@ namespace QiRestApiSample
                 Method = HttpMethod.Delete,
             };
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
 
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (!response.IsSuccessStatusCode)
@@ -445,7 +474,7 @@ namespace QiRestApiSample
             var streamId = requestUrl.Replace(_baseUrl + string.Format(RestSampleStrings.StreamsBaseUrl, tenantId, namespaceId) + @"/", string.Empty);
             streamId = streamId.Split('/')[0];
 
-            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthToken());
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
             msg.Content = new StringContent(eventData, Encoding.UTF8, "application/json");
             await SendAndRespondVoidAsync(msg, RestSampleStrings.CreateErrorTemplate, "event data", streamId);
         }

@@ -2,6 +2,44 @@
 
 This sample differs from the other samples in that the client application makes use of the OSIsoft Qi Client Libraries.  These libraries are available as nuget packages from <https://osisoft.myget.org/F/qi/>.  The packages used are `OSIsoft.Qi.Core`, `OSIsoft.Qi.Http.Channel`, and `OSIsoft.Qi.Http.Client`. Ultimately, the Qi REST APIs are invoked just like the rest of the samples, but the libraries offer a framework of classes to make client development easier.
 
+## Instantiate the Qi Service
+
+The service works through the 3 interfaces: IQiAdministrationService, IQiMetadataService, and IQiDataService.
+
+The services may take certain DelegatingHandlers, but the most important is the QiSecurityHandler.  This will handle authentication for the service.
+
+## QiSecurityHandler example WARNING
+
+### WARNING - cannot reuse the object for each service.  You must create a new one with each service created
+
+```C#
+	QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey);
+```
+
+## The IQiAdministrationService will allow the user to manage namespaces for a given tenant
+
+```C#
+	string uriString = GetQiSecurityHandler();
+	Uri qiServerUri = new Uri(Constants.QiServerUrl);
+	IQiAdministrationService qiAdministrationService = QiService.GetAdministrationService(qiServerUri, Constants.TenantId, qiSecurityHandler);
+```
+
+The IQiMetadataService will allow the user to manage streams, types, and behaviors within a given namespace
+
+```C#
+	string uriString = GetQiSecurityHandler();
+	Uri qiServerUri = new Uri(Constants.QiServerUrl);
+	IQiMetadataService qiMetadataService = QiService.GetMetadataService(qiServerUri, Constants.TenantId, qiSecurityHandler);
+```
+
+The IQiDataService will allow the user to manage data within a given stream
+
+```C#
+	string uriString = GetQiSecurityHandler();
+	Uri qiServerUri = new Uri(Constants.QiServerUrl);
+	IQiDataService qiDataService = QiService.GetDataService(qiServerUri, Constants.TenantId, qiSecurityHandler);
+```
+
 ## Instantiate a Qi Client
 
 The client works through the `IQiServer` interface, which is instantiated through a client factory.  The timeout for REST calls may be set in the factory OnCreated action.  
@@ -15,7 +53,7 @@ In order to successfully interact with Qi, an `Authorization` header must be add
     IQiServer qiclient = clientFactory.CreateChannel(new Uri(server));
     IQiClientProxy proxy = (IQiClientProxy)qiclient;
     proxy.OnBeforeInvoke((handler)=>{
-        string token = AcquireAuthToken();
+        string token = AcquireAuthToken(authenticationContext, userCredential);
         if (proxy.Client.DefaultHeaders.Contains("Authorization"))
         {
              proxy.Client.DefaultHeaders.Remove("Authorization");
@@ -32,6 +70,7 @@ The cast of the client object to `IQiClientProxy` provides access to the `OnBefo
 The Qi service is secured by obtaining tokens from an Azure Active Directory instance.  The sample applications are examples of *confidential clients*.  Such clients provide a user ID and secret that are authenticated against the directory.   The sample code includes several placeholder strings for authentication.  You must replace these with the authentication-related values you received from OSIsoft.  The strings are located in the `Constants.cs` file.
 
 ```c#
+		public const string TenantId = "PLACEHOLDER_REPLACE_WITH_TENANT_ID";
         public const string SecurityResource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
         public const string SecurityAuthority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY";
         public const string SecurityAppId = "PLACEHOLDER_REPLACE_WITH_USER_ID";
@@ -42,10 +81,7 @@ The Qi service is secured by obtaining tokens from an Azure Active Directory ins
 At the bottom of `Program.cs` you will find a method called `AcquireAuthToken`.  The first step in obtaining an authorization token is to create an authentication context related to the Azure Active Directory instance providing tokens.  The authority is designated by the URI in `SecurityAuthority`.
 
 ```c#
-    if (_authContext == null)
-    {
-        _authContext = new AuthenticationContext(Constants.SecurityAuthority);
-    }
+    AuthenticationContext authenticationContext = new AuthenticationContext(Constants.SecurityAuthority);
 ```
 
 `AuthenticationContext` instances take care of communicating with the authority and also maintain a local cache of tokens.  Tokens have a fixed lifetime of one hour, but they can be refreshed by the authenticating authority for a longer period.  If the refresh period has expired, credentials must be presented to the authority again.  Happily, the `AcquireToken` method hides these details from client programmers.  As long as `AcquireToken` is called before each HTTP call, you will have a valid token.  Here is how that is done:
@@ -53,8 +89,8 @@ At the bottom of `Program.cs` you will find a method called `AcquireAuthToken`. 
 ```c#
     try
     {
-        ClientCredential userCred = new ClientCredential(Constants.SecurityAppId, Constants.SecurityAppKey);
-        AuthenticationResult authResult = _authContext.AcquireToken(Constants.SecurityResource, userCred);
+        ClientCredential userCredredential = new ClientCredential(Constants.SecurityAppId, Constants.SecurityAppKey);
+        AuthenticationResult authResult = authenticationContext.AcquireToken(Constants.SecurityResource, userCred);
         return authResult.AccessToken;
     }
     catch (AdalException)
@@ -66,9 +102,28 @@ At the bottom of `Program.cs` you will find a method called `AcquireAuthToken`. 
 The result returned by `AcquireAuthToken` is the value, `token`, attached to the client object as shown in the previous section:
 
 ```c#
-    clientFactory.OnCreated((p)=>p.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString()));
+    clientFactory.OnCreated((handler) =>
+	{
+		string token = AcquireToken(authenticationContext, userCredential);
+
+        if (handler.DefaultHeaders.Contains("Authorization"))
+        {
+            handler.DefaultHeaders.Remove("Authorization");
+        }
+
+        handler.DefaultHeaders.Add("Authorization", new AuthenticationHeaderValue("Bearer", token).ToString());
+	});
 ```
 
+## Create a QiNamespace
+
+QiNamespaces represent the idea of separation of Streams, Behaviors, and Types in Qi.  For instance, one can create multiple streams with the same id so long as they do not share the same namespace.
+
+This separation can be especially useful if used as a sandbox so that whatever is done in one namespace (creating or deleting streams, behaviors, or types), will not change any of the objects in a different namespace. 
+
+```C#
+	QiNamespace namespace = new QiNamespace(namespaceId);
+	qiAdministrationService.GetOrCreateNamepsaceAsync(namespace).GetAwaiter().GetResult();
 
 ## Create a QiType
 
@@ -81,7 +136,7 @@ The Qi Client Libraries permit the creation of QiTypes via reflection.  For simp
 The first step to taking advantage of reflection is to create a .NET class.  Our sample definition is in `WaveData.cs`.  This class has an `Order` property for a key, and properties for radians and the common trigonometric and hyperbolic trigonometric functions of the value of the radians properties.  The class illustrates how Qi can store non-traditional custom types. Note the lines
 
 ```c#
-    [Key]
+    [QiMember(IsKey = true)]
     public int Order
     {
         get;
@@ -89,20 +144,20 @@ The first step to taking advantage of reflection is to create a .NET class.  Our
     }
 ```
 
-This creates an Order property and marks it as the index for this type.  The `Key` attribute comes from the `System.ComponentModel.DataAnnotations` namespace.  There are two other ways to specify the key for your custom type.  If you use the `QiMember` attribute from the `OSIsoft.Qi` namespace, set the `IsKey` property to true.  If you prefer to use data contracts from the `System.Runtime.Serialization` namespace, create a `DataMember` property whose property name ends in `id` (case insensitive). Qi also permits compound indices.
+This creates an Order property and marks it as the index for this type.  If you use the `QiMember` attribute from the `OSIsoft.Qi` namespace, set the `IsKey` property to true, and it will mark the attribute as the index for the type.  There are two other ways to specify the key for your custom type.  The first is using the `Key` attribute comes from the `System.ComponentModel.DataAnnotations` namespace. If you prefer to use data contracts from the `System.Runtime.Serialization` namespace, create a `DataMember` property whose property name ends in `id` (case insensitive). Qi also permits compound indices.
 
 Now, back in `Program.cs`, we create a type builder object and use it to create an instance of the Qi type:
 
 ```c#
     QiTypeBuilder typeBuilder = new QiTypeBuilder();
-    evtType = typeBuilder.Create<WaveData>();
+    sampleType = typeBuilder.Create<WaveData>();
 ```
 
 Note that `Create` is a generic method, and the type is the class defining the desired QiType.  While we've created and configured a QiType object locally, we have not yet created anything in the Qi service.  In order to do so, the type is assigned an identifier and submitted like this:
 
 ```c#
-    evtType.Id = "WaveType";
-    QiType tp = qiclient.GetOrCreateType(evtType);
+    sampleType.Id = "WaveType";
+    sampleType = qiMetadataService.GetOrCreateTypeAsync(sampleType).GetAwaiter().GetResult();
 ```
 If no identifier is specified, the Qi service will automatically assign one, which will be included in the returned QiType.  The id is required for stream creation, so be sure to capture the returned QiType instance.
 
@@ -113,11 +168,11 @@ An ordered series of events is stored in a QiStream.  Stream creation involves c
 
 ```c#
     QiStream sampleStream = new QiStream();
-    sampleStream.Name = "evtStream";
+    sampleStream.Name = "Wave Data Sample Stream";
     sampleStream.Id = "evtStream";
-    sampleStream.TypeId = tp.Id;
+    sampleStream.TypeId = sampleType.Id;
     sampleStream.Description = "This is a sample stream for storing WaveData type measurements";
-    QiStream strm = qiclient.GetOrCreateStream(sampleStream);
+    sampleStream = qiMetadataService.GetOrCreateStreamAsync(sampleStream).GetAwaiter().GetResult();
 ```
 Note that we set the `TypeId` property of the stream we created to the value of the id of the QiType instance returned by the call to `GetOrCreateType`. Types and behaviors are reference counted; a type or behavior cannot be deleted until all streams using it are also deleted.
 
@@ -127,18 +182,18 @@ The `WaveData` class allows us to create events locally.  In an actual productio
 
 ```c#
     TimeSpan span = new TimeSpan(0, 0, 1);
-    WaveData evt = WaveData.Next(span, 2.0, 0);
+    WaveData waveDataEvent = WaveData.Next(span, 2.0, 0);
 
-    qiclient.InsertValue("evtStream", evt);
+    qiDataService.InsertValueAsync("evtStream", waveDataEvent).GetAwaiter().GetResult();
 
-    List<WaveData> events = new List<WaveData>();
+    List<WaveData> waveDataEvents = new List<WaveData>();
     for (int i = 1; i < 100; i++)
     {
-        evt = WaveData.Next(span, 2.0, i);
-        events.Add(evt);
+        waveDataEvent = WaveData.Next(span, 2.0, i);
+        events.Add(waveDataEvent);
     }
 	
-    qiclient.InsertValues("evtStream", events);
+    qiDataService.InsertValuesAsync("evtStream", waveDataEvents).GetAwaiter().GetResult();
 ```
 
 ## Retrieve Events
@@ -146,7 +201,7 @@ The `WaveData` class allows us to create events locally.  In an actual productio
 There are many methods that allow for the retrieval of events from a stream.  This sample demonstrates the most basic method of retrieving all the events in a particular index range.  The retrieval methods take string type start and end values; in our case, these the start and end ordinal indices expressed as strings ("0" and "99", respectively).  The index values must capable of conversion to the type of the index assigned in the QiType.  Timestamp keys are expressed as ISO 8601 format strings. Compound indices are values concatenated with a pipe ('|') separator.  You can get a collection of events over an index range like this:
 
 ```c#
-    IEnumerable<WaveData> foundEvts = qiclient.GetWindowValues<WaveData>("evtStream", "0", "99");
+    IEnumerable<WaveData> foundEvts = qiDataService.GetWindowValuesAsync<WaveData>("evtStream", "0", "99").GetAwaiter().GetResult();
 ```
 
 Keep in mind that with an IEnumerable instance, there are a variety of LINQ and extension methods allowing you to manipulate the events locally.
@@ -156,8 +211,8 @@ Keep in mind that with an IEnumerable instance, there are a variety of LINQ and 
 We'll demonstrate updates by taking the values we created and replacing them with new values.  Once you've modified the events client-side, you submit them to the Qi service with `UpdateValue<T>` or `UpdateValues<T>`, or their asynchronous equivalents:
 
 ```c#
-    qiclient.UpdateValue("evtStream", evt);
-    qiclient.UpdateValues("evtStream", newEvents);
+    qiDataService.UpdateValueAsync("evtStream", evt).GetAwaiter().GetResult();
+    qiDataService.UpdateValuesAsync("evtStream", newEvents).GetAwaiter().GetResult();
 ```
 
 ## Delete Events
@@ -165,8 +220,8 @@ We'll demonstrate updates by taking the values we created and replacing them wit
 As with reading data, deletion is managed via the index.  It is possible to delete data at a particular index or set of indices, or over an index range.    
 
 ```c#
-    qiclient.RemoveValue("evtStream", 0);
-    qiclient.RemoveWindowValues("evtStream", 1, 99);
+    qiDataService.RemoveValueAsync("evtStream", 0).GetAwaiter().GetResult();
+    qiDataService.RemoveWindowValuesAsync("evtStream", 1, 99).GetAwaiter().GetResult();
 ```
 
 
@@ -175,13 +230,13 @@ As with reading data, deletion is managed via the index.  It is possible to dele
 You might want to run the sample more than once.  To avoid collisions with types and streams, the sample program deletes the stream and type it created before terminating.  The stream goes first so that the reference count on the type goes to zero:
 
 ```c#
-    qiclient.DeleteStream("evtStream")
+    qiDataService.DeleteStreamAsync("evtStream").GetAwaiter().GetResult();
 ```
 
 Note that we've passed the id of the stream, not the stream object.  Similarly, the following deletes the type from the Qi service:
 
 ```c#
-    qiclient.DeleteType(tp.Id);
+    qiDataService.DeleteTypeAsync(sampleTypeId).GetAwaiter().GetResult();
 ```
 
 The `IQiServer` instance doesn't need any cleanup.  REST runs on HTTP, which is stateless, so the Qi service is not maintaining a connection with the client.

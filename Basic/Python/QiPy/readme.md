@@ -22,7 +22,9 @@ The Qi service is secured by obtaining tokens from an Azure Active Directory ins
                  'appId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
                  'appKey' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
     
+	TenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
     QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"
+	
 ```
 
 You will need to replace `resource`, `authority`, `appId`, and `appKey`.  The `authItems` array is passed to the `QiClient` constructor.
@@ -70,6 +72,12 @@ def __qi_headers(self):
 
 Note that the value of the `Authorization` header is the word "bearer", followed by a space, and followed by the token value itself.
 
+## Create a QiNamespace
+
+QiNamespaces represent containers to hold Streams, Types, and Behaviors.  This will allow one to separate certain streams or simply have a sandbox to test Qi with
+
+client.createNamespace(constants.TenantId, sampleNamespace)
+
 ## Create a QiType
 
 QiStreams represent open-ended collections of strongly-typed, ordered events. Qi is capable of storing any data type you care to define.  The only requirement is that the data type must have one or more properties that constitute an ordered key.  While a timestamp is a very common type of key, any ordered value is permitted. Our sample type uses an integer.
@@ -101,7 +109,7 @@ Type creation is encapsulated by the `createType` method in `QiClient.py`.  Here
 
 ```python
 	wave = QiType()
-	wave.Id = "WaveDataPySample"
+	wave.Id = sampleTypeId
 	wave.Name = "WaveDataPySample"
 	wave.Description = "This is a sample Qi type for storing WaveData type events"
 	wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
@@ -109,7 +117,7 @@ Type creation is encapsulated by the `createType` method in `QiClient.py`.  Here
 
 	#create the type in Qi service
 	print "Creating the WaveData Qi type in Qi service"
-	evtType = client.createType(wave)
+	evtType = client.createType(Constants.TenantId, sampleNamespaceId, wave)
 ```
 * Returns the QiType object in a json format
 * If a Qi type with the same Id exists, url path of the existing Qi type is returned
@@ -123,7 +131,7 @@ An ordered series of events is stored in a QiStream.  We've created a `QiStream`
 
 ```python	
 	stream = QiStream()
-	stream.Id = "WaveStreamPySample"
+	stream.Id = sampleStreamId
 	stream.Name = "WaveStreamPySample"
 	stream.Description = "A Stream to store the WaveData Qi types events"
 	stream.TypeId = "WaveDataPySample"
@@ -136,7 +144,7 @@ An ordered series of events is stored in a QiStream.  We've created a `QiStream`
 A single event is a data point in the Stream. An event object cannot be emtpy and should have atleast the key value of the Qi type for the event. Events are passed in json format. Here is the call to create a single event in a data stream in `QiClient.py`:
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertSingle, 
+	conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__insertSingle, 
 				 payload, self.__qi_headers())
 ```
 * qi_Stream.Id is the stream ID
@@ -145,7 +153,7 @@ A single event is a data point in the Stream. An event object cannot be emtpy an
 Inserting multiple values is similar, but the payload has list of events and the url for POST call is slightly different:
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertMultiple, 
+	conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__insertMultiple, 
 				 payload, self.__qi_headers())
 ```
 
@@ -159,7 +167,7 @@ Here is what the `GetWindowValues` call looks like:
 
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request("GET", self.__streamsBase + '/' + 
+	conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
 					self.__getTemplate.format(stream_id = qi_stream.Id, 
 											 start = urllib.urlencode({"startIndex": start}), 
 												end = urllib.urlencode({"endIndex": end})), 
@@ -181,7 +189,7 @@ Updating events is handled by PUT REST call as follows:
 Updating multiple events is similar but the payload has an array of event objects and url for POST is slightly different:
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__updateMultiple, 
+	conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__updateMultiple, 
 				 payload, self.__qi_headers())
 ```
 
@@ -197,7 +205,7 @@ The first event returned by the following call will be at index 1 (start index) 
 To observe how QiStreamBehaviors can change the query results, we will define a new stream behavior object and submit it to the Qi service:
 ```python
 	behaviour = QiStreamBehaviour()
-	behaviour.Id = "evtStreamStepLeading";
+	behaviour.Id = sampleBehaviorId;
 	behaviour.Mode = QiStreamMode.StepwiseContinuousLeading.value
 	behaviour = client.createBehaviour(behaviour)
 ```
@@ -217,14 +225,14 @@ An event at a particular index can be deleted by passing the index value for tha
 Deleting a single value is done via the QiClient's removeValue method:
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request("DELETE", self.__streamsBase + '/' + self.__removeSingleTemplate.format(stream_id = qi_stream.Id, param = params), 
+	conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + self.__removeSingleTemplate.format(stream_id = qi_stream.Id, param = params), 
 				 headers = self.__qi_headers())
 ```
 
 Delete can also be done over a window of index values, as in the removeValues method:
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request("DELETE", self.__streamsBase + '/' + 
+	conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
 					self.__removeMultipleTemplate.format(stream_id = qi_stream.Id, 
 					start = urllib.urlencode({"startIndex": start}),
 					end = urllib.urlencode({"endIndex": end})), 
@@ -237,16 +245,16 @@ Delete can also be done over a window of index values, as in the removeValues me
 So that it can run repeatedly without name collisions, the sample does some cleanup before exiting. Deleting streams, stream behaviors, and types can be achieved by a DELETE REST call and passing the corresponding Id.  Note: types and behaviors cannot be deleted until any streams referencing them are deleted first.
 
 ```python
-	conn.request("DELETE", self.__streamsBase + '/' + stream_id, headers = self.__qi_headers())
+	conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + stream_id, headers = self.__qi_headers())
 	response = conn.getresponse()
 ```
 
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request('DELETE', self.__typesBase + '/' +  type_id, headers = self.__qi_headers())
+	conn.request('DELETE', self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' +  type_id, headers = self.__qi_headers())
 ```
 
 ```python
 	conn = http.HTTPSConnection(self.url)
-	conn.request('DELETE', self.__behaviorBase + '/' +  behaviorId, headers = self.__qi_headers())
+	conn.request('DELETE', self.__behaviorBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' +  behaviorId, headers = self.__qi_headers())
 ```
