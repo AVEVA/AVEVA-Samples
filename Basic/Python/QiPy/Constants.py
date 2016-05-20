@@ -9,5 +9,5 @@ class Constants(object):
                  
     TenantId = "PLACEHOLDER_REPLACE_WITH_RESOURCE" #A guid for the Id of the tenant --- NOT the appId
     ###IMPORTANT: For QiServerUrl No "http" is necessary
-    ###Ex: "ApplicationUri:3380" instead of "https://ApplicationUri:3380"
+    ###Ex: "ApplicationUri:443" instead of "https://ApplicationUri:443"
     QiServerUrl = "PLACEHOLDER_REPLACE_WITH_RESOURCE"
