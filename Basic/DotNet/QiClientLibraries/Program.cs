@@ -7,6 +7,7 @@ using OSIsoft.Qi;
 using OSIsoft.Qi.Http;
 using OSIsoft.Qi.Http.Security;
 using OSIsoft.Qi.Reflection;
+using System.Net;
 
 namespace QiClientLibsSample
 {
@@ -256,7 +257,7 @@ namespace QiClientLibsSample
         /// <returns></returns>
         protected static QiSecurityHandler GetQiSecurityHandler()
         {
-            QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey);
+            QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey.ConvertToSecureString());
 
             return qiSecurityHandler;
         }
