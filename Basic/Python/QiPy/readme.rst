@@ -38,13 +38,14 @@ strings are found in ``Constants.py``:
                      'appId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
                      'appKey' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
         
+        TenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
         QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"
 
 You must replace ``resource``, ``authority``, ``appId``, and ``appKey``
 with the appropriate values provided by OSIsoft. The ``authItems`` array
 is passed to the ``QiClient`` constructor.
 
-This Python sample in this topic uses raw OAuth 2 calls to obtain an
+The Python sample in this topic uses raw OAuth 2 calls to obtain an
 authentication token. The other samples use libraries from Microsoft
 that handles token acquisition, caching, and refreshing, but such a
 library is not currently available for Python.
@@ -101,6 +102,18 @@ and the token is passed as part of the headers:
 
 Note that the value of the ``Authorization`` header is the word
 "bearer," followed by a space, followed by the token value itself.
+
+
+Create a Namespace
+------------------
+
+A Qi Namespace can be thought of as a container to hold streams, types, and behaviors. 
+Namespaces allow you to separate streams or simply have a sandbox in which to test Qi.
+
+.. code:: python
+
+  client.createNamespace(constants.TenantId, sampleNamespace)
+
 
 Create a QiType
 ---------------
@@ -241,11 +254,11 @@ Shown below is the code for the ``GetWindowValues`` call:
 .. code:: python
 
         conn = http.HTTPSConnection(self.url)
-        conn.request("GET", self.__streamsBase + '/' + 
-                        self.__getTemplate.format(stream_id = qi_stream.Id, 
-                                                 start = urllib.urlencode({"startIndex": start}), 
-                                                    end = urllib.urlencode({"endIndex": end})), 
-                        headers = self.__qi_headers())
+        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
+                    self.__getTemplate.format(stream_id = qi_stream.Id, 
+                                             start = urllib.urlencode({"startIndex": start}), 
+                                                end = urllib.urlencode({"endIndex": end})), 
+                    headers = self.__qi_headers())
 
 Update Events
 -------------
@@ -267,8 +280,8 @@ event objects and URL for POST is slightly different:
 .. code:: python
 
         conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__updateMultiple, 
-                     payload, self.__qi_headers())
+        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + 
+        '/' + qi_stream.Id + self.__updateMultiple, payload, self.__qi_headers())
 
 QiStreamBehaviors
 -----------------
@@ -338,11 +351,11 @@ following ``removeValues`` method:
 .. code:: python
 
         conn = http.HTTPSConnection(self.url)
-        conn.request("DELETE", self.__streamsBase + '/' + 
-                        self.__removeMultipleTemplate.format(stream_id = qi_stream.Id, 
-                        start = urllib.urlencode({"startIndex": start}),
-                        end = urllib.urlencode({"endIndex": end})), 
-                        headers = self.__qi_headers())
+        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
+                    self.__removeMultipleTemplate.format(stream_id = qi_stream.Id, 
+                    start = urllib.urlencode({"startIndex": start}),
+                    end = urllib.urlencode({"endIndex": end})), 
+                    headers = self.__qi_headers())
 
 Cleanup: Deleting Types, Behaviors, and Streams
 -----------------------------------------------
@@ -355,15 +368,19 @@ any streams that reference those types and behaviors are deleted first.
 
 .. code:: python
 
-        conn.request("DELETE", self.__streamsBase + '/' + stream_id, headers = self.__qi_headers())
+        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) 
+        + '/' + stream_id, headers = self.__qi_headers())
         response = conn.getresponse()
 
 .. code:: python
 
         conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__typesBase + '/' +  type_id, headers = self.__qi_headers())
+        conn.request('DELETE', self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id) 
+        + '/' +  type_id, headers = self.__qi_headers())
 
 .. code:: python
 
         conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__behaviorBase + '/' +  behaviorId, headers = self.__qi_headers())
+        conn.request('DELETE', self.__behaviorBase.format(tenant_id = tenant_id, namespace_id = namespace_id)
+        + '/' +  behaviorId, headers = self.__qi_headers())
+
