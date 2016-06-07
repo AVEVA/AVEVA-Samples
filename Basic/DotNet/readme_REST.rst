@@ -304,7 +304,7 @@ them with a single call:
 Retrieve Events
 ===============
 
-There are many methods in the Qi REST API permit the retrieval of
+There are many methods in the Qi REST API that permit the retrieval of
 events from a stream. The retrieval methods take string-type start and
 end values; in our case, these are the start and end ordinal indices
 expressed as strings ("0" and "99", respectively). The index values must
