@@ -1,15 +1,23 @@
 ## Development environment
-This project is bulit as a `Maven` project. You would need to have maven installed. 
-All the necesssary dependencies are sepcified as part of pom.xml file. 
+
+This project is bulit as a `Maven` project, which requires you to have
+Maven installed. All of the necesssary dependencies are specified within
+the pom.xml file.
 
 ##Steps to Run
-1.Clone a local copy of Git repo.
-2.Install Maven
-3.If using Eclipse choose file -> import -> Maven-> Existing maven project and select the local copy.
 
-#Java Samples: Building a Client with the Qi REST API
+1. Clone a local copy of the Git repo.
+2. Install Maven
+3. If you are using Eclipse, select `File` -> `Import` -> `Maven`-> `Existing maven project` and then select the local copy.
 
-This sample is written using only the Qi REST API.  This API allows for the creation of Qi Service clients in any language that can make HTTP calls and does not require access to any OSIsoft libraries.  Objects are passed as JSON strings.  We're using the Gson library for the Java client, but any method of creating a JSON representation of objects will work.
+#Java Samples: Building a Client using the Qi REST API
+
+This sample is written using only the Qi REST API. The API allows you to 
+create Qi Service clients in any language that can make HTTP
+calls and does not require access to any OSIsoft libraries. Objects are
+passed as JSON strings. The sample uses the Gson library for the Java
+client, but any method of creating a JSON representation of objects will
+work.
 
 ## Instantiate a Qi Client
 
