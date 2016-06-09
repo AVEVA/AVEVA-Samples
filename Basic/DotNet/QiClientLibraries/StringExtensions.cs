@@ -40,12 +40,6 @@ namespace QiClientLibsSample
             return secureString;
         }
 
-        public static void h()
-        {
-            string h = "";
-            h.ConvertToSecureString();
-        }
-
         #endregion
     }
 }
