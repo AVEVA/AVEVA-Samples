@@ -16,7 +16,7 @@ public class Program
 		final String sampleBehaviorId = "WaveData_SampleBehavior";
 
 		System.out.println("Creating a Qi Client object...");
-		String server = Constants._qiServerUrl;
+		String server = Constants._qiServerUrl + "/";
 		QiClient qiclient = new QiClient(server);
 		
 		try

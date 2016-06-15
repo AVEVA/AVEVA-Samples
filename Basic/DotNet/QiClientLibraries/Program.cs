@@ -7,7 +7,6 @@ using OSIsoft.Qi;
 using OSIsoft.Qi.Http;
 using OSIsoft.Qi.Http.Security;
 using OSIsoft.Qi.Reflection;
-using System.Net;
 
 namespace QiClientLibsSample
 {
