@@ -188,6 +188,7 @@ namespace QiRestApiSample
             };
 
             msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
+            msg.Headers.Add("QiQueryPrimary", "1");
 
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)
@@ -221,6 +222,7 @@ namespace QiRestApiSample
             };
 
             msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AcquireAuthenticationToken());
+            msg.Headers.Add("QiQueryPrimary", "1");
 
             HttpResponseMessage response = await _httpClient.SendAsync(msg);
             if (response.IsSuccessStatusCode)

@@ -365,7 +365,7 @@ class QiClient(object):
         
         conn = http.HTTPSConnection(self.url)
         conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__insertSingle, 
-                     payload, self.__qi_headers())
+                     payload, self.__qi_write_headers())
 
         response = conn.getresponse()
         
@@ -389,7 +389,7 @@ class QiClient(object):
         
         conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__updateSingle, 
-                     payload, self.__qi_headers())
+                     payload, self.__qi_write_headers())
 
         response = conn.getresponse()
 
@@ -413,7 +413,7 @@ class QiClient(object):
 
         conn = http.HTTPSConnection(self.url)
         conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__updateMultiple, 
-                     payload, self.__qi_headers())
+                     payload, self.__qi_write_headers())
 
         response = conn.getresponse()
 
@@ -494,7 +494,7 @@ class QiClient(object):
         
         conn = http.HTTPSConnection(self.url)
         conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__insertMultiple, 
-                     payload, self.__qi_headers())
+                     payload, self.__qi_write_headers())
 
         response = conn.getresponse()
 
@@ -642,6 +642,12 @@ class QiClient(object):
             "Content-type": "application/json", 
             "Accept": "text/plain"
             }
+
+    def __qi_write_headers(self):
+        writeHeaders = self.__qi_headers()
+        writeHeaders["QiQueryPrimary"] = "1"
+        return writeHeaders
+
     #check if uri contains http        
     def __validateUri(self, url):
         splitUri = urlparse(url)

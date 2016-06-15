@@ -89,8 +89,6 @@ namespace QiClientLibsSample
                 Console.WriteLine("Inserting the rest of the events");
                 qiDataService.InsertValuesAsync(sampleStreamId, waveDataEvents).GetAwaiter().GetResult();
 
-                DelayForQiConsistency();
-
                 #endregion
 
                 #region Retrieve events for a time range
@@ -122,8 +120,6 @@ namespace QiClientLibsSample
 
                 Console.WriteLine("Updating the rest of the events");
                 qiDataService.UpdateValuesAsync(sampleStreamId, waveDataEvents).GetAwaiter().GetResult();
-
-                DelayForQiConsistency();
 
                 Console.WriteLine("Retrieving the updated values");
                 Console.WriteLine("=============================");
@@ -247,6 +243,8 @@ namespace QiClientLibsSample
             QiSecurityHandler qiSecurityHandler = GetQiSecurityHandler();
             Uri qiServerUri = new Uri(Constants.QiServerUrl);
             IQiDataService qiDataService = QiService.GetDataService(qiServerUri, Constants.TenantId, namespaceId, qiSecurityHandler);
+
+            qiDataService.GetProxy().Client.DefaultHeaders.Add("QiQueryPrimary", "1");
 
             return qiDataService;
         }
