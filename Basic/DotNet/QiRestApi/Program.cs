@@ -70,6 +70,8 @@ namespace QiRestApiSample
 
                 qiclient.CreateEventsAsync(Constants.TenantId, sampleNamespaceId, sampleStreamId, JsonConvert.SerializeObject(events)).GetAwaiter().GetResult();
 
+                DelayForQiConsistency();
+
                 #endregion
 
                 #region Retrieve events
@@ -100,6 +102,8 @@ namespace QiRestApiSample
                 }
 
                 qiclient.UpdateValuesAsync(Constants.TenantId, sampleNamespaceId, sampleStreamId, JsonConvert.SerializeObject(events)).GetAwaiter().GetResult();
+
+                DelayForQiConsistency();
 
                 // check the results
                 Console.WriteLine("Retrieving the updated values");

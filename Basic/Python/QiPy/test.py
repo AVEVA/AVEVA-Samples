@@ -170,6 +170,8 @@ try:
     print "Inserting the first event"
     client.insertValue(Constants.TenantId, sampleNamespaceId, sampleStream, waveDataEvent)
 
+    delayForQiConsistency()
+
     #inserting a list of events
     waveDataEvents = []
 
@@ -181,6 +183,8 @@ try:
     print "Inserting the rest of the events"
 
     client.insertValues(Constants.TenantId, sampleNamespaceId, sampleStream, waveDataEvents)
+
+    delayForQiConsistency()
 
     #get the last inserted event in a stream
     print "Last inserted event is :"
@@ -211,6 +215,8 @@ try:
         newEvents.append(waveDataEvent)
 
     client.updateValues(Constants.TenantId, sampleNamespaceId, sampleStream, newEvents)
+
+    delayForQiConsistency()
 
     #check the results
     print "Retrieving the updated values"
