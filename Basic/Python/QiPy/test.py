@@ -242,7 +242,7 @@ try:
     print "Creating a stream behavior..."
     sampleBehavior = QiStreamBehavior()
     sampleBehavior.Id = sampleBehaviorId;
-    sampleBehavior.Mode = QiStreamMode.StepwiseContinuousLeading
+    sampleBehavior.Mode = QiStreamMode.StepwiseContinuousLeading.name
     sampleBehavior = client.createBehavior(Constants.TenantId, sampleNamespaceId, sampleBehavior)
 
     delayForQiConsistency()
