@@ -1,16 +1,16 @@
 AngularJS Samples: Building a Client to make REST API Calls to the Qi Service.
 ===============================================================================
 
-This sample demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
-This sample is still an ASP.Net Web Application so you will use have to 
+This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
+The example is an ASP.Net Web Application; you must 
 use Visual Studio to run this application.
 
 Establish a Connection
 ----------------------
 
-The sample uses ``request-promise`` module to connect a service
+The sample uses the ``request-promise`` module to connect to a service
 endpoint. Qi REST API calls are sent to the Qi service. The Qi REST API
-maps HTTP methods to CRUD like this:
+maps HTTP methods to CRUD (Create, Read, Update, Delete) as in the following table:
 
 +---------------+------------------+--------------------+
 | HTTP Method   | CRUD Operation   | Content Found In   |
@@ -24,9 +24,10 @@ maps HTTP methods to CRUD like this:
 | DELETE        | Delete           | URL parameters     |
 +---------------+------------------+--------------------+
 
-The REST calls in this sample are set up as follows:
+The REST calls in this example are configured as follows:
 
 .. code:: javascript
+
 				var deferred = $q.defer();
 
                 $http({
@@ -40,6 +41,7 @@ The REST calls in this sample are set up as follows:
                 });
                 return deferred.promise;
 
+
 -  URL - The service endpoint
 -  REST-METHOD - Denotes the type of REST call
 -  DATA - Object in the JSON format
@@ -48,10 +50,13 @@ Authenticating with Qi
 ------------------------------
 
 The Qi service is secured by obtaining tokens from an Azure Active
-Directory instance. This sample uses ADAL to authenticate client against
-the QI server. Generally, user will need to contact OSISoft dev support
-to get their tenant set up to use Qi. The sample code
-includes several placeholder strings. You must replace these with the
+Directory instance. This example uses ADAL (Active Directory Authentication Library ) 
+to authenticate clients against
+the QI server. Generally, users must contact OSIsoft support
+to obtain a tenant to use Qi. 
+
+The sample code
+includes several placeholder strings. You must replace these strings with the
 authentication-related values you received from OSIsoft. The strings are
 found in ``app.js``:
 
@@ -59,22 +64,24 @@ found in ``app.js``:
 
 		.constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
 		.constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
-		.constant('QI_SERVER_APPID', PLACEHOLDER_REPLACE_WITH_RESOURCE')
+		.constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
 
 
-When you run the solution, please click the login button on the top right
-to login using your Microsoft account which is setup to use Qi service.
+When you run the example, click the login button at the top right of the screen
+to log in using a Microsoft account that is configured to use the Qi service.
+
 
 Sample Workflow
 ------------------------------
-Once user is logged in, user can click on the Qi Service tab on the top.
-This page has five buttons to show the main functionality of Qi.
-1) Create and Insert Button: Creates the namespace, then type, then stream and inserts
-WaveData events in the stream.
-2) Update Button: Updates the events 
-3) Retrieve Button: Gets all the events
-4) Add Behavior: Creates and adds the behavior to the streams
-5) Cleanup: Deletes the events, stream, behavior, type.
+
+After you are logged in, click the Qi Service tab at the top of the screen.
+The page displayed has five buttons that show the main functionality of Qi:
+
+	1) Create and Insert Button: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
+	2) Update Button: Updates the events 
+	3) Retrieve Button: Gets all the events
+	4) Add Behavior: Creates and adds the behavior to the streams
+	5) Cleanup: Deletes the events, stream, behavior, type.
 
 Create a QiType
 ---------------
