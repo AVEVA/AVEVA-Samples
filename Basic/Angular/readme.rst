@@ -1,5 +1,8 @@
-AngularJS Samples: Building a Client to make REST API Calls to the Qi Service.
-===============================================================================
+AngularJS Example
+=================
+
+Building a Client to make REST API Calls to the Qi Service
+==========================================================
 
 This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
 The example is an ASP.Net Web Application; you must 
