@@ -58,8 +58,7 @@ to authenticate clients against
 the QI server. Generally, users must contact OSIsoft support
 to obtain a tenant to use Qi. 
 
-The sample code
-includes several placeholder strings. You must replace these strings with the
+The sample code includes several placeholder strings. You must replace these strings with the
 authentication-related values you received from OSIsoft. The strings are
 found in ``app.js``:
 
@@ -93,25 +92,30 @@ QiStreams represent open-ended collections of strongly-typed, ordered
 events. Qi is capable of storing any data type you care to define. The
 only requirement is that the data type must have one or more properties
 that constitute an ordered key. While a timestamp is a very common type
-of key, any ordered value is permitted. Our sample type uses an integer.
+of key, any ordered value is permitted. This example uses an integer type.
 
 Each data stream is associated with a QiType, so that only events
 conforming to that type can be inserted into the stream. The first step
 in Qi programming, then, is to define the types for your tenant.
 
-A QiType has the following properties: Id, Name, Description,
-QiTypeCode, and Properties.
+A QiType has the following properties: 
 
-The type "Id" is the identifier for a particular type. "Name" and
-"Description" are optional string properties to describe the type.
-"QiTypeCode" is used to identify the datatypes stored by the QiType. The
-file *QiObjects.js* enumerates the available datatypes the
+- Id
+- Name
+- Description
+- QiTypeCode
+- Properties.
+
+The ``Id`` property is the identifier for a particular type. ``Name`` and
+``Description`` are optional string properties that describe the type.
+``QiTypeCode`` is used to identify the datatypes that are stored by the QiType. The
+file *QiObjects.js* enumerates the available datatypes in the
 qiTypeCodeMap.
 
-A type definition in Qi consists of one or more "Properties." Each
-property has its own type. This can be a simple data type like integer
-or string, or a previously defined complex QiType. This allows for the
-creation of nested data types - QiTypes whose properties may be
+A type definition in Qi consists of one or more *Properties*. Each
+property has its own type. The type can be a simple data type such as integer
+or string, or a previously defined complex QiType, which allows the
+creation of nested data types; that is, QiTypes whose properties may be
 user-defined types.
 
 From QiObjects.js:
@@ -147,17 +151,17 @@ A QiType can be created by a POST request as follows:
                     body : JSON.stringify(wave).toString()
                 });
 
--  Returns the QiType object in a json format
--  If a type with the same Id exists, url path of the existing Qi type
-   is returned
--  QiType object is passed in json format
+-  Returns the QiType object in JSON format
+-  If a type with the same Id apready exists, the URL path of the existing Qi type
+   is returned.
+-  The QiType object is passed in JSON format.
 
 
 Create a QiStream
 -----------------
 
-An ordered series of events is stored in a QiStream. All you have to do
-is create a local QiStream instance, give it an id, assign it a type,
+An ordered series of events is stored in a QiStream. 
+To create a local QiStream instance, you provide an ID, assign a type,
 and submit it to the Qi service. You may optionally assign a
 QiStreamBehavior to the stream. The value of the ``TypeId`` property is
 the value of the QiType ``Id`` property.
@@ -202,7 +206,7 @@ Create and Insert Events into the Stream
 
 A single event is a data point in the stream. An event object cannot be
 emtpy and should have at least the key value of the Qi type for the
-event. Events are passed in json format.
+event. Events are passed in JSON format.
 
 An event can be created using the following POST request:
 
@@ -227,8 +231,8 @@ An event can be created using the following POST request:
 -  qiStreamId is the stream Id
 -  data is the event object in json format
 
-Inserting multiple values is similar, but the payload has list of events
-and the url for POST call varies:
+Inserting multiple values is similar, but the payload has a list of events
+and the URL for the POST call varies:
 
 .. code:: javascript
 
@@ -254,14 +258,14 @@ those demonstrated in this application.
 Retrieve Events
 ---------------
 
-There are many methods in the Qi REST API allowing for the retrieval of
-events from a stream. The retrieval methods take string type start and
-end values; in our case, these the start and end ordinal indices
-expressed as strings ("0" and "99", respectively). The index values must
-capable of conversion to the type of the index assigned in the QiType.
+There are many methods in the Qi REST API that allow for the retrieval of
+events from a stream. The retrieval methods take string-type start and
+end values; in our case, these start and end ordinal indices
+are expressed as strings ("0" and "99", respectively). The index values must
+be capable of conversion to the type of the index assigned in the QiType.
 Timestamp keys are expressed as ISO 8601 format strings. Compound
 indices are values concatenated with a pipe ('\|') separator. This
-sample implements only two of the many available retrieval methods -
+example implements only two of the many available retrieval methods -
 GetWindowValues (getTemplate in ``QiClient.js``) and GetRangeValues
 (``getRangeTemplate`` in ``QiClient.js``).
 
@@ -283,9 +287,10 @@ GetWindowValues (getTemplate in ``QiClient.js``) and GetRangeValues
         }
 
 -  parameters are the QiStream Id and the starting and ending index
-   values for the desired window Ex: For a time index, request url
-   format will be
-   "/{streamId}/Data/GetWindowValues?startIndex={startTime}&endIndex={endTime}
+   values for the desired window Ex: For a time index, request URL
+   format will be:
+   
+   ``"/{streamId}/Data/GetWindowValues?startIndex={startTime}&endIndex={endTime}``
 
 Update Events
 -------------
@@ -310,10 +315,10 @@ Updating events is handled by PUT REST call as follows:
         }
 
 -  the request body has the new event that will update an existing event
-   at the same index
+   at the same index.
 
-Updating multiple events is similar, but the payload has an array of
-event objects and url for PUT is slightly different:
+Updating multiple events is similar, but the payload contains an array of
+event objects and the URL for PUT is slightly different:
 
 .. code:: javascript
 
@@ -337,7 +342,7 @@ QiStreamBehaviors
 -----------------
 
 With certain data retrieval calls, a QiBoundarytype may be specified.
-For example, if GetRangeValues is called with an ExactOrCalculated
+For example, if ``GetRangeValues`` is called with an ExactOrCalculated
 boundary type, an event at the request start index will be calculated
 using linear interpolation (default) or based on the QiStreamBehavior
 associated with the QiStream. Because our sample QiStream was created
@@ -351,8 +356,8 @@ index) and calculated via linear interpolation:
 
       QiClient.getRangeValues(stream, 1, 0, 3, False, qiObjs.qiBoundaryType.ExactOrCalculated);
 
-To observe how QiStreamBehaviors can change the query results, we will
-define a new stream behavior object and submit it to the Qi service::
+To see how QiStreamBehaviors can change the query results, the following example
+defines a new stream behavior object and submits it to the Qi service:
 
 .. code:: javascript
 
@@ -362,9 +367,9 @@ define a new stream behavior object and submit it to the Qi service::
         ...
         QiClient.createBehavior(behavior);
 
-By setting the ``Mode`` property to ``StepwiseContinuousLeading`` we
-ensure that any calculated event will have an interpolated index, but
-every other property will have the value of the previous event. Now
+Setting the ``Mode`` property to ``StepwiseContinuousLeading`` 
+ensures that any calculated event has an interpolated index, but
+every other property has the value of the previous event. Now
 attach this behavior to the existing stream by setting the
 ``BehaviorId`` property of the stream and updating the stream definition
 in the Qi service:
@@ -406,7 +411,8 @@ index values must be expressed as ISO 8601 strings.
 
 -  parameters are the stream Id and the index at which to delete an
    event Ex: For a time index, the request url will have the format:
-   "/{streamId}/Data/RemoveValue?index={deletionTime}";
+   
+   ``"/{streamId}/Data/RemoveValue?index={deletionTime}";``
 
 Delete can also be performed over a window of key value as follows:
 
@@ -427,16 +433,16 @@ Delete can also be performed over a window of key value as follows:
             return deferred.promise;
         }
 
--  parameters are the stream Id and the starting and ending index values
-   of the window Ex: For a time index, the request url will have the
+-  Parameters are the stream Id and the starting and ending index values
+   of the window. Example: For a time index, the request URL will have the following
    format:
    
-   /{streamId}/Data/RemoveWindowValues?startIndex={startTime}&endIndex={endTime}
+   ``/{streamId}/Data/RemoveWindowValues?startIndex={startTime}&endIndex={endTime}``
 
 Cleanup: Deleting Types, Behaviors, and Streams
 -----------------------------------------------
 
-So that it can run repeatedly without name collisions, the sample does
+So that it can run repeatedly without name collisions, the examples performs
 some cleanup before exiting. Deleting streams, stream behaviors, and
 types can be achieved by a DELETE REST call and passing the
 corresponding Id. Note: types and behaviors cannot be deleted until any
