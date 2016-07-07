@@ -5,8 +5,30 @@ Building a Client to make REST API Calls to the Qi Service
 ----------------------------------------------------------
 
 This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
-The example is an ASP.Net Web Application; you must 
-use Visual Studio to run this application.
+Because the example is an ASP.Net Web Application, you must 
+use Visual Studio to run it.
+
+
+Preparation
+-----------
+
+Follow these steps to prepare your environment to run the example:
+
+ 1. Clone or download the example from the GitHub repository. If you download the ZIP file, extract the file to a directory on your computer.
+ 2. Start Visual Studio and select **File > Open > Project/Solution**.
+ 3. Navigate to the directory in which the example was downloaded, select the file: ``qiSampleApp.sln`` and then click **Open**.
+ 4. In Visual Studio, use the Solution Explorer window to find and select the file: ``app.js``.
+ 5. Modify the following values within ``app.js`` using the values that were provided by OSIsoft:
+ 
+ .. code:: javascript
+ 
+  .constant('QI_SERVER_URL', 'QI_URL')
+  .constant('QI_SERVER_APPID', 'QI_APP_ID_URL')
+  .constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
+  .constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
+  .constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
+
+ 6. In Visual Studio, run the example by clicking **Start**.
 
 Establish a Connection
 ----------------------
