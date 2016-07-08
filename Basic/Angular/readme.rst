@@ -14,15 +14,16 @@ Prerequisites
 You must have the following software installed on your computer:
  - AngularJS version 1 (available on GitHub)
  - Microsoft Visual Studio 2015
+ - A browser (such as Microsoft Internet Explorer)
 
 
 Preparation
 -----------
 
 The Qi service is secured by obtaining tokens from an Azure Active
-Directory instance. This example uses ADAL (Active Directory Authentication Library ) 
-to authenticate clients against the QI server. You must contact OSIsoft support
-to obtain a tenant to use Qi. 
+Directory instance. This example uses ADAL (Active Directory Authentication Library) 
+to authenticate clients against the QI server. Contact OSIsoft support
+to obtain a tenant for use with Qi. 
 
 The sample code includes several placeholder strings that must be modified 
 with values you received from OSIsoft. 
@@ -48,18 +49,21 @@ Follow these steps to prepare your environment to run the example:
  8. After you are logged in, click the **Qi Service** tab at the top of the screen.
  
 
-
-
 Workflow
 ------------------------------
 
-The Qi Services page contains five buttons that show the main functionality of Qi:
+The Qi Services page contains five buttons that demonstrate the main functionality of Qi:
 
-	1) Create and Insert: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
-	2) Update: Updates the events 
-	3) Retrieve: Gets all the events
-	4) Add Behavior: Creates and adds the behavior to the streams
-	5) Cleanup: Deletes the events, stream, behavior, type.
+	1) **Create and Insert**: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
+	2) **Update**: Updates the events 
+	3) **Retrieve**: Gets all the events
+	4) **Add Behavior**: Creates and adds the behavior to the streams
+	5) **leanup**: Deletes the events, stream, behavior, and type type.
+
+To run the example, click each of the buttons in turn from top to bottom. If you are using Microsoft Internet Explorer, you can view the API calls as they are tun by pressing F12 Developer Tools. 
+
+The rest of the sections in this document outline the operation of Qi and the underlying process and technology.
+
 
 How the example works
 ----------------------
@@ -101,7 +105,6 @@ The REST calls in this example are configured as follows:
 -  URL - The service endpoint
 -  REST-METHOD - Denotes the type of REST call
 -  DATA - Object in the JSON format
-
 
 
 Create a QiType
