@@ -49,7 +49,7 @@ Follow these steps to prepare your environment to run the example:
  8. After you are logged in, click the **Qi Service** tab at the top of the screen.
  
 
-Workflow
+Running the example
 ------------------------------
 
 The Qi Services page contains five buttons that demonstrate the main functionality of Qi:
