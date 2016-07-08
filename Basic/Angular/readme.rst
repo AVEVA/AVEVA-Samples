@@ -1,7 +1,7 @@
 AngularJS Example
 =================
 
-Building a Client to make REST API Calls to the Qi Service
+Building a client to make REST API calls to the Qi Service
 ----------------------------------------------------------
 
 This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
