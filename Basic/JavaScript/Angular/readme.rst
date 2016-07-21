@@ -62,6 +62,82 @@ The Qi Services page contains five buttons that demonstrate the main functionali
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
 
+Messages to look for:
+
+  After clicking ``Create and Insert``, look for the following messages:
+
+::  
+
+    Creating Namespace
+    Namespace found
+    Creating Type...
+    Type created
+    Creating stream...
+    Inserting values...
+
+
+  After clicking ``Retrieve Events`` button, look for:
+
+::
+
+    All events removed
+    Deleting stream...
+    Stream Deleted
+    Behavior Deleted
+    Deleting Type...
+    Type Deleted
+
+
+  After clicking the ``Retrieve Events``, look for:
+
+::
+
+    All events removed
+    Deleting stream...
+    Stream Deleted
+    Behavior Deleted
+    Deleting Type...
+    Type Deleted
+
+
+  
+  After clicking ``Add Behavior``, look for:
+
+::
+
+    All events removed
+    Deleting stream...
+    Stream Deleted
+    Behavior Deleted
+    Deleting Type...
+    Type Deleted
+    
+
+  After clicking ``Range Events``, look for:
+
+::
+
+    All events removed
+    Deleting stream...
+    Stream Deleted
+    Behavior Deleted
+    Deleting Type...
+    Type Deleted
+
+
+  After clicking Create and Insert button, look for:
+
+::
+
+    All events removed
+    Deleting stream...
+    Stream Deleted
+    Behavior Deleted
+    Deleting Type...
+    Type Deleted
+    
+    
+
 The rest of the sections in this document outline the operation of Qi and the underlying process and technology of the example.
 
 
