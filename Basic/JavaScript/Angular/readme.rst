@@ -1,14 +1,76 @@
-AngularJS Example
-=================
+Qi JavaScript Example using AngularJS
+======================================
 
-Building a Client to make REST API Calls to the Qi Service
+Building a client to make REST API calls to the Qi Service
 ----------------------------------------------------------
 
 This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
-The example is an ASP.Net Web Application; you must 
-use Visual Studio to run this application.
+Because the example is an ASP.Net Web Application, you must 
+use Visual Studio to run it.
 
-Establish a Connection
+Prerequisites
+-------------
+
+You must have the following software installed on your computer:
+ - AngularJS version 1 (available on GitHub)
+ - Microsoft Visual Studio 2015
+ - A browser (such as Microsoft Internet Explorer)
+
+
+Preparation
+-----------
+
+The Qi service is secured by obtaining tokens from an Azure Active
+Directory instance. This example uses ADAL (Active Directory Authentication Library) 
+to authenticate clients against the QI server. Contact OSIsoft support
+to obtain a tenant for use with Qi. 
+
+The sample code includes several placeholder strings that must be modified 
+with values you received from OSIsoft. 
+
+Follow these steps to prepare your environment to run the example:
+
+ 1. Clone or download the example from the GitHub repository. If you download the ZIP file, extract the file to a directory on your computer.
+ 2. Start Visual Studio and select **File > Open > Project/Solution**.
+ 3. Navigate to the directory in which the example was downloaded, select the file: ``qiSampleApp.sln`` and then click **Open**.
+ 4. In Visual Studio, use the Solution Explorer window to find and select the file: ``app.js``.
+ 5. Modify the following values within ``app.js`` using the values that were provided by OSIsoft:
+ 
+ .. code:: javascript
+ 
+  .constant('QI_SERVER_URL', 'QI_URL')
+  .constant('QI_SERVER_APPID', 'QI_APP_ID_URL')
+  .constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
+  .constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
+  .constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
+
+ 6. In Visual Studio, run the example by clicking **Start**.
+ 7. Click the **Login** button in the top-right corner of the screen and log in using a Microsoft account that is configured to use the Qi service.
+ 8. After you are logged in, click the **Qi Service** tab at the top of the screen.
+ 
+
+Running the example
+------------------------------
+
+The Qi Services page contains five buttons that demonstrate the main functionality of Qi:
+
+	1) **Create and Insert**: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
+        2) **Retrieve Events**: Updates the events that were inserted in the first step.
+        3) **Update**: Updates the events that were previously inserted.
+        4) **Retrieve Events**: Retrieves events from the stream.
+	5) **Add Behavior**: Creates and adds the behavior to the streams
+	6)  **Range Events**; Computes the range of events.
+	7) **Cleanup**: Deletes the events, stream, stream behavior, and type.
+
+
+To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
+
+
+
+The rest of the sections in this document outline the operation of Qi and the underlying process and technology of the example.
+
+
+How the example works
 ----------------------
 
 The sample uses the ``request-promise`` module to connect to a service
@@ -49,41 +111,6 @@ The REST calls in this example are configured as follows:
 -  REST-METHOD - Denotes the type of REST call
 -  DATA - Object in the JSON format
 
-Authenticating with Qi
-------------------------------
-
-The Qi service is secured by obtaining tokens from an Azure Active
-Directory instance. This example uses ADAL (Active Directory Authentication Library ) 
-to authenticate clients against
-the QI server. Generally, users must contact OSIsoft support
-to obtain a tenant to use Qi. 
-
-The sample code includes several placeholder strings. You must replace these strings with the
-authentication-related values you received from OSIsoft. The strings are
-found in ``app.js``:
-
-.. code:: javascript
-
-		.constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
-		.constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
-		.constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
-
-
-When you run the example, click the login button at the top right of the screen
-to log in using a Microsoft account that is configured to use the Qi service.
-
-
-Sample Workflow
-------------------------------
-
-After you are logged in, click the Qi Service tab at the top of the screen.
-The page displayed has five buttons that show the main functionality of Qi:
-
-	1) Create and Insert Button: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
-	2) Update Button: Updates the events 
-	3) Retrieve Button: Gets all the events
-	4) Add Behavior: Creates and adds the behavior to the streams
-	5) Cleanup: Deletes the events, stream, behavior, type.
 
 Create a QiType
 ---------------
