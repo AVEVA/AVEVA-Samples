@@ -1,5 +1,5 @@
-AngularJS Example
-=================
+Qi JavaScript Example using AngularJS
+======================================
 
 Building a client to make REST API calls to the Qi Service
 ----------------------------------------------------------
@@ -60,7 +60,7 @@ The Qi Services page contains five buttons that demonstrate the main functionali
 	4) **Add Behavior**: Creates and adds the behavior to the streams
 	5) **leanup**: Deletes the events, stream, behavior, and type type.
 
-To run the example, click each of the buttons in turn from top to bottom. If you are using Microsoft Internet Explorer, you can view the API calls as they are run by pressing **F12 Developer Tools**. 
+To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
 
 The rest of the sections in this document outline the operation of Qi and the underlying process and technology of the example.
 
