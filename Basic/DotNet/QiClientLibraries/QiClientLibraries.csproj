@@ -45,20 +45,20 @@
       <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.815, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Core.1.0.0.815\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.817, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Core.1.0.0.817\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.815, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Http.Channel.1.0.0.815\lib\net46\OSIsoft.Qi.Http.Channel.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.817, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Http.Channel.1.0.0.817\lib\net46\OSIsoft.Qi.Http.Channel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.815, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Http.Client.1.0.0.815\lib\net46\OSIsoft.Qi.Http.Client.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.817, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Http.Client.1.0.0.817\lib\net46\OSIsoft.Qi.Http.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Security, Version=1.0.0.815, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Http.Security.1.0.0.815\lib\net46\OSIsoft.Qi.Http.Security.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Security, Version=1.0.0.817, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Http.Security.1.0.0.817\lib\net46\OSIsoft.Qi.Http.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

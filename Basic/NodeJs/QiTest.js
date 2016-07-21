@@ -11,9 +11,14 @@ var logError = function(err){
 	if((typeof(err.statusCode) !== "undefined" && err.statusCode != 302) || 
 	(typeof(err.StatusCodeError) !== "undefined" && err.StatusCodeError != 302)){
 		//console.log("Error Status : " + (typeof(err.statusCode) !== "undefined" ? err.statusCode:err.StatusCodeError) +", Msg : "+err.message);
+		//console.log(err);
 		throw err;
-	}else{
+	}else if((typeof(err.statusCode) !== "undefined" && err.statusCode == 302)){
 		console.log("Qi Object already present in the Service\n");
+	}
+	else{
+		console.log("An error occured!\n" + err);
+		throw err;
 	}
 };
 
@@ -110,16 +115,16 @@ http.createServer(function(request1, response) {
 			}
 		}
 	)
+	.catch(function(err){logError(err)});
 
 	var createTypeSuccess = createNamespaceSuccess.then(
 		function(res){
 			console.log("\nCreating a QiType : "+ sampleType.Name);
-			refreshToken(res, client);
-			nowSeconds = Date.now()/1000;
 			if(client.tokenExpires < nowSeconds){
 				return checkTokenExpired(client).then(
 					function(res){
 						refreshToken(res, client);
+						console.log("Creating a type now...");
 						return client.createType(tenantId, sampleNamespaceId, sampleType);
 					}).catch(function(err){logError(err)});
 			}else{
