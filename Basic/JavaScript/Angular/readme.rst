@@ -55,88 +55,17 @@ Running the example
 The Qi Services page contains five buttons that demonstrate the main functionality of Qi:
 
 	1) **Create and Insert**: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
-	2) **Update**: Updates the events 
-	3) **Retrieve**: Gets all the events
-	4) **Add Behavior**: Creates and adds the behavior to the streams
-	5) **leanup**: Deletes the events, stream, behavior, and type type.
+        2) **Retrieve Events**: Updates the events that were inserted in the first step.
+        3) **Update**: Updates the events that were previously inserted.
+        4) **Retrieve Events**: Retrieves events from the stream.
+	5) **Add Behavior**: Creates and adds the behavior to the streams
+	6)  **Range Events**; Computes the range of events.
+	7) **Cleanup**: Deletes the events, stream, stream behavior, and type.
+
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
 
-Messages to look for:
 
-  After clicking ``Create and Insert``, look for the following messages:
-
-::  
-
-    Creating Namespace
-    Namespace found
-    Creating Type...
-    Type created
-    Creating stream...
-    Inserting values...
-
-
-  After clicking ``Retrieve Events`` button, look for:
-
-::
-
-    All events removed
-    Deleting stream...
-    Stream Deleted
-    Behavior Deleted
-    Deleting Type...
-    Type Deleted
-
-
-  After clicking the ``Retrieve Events``, look for:
-
-::
-
-    All events removed
-    Deleting stream...
-    Stream Deleted
-    Behavior Deleted
-    Deleting Type...
-    Type Deleted
-
-
-  
-  After clicking ``Add Behavior``, look for:
-
-::
-
-    All events removed
-    Deleting stream...
-    Stream Deleted
-    Behavior Deleted
-    Deleting Type...
-    Type Deleted
-    
-
-  After clicking ``Range Events``, look for:
-
-::
-
-    All events removed
-    Deleting stream...
-    Stream Deleted
-    Behavior Deleted
-    Deleting Type...
-    Type Deleted
-
-
-  After clicking Create and Insert button, look for:
-
-::
-
-    All events removed
-    Deleting stream...
-    Stream Deleted
-    Behavior Deleted
-    Deleting Type...
-    Type Deleted
-    
-    
 
 The rest of the sections in this document outline the operation of Qi and the underlying process and technology of the example.
 
