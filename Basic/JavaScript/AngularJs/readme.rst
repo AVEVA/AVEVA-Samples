@@ -6,7 +6,7 @@ Building a client to make REST API calls to the Qi Service
 
 This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0. Although this example uses AngularJS, other javascript frameworks should also work.
 
-Because the example is an ASP.Net Web Application, you must use Visual Studio to run it.
+Because the example is an ASP.Net Web Application, you must use Microsoft Visual Studio to run it.
 
 Prerequisites
 -------------
