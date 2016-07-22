@@ -4,9 +4,9 @@ Qi JavaScript Example using AngularJS
 Building a client to make REST API calls to the Qi Service
 ----------------------------------------------------------
 
-This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0.
-Because the example is an ASP.Net Web Application, you must 
-use Visual Studio to run it.
+This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0. Although this example uses AngularJS, other javascript frameworks should also work.
+
+Because the example is an ASP.Net Web Application, you must use Visual Studio to run it.
 
 Prerequisites
 -------------
@@ -41,8 +41,7 @@ Follow these steps to prepare your environment to run the example:
   .constant('QI_SERVER_URL', 'QI_URL')
   .constant('QI_SERVER_APPID', 'QI_APP_ID_URL')
   .constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
-  .constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
-  .constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
+
 
  6. In Visual Studio, run the example by clicking **Start**.
  7. Click the **Login** button in the top-right corner of the screen and log in using a Microsoft account that is configured to use the Qi service.
@@ -59,7 +58,7 @@ The Qi Services page contains five buttons that demonstrate the main functionali
         3) **Update**: Updates the events that were previously inserted.
         4) **Retrieve Events**: Retrieves events from the stream.
 	5) **Add Behavior**: Creates and adds the behavior to the streams
-	6)  **Range Events**; Computes the range of events.
+	6)  **Range Events**; Retrieves events from a stream based on a starting index and a specified number of events.
 	7) **Cleanup**: Deletes the events, stream, stream behavior, and type.
 
 
