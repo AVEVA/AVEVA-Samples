@@ -51,7 +51,7 @@ Follow these steps to prepare your environment to run the example:
 Running the example
 ------------------------------
 
-The Qi Services page contains five buttons that demonstrate the main functionality of Qi:
+The Qi Services page contains seven buttons that demonstrate the main functionality of Qi:
 
 	1) **Create and Insert**: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
         2) **Retrieve Events**: Updates the events that were inserted in the first step.
