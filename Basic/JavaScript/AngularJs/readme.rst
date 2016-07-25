@@ -14,7 +14,7 @@ Prerequisites
 You must have the following software installed on your computer:
  - AngularJS version 1 (available on GitHub)
  - Microsoft Visual Studio 2015
- - A browser (such as Microsoft Internet Explorer)
+ - A modern browser (OSIsoft recommends Google Chrome or Mozilla Firefox)
 
 
 Preparation
@@ -44,7 +44,7 @@ Follow these steps to prepare your environment to run the example:
 
 
  6. In Visual Studio, run the example by clicking **Start**.
- 7. Click the **Login** button in the top-right corner of the screen and log in using a Microsoft account that is configured to use the Qi service.
+ 7. After your browser opens, click the **Login** button in the top-right corner of the screen and log in using a Microsoft account that is configured to use the Qi service.
  8. After you are logged in, click the **Qi Service** tab at the top of the screen.
  
 
