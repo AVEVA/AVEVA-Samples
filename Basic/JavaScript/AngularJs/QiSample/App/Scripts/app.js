@@ -29,7 +29,7 @@ angular.module('qisampleApp')
 
     var endpoints = {
         // Map the location of a request to an API to a the identifier of the associated resource
-        'https://qi-data.osisoft.com': 'https://qihomeprod.onmicrosoft.com/historian'
+        'PLACEHOLDER_QI_URL': 'PLACEHOLDER_QI_APP_ID_URL'
     };
 
 

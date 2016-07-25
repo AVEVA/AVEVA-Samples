@@ -8,7 +8,7 @@ function ($scope, QiService, $timeout, adalService, QiObjects) {
 
             $scope.printSelected = null;
             $scope.selectedNSitem = null;
-            $scope.namespaceId = "TestSample";
+            $scope.namespaceId = "WaveData_SampleNamespace";
             $scope.typeId = "WaveData_SampleType";
             $scope.typeList = [];
             $scope.message = "Click the button";
@@ -23,7 +23,7 @@ function ($scope, QiService, $timeout, adalService, QiObjects) {
             
             var consoleMsg = "To view the result of this operation, open the console by pressing F12.";
             var bHasTypes = false;
-            var sampleNamespaceId = "TestSample";
+            var sampleNamespaceId = "WaveData_SampleNamespace";
             var sampleTypeId = "WaveData_SampleType";
             var sampleStreamId = "WaveData_SampleStream";
             var sampleBehaviorId = "WaveData_SampleBehavior";
