@@ -14,5 +14,9 @@
 {"Title":"NodeJs",
 "Description":"Sample Qi client written in NodeJs",
 "Url":"https://github.com/osisoft/Qi-Samples/tree/master/Basic/JavaScript/NodeJs"
+},
+{"Title":"AngularJs",
+"Description":"Sample Qi client written in AngularJS",
+"Url":"https://github.com/osisoft/Qi-Samples/tree/master/Basic/JavaScript/AngularJs"
 }
 ]
