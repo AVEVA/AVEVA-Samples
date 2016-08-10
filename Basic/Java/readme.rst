@@ -85,7 +85,7 @@ Obtain an Authentication Token
 
 The Qi Service is secured by obtaining tokens from an Azure Active
 Directory instance. The sample applications are examples of a
-*confidential client*. Such clients provide a user ID and secret that
+*confidential client*. Such clients provide a user Id and secret that
 are authenticated against the directory. The sample code includes
 several placeholder strings. You must replace these placeholders with the
 authentication values you received from OSIsoft. The strings are
@@ -176,7 +176,7 @@ Now you create the key property, which is an integer type named
         orderProperty.QiType = intType;
         orderProperty.IsKey = true;
 
-You have specified the ID, used the intType ``QiType`` you created, and most
+You have specified the Id, used the intType ``QiType`` you created, and most
 importantly, set IsKey to ``true``. The double value properties are
 created in the same way. The following is the code that creates the ``Radians`` property:
 
@@ -300,7 +300,7 @@ Create a Qi Stream
 An ordered series of events is stored in a Qi stream. We've created a
 ``QiStream`` class mirroring the properties of the native Qi Service
 ``QiStream`` class. All you have to do is create a local QiStream
-instance, give it an id, assign it a type, and submit it to the Qi
+instance, give it an Id, assign it a type, and submit it to the Qi
 Service. You may optionally assign a stream behavior to the stream. This
 is the code to create a stream named ``evtStream`` for recording events
 of our sample type. The value of the ``TypeId`` property is the value of
@@ -533,7 +533,7 @@ stream goes first so that the reference count on the type goes to zero:
         qiclient.deleteStream("evtStreamJ");
         qiclient.DeleteBehavior("evtStreamStepLeading");
 
-Note that we've passed the id of the stream, not the stream object.
+Note that we've passed the Id of the stream, not the stream object.
 Similarly
 
 .. code:: java
