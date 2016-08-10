@@ -9,7 +9,7 @@ The sample described in this section differs from the other samples in that the 
 Configure constants for authentication
 ==============================
 
-The Qi service is secured by obtaining tokens from an Azure Active Directory instance. The sample applications are examples of *confidential clients*. Such clients provide a user ID and secret that are authenticated against the directory. The sample code includes several placeholder strings for authentication. You must replace the placeholders with the authentication-related values you received from OSIsoft. The strings are located in the ``Constants.cs`` file.
+The Qi service is secured by obtaining tokens from an Azure Active Directory instance. The sample applications are examples of *confidential clients*. Such clients provide a user Id and secret that are authenticated against the directory. The sample code includes several placeholder strings for authentication. You must replace the placeholders with the authentication-related values you received from OSIsoft. The strings are located in the ``Constants.cs`` file.
 
 .. code:: c#
 
@@ -79,12 +79,12 @@ Note that ``Create`` is a generic method, and the type is the class that is defi
         sampleType.Id = sampleTypeId;
         sampleType = qiMetadataService.GetOrCreateTypeAsync(sampleType).GetAwaiter().GetResult();
 
-If an identifier is not specified, the Qi service automatically assigns one, which will be included in the returned QiType. The ID is required for stream creation, so be sure to capture the returned QiType instance.
+If an identifier is not specified, the Qi service automatically assigns one, which will be included in the returned QiType. The Id is required for stream creation, so be sure to capture the returned QiType instance.
 
 Create a QiStream
 =================
 
-An ordered series of events is stored in a QiStream. Stream creation involves creating a local QiStream instance, giving it an ID, assigning it a type, and submitting it to the Qi service. You may optionally assign a QiStreamBehavior to the stream. The following code shows how to create a stream named ``evtStream`` for recording events of the sample type. The value of the ``TypeId`` property is set to the value of the QiType ``Id`` property for the QiType created in the previous step.
+An ordered series of events is stored in a QiStream. Stream creation involves creating a local QiStream instance, giving it an Id, assigning it a type, and submitting it to the Qi service. You may optionally assign a QiStreamBehavior to the stream. The following code shows how to create a stream named ``evtStream`` for recording events of the sample type. The value of the ``TypeId`` property is set to the value of the QiType ``Id`` property for the QiType created in the previous step.
 
 .. code:: c#
 
