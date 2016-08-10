@@ -74,7 +74,7 @@ redirection, this sample handles redirecting 302 (Found) responses
 manually.
 
 The sample applications are examples of a *confidential client*. Such
-clients provide a user ID and secret that are authenticated against the
+clients provide a user Id and secret that are authenticated against the
 directory. The sample code includes several placeholder strings. You
 must replace these placeholders with the authentication-related values you received
 from OSIsoft. The strings are found in the ``Constants.cs`` file.
@@ -171,7 +171,7 @@ You can now create the key property, which is an integer type and is named
         orderProperty.QiType = intType;
         orderProperty.IsKey = true;
 
-Thus far, you have specified the ID, used the intType ``QiType`` that was created, and most
+Thus far, you have specified the Id, used the intType ``QiType`` that was created, and most
 importantly, set IsKey to ``true``. The double value properties are
 created in a similar manner. The code for creating the ``Radians`` property is shown below:
 
@@ -224,7 +224,7 @@ Create a QiStream
 An ordered series of events is stored in a QiStream. The 
 ``QiStream`` class mirrors the properties of the native Qi service
 ``QiStream`` class. All you have to do is create a local QiStream
-instance, assign it an ID, specify a type, and submit it to the Qi
+instance, assign it an Id, specify a type, and submit it to the Qi
 service. You may optionally assign a QiStreamBehavior to the stream.
 The following code shows how to create a stream named ``evtStream`` for recording
 events of our sample type. The value of the ``TypeId`` property is the
@@ -239,7 +239,7 @@ different URL. The code below shows how it is called from the main program:
         QiStream evtStream = JsonConvert.DeserializeObject<QiStream>(evtStreamString);
 
 Note that ``TypeId`` property of the stream is set to the value of
-the ID of the QiType that was created earlier. Types and behaviors are reference
+the Id of the QiType that was created earlier. Types and behaviors are reference
 counted; a type or behavior cannot be deleted until all streams that use it
 are also deleted.
 
@@ -377,7 +377,7 @@ reference count on the type goes to zero:
 
         qiclient.DeleteStreamAsync("evtStream");
 
-Note that the id of the stream is passed, not the stream object.
+Note that the Id of the stream is passed, not the stream object.
 Similarly, the following code deletes the type from the Qi service
 
 .. code:: c#
