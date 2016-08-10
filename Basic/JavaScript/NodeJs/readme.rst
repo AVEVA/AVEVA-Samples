@@ -67,7 +67,7 @@ The REST calls in this sample are set up as follows:
                     },
                     form : {    
                                 'grant_type' : 'client_credentials',
-                                'client_id' : CLIENT-ID,
+                                'client_Id' : CLIENT-ID,
                                 'client_secret' : CLIENT-KEY,
                                 'resource' : RESOURCE-URL
                             }
@@ -95,7 +95,7 @@ Obtain an Authentication Token
 The Qi service is secured by obtaining tokens from an Azure Active
 Directory instance. A token must be attached to every request made to
 Qi, in order for the request to succeed. The sample applications are
-examples of a *confidential client*. Such clients provide a user ID and
+examples of a *confidential client*. Such clients provide a user Id and
 secret that are authenticated against the directory. The sample code
 includes several placeholder strings. You must replace these with the
 authentication-related values you received from OSIsoft. The strings are
@@ -265,7 +265,7 @@ Create a QiStream
 -----------------
 
 An ordered series of events is stored in a QiStream. All you have to do
-is create a local QiStream instance, give it an id, assign it a type,
+is create a local QiStream instance, give it an Id, assign it a type,
 and submit it to the Qi service. You may optionally assign a
 QiStreamBehavior to the stream. The value of the ``TypeId`` property is
 the value of the QiType ``Id`` property.
