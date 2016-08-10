@@ -190,7 +190,7 @@ Create a QiStream
 -----------------
 
 An ordered series of events is stored in a QiStream. 
-To create a local QiStream instance, you provide an ID, assign a type,
+To create a local QiStream instance, you provide an Id, assign a type,
 and submit it to the Qi service. You may optionally assign a
 QiStreamBehavior to the stream. The value of the ``TypeId`` property is
 the value of the QiType ``Id`` property.
