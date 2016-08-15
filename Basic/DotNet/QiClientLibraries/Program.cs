@@ -256,7 +256,7 @@ namespace QiClientLibsSample
         /// <returns></returns>
         protected static QiSecurityHandler GetQiSecurityHandler()
         {
-            QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey.ConvertToSecureString());
+            QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey);
 
             return qiSecurityHandler;
         }
