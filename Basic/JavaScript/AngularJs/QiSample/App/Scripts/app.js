@@ -6,8 +6,8 @@ angular.module('qisampleApp', ['ngRoute',
 
 angular.module('qisampleApp')
 
-.constant('QI_SERVER_URL', 'PLACEHOLDER_QI_URL')
-.constant('QI_SERVER_APPID', 'PLACEHOLDER_QI_APP_ID_URL')
+.constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
+.constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
 .constant('QI_SAMPLEWEBAPP_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
 
 
@@ -29,7 +29,7 @@ angular.module('qisampleApp')
 
     var endpoints = {
         // Map the location of a request to an API to a the identifier of the associated resource
-        'PLACEHOLDER_QI_URL': 'PLACEHOLDER_QI_APP_ID_URL'
+        'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL': 'PLACEHOLDER_REPLACE_WITH_RESOURCE'
     };
 
 

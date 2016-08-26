@@ -92,7 +92,6 @@
     <Content Include="App\Scripts\QiObjects.js" />
     <Content Include="App\Scripts\QiService.js" />
     <Content Include="App\Scripts\qiController.js" />
-    <Content Include="App\Scripts\streamListController.js" />
     <Content Include="App\Scripts\userDataCtrl.js" />
     <Content Include="App\Views\dashboard.html" />
     <Content Include="App\Views\Home.html" />

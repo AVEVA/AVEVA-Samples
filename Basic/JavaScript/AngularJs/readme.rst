@@ -38,13 +38,13 @@ Follow these steps to prepare your environment to run the example:
  
  .. code:: javascript
  
-  .constant('QI_SERVER_URL', 'PLACEHOLDER_QI_URL')
-  .constant('QI_SERVER_APPID', 'PLACEHOLDER_QI_APP_ID_URL')
+  .constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
+  .constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
   .constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
 
   var endpoints = {
         // Map the location of a request to an API to a the identifier of the associated resource
-        'PLACEHOLDER_QI_URL': 'PLACEHOLDER_QI_APP_ID_URL'
+        'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL': 'PLACEHOLDER_REPLACE_WITH_RESOURCE'
   };
  6. In Visual Studio, run the example by clicking **Start**.
  7. After your browser opens, click the **Login** button in the top-right corner of the screen and log in using a Microsoft account that is configured to use the Qi service.
