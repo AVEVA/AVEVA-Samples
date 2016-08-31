@@ -33,32 +33,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=2.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.IdentityModel.Clients.ActiveDirectory.2.24.304111323\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.13.4.878, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.4\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms, Version=2.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.IdentityModel.Clients.ActiveDirectory.2.24.304111323\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.13.4.878, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.4\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.824, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Core.1.0.0.824\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Core, Version=1.0.0.827, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Core.1.0.0.827\lib\portable-net45+win\OSIsoft.Qi.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.824, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Http.Channel.1.0.0.824\lib\net46\OSIsoft.Qi.Http.Channel.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Channel, Version=1.0.0.827, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Http.Channel.1.0.0.827\lib\net46\OSIsoft.Qi.Http.Channel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.824, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Http.Client.1.0.0.824\lib\net46\OSIsoft.Qi.Http.Client.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Client, Version=1.0.0.827, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Http.Client.1.0.0.827\lib\net46\OSIsoft.Qi.Http.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSIsoft.Qi.Http.Security, Version=1.0.0.824, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OSIsoft.Qi.Http.Security.1.0.0.824\lib\net46\OSIsoft.Qi.Http.Security.dll</HintPath>
+    <Reference Include="OSIsoft.Qi.Http.Security, Version=1.0.0.827, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OSIsoft.Qi.Http.Security.1.0.0.827\lib\net46\OSIsoft.Qi.Http.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
