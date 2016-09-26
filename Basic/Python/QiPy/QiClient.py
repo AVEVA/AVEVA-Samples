@@ -594,7 +594,6 @@ class QiClient(object):
                                                     skip = str(skip),
                                                     count = str(count),
                                                     reverse = str(reverse),
-                                                    boundaryType = str(boundaryType)), 
                                                     boundaryType = str(boundaryType.name)), 
                         headers = self.__qi_headers())
         response = conn.getresponse()
