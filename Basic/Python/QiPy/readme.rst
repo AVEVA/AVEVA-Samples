@@ -1,123 +1,95 @@
-Python Samples: Building a Client to make REST API Calls to the Qi Service.
+Python Sample: Building a Client to make REST API Calls to the Qi Service
 ===========================================================================
 
-The examples in this topic demonstrate how Qi REST APIs are invoked
+The sample code in this topic demonstrates how to invoke Qi REST APIs 
 using Python.
+
+The sections that follow provide a brief description of the process from beginning to end. 
 
 Establish a Connection
 ----------------------
 
-The sample in this topic uses ``httplib`` module to connect a service
+The sample in this topic uses the ``http.client`` module to connect a service
 endpoint. A new connection is opened as follows:
 
 .. code:: python
 
-        conn = httplib.HTTPConnection(url-name)
+        connection = http.HTTPSConnection(url)
 
--  *url-name* is the service endpoint (for example: "localhost:3380").
+-  *url* is the service endpoint (for example: ``https://qi-data.osisoft.com``).
    The connection is used by the ``QiClient`` class, which encapsulates
-   the REST API and performs authentication.
+   the Qi REST API.
 
 Obtain an Authentication Token
 ------------------------------
 
-The Qi service is secured by obtaining tokens from an Azure Active
-Directory instance. For a request to succeed, a token must be attached
-to every request made to Qi. The sample applications described here are
-examples of a *confidential client*. Such clients provide a user ID and
-secret key that are authenticated against the directory. The sample code
-includes several placeholder strings. You must replace these strings
-with the authentication-related values you received from OSIsoft. The
-strings are found in ``Constants.py``:
+The Qi service is secured by Azure Active Directory. For a request to succeed, a token must be obtained 
+and attached to every request made to Qi. The sample applications are examples of a confidential client. 
+Confidential clients provide a user Id and secret that are authenticated against the directory. The 
+sample code includes several placeholder strings; you must replace the placeholder strings with the 
+values you received from OSIsoft. The strings are found in ``config.ini``:
 
 .. code:: python
 
-        #VERY IMPORTANT: edit the following values to reflect the authorization items you were given
-        authItems = {'resource' : "PLACEHOLDER_REPLACE_WITH_RESOURCE",
-                     'authority' : "PLACEHOLDER_REPLACE_WITH_AUTHORITY",#Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token,
-                     'appId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
-                     'appKey' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
-        
-        TenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
-        QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"
+  [Configuraitons] 
+  Namespace = Samples
 
-You must replace ``resource``, ``authority``, ``appId``, and ``appKey``
-with the appropriate values provided by OSIsoft. The ``authItems`` array
-is passed to the ``QiClient`` constructor.
+  [Access]
+  Address = https://qi-data.osisoft.com
+  Tenant = REPLACE_WITH_TENANT_ID
 
-The Python sample in this topic uses raw OAuth 2 calls to obtain an
-authentication token. The other samples use libraries from Microsoft
-that handles token acquisition, caching, and refreshing, but such a
-library is not currently available for Python.
+  [Credentials]
+  Resource = https://qihomeprod.onmicrosoft.com/historian
+  AppId = REPLACE_WITH_APPLICATION_IDENTIFIER
+  AppKey = REPLACE_WITH_APPLICATION_SECRET
+    
 
-During initialization, ``QiClient`` makes the following calls:
+In your own code, you must replace ``Tenant``, ``Resource``, ``AppId``, and ``AppKey``. You might also want 
+to replace the ``Namespace``. The QiClient usea the information to acquire and attach the appropriate 
+authentication token to requests.
 
-.. code:: python
-
-        self.__getToken()
-        if not self.__token:
-            return
-
-The first call, ``__getToken``, makes the OAuth call to the Azure Active
-Directory instance to get a token, then assigns the value (assuming the
-application is successfully authenticated) to the member variable
-``__token``. Next, QiClient checks to ensure it has an authentication
-token. If a token is not found the call will fail and the call returns.
-The following shows the code for ``__getToken``:
+Some of the other Qi samples use Azure Active Directory libraries to manage token acquisition, caching, 
+and refreshing; however, those libraries are not available in Python, so this sample acquires the 
+token directly and performs rudimentry caching and refreshing. The sample must be adjusted appropriately 
+if token timing is changed. Before invoking each request, QiClient makes the following call to 
+acquire the token:
 
 .. code:: python
 
-        def __getToken(self):     
-            if self.__expiration < (time.time()/100):
-                return
-                
-            response = requests.post(self.__authItems['authority'], 
-                                     data = { 'grant_type' : 'client_credentials',
-                                             'client_id' : self.__authItems['appId'],
-                                                'client_secret' : self.__authItems['appKey'],
-                                                'resource' : self.__authItems['resource']
-                                                })
-            if response.status_code == 200:
-                self.__token = response.json()['access_token']
-                self.__expiration = response.json()['expires_on']
-            else:
-                self.__token = ""
-                print "Authentication Failure : "+response.reason
+  self.__getToken()
+    
+Acquire a QiNamespace
+----------------------
 
-Authentication tokens expire after a period of time so the token must be
-periodically refreshed. The first lines of ``__getToken`` check whether
-the token has expired and returns if it has not. Otherwise, the
-credentials are submitted to Azure Active Directory to obtain a fresh
-token. The ``__getToken`` method is called before each REST API call,
-and the token is passed as part of the headers:
-
-.. code:: python
-
-    def __qi_headers(self):
-        return {
-            "Authorization" : "bearer %s" % self.__token,
-            "Content-type": "application/json", 
-            "Accept": "text/plain"
-        }
-
-Note that the value of the ``Authorization`` header is the word
-"bearer," followed by a space, followed by the token value itself.
-
-
-Create a Namespace
-------------------
-
-A Qi Namespace can be thought of as a container to hold streams, types, and behaviors. 
-Namespaces allow you to separate streams or simply have a sandbox in which to test Qi.
-
-.. code:: python
-
-  client.createNamespace(constants.TenantId, sampleNamespace)
+In Qi, a namespace provides isolation within a Tenant. Each namespace has its 
+own collection of Streams, Types, and Behaviors. 
 
 
 Create a QiType
 ---------------
 
+To use Qi, you define QiTypes that describe the kinds of data you want to store in QiStreams. 
+QiTypes are the model that define QiStreams. QiTypes can define simple atomic types, such as integers, 
+floats or strings, or they can define complex types by grouping other QiTypes. For more information
+about QiTypes, refer to the Qi Documentation.
+
+In the sample, the QiType representing WaveData is defined in the getWaveDataType method of test.py. 
+
+WaveData contains properties of integer and double atomic types. The ``getWaveDataType`` function begins by 
+defining a base QiType for each atomic type. Next, the WaveData properties are each represented 
+by a QiTypeProperty. Each QiTypeProperty’s QiType field is assigned an integer or double QiType. 
+The WaveData QiType is defined as a collection of the QiTypeProperties.
+The WaveData Order property represents the type’s key, and its IsKey property is set to true.
+The WaveData type is created in Qi using the ``createType`` method in QiClient.py. 
+
+
+Create a QiStream
+-----------------
+
+****************************
+
+
+************
 QiStreams represent open-ended collections of strongly-typed, ordered
 events. Qi is capable of storing any data type you care to define. The
 only requirement is that the data type must have one or more properties
