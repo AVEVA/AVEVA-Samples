@@ -5,170 +5,146 @@ from QiTypeProperty import QiTypeProperty
 
 class QiType(object):
     """Qi type definitions"""
-
-    __qiTypeCodeMap = {
-        QiTypeCode.Empty : 0,
-        QiTypeCode.Object : 1,
-        QiTypeCode.DBNull : 2,
-        QiTypeCode.Boolean : 3,
-        QiTypeCode.Char : 4,
-        QiTypeCode.SByte : 5,
-        QiTypeCode.Byte : 6,
-        QiTypeCode.Int16 : 7,
-        QiTypeCode.UInt16 : 8,
-        QiTypeCode.Int32 : 9,
-        QiTypeCode.UInt32 : 10,
-        QiTypeCode.Int64 : 11,
-        QiTypeCode.UInt64 : 12,
-        QiTypeCode.Single : 13,
-        QiTypeCode.Double : 14,
-        QiTypeCode.Decimal : 15,
-        QiTypeCode.DateTime : 16,
-        QiTypeCode.String : 18,
-        QiTypeCode.Guid : 19,
-        QiTypeCode.DateTimeOffset : 20,
-        QiTypeCode.TimeSpan : 21,
-        QiTypeCode.Version : 22    
-        }
-
-
     def __init__(self):
-        self.__Id = ""
-        self.__Name = None
-        self.__Description = None
-        self.__QiTypeCode = self.__qiTypeCodeMap[QiTypeCode.Object]
-        self.__Properties = []
+        self.QiTypeCode = QiTypeCode.Empty
 
-    def getId(self):
-        return self.__Id
-
-    def setId(self, Id):
-        self.__Id = Id
-
-    Id = property(getId, setId)
-
+    @property
+    def Id(self):
+        return self.__id
+    @Id.setter
+    def Id(self, id):
+        self.__id = id
     
-    def getName(self):
-        return self.__Name
-
-    def setName(self, Name):
-        self.__Name = Name
-
-    Name = property(getName, setName)
-
+    @property
+    def Name(self):
+        return self.__name
+    @Name.setter
+    def Name(self, name):
+        self.__name = name
     
-    def getDescription(self):
-        return self.__Description
+    @property
+    def Description(self):
+        return self.__description
+    @Description.setter
+    def Description(self, description):
+        self.__description = description
 
-    def setDescription(self, Description):
-        self.__Description = Description
-
-    Description = property(getDescription, setDescription)
-
+    @property
+    def BaseType(self):
+        return self.__baseType
+    @BaseType.setter
+    def BaseType(self, baseType):
+        self.__baseType = baseType
     
-    def getQiTypeCode(self):
-        for key, val in self.__qiTypeCodeMap.iteritems():
-            if self.__QiTypeCode == val:
-                return key        
+    @property
+    def QiTypeCode(self):
+        return self.__typeCode
+    @QiTypeCode.setter
+    def QiTypeCode(self, typeCode):
+        self.__typeCode = typeCode
 
-    def setQiTypeCode(self, QiTypeCode):
-        self.__QiTypeCode = self.__qiTypeCodeMap[QiTypeCode]
+    @property
+    def Properties(self):
+        return self.__properties
+    @Properties.setter
+    def Properties(self, properties):
+        self.__properties = properties
 
-    QiTypeCode = property(getQiTypeCode, setQiTypeCode)
+    #@property
+    #def IsGenericType(self):
+    #    return self.__isGenericType
+    #@IsGenericType.setter
+    #def IsGenericType(self, isGenericType):
+    #    self.__isGenericType = isGenericType
 
+    #@property
+    #def GenericArguments(self):
+    #    return self.__genericArguments
+    #@GenericArguments.setter
+    #def GenericArguments(self, genericArguments):
+    #    self.__genericArguments = genericArguments
 
-    def getProperties(self):
-        return self.__Properties
+    #@property
+    #def IsReferenceType(self):
+    #    return self.__isReferenceType
+    #@IsReferenceType.setter
+    #def IsReferenceType(self, isReferenceType):
+    #    self.__isReferenceType = isReferenceType
 
-    def setProperties(self, Properties):
-        self.__Properties = Properties
+    #@property
+    #def DerivedTypes(self):
+    #    return self.__derivedTypes
+    #@DerivedTypes.setter
+    #def DerivedTypes(self, derivedTypes):
+    #    self.__derivedTypes = derivedTypes
 
-    Properties = property(getProperties, setProperties)
+    #@property
+    #def ExtensionData(self):
+    #    return self.__extensionData
+    #@ExtensionData.setter
+    #def ExtensionData(self, extensionData):
+    #    self.__extensionData = extensionData
 
     def toString(self):
         return json.dumps(self.toDictionary())
     
     def toDictionary(self):
-        dictionary = {
-            "Id" : self.__Id,
-            "QiTypeCode" : self.__QiTypeCode }
+        # required properties
+        dictionary = { 'QiTypeCode' : self.QiTypeCode.value }
 
-        if self.__Name is not None and len(self.__Name) > 0:
-            dictionary["Name"] = self.__Name
+        # optional properties
+        if hasattr(self, 'Properties'):
+            dictionary['Properties'] = []
+            for value in self.Properties:
+                dictionary['Properties'].append(value.toDictionary())
 
-        if self.__Description is not None and len(self.__Description) > 0:
-            dictionary["Description"] = self.__Description
+        if hasattr(self, 'Id'):
+            dictionary['Id'] = self.Id
 
-        if self.__Properties is not None and len(self.__Properties) > 0:
-            dictionary["Properties"] = []
-        
-        for value in self.__Properties:
-            dictionary['Properties'].append(value.toDictionary())
+        if hasattr(self, 'Name'):
+            dictionary['Name'] = self.Name
+
+        if hasattr(self, 'Description'):
+            dictionary['Description'] = self.Description
+
+        #if self.BaseType is not None and len(self.BaseType) > 0:
+        if hasattr(self, 'BaseType'):
+            dictionary['BaseType'] = self.BaseType.toDictionary()
 
         return dictionary
  
     @staticmethod
     def fromString(content):
          dictionary = json.loads(content)
-#         print "fromString"
-#         print dictionary
-#         print len(dictionary)
          return QiType.fromDictionary(dictionary)
 
     @staticmethod
     def fromDictionary(content):
-#        print "fromDict"
-#        print content
-#        print len(content)
         type = QiType()
 
         if len(content) == 0:
             return type
 
-        if "Id" in content:
-            type.Id = content["Id"]
+        if 'Id' in content:
+            type.Id = content['Id']
 
-        if "Name" in content:
-            type.Name = content["Name"]
+        if 'Name' in content:
+            type.Name = content['Name']
 
-        if "Description" in content:
-            type.Description = content["Description"]
+        if 'Description' in content:
+            type.Description = content['Description']
 
-        if "QiTypeCode" in content:            
-            type.__QiTypeCode = content["QiTypeCode"]            
+        if 'QiTypeCode' in content:
+            type.QiTypeCode = QiTypeCode(content['QiTypeCode'])
+
+        if 'BaseType' in content:
+            type.BaseType = QiType.fromDictionary(content['BaseType'])
        
-        if "Properties" in content:
-            type.Properties = []
-            properties = content["Properties"]
-
+        if 'Properties' in content:
+            properties = content['Properties']
             if properties is not None and len(properties) > 0:
+                type.Properties = []
                 for value in properties:
                     type.Properties.append(QiTypeProperty.fromDictionary(value))
 
         return type
-
-        
-    #qiTypeCodeMap = {
-    #    "Empty" : 0,
-    #    "Object" : 1,
-    #    "DBNull" : 2,
-    #    "Boolean" : 3,
-    #    "Char" : 4,
-    #    "SByte" : 5,
-    #    "Byte" : 6,
-    #    "Int16" : 7,
-    #    "UInt16" : 8,
-    #    "Int32" : 9,
-    #    "UInt32" : 10,
-    #    "Int64" : 11,
-    #    "UInt64" : 12,
-    #    "Single" : 13,
-    #    "Double" : 14,
-    #    "Decimal" : 15,
-    #    "DateTime" : 16,
-    #    "String" : 18,
-    #    "Guid" : 19,
-    #    "DateTimeOffset" : 20,
-    #    "TimeSpan" : 21,
-    #    "Version" : 22    
-    #    }

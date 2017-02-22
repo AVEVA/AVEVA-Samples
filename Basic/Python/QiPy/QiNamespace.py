@@ -3,23 +3,19 @@ import json
 class QiNamespace(object):
     """description of class"""
 
-    def __init__(self):
-        self.__Id = 0
-    
-    def getId(self):
-        return self.__Id
-
-    def setId(self, id):
-        self.__Id = id
-
-    Id = property(getId, setId)
+    @property
+    def Id(self):
+        return self.__id
+    @Id.setter
+    def Id(self, id):
+        self.__id = id
 
     def toString(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
-        
-        dictionary = { "Id" : self.__Id }
+        # required properties
+        dictionary = { 'Id' : self.Id }
 
         return dictionary
 
@@ -33,7 +29,7 @@ class QiNamespace(object):
         namespace = QiNamespace()
 
         if len(content) == 0:
-            return typeProperty
+            return namespace
 
         if "Id" in content:
             namespace.Id = content["Id"]

@@ -1,648 +1,622 @@
-﻿from urlparse import urlparse
-import urllib
-import httplib as http
+﻿from urllib.parse import urlparse
+import urllib.request, urllib.parse, urllib.error
+import http.client as http
 import json
+from QiError import QiError
 from QiType import QiType
 from QiStream import QiStream
 from QiStreamBehavior import QiStreamBehavior
 from QiNamespace import QiNamespace
-from QiError import QiError
+from QiBoundaryType import QiBoundaryType
 from JsonEncoder import Encoder
 import requests
 import time
 
-
 class QiClient(object):
     """description of class"""
 
-    def __init__(self, url, authItems):
+    def __init__(self, tenant, url, resource, appId, appKey):
+        self.__version = 0.1
 
+        self.__tenant = tenant
+        self.__uri = self.__validateUri(url)
+        self.__resource = resource
+        self.__appId = appId
+        self.__appKey = appKey
 
+        self.__authority = "https://login.windows.net/{tenant}/oauth2/token".format(tenant = self.__tenant)
 
-        self.url = self.__validateUri(url)
-        version = 0.1
-        self.__tenantsBase = "/Qi/Tenants"
-        self.__namespacesBase = "/Qi/{tenant_id}/Namespaces"
-        self.__typesBase = "/Qi/{tenant_id}/{namespace_id}/Types"
-        self.__streamsBase = "/Qi/{tenant_id}/{namespace_id}/Streams"
-        self.__behaviorBase = "/Qi/{tenant_id}/{namespace_id}/Behaviors"
-        self.__insertSingle = "/Data/InsertValue"
-        self.__insertMultiple = "/Data/InsertValues"
-        self.__getTemplate = "/{stream_id}/Data/GetWindowValues?{start}&{end}"
-        self.__getRangeTemplate = "/Data/GetRangeValues?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}"
-        self.__updateSingle = "/Data/UpdateValue"
-        self.__updateMultiple = "/Data/UpdateValues"
-        self.__removeSingleTemplate = "/{stream_id}/Data/RemoveValue?{param}"
-        self.__removeMultipleTemplate = "/{stream_id}/Data/RemoveWindowValues?{start}&{end}"
-        self.__getLast = "/data/getlastvalue"
-        self.__replaceValue = "/data/replaceValue"
-        self.__replaceValues = "/data/replaceValues"
-        self.__authItems = authItems
         self.__token = ""
-        self.__expiration = ""
-        
+        self.__expiration = 0
         self.__getToken()
-        if not self.__token:
-            return
 
-        print "----------------------------------"
-        print "  ___  _ ____"        
-        print " / _ \(_)  _ \ _   _ "
-        print "| | | | | |_) | | | |"
-        print "| |_| | |  __/| |_| |"
-        print " \__\_\_|_|    \__, |"
-        print "               |___/ "	
-        print "Version "+ str(version)
-        print "----------------------------------"
-        #conn = http.HTTPConnection(self.url)
-        #conn.request("HEAD", "/Qi/Types", headers = self.__qi_headers())
-        #response = conn.getresponse()        
-        #if response.status != 200:
-        #    raise QiError("Failed to connect to Qi endpoint {status}:{reason}".
-        #                  format(status = response.status, reason = response.reason))
+        self.__setPathAndQueryTemplates()
 
-        print "Qi endpoint at {url}".format(url = self.url)
+    @property
+    def Version(self):
+        return self.__version
 
-    def createNamespace(self, tenant_id, namespace):
-        if namespace is None:
-            return
+    @property
+    def Uri(self):
+        return self.__uri
 
-        if not isinstance(namespace, QiNamespace):
-            return
+    def createNamespace(self, namespace):
+        if namespace is None or not isinstance(namespace, QiNamespace):
+            raise TypeError
 
-        try:
-            self.__getToken()
-        except Exception as e:
-            print(e)
-
-        conn = http.HTTPSConnection(self.url)
-        conn.request("Post", self.__namespacesBase.format(tenant_id = tenant_id), namespace.toString(), headers = self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("Post", self.__namespacesPath.format(tenant_id = self.__tenant), namespace.toString(), headers = self.__qiHeaders())
+        response = connection.getresponse()
 
         if response.status == 302: # Found
             url = urlparse(response.getheader("Location"))
-            conn = http.HTTPSConnection(self.url)
-            conn.request("GET", url.path, headers = self.__qi_headers())            
-            response = conn.getresponse()
+            connection = http.HTTPSConnection(self.__uri)
+            connection.request("GET", url.path, headers = self.__qiHeaders())            
+            response = connection.getresponse()
 
-        if response.status == 200 or response.status == 201:
-            namespace = QiNamespace.fromString(response.read().decode())
-            conn.close()
-            return namespace
-        else:
-            conn.close()
+        if response.status != 200 and response.status != 201:
+            connection.close()
             raise QiError("Failed to create Namespace. {status}:{reason}".format(status = response.status, reason = response.reason))
 
-    def deleteNamespace(self, tenant_id, namespace_id):
+        namespace = QiNamespace.fromString(response.read().decode())
+        connection.close()
+        return namespace
+
+    def deleteNamespace(self, namespace_id):
         if namespace_id is None:
-            return
+            raise TypeError
 
-        self.__getToken()
-
-        conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__namespacesBase.format(tenant_id = tenant_id) + "/" + namespace_id, headers = self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request('DELETE', self.__namespacesPath.format(tenant_id = self.__tenant) + "/" + namespace_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
         
         if response.status != 200:
-            conn.close()
             raise QiError("Failed to delete Namespace, {namespace_id}. {status}:{reason}".
                           format(namespace_id = namespace_id, status = response.status, reason = response.reason))
     
-    def createType(self, tenant_id, namespace_id, qi_type):
-        if qi_type is None:
-            return
-       
-        if not isinstance(qi_type, QiType):
-            return
+    def createType(self, namespace_id, type):
+        if namespace_id is None:
+            raise TypeError
+        if type is None or not isinstance(type, QiType):
+            raise TypeError
         
-        self.__getToken()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("POST", self.__typesPath.format(tenant_id = self.__tenant, namespace_id = namespace_id), type.toString(), self.__qiHeaders())
+        response = connection.getresponse()
         
-        conn = http.HTTPSConnection(self.url)
-        
-        conn.request("POST", self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id), qi_type.toString(), self.__qi_headers())
-        response = conn.getresponse()
-        
-        if response.status == 302: # Found                      
+        if response.status == 302: # Found
             url = urlparse(response.getheader("Location"))
-            conn = http.HTTPSConnection(self.url)
-            conn.request("GET", url.path, headers = self.__qi_headers())            
-            response = conn.getresponse()
+            connection = http.HTTPSConnection(self.__uri)
+            connection.request("GET", url.path, headers = self.__qiHeaders())            
+            response = connection.getresponse()
         
-        if response.status == 200 or response.status == 201:
-            type = QiType.fromString(response.read().decode())
-            conn.close()
-            return type
-        else:
-            conn.close()
+        if response.status != 200 and response.status != 201:
+            connection.close()
             raise QiError("Failed to create type. {status}:{reason}".format(status = response.status, reason = response.reason))
-    
-    def getTypes(self, tenant_id, namespace_id):
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
-        
-        conn.request("GET", self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id), headers = self.__qi_headers())
-        response = conn.getresponse()
-        
-        if response.status != 200:            
-            conn.close()
-            raise QiError("Failed to get QiTypes {status}:{reason}".
-                          format(status = response.status, reason = response.reason))
-        typesresponse = response.read().decode()
-        conn.close()
-        typeslist = json.loads(typesresponse)
-        returnlist = []
-        for typedict in typeslist:
-            returnlist.append(QiType.fromDictionary(typedict))
-        
-        return returnlist
 
-    def getType(self, tenant_id, namespace_id, type_id):
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
+        type = QiType.fromString(response.read().decode())
+        connection.close()
+        return type
+
+    def getType(self, namespace_id, type_id):
+        if namespace_id is None:
+            raise TypeError
+        if type_id is None:
+            raise TypeError
         
-        conn.request("GET", self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + type_id, headers = self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", self.__typesPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + type_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
+
         if response.status != 200:            
-            conn.close()
+            connection.close()
             raise QiError("Failed to get QiType, {type_id}. {status}:{reason}".
                           format(type_id = type_id, status = response.status, reason = response.reason))
         
         typesresponse = response.read().decode()
-        conn.close()
+        connection.close()
         return QiType.fromString(typesresponse)        
+    
+    def getTypes(self, namespace_id):
+        if namespace_id is None:
+            raise TypeError
+        
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", self.__typesPath.format(tenant_id = self.__tenant, namespace_id = namespace_id), headers = self.__qiHeaders())
+        response = connection.getresponse()
+        
+        if response.status != 200:            
+            connection.close()
+            raise QiError("Failed to get QiTypes {status}:{reason}".format(status = response.status, reason = response.reason))
+
+        content = json.loads(response.read().decode())
+        results = []
+        for item in content:
+            results.append(QiType.fromDictionary(item))
+        connection.close()
+        return results
                 
-    def deleteType(self, tenant_id, namespace_id, type_id):
-        self.__getToken()
+    def deleteType(self, namespace_id, type_id):
+        if namespace_id is None:
+            raise TypeError
         if type_id is None:
-            return
-        conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' +  type_id, headers = self.__qi_headers())
-        response = conn.getresponse()
+            raise TypeError
+        
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request('DELETE', self.__typesPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + type_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
         
         if response.status != 200:
-            conn.close()
             raise QiError("Failed to delete QiType, {type_id}. {status}:{reason}".
                           format(type_id = type_id, status = response.status, reason = response.reason))
 
-    def createBehavior(self, tenant_id, namespace_id, behavior):
-        self.__getToken()
-        if not isinstance(behavior, QiStreamBehavior):
-            return
-        conn = http.HTTPSConnection(self.url)
+    def createBehavior(self, namespace_id, behavior):
+        if namespace_id is None:
+            raise TypeError
+        if behavior is None or not isinstance(behavior, QiStreamBehavior):
+            raise TypeError
         
-        payload = behavior.toString()
-        conn.request("POST", self.__behaviorBase.format(tenant_id = tenant_id, namespace_id = namespace_id), payload, self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("POST", self.__behaviorsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id), behavior.toString(), self.__qiHeaders())
+        response = connection.getresponse()
 
-        if response.status == 302: # Found                      
+        if response.status == 302: # Found
             url = urlparse(response.getheader("Location"))
-            conn = http.HTTPSConnection(self.url)
-            conn.request("GET", url.path, headers = self.__qi_headers())            
-            response = conn.getresponse()
-        if response.status == 200 or response.status == 201:
-            string = response.read().decode()
-            type = QiStreamBehavior.fromString(string)
-            conn.close()
-            return type
-        else:
-            conn.close()
+            connection = http.HTTPSConnection(self.__uri)
+            connection.request("GET", url.path, headers = self.__qiHeaders())            
+            response = connection.getresponse()
+
+        if response.status != 200 and response.status != 201:
+            connection.close()
             raise QiError("Failed to create behavior. {status}:{reason}".format(status = response.status, reason = response.reason))
-            
-    def deleteBehavior(self, tenant_id, namespace_id, behaviorId):
-        self.__getToken()
-        if behaviorId is None:
-            return
-        conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__behaviorBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' +  behaviorId, headers = self.__qi_headers())
-        response = conn.getresponse()
+
+        string = response.read().decode()
+        behavior = QiStreamBehavior.fromString(string)
+        connection.close()
+        return behavior
+
+    def getBehavior(self, namespace_id, behavior_id):
+        if namespace_id is None:
+            raise TypeError
+        if behavior_id is None:
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request('GET', self.__behaviorsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + behavior_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
         
         if response.status != 200:
-            conn.close()
+            connection.close()
             raise QiError("Failed to delete QiType, {behaviorId}. {status}:{reason}".
-                            format(behaviorId = behaviorId, status = response.status, reason = response.reason))
-                          
-    # Qi Stream
-    def createStream(self, tenant_id, namespace_id, qi_stream):
-        self.__getToken()
-        if qi_stream is None:
-            return
+                            format(behaviorId = behavior_id, status = response.status, reason = response.reason))
 
-        if not isinstance(qi_stream, QiStream):
-            return
-   
-        conn = http.HTTPSConnection(self.url)
+        string = response.read().decode()
+        behavior = QiStreamBehavior.fromString(string)
+        connection.close()
+        return behavior
+
+    def getBehaviors(self, namespace_id):
+        if namespace_id is None:
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request('GET', self.__behaviorsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id), headers = self.__qiHeaders())
+        response = connection.getresponse()
         
-        conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id), qi_stream.toString(), self.__qi_headers())
+        if response.status != 200:
+            connection.close()
+            raise QiError("Failed to delete QiType, {behaviorId}. {status}:{reason}".
+                            format(behaviorId = behavior_id, status = response.status, reason = response.reason))
 
-        response = conn.getresponse()
+        content = json.loads(response.read().decode())
+        results = []
+        for item in content:
+            results.append(QiStreamBehavior.fromDictionary(item))
+        connection.close()
+        return results
+            
+    def deleteBehavior(self, namespace_id, behavior_id):
+        if namespace_id is None:
+            raise TypeError
+        if behavior_id is None:
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request('DELETE', self.__behaviorsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + behavior_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+        
+        if response.status != 200:
+            raise QiError("Failed to delete QiBehavior, {behaviorId}. {status}:{reason}".
+                            format(behaviorId = behavior_id, status = response.status, reason = response.reason))
+                          
+    def createStream(self, namespace_id, stream):
+        if namespace_id is None:
+            raise TypeError
+        if stream is None or not isinstance(stream, QiStream):
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("POST", self.__streamsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id), stream.toString(), self.__qiHeaders())
+        response = connection.getresponse()
         
         if response.status == 302:
-            url =  urlparse(response.getheader("Location"))
-            conn = http.HTTPSConnection(self.url)
-            conn.request("GET", url.path, headers = self.__qi_headers())
-            response = conn.getresponse()
-        if response.status == 200 or response.status == 201:
-            stream = QiStream.fromString(response.read().decode())
-            conn.close()
-            return stream
-        else:
-            conn.close()
-            raise QiError("Failed to create QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-        
+            url = urlparse(response.getheader("Location"))
+            connection = http.HTTPSConnection(self.__uri)
+            connection.request("GET", url.path, headers = self.__qiHeaders())
+            response = connection.getresponse()
 
-    def getStream(self, tenant_id, namespace_id, stream_id):
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
-        
-        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + stream_id, headers = self.__qi_headers())
-        response = conn.getresponse()
+        if response.status != 200 and response.status != 201:
+            connection.close()
+            raise QiError("Failed to create QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream.Id, status = response.status, reason = response.reason))
+
+        stream = QiStream.fromString(response.read().decode())
+        connection.close()
+        return stream
+
+    def getStream(self, namespace_id, stream_id):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", self.__streamsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + stream_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
 
         if response.status != 200:            
-            conn.close()
+            connection.close()
             raise QiError("Failed to get QiStream {stream_id}. {status}:{reason}".
                           format(stream_id = stream_id, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
-        conn.close()
-        return QiStream.fromDictionary(json.loads(streamResponse))        
+        connection.close()
+        return QiStream.fromDictionary(json.loads(streamResponse))
 
-    def getStreams(self, tenant_id, namespace_id):
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
-        
-        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id), headers = self.__qi_headers())
-        response = conn.getresponse()
+    def getStreams(self, namespace_id):
+        if namespace_id is None:
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", self.__streamsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id), headers = self.__qiHeaders())
+        response = connection.getresponse()
 
         if response.status != 200:            
-            conn.close()
-            raise QiError("Failed to get QiStreams. {status}:{reason}".
-                          format(status = response.status, reason = response.reason))
+            connection.close()
+            raise QiError("Failed to get QiStreams. {status}:{reason}".format(status = response.status, reason = response.reason))
         
-        streamssresponse = response.read().decode()
-        conn.close()
-        streamsslist = json.loads(streamssresponse)
-        returnlist = []
-        for streamdict in streamsslist:
-            returnlist.append(QiStream.fromDictionary(streamdict))
-        
-        return returnlist
+        content = json.loads(response.read().decode())
+        results = []
+        for item in content:
+            results.append(QiStream.fromDictionary(item))
+        connection.close()
+        return results
 
-    def updateStream(self, tenant_id, namespace_id, qi_stream): 
-        self.__getToken()
-        if qi_stream is None:
-            return
+    def updateStream(self, namespace_id, stream): 
+        if namespace_id is None:
+            raise TypeError
+        if stream is None or not isinstance(stream, QiStream):
+            raise TypeError
 
-        if not isinstance(qi_stream, QiStream):
-            return
-        
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id, qi_stream.toString(), self.__qi_headers())
-
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("PUT", self.__streamsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + stream.Id, stream.toString(), self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
      
         if response.status != 200:
-            conn.close()
-            raise QiError("Failed to edit QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-        conn.close()
-
-
-    def deleteStream(self, tenant_id, namespace_id, stream_id):
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
+            raise QiError("Failed to edit QiStream, {stream_id}. {status}:{reason}".format(stream_id = stream.Id, status = response.status, reason = response.reason))
         
-        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + stream_id, headers = self.__qi_headers())
-        response = conn.getresponse()
+    def deleteStream(self, namespace_id, stream_id):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("DELETE", self.__streamsPath.format(tenant_id = self.__tenant, namespace_id = namespace_id) + '/' + stream_id, headers = self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
 
         if response.status != 200:            
-            conn.close()
-            raise QiError("Failed to delete QiStream {stream_id}. {status}:{reason}".
+            raise QiError("Failed to delete QiStream {stream_id}. {status}:{reason}".format(stream_id = stream_id, status = response.status, reason = response.reason))
+        
+    def insertValue(self, namespace_id, stream_id, value):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if value is None:
+            raise TypeError
+            
+        payload = json.dumps(value, cls = Encoder)
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("POST", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "InsertValue"), 
+            payload, self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+        
+        if response.status != 200:
+            raise QiError("Failed to insert value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+
+    def insertValues(self, namespace_id, stream_id, values):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if values is None:
+            raise TypeError
+            
+        payload = json.dumps(values, cls = Encoder)
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("POST", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "InsertValues"), 
+            payload, self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to insert values for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+    
+    def updateValue(self, namespace_id, stream_id, value):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if value is None:
+            raise TypeError
+            
+        payload = json.dumps(value, cls = Encoder)
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("PUT", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "UpdateValue"), 
+            payload, self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+
+    def updateValues(self, namespace_id, stream_id, values):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if values is None:
+            raise TypeError
+            
+        payload = json.dumps(values, cls = Encoder)
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("PUT", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "UpdateValues"), 
+            payload, self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+                          
+    def replaceValue(self, namespace_id, stream_id, value):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if value is None:
+            raise TypeError
+            
+        payload = json.dumps(value)
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("PUT", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "replaceValue"), 
+            payload, self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+         
+    def replaceValues(self, namespace_id, stream_id, values):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if values is None:
+            raise TypeError
+            
+        payload = json.dumps(values)
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("PUT", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "replaceValues"), 
+            payload, self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+            
+    def removeValue(self, namespace_id, stream_id, index):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if index is None:
+            raise TypeError
+            
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("DELETE", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = self.__removeSingleValueQuery.format(param = urllib.parse.urlencode({"index": index}))), 
+            headers = self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to remove value for QiStream, {stream_id}. {status}:{reason}".
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
+    
+    def removeWindowValues(self, namespace_id, stream_id, start, end):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
+            
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("DELETE", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = self.__removeWindowValuesQuery.format(
+                        start = urllib.parse.urlencode({"startIndex": start}),
+                        end = urllib.parse.urlencode({"endIndex": end}))), 
+            headers = self.__qiHeaders())
+        response = connection.getresponse()
+        connection.close()
+
+        if response.status != 200:
+            raise QiError("Failed to remove value for QiStream, {stream_id}. {status}:{reason}".
                           format(stream_id = stream_id, status = response.status, reason = response.reason))
         
-        conn.close()
-    
+    def getLastValue(self, namespace_id, stream_id):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
 
-    # Stream data
-
-    def getLastValue(self, tenant_id, namespace_id, qi_stream):
-        if qi_stream is None:
-            return
-        
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
-        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__getLast, 
-                     headers = self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = "getlastvalue"), 
+            headers = self.__qiHeaders())
+        response = connection.getresponse()
 
         if response.status != 200:            
-            conn.close()
+            connection.close()
             raise QiError("Failed to get last value for QiStream {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
-        conn.close()
+        connection.close()
         return json.loads(streamResponse)
-
-    def insertValue(self, tenant_id, namespace_id, qi_stream, value):
-        """
-        Insert the specified value into this Qi stream.
-        The value parameter must be a dictionary of data matching
-        the stream type. For example:
-        {"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.4472922Z" }
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
+                   
+    def getWindowValues(self, namespace_id, stream_id, start, end):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
             
-        self.__getToken()
-        payload = json.dumps(value, cls = Encoder)
-        
-        conn = http.HTTPSConnection(self.url)
-        conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__insertSingle, 
-                     payload, self.__qi_headers())
-
-        response = conn.getresponse()
-        
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to insert value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-                
-    def updateValue(self, tenant_id, namespace_id, qi_stream, value):
-        """
-        Update a single event if found
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        payload = json.dumps(value, cls = Encoder)
-        
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__updateSingle, 
-                     payload, self.__qi_headers())
-
-        response = conn.getresponse()
-
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-
-    def updateValues(self, tenant_id, namespace_id, qi_stream, value):
-        """
-        Update an arry of events in a Qi stream. Replaces an event with the same key.
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        payload = json.dumps(value, cls = Encoder)
-
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__updateMultiple, 
-                     payload, self.__qi_headers())
-
-        response = conn.getresponse()
-
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-                          
-    def replaceValue(self, tenant_id, namespace_id, qi_stream, value):
-        """
-        Update the specified value, as matched by *key* type property
-        into this Qi stream. The value parameter must be a dictionary of data matching
-        the stream type. For example:
-        {"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.4472922Z" }
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        payload = json.dumps(value)
-
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__replaceValue, 
-                     payload, self.__qi_headers())
-
-        response = conn.getresponse()
-
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-            
-    def removeValue(self, tenant_id, namespace_id, qi_stream, index):
-        """
-        Delete the value at the specified index. The value index is the data stored
-        in the *key* type property of the Qi type. The index parameter must be a 
-        string. For example:
-        '2015-08-12T22:07:49.4472922Z'
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        params = urllib.urlencode({"index": index})
-        conn = http.HTTPSConnection(self.url)
-        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + self.__removeSingleTemplate.format(stream_id = qi_stream.Id, param = params), 
-                     headers = self.__qi_headers())
-
-        response = conn.getresponse()
-
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to remove value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-          
-        
-    def insertValues(self, tenant_id, namespace_id, qi_stream, values):
-        """
-        Insert the specified list of values submitted into the specified Qi stream.
-        The values parameter must be a list of dictionaries like:
-        [{"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.111000Z" }, 
-        {"Value": 104.5, "Timestamp": "2015-08-12T24:07:49.9991111Z" }]
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        payload = json.dumps(values, cls = Encoder)
-        
-        conn = http.HTTPSConnection(self.url)
-        conn.request("POST", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__insertMultiple, 
-                     payload, self.__qi_headers())
-
-        response = conn.getresponse()
-
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to insert values for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-    
-    def replaceValues(self, tenant_id, namespace_id, qi_stream, value):
-        """
-        Update the specified values, as matched by *key* type property
-        into this Qi stream. The value must be an array of events whose keys should be updated
-        [{"Value": 102.3, "Timestamp": "2015-08-12T22:07:49.4472922Z" },
-        {"Value": 101.1, "Timestamp": "2015-08-12T22:08:49.4472922Z" }]
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        payload = json.dumps(value)
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + qi_stream.Id + self.__replaceValues, 
-                     payload, self.__qi_headers())
-
-        response = conn.getresponse()
-
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to replace value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-    
-    def removeValues(self, tenant_id, namespace_id, qi_stream, start, end):
-        """
-        Delete the value at the specified index. The value index is the data stored
-        in the *key* type property of the Qi type. The index parameter must be a 
-        string. For example:
-        '2015-08-12T22:07:49.4472922Z'
-        """
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        #params = urllib.urlencode({"startIndex": start, "endIndex": end}) 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
-                        self.__removeMultipleTemplate.format(stream_id = qi_stream.Id, 
-                        start = urllib.urlencode({"startIndex": start}),
-                        end = urllib.urlencode({"endIndex": end})), 
-                        headers = self.__qi_headers())
-
-        response = conn.getresponse()
-        if response.status != 200:
-            conn.close()
-            raise QiError("Failed to remove value for QiStream, {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
-                          
-    def getWindowValues(self, tenant_id, namespace_id, qi_stream, start, end):
-        if qi_stream is None:
-            return
-
-        if not isinstance(qi_stream, QiStream):
-            raise TypeError("stream must be a valid QiStream")
-            
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
-
-        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
-                        self.__getTemplate.format(stream_id = qi_stream.Id, 
-                                                 start = urllib.urlencode({"startIndex": start}), 
-                                                    end = urllib.urlencode({"endIndex": end})), 
-                        headers = self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = self.__getWindowValuesQuery.format(start = urllib.parse.urlencode({"startIndex": start}),
+                                                      end = urllib.parse.urlencode({"endIndex": end}))),
+            headers = self.__qiHeaders())
+        response = connection.getresponse()
 
         if response.status != 200:            
-            conn.close()
+            connection.close()
             raise QiError("Failed to get window values for QiStream {stream_id}. {status}:{reason}".
-                          format(stream_id = qi_stream.Id, status = response.status, reason = response.reason))
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
-        conn.close()
+        connection.close()
         return json.loads(streamResponse)
 
-    def getRangeValues(self, tenant_id, namespace_id, streamId, start, skip, count, reverse, boundaryType):
+    def getRangeValues(self, namespace_id, stream_id, start, skip, count, reverse, boundaryType):
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if skip is None:
+            raise TypeError
+        if count is None:
+            raise TypeError
+        if reverse is None or not isinstance(reverse, bool):
+            raise TypeError
+        if boundaryType is None or not isinstance(boundaryType, QiBoundaryType):
+            raise TypeError
             
-        self.__getToken()
-        conn = http.HTTPSConnection(self.url)
-
-        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
-                        streamId +
-                        self.__getRangeTemplate.format(start = start, 
-                                                    skip = str(skip),
-                                                    count = str(count),
-                                                    reverse = str(reverse),
-                                                    boundaryType = str(boundaryType.name)), 
-                        headers = self.__qi_headers())
-        response = conn.getresponse()
+        connection = http.HTTPSConnection(self.__uri)
+        connection.request("GET", "{path}/{query}".format(
+                path = self.__dataPath.format(tenant_id = self.__tenant, namespace_id = namespace_id, stream_id = stream_id), 
+                query = self.__getRangeValuesQuery.format(start = start, 
+                                                     skip = str(skip),
+                                                     count = str(count),
+                                                     reverse = str(reverse),
+                                                     boundaryType = str(boundaryType.name))),
+            headers = self.__qiHeaders())
+        response = connection.getresponse()
 
         if response.status != 200:            
-            conn.close()
+            connection.close()
             raise QiError("Failed to get range values for QiStream {stream_id}. {status}:{reason}".
-                          format(stream_id = streamId, status = response.status, reason = response.reason))
+                          format(stream_id = stream_id, status = response.status, reason = response.reason))
         
         streamResponse = response.read().decode()
-        conn.close()
+        connection.close()
         return json.loads(streamResponse)
-
-    #get all Qi types
-    def listTypes(self, tenant_id, namespace_id):
-        types = self.getTypes(tenant_id, namespace_id)
-        print "{len} Qi types found:".format(len = len(types))
-        print ",\n ".join(t.Name for t in types)
-    
-    #list all Qi streams
-    def listStreams(self, tenant_id, namespace_id):
-        streams = self.getStreams(tenant_id, namespace_id)
-        print "{len} Qi streams found:".format(len = len(streams))
-        print ",\n".join("{0} ({1})".format(t.Name, t.TypeId)  for t in streams)
         
     # private methods
-    def __getToken(self):     
-        if (self.__expiration and self.__expiration < (time.time()/100)):
-            return
-        response = requests.post(self.__authItems['authority'], 
+
+    def __getToken(self): 
+        # tokens take a while to expire, so don't bother refreshing until some
+        # time has passed
+        if ((self.__expiration - time.time()) > 5 * 60):
+            return self.__token
+
+        response = requests.post(self.__authority, 
                                  data = { 'grant_type' : 'client_credentials',
-                                         'client_id' : self.__authItems['appId'],
-                                            'client_secret' : self.__authItems['appKey'],
-                                            'resource' : self.__authItems['resource']
-                                            })
-        if response.status_code == 200:
-            self.__token = response.json()['access_token']
-            self.__expiration = response.json()['expires_on']
-        else:
-            self.__token = ""
-            print "Authentication Failure : "+response.reason
+                                          'client_id' : self.__appId,
+                                          'client_secret' : self.__appKey,
+                                          'resource' : self.__resource
+                                        })
+        if response.status_code != 200:
+            raise Exception("Failed to retrieve AAD Token")
+
+        self.__expiration = float(response.json()['expires_on'])
+        self.__token = response.json()['access_token']
+        return self.__token
             
-    def __qi_headers(self):
-        return {
-            "Authorization" : "bearer %s" % self.__token,
-            "Content-type": "application/json", 
-            "Accept": "text/plain"
-            }
-    #check if uri contains http        
+    def __qiHeaders(self):
+        return { "Authorization" : "bearer %s" % self.__getToken(),
+                 "Content-type": "application/json", 
+                 "Accept": "text/plain"
+               }
+
     def __validateUri(self, url):
         splitUri = urlparse(url)
-        return splitUri.netloc+splitUri.path
+        return splitUri.netloc + splitUri.path
+
+    def __setPathAndQueryTemplates(self):
+        self.__namespacesPath = "/Qi/{tenant_id}/Namespaces"
+        self.__typesPath = "/Qi/{tenant_id}/{namespace_id}/Types"
+        self.__behaviorsPath = "/Qi/{tenant_id}/{namespace_id}/Behaviors"
+        self.__streamsPath = "/Qi/{tenant_id}/{namespace_id}/Streams"
+        self.__dataPath = "/Qi/{tenant_id}/{namespace_id}/Streams/{stream_id}/Data"
+
+        self.__removeSingleValueQuery = "RemoveValue?{param}"
+        self.__removeWindowValuesQuery = "RemoveWindowValues?{start}&{end}"
+        self.__getWindowValuesQuery = "GetWindowValues?{start}&{end}"
+        self.__getRangeValuesQuery = "GetRangeValues?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}"
