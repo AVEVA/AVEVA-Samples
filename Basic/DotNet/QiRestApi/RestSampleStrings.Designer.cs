@@ -61,7 +61,7 @@ namespace RestSample {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Qi/Behaviors.
+        ///   Looks up a localized string similar to Qi/{0}/{1}/Behaviors.
         /// </summary>
         internal static string BehaviorsBaseUrl {
             get {
@@ -151,6 +151,15 @@ namespace RestSample {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Qi/{0}/Namespaces.
+        /// </summary>
+        internal static string NamespacesBaseUrl {
+            get {
+                return ResourceManager.GetString("NamespacesBaseUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /{0}/Data/RemoveWindowValues?startIndex={1}&amp;endIndex={2}.
         /// </summary>
         internal static string RemoveMultipleUrlTemplate {
@@ -169,7 +178,7 @@ namespace RestSample {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Qi/Streams.
+        ///   Looks up a localized string similar to Qi/{0}/{1}/Streams.
         /// </summary>
         internal static string StreamsBaseUrl {
             get {
@@ -178,7 +187,7 @@ namespace RestSample {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Qi/Types.
+        ///   Looks up a localized string similar to Qi/{0}/{1}/Types.
         /// </summary>
         internal static string TypesBaseUrl {
             get {

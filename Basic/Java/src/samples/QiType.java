@@ -5,11 +5,11 @@ package samples;
 public class QiType 
 {
 
-	private String Id;
-	private String Name;
-	private String Description;
+	private String Id = "";
+	private String Name = "";
+	private String Description = "";
 	private QiTypeCode QiTypeCode;
-	private QiTypeProperty[] Properties;
+	private QiTypeProperty[] Properties = new QiTypeProperty[0];
 	
 	public String getId() 
 	{

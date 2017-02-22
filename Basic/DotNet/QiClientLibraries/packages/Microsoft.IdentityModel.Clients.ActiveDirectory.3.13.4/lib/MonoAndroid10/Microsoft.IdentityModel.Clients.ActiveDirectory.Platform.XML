@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.IdentityModel.Clients.ActiveDirectory.Platform</name>
+    </assembly>
+    <members>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.BrokerConstants.BrokerAccountType">
+            Account type string.
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.BrokerConstants.AuthtokenType">
+            Authtoken type string.
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.BrokerConstants.ChallangeRequestCertAuthDelimeter">
+            Certificate authorities are passed with delimiter.
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.BrokerConstants.PackageName">
+            Apk packagename that will install AD-Authenticator. It is used to
+            query if this app installed or not from package manager.
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.BrokerConstants.Signature">
+            Signature info for Intune Company portal app that installs authenticator
+            component.
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.BrokerConstants.AzureAuthenticatorAppSignature">
+            Signature info for Azure authenticator app that installs authenticator
+            component.
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters">
+            <summary>
+            Additional parameters used in acquiring user's authorization
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.#ctor(Android.App.Activity)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="callerActivity">activity calling ADAL to acquire token</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.#ctor(Android.App.Activity,System.Boolean)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="callerActivity">activity calling ADAL to acquire token</param>
+            <param name="useBroker">flag to enable or disable broker flow. FALSE by default.</param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.UseBroker">
+            <summary>
+            Flag to enable or disable broker flow. FALSE by default.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.CallerActivity">
+            <summary>
+            Caller Android Activity
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationAgentContinuationHelper">
+            <summary>
+            Static class that consumes the response from the Authentication flow and continues token acquisition. This class should be called in OnActivityResult() of the activity doing authentication.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(System.Int32,Android.App.Result,Android.Content.Intent)">
+            <summary>
+            Sets authentication response from the webview or broker for token acquisition continuation.
+            </summary>
+            <param name="requestCode">Request response code</param>
+            <param name="resultCode">Result code from authentication</param>
+            <param name="data">Response data from authentication</param>
+        </member>
+    </members>
+</doc>

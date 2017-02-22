@@ -8,11 +8,12 @@ All basic samples are console applications that follow the same sequence of even
 
 1. Instantiate a Qi REST client
 2. Obtain an authentication token
-3. Create a Qi Type to represent the data being stored
-4. Create a Qi Stream to store event data in
-5. Create and insert events into the stream
-6. Retrieve events for a specified range
-7. Update events
-8. Delete events
+3. Create a Namespace
+4. Create a Qi Type to represent the data being stored
+5. Create a Qi Stream to store event data in
+6. Create and insert events into the stream
+7. Retrieve events for a specified range
+8. Update events
+9. Delete events
 
 These steps illustrate the fundamental programming steps of Qi.  Over time, the samples may be extended to demonstrate more advanced tasks.  Feel free to modify the samples and propose changes.

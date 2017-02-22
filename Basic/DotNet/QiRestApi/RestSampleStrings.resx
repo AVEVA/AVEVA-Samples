@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BehaviorsBaseUrl" xml:space="preserve">
-    <value>Qi/Behaviors</value>
+    <value>Qi/{0}/{1}/Behaviors</value>
   </data>
   <data name="CreateErrorTemplate" xml:space="preserve">
     <value>Failed to create {0} with Id = {1}</value>
@@ -147,6 +147,9 @@
   <data name="InsertSingleBaseUrl" xml:space="preserve">
     <value>/Data/InsertValue</value>
   </data>
+  <data name="NamespacesBaseUrl" xml:space="preserve">
+    <value>Qi/{0}/Namespaces</value>
+  </data>
   <data name="RemoveMultipleUrlTemplate" xml:space="preserve">
     <value>/{0}/Data/RemoveWindowValues?startIndex={1}&amp;endIndex={2}</value>
   </data>
@@ -154,10 +157,10 @@
     <value>/{0}/Data/RemoveValue?index={1}</value>
   </data>
   <data name="StreamsBaseUrl" xml:space="preserve">
-    <value>Qi/Streams</value>
+    <value>Qi/{0}/{1}/Streams</value>
   </data>
   <data name="TypesBaseUrl" xml:space="preserve">
-    <value>Qi/Types</value>
+    <value>Qi/{0}/{1}/Types</value>
   </data>
   <data name="UpdateErrorTemplate" xml:space="preserve">
     <value>Failed to update {0} with Id = {1}</value>
