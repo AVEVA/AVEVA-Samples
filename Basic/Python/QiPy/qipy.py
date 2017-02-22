@@ -1,5 +1,4 @@
 ﻿# qipy.py
-# chad@osisoft.com
 
 from QiClient import QiClient
 from QiNamespace import QiNamespace
@@ -13,4 +12,3 @@ from QiBoundaryType import QiBoundaryType
 from QiError import QiError
 from WaveData import WaveData
 from JsonEncoder import Encoder
-from Constants import Constants

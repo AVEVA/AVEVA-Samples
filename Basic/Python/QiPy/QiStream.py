@@ -1,77 +1,74 @@
 ﻿import json
+from QiStreamIndex import QiStreamIndex
 
 class QiStream(object):
     """Qi stream definition"""
-
-    def __init__(self):
-        self.__Id = 0
-        self.__Name = None
-        self.__Description = None
-        self.__TypeId = None
-        self.__BehaviorId = None
+    @property
+    def Id(self):
+        return self.__id
+    @Id.setter
+    def Id(self, id):
+        self.__id = id
     
-    def getId(self):
-        return self.__Id
-
-    def setId(self, Id):
-        self.__Id = Id
-
-    Id = property(getId, setId)
-
-
-    def getName(self):
-        return self.__Name
-
-    def setName(self, Name):
-        self.__Name = Name
-
-    Name = property(getName, setName)
-
+    @property
+    def Name(self):
+        return self.__name
+    @Name.setter
+    def Name(self, name):
+        self.__name = name
     
-    def getDescription(self):
-        return self.__Description
+    @property
+    def Description(self):
+        return self.__description
+    @Description.setter
+    def Description(self, description):
+        self.__description = description
+        
+    @property
+    def TypeId(self):
+        return self.__typeId
+    @TypeId.setter
+    def TypeId(self, typeId):
+        self.__typeId = typeId
 
-    def setDescription(self, Description):
-        self.__Description = Description
+    @property
+    def BehaviorId(self):
+        return self.__behaviorId
+    @BehaviorId.setter
+    def BehaviorId(self, behaviorId):
+        self.__behaviorId = behaviorId
 
-    Description = property(getDescription, setDescription)
+    @property
+    def Indexes(self):
+        return self.__indexes 
+    @Indexes.setter
+    def Indexes(self, indexes):
+        self.__indexes = indexes 
 
-
-    def getTypeId(self):
-        return self.__TypeId
-
-    def setTypeId(self, TypeId):
-        self.__TypeId = TypeId
-
-    TypeId = property(getTypeId, setTypeId)
-
-    def getBehaviorId(self):
-        return self.__BehaviorId
-
-    def setBehaviorId(self, BehaviorId):
-        self.__BehaviorId = BehaviorId
-
-    BehaviorId = property(getBehaviorId, setBehaviorId)
+    #TODO support IDictionary<string, object> Metadata { get; set; }
+    #TODO support IList<string> Tags { get; set; }
     
     def toString(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
-        
-        dictionary = {
-            "Id" : self.__Id }
+        # required properties
+        dictionary = { 'Id' : self.Id, 'TypeId' : self.TypeId }
 
-        if self.__Name is not None and len(self.__Name) > 0:
-            dictionary["Name"] = self.__Name
+        # optional properties
+        if hasattr(self, 'Name'):
+            dictionary['Name'] = self.Name
 
-        if self.__Description is not None and len(self.__Description) > 0:
-            dictionary["Description"] = self.__Description
+        if hasattr(self, 'Description'):
+            dictionary['Description'] = self.Description
+            
+        if hasattr(self, 'BehaviorId'):
+            dictionary['BehaviorId'] = self.BehaviorId
 
-        if self.__TypeId is not None:
-            dictionary["TypeId"] = self.TypeId
-        
-        if self.__BehaviorId is not None:
-            dictionary["BehaviorId"] = self.__BehaviorId
+        if hasattr(self, 'Indexes'):
+            dictionary['Indexes'] = []
+            for value in self.Indexes:
+                dictionary['Indexes'].append(value.toDictionary())
 
         return dictionary
 
@@ -82,26 +79,32 @@ class QiStream(object):
 
     @staticmethod
     def fromDictionary(content):
-
         stream = QiStream()
 
         if len(content) == 0:
-            return typeProperty
+            return stream
 
-        if "Id" in content:
-            stream.Id = content["Id"]
+        if 'Id' in content:
+            stream.Id = content['Id']
 
-        if "Name" in content:
-            stream.Name = content["Name"]
+        if 'Name' in content:
+            stream.Name = content['Name']
 
-        if "Description" in content:
-            stream.Description = content["Description"]
+        if 'Description' in content:
+            stream.Description = content['Description']
 
-        if "TypeId" in content:
-            stream.TypeId = content["TypeId"]
+        if 'TypeId' in content:
+            stream.TypeId = content['TypeId']
         
-        if "BehaviorId" in content:
-            stream.BehaviorId = content["BehaviorId"]
+        if 'BehaviorId' in content:
+            stream.BehaviorId = content['BehaviorId']
             
+        if 'Indexes' in content:
+            indexes = content['Indexes']
+            if indexes is not None and len(indexes) > 0:
+                stream.Indexes = []
+                for value in indexes:
+                    stream.Indexes.append(QiStreamIndex.fromDictionary(value))
+
         return stream
 
