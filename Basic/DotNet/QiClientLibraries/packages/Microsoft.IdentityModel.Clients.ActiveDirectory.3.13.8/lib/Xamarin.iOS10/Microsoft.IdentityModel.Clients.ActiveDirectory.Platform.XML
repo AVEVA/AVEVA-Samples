@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.IdentityModel.Clients.ActiveDirectory.Platform</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalInitializer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContinuationHelper">
+            <summary>
+            Static class that consumes the response from the Authentication flow and continues token acquisition. This class should be called in ApplicationDelegate whenever app loads/reloads.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContinuationHelper.IsBrokerResponse(System.String)">
+            <summary>
+            Returns if the response is from the broker app
+            </summary>
+            <param name="sourceApplication">application bundle id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContinuationHelper.SetBrokerContinuationEventArgs(Foundation.NSUrl)">
+            <summary>
+            Sets broker response for continuing authentication flow.
+            </summary>
+            <param name="url"></param>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters">
+            <summary>
+            Additional parameters used in acquiring user's authorization
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.#ctor(UIKit.UIViewController)">
+            <summary>
+            Additional parameters used in acquiring user's authorization
+            </summary>
+            <param name="callerViewController">UIViewController instance</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.#ctor(UIKit.UIViewController,System.Boolean)">
+            <summary>
+            Additional parameters used in acquiring user's authorization
+            </summary>
+            <param name="callerViewController">UIViewController instance</param>
+            <param name="useBroker">skips calling to broker if broker is present. false, by default</param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.CallerViewController">
+            <summary>
+            Caller UIViewController
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.UseBroker">
+            <summary>
+            Skips calling to broker if broker is present. false, by default
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.PreferredStatusBarStyle">
+            <summary>
+            Sets the preferred status bar style for the login form view controller presented
+            </summary>
+            <value>The preferred status bar style.</value>
+        </member>
+    </members>
+</doc>
