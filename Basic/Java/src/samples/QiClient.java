@@ -22,21 +22,29 @@ public class QiClient {
 	private String tenantName = null;
    
 	// REST API url strings
-	@SuppressWarnings("unused")
-	private String tenantsBase = "Qi/Tenants";
-	private String namespacesBase = "Qi/{tenantId}/Namespaces";
-	private String typesBase = "Qi/{tenantId}/{namespaceId}/Types";
-	private String streamsBase = "Qi/{tenantId}/{namespaceId}/Streams";
-	private String behaviorsBase = "Qi/{tenantId}/{namespaceId}/Behaviors";
-	private String insertSingle = "/Data/InsertValue";
-	private String insertMultiple = "/Data/InsertValues";
-	private String getTemplate = "/Data/GetWindowValues?";
-	private String updateSingle = "/Data/UpdateValue";
-	private String updateMultiple = "/Data/UpdateValues";
-	@SuppressWarnings("unused")
-	private String removeSingleTemplate = "/{0}/Data/RemoveValue?index={1}";
-	@SuppressWarnings("unused")
-	private String removeMultipleTemplate = "/{0}/Data/RemoveWindowValues?startIndex={1}&endIndex={2}";
+	private String requestBase = "api/Tenants/{tenantId}/Namespaces/{namespaceId}";
+	private String typesBase = requestBase + "/Types";
+	private String streamsBase = requestBase + "/Streams";
+	private String behaviorsBase = requestBase + "/Behaviors";
+	private String dataManipulateBase = requestBase + "/Streams/{streamId}/Data";
+	private String insertSingle = dataManipulateBase + "/InsertValue";
+	private String insertMultiple = dataManipulateBase + "/InsertValues";
+	private String getSingleTemplate = dataManipulateBase + "/GetValue?";
+	private String getWindowTemplate = dataManipulateBase + "/GetWindowValues?";
+	private String updateSingle = dataManipulateBase + "/UpdateValue";
+	private String updateMultiple = dataManipulateBase + "/UpdateValues";
+	private String removeSingleTemplate = dataManipulateBase + "/RemoveValue?index={index}";
+	private String removeMultipleTemplate = dataManipulateBase + "/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}";
+
+	/*
+	Possible Additions:
+	- getTypes
+	- Type reference count
+	- behavior reference count
+	- patch values
+	- unique gets (GetDistinctValue, FindDistinctValue, GetWindowFiltered, GetRangeFiltered, GetIntervals, GetNamespace, GetNamespaceSummary)
+	 */
+
 	private static AuthenticationContext _authContext = null;
 	private static ExecutorService service = null;
 	private static AuthenticationResult result = null;
@@ -86,8 +94,6 @@ public class QiClient {
 		return urlConnection;
 	}
 
-
-
 	public QiClient(String baseUrl)
 	{	
 		mGson = new GsonBuilder().registerTypeAdapter(GregorianCalendar.class, new UTCDateTypeAdapter()).setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
@@ -120,7 +126,8 @@ public class QiClient {
 		}
 	}
 	
-	public void updateStream(String tenantId, String namespaceId, String streamId, QiStream streamDef){
+	public void updateStream(String tenantId, String namespaceId, String streamId, QiStream streamDef) throws QiError
+	{
 		
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -128,7 +135,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" +streamId );
+			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId );
 			urlConnection = getConnection(url,"PUT");
 		}
 		catch (MalformedURLException mal)
@@ -156,7 +163,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("Update Stream request succeded");
+				System.out.println("Update Stream request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -170,118 +177,8 @@ public class QiClient {
 		}
 	}
 	
-	public String createNamespace(String tenantId, QiNamespace namespace) 
+	public String createBehavior(String tenantId, String namespaceId, QiStreamBehavior behavior) throws QiError
 	{
-		java.net.URL url = null;
-		java.net.HttpURLConnection urlConnection = null;
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-		
-		try
-		{
-			url = new URL(baseUrl + namespacesBase.replace("{tenantId}", tenantId));
-			urlConnection = getConnection(url,"POST");
-		}
-		catch (MalformedURLException mal)
-		{
-			System.out.println("MalformedURLException");
-		}
-		catch (IllegalStateException e) 
-		{
-			e.getMessage();
-		}        
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-		
-		try
-		{
-			String body = mGson.toJson(namespace);
-			OutputStream stream = urlConnection.getOutputStream();
-			OutputStream out = new BufferedOutputStream(stream);
-			OutputStreamWriter writer = new OutputStreamWriter(out);
-			writer.write(body);
-			writer.close();
-
-			int HttpResult = urlConnection.getResponseCode();
-			if (HttpResult == 302)
-			{
-				System.out.println("Namespace object already exists under the tenant.  Fetching the object...");
-				String location = urlConnection.getHeaderField("Location");
-				url = new URL(location);
-				urlConnection = getConnection(url, "GET");
-				
-				HttpResult = urlConnection.getResponseCode();
-			}
-
-			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
-			{
-				throw new QiError(urlConnection, "Namespace creation failed");
-			}
-
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(urlConnection.getInputStream()));
-
-			while ((inputLine = in.readLine()) != null) 
-			{
-				response.append(inputLine);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		urlConnection.disconnect();
-
-		return response.toString();
-	}
-	
-	public void deleteNamespace(String tenantId, String namespaceId) 
-	{
-		java.net.URL url = null;
-		java.net.HttpURLConnection urlConnection = null;
-
-		try
-		{
-			url = new URL(baseUrl + namespacesBase.replace("{tenantId}", tenantId) + "/" + namespaceId);
-			urlConnection = getConnection(url,"DELETE");
-		}
-		catch (MalformedURLException mal)
-		{
-			System.out.println("MalformedURLException");
-		}
-		catch (IllegalStateException e)
-		{
-			e.getMessage();
-		}        
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-	   try
-	   {
-		   int HttpResult = urlConnection.getResponseCode();
-
-		   if (HttpResult == HttpURLConnection.HTTP_OK)
-		   {
-			   System.out.println("Namespace deletion request succeded");
-		   }
-
-		   if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
-		   {
-			   throw new QiError(urlConnection, "Namespace deletion request failed");
-		   }
-	   }
-	   catch (Exception e)
-	   {
-		   e.printStackTrace();
-	   }
-	}
-	
-	public String createBehavior(String tenantId, String namespaceId, QiStreamBehavior behavior){
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 		String inputLine;
@@ -316,7 +213,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("behavior creation request succeded");
+				System.out.println("behavior creation request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -340,7 +237,7 @@ public class QiClient {
 		return response.toString();
 	}
 
-	public void deleteBehavior(String tenantId, String namespaceId, String behaviorId)
+	public void deleteBehavior(String tenantId, String namespaceId, String behaviorId) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -369,7 +266,7 @@ public class QiClient {
 
 		   if (HttpResult == HttpURLConnection.HTTP_OK)
 		   {
-			   System.out.println("behavior creation request succeded");
+			   System.out.println("behavior deletion request succeeded");
 		   }
 
 		   if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -414,7 +311,7 @@ public class QiClient {
 		   
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("get range values request succeded");
+				System.out.println("get range values request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -437,9 +334,8 @@ public class QiClient {
 
 		return response.toString();
 	}
-	
-	
-	public String createType(String tenantId, String namespaceId, QiType typeDef)
+
+	public String createType(String tenantId, String namespaceId, QiType typeDef) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -475,7 +371,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("type creation request succeded");
+				System.out.println("type creation request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -499,8 +395,7 @@ public class QiClient {
 		return response.toString();
 	}
 
-
-	public String createStream(String tenantId, String namespaceId, QiStream streamDef)
+	public String createStream(String tenantId, String namespaceId, QiStream streamDef) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -536,7 +431,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("stream creation request succeded");
+				System.out.println("stream creation request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -562,16 +457,14 @@ public class QiClient {
 
 	}
 
-
-
-	public void createEvent(String tenantId, String namespaceId, String streamId, String evt)
+	public void createEvent(String tenantId, String namespaceId, String streamId, String evt) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + insertSingle);
+			url = new URL(baseUrl + insertSingle.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -597,7 +490,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("Event creation request succeded");
+				System.out.println("Event creation request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -612,8 +505,6 @@ public class QiClient {
 		}
 	}
 
-
-
 	public void createEvents(String tenantId, String namespaceId, String streamId, String json) throws QiError
 	{
 		java.net.URL url = null;
@@ -621,7 +512,7 @@ public class QiClient {
 		int HttpResult = 0; 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + insertMultiple);
+			url = new URL(baseUrl + insertMultiple.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
 			urlConnection = getConnection(url,"POST");
 		}
 		catch (MalformedURLException mal)
@@ -652,7 +543,7 @@ public class QiClient {
 		}
 		if (HttpResult == HttpURLConnection.HTTP_OK)
 		{
-			System.out.println("Events creation request succeded");
+			System.out.println("Events creation request succeeded");
 		}
 
 		if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -661,9 +552,64 @@ public class QiClient {
 		}
 	}
 
+	public String getSingleValue(String tenantId, String namespaceId, String streamId, String index) throws QiError
+	{
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+		String inputLine;
+		StringBuffer jsonResults = new StringBuffer();
+
+		try
+		{
+			url = new URL(baseUrl + getSingleTemplate.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) +  "index=" + index);
+			urlConnection = getConnection(url,"GET");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}
+		catch (IllegalStateException e)
+		{
+			e.getMessage();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		try
+		{
+			int HttpResult = urlConnection.getResponseCode();
+
+			if (HttpResult == HttpURLConnection.HTTP_OK)
+			{
+				System.out.println("GetValue request succeeded");
+			}
+
+			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+			{
+				throw new QiError(urlConnection, "GetValue request failed");
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(urlConnection.getInputStream()));
 
 
-	public String getWindowValues (String tenantId, String namespaceId, String streamId, String startIndex, String endIndex)throws QiError
+			while ((inputLine = in.readLine()) != null)
+			{
+				jsonResults.append(inputLine);
+			}
+			in.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jsonResults.toString();
+	}
+
+	public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex)throws QiError
 	{   
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -672,7 +618,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + getTemplate +  "startIndex=" + startIndex + "&" + "endIndex=" + endIndex);
+			url = new URL(baseUrl + getWindowTemplate.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) +  "startIndex=" + startIndex + "&" + "endIndex=" + endIndex);
 			urlConnection = getConnection(url,"GET");
 		}
 		catch (MalformedURLException mal)
@@ -694,7 +640,7 @@ public class QiClient {
 
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("GetWindowValues request succeded");
+				System.out.println("GetWindowValues request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -720,8 +666,6 @@ public class QiClient {
 		return jsonResults.toString();
 	}
 
-
-
 	public void updateValue(String tenantId, String namespaceId, String streamId, String json)throws QiError 
 	{
 		java.net.URL url = null;
@@ -729,7 +673,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + updateSingle);
+			url = new URL(baseUrl + updateSingle.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
 			urlConnection = getConnection(url,"PUT");
 		}
 		catch (MalformedURLException mal)
@@ -755,7 +699,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("UpdateValue request succeded");
+				System.out.println("UpdateValue request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -771,14 +715,14 @@ public class QiClient {
 	}
 
 
-	public void updateValues(String tenantId, String namespaceId, String streamId, String json) 
+	public void updateValues(String tenantId, String namespaceId, String streamId, String json) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + updateMultiple);
+			url = new URL(baseUrl + updateMultiple.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
 			urlConnection = getConnection(url,"PUT");
 		}
 		catch (MalformedURLException mal)
@@ -804,7 +748,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("Update Values request succeded");
+				System.out.println("Update Values request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -818,8 +762,6 @@ public class QiClient {
 		}
 	}
 
-
-
 	public void removeValue(String tenantId, String namespaceId, String streamId, String index) throws QiError
 	{
 		java.net.URL url = null;
@@ -827,7 +769,7 @@ public class QiClient {
 		
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + "/" + "/Data/RemoveValue?index=" + index);
+			url = new URL(baseUrl + removeSingleTemplate.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -848,7 +790,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("remove Value request succeded");
+				System.out.println("remove Value request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -862,14 +804,16 @@ public class QiClient {
 		}
 	}
 
-	public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) 
+	public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
 
 		try
 		{
-			url = new URL(baseUrl + streamsBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId) + "/" + streamId + "/Data/RemoveWindowValues?startIndex=" + startIndex + "&" + "endIndex=" + endIndex );
+			url = new URL(baseUrl + removeMultipleTemplate.replace("{tenantId}", tenantId)
+											.replace("{namespaceId}", namespaceId).replace("{streamId}", streamId)
+											.replace("{startIndex}", startIndex).replace("{endIndex}", endIndex));
 			urlConnection = getConnection(url,"DELETE");
 		}
 		catch (MalformedURLException mal)
@@ -890,7 +834,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("removeWindowValues request succeded");
+				System.out.println("removeWindowValues request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -932,7 +876,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("deleteStream request succeded");
+				System.out.println("deleteStream request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
@@ -975,7 +919,7 @@ public class QiClient {
 			int HttpResult = urlConnection.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK)
 			{
-				System.out.println("deleteType request succeded");
+				System.out.println("deleteType request succeeded");
 			}
 
 			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
