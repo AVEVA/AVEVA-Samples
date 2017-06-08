@@ -29,11 +29,21 @@ public class QiClient {
 	private String dataManipulateBase = requestBase + "/Streams/{streamId}/Data";
 	private String insertSingle = dataManipulateBase + "/InsertValue";
 	private String insertMultiple = dataManipulateBase + "/InsertValues";
-	private String getTemplate = dataManipulateBase + "/GetWindowValues?";
+	private String getSingleTemplate = dataManipulateBase + "/GetValue?";
+	private String getWindowTemplate = dataManipulateBase + "/GetWindowValues?";
 	private String updateSingle = dataManipulateBase + "/UpdateValue";
 	private String updateMultiple = dataManipulateBase + "/UpdateValues";
 	private String removeSingleTemplate = dataManipulateBase + "/RemoveValue?index={index}";
 	private String removeMultipleTemplate = dataManipulateBase + "/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}";
+
+	/*
+	Possible Additions:
+	- getTypes
+	- Type reference count
+	- behavior reference count
+	- patch values
+	- unique gets (GetDistinctValue, FindDistinctValue, GetWindowFiltered, GetRangeFiltered, GetIntervals, GetNamespace, GetNamespaceSummary)
+	 */
 
 	private static AuthenticationContext _authContext = null;
 	private static ExecutorService service = null;
@@ -116,7 +126,7 @@ public class QiClient {
 		}
 	}
 	
-	public void updateStream(String tenantId, String namespaceId, String streamId, QiStream streamDef)
+	public void updateStream(String tenantId, String namespaceId, String streamId, QiStream streamDef) throws QiError
 	{
 		
 		java.net.URL url = null;
@@ -167,7 +177,7 @@ public class QiClient {
 		}
 	}
 	
-	public String createBehavior(String tenantId, String namespaceId, QiStreamBehavior behavior)
+	public String createBehavior(String tenantId, String namespaceId, QiStreamBehavior behavior) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -227,7 +237,7 @@ public class QiClient {
 		return response.toString();
 	}
 
-	public void deleteBehavior(String tenantId, String namespaceId, String behaviorId)
+	public void deleteBehavior(String tenantId, String namespaceId, String behaviorId) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -324,9 +334,8 @@ public class QiClient {
 
 		return response.toString();
 	}
-	
-	
-	public String createType(String tenantId, String namespaceId, QiType typeDef)
+
+	public String createType(String tenantId, String namespaceId, QiType typeDef) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -386,8 +395,7 @@ public class QiClient {
 		return response.toString();
 	}
 
-
-	public String createStream(String tenantId, String namespaceId, QiStream streamDef)
+	public String createStream(String tenantId, String namespaceId, QiStream streamDef) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -449,7 +457,7 @@ public class QiClient {
 
 	}
 
-	public void createEvent(String tenantId, String namespaceId, String streamId, String evt)
+	public void createEvent(String tenantId, String namespaceId, String streamId, String evt) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -544,7 +552,64 @@ public class QiClient {
 		}
 	}
 
-	public String getWindowValues (String tenantId, String namespaceId, String streamId, String startIndex, String endIndex)throws QiError
+	public String getSingleValue(String tenantId, String namespaceId, String streamId, String index) throws QiError
+	{
+		java.net.URL url = null;
+		java.net.HttpURLConnection urlConnection = null;
+		String inputLine;
+		StringBuffer jsonResults = new StringBuffer();
+
+		try
+		{
+			url = new URL(baseUrl + getSingleTemplate.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) +  "index=" + index);
+			urlConnection = getConnection(url,"GET");
+		}
+		catch (MalformedURLException mal)
+		{
+			System.out.println("MalformedURLException");
+		}
+		catch (IllegalStateException e)
+		{
+			e.getMessage();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		try
+		{
+			int HttpResult = urlConnection.getResponseCode();
+
+			if (HttpResult == HttpURLConnection.HTTP_OK)
+			{
+				System.out.println("GetValue request succeeded");
+			}
+
+			if (HttpResult != HttpURLConnection.HTTP_OK && HttpResult != HttpURLConnection.HTTP_CREATED)
+			{
+				throw new QiError(urlConnection, "GetValue request failed");
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(urlConnection.getInputStream()));
+
+
+			while ((inputLine = in.readLine()) != null)
+			{
+				jsonResults.append(inputLine);
+			}
+			in.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jsonResults.toString();
+	}
+
+	public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex)throws QiError
 	{   
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -553,7 +618,7 @@ public class QiClient {
 
 		try
 		{
-			url = new URL(baseUrl + getTemplate.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) +  "startIndex=" + startIndex + "&" + "endIndex=" + endIndex);
+			url = new URL(baseUrl + getWindowTemplate.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) +  "startIndex=" + startIndex + "&" + "endIndex=" + endIndex);
 			urlConnection = getConnection(url,"GET");
 		}
 		catch (MalformedURLException mal)
@@ -650,7 +715,7 @@ public class QiClient {
 	}
 
 
-	public void updateValues(String tenantId, String namespaceId, String streamId, String json) 
+	public void updateValues(String tenantId, String namespaceId, String streamId, String json) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;
@@ -697,8 +762,6 @@ public class QiClient {
 		}
 	}
 
-
-
 	public void removeValue(String tenantId, String namespaceId, String streamId, String index) throws QiError
 	{
 		java.net.URL url = null;
@@ -741,7 +804,7 @@ public class QiClient {
 		}
 	}
 
-	public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) 
+	public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws QiError
 	{
 		java.net.URL url = null;
 		java.net.HttpURLConnection urlConnection = null;

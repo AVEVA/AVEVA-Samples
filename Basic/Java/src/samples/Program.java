@@ -14,10 +14,11 @@ public class Program
 		final String sampleStreamId = "WaveData_SampleStream";
 		final String sampleBehaviorId = "WaveData_SampleBehavior";
 
+		// Create Qi client to communicate with server
 		System.out.println("Creating a Qi Client object...");
 		String server = Constants._qiServerUrl + "/";
 		QiClient qiclient = new QiClient(server);
-		
+
 		try
 		{
 			// create properties for double Value, DateTime Timstamp, string Units
@@ -47,6 +48,14 @@ public class Program
 			System.out.println("*** creating first event ***");
 			WaveData evt = WaveData.next(1, 2.0, 0);
 			qiclient.createEvent(Constants._tenantId, Constants._namespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
+
+			// How to get a single event
+			System.out.println("*** getting first event ***");
+			String jSingle = qiclient.getSingleValue(Constants._tenantId, Constants._namespaceId, sampleStreamId, "0");
+			Type singleType = new TypeToken<WaveData>(){}.getType();
+			WaveData data = qiclient.mGson.fromJson(jSingle, singleType);
+			System.out.println(data.toString());
+
 
 			List<WaveData> events = new ArrayList<WaveData>();
 			// how to insert an a collection of events
@@ -164,6 +173,8 @@ public class Program
 		{
 			try
 			{
+				System.out.println("\nCleaning up");
+				System.out.println("============");
 				qiclient.deleteStream(Constants._tenantId, Constants._namespaceId, sampleStreamId);
 				qiclient.deleteBehavior(Constants._tenantId, Constants._namespaceId, sampleBehaviorId);
 				qiclient.deleteType(Constants._tenantId, Constants._namespaceId, sampleTypeId);
@@ -266,7 +277,7 @@ public class Program
 
 	private static void DumpEvents(ArrayList<WaveData> foundEvents)
 	{
-		System.out.println("Found " +foundEvents.size() + " events, writing");
+		System.out.println("Found " + foundEvents.size() + " events, writing");
 		for( WaveData evnt : foundEvents)
 		{
 			System.out.println(evnt.toString());
