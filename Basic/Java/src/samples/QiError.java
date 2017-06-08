@@ -11,7 +11,7 @@ public class QiError extends Exception
 	private StringBuffer httpErrorMessage;
 	private String qiErrorMessage;
 
-	public QiError( java.net.HttpURLConnection urlConnection, String msg)
+	public QiError(java.net.HttpURLConnection urlConnection, String msg)
 	{
 		String inputLine;
 		this.qiErrorMessage = msg;

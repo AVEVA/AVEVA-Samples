@@ -1,0 +1,1154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b0f6ed9f-86fe-4ee2-9086-f9cf7a53e639" name="Default" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/QiPy$Unittests_in_test_py.coverage" NAME="Unittests in test.py Coverage Results" MODIFIED="1496966363075" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QiPy$program.coverage" NAME="program Coverage Results" MODIFIED="1497462325471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="program.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/program.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="162" column="51" lean-forward="false" selection-start-line="162" selection-start-column="51" selection-end-line="162" selection-end-column="51" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="QiClient.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/QiClient.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="470">
+              <caret line="634" column="61" lean-forward="false" selection-start-line="634" selection-start-column="61" selection-end-line="634" selection-end-column="61" />
+              <folding>
+                <element signature="e#946#967#0" expanded="false" />
+                <element signature="e#1010#1027#0" expanded="false" />
+                <element signature="e#1487#1635#0" expanded="false" />
+                <element signature="e#3432#3623#0" expanded="false" />
+                <element signature="e#3776#4507#0" expanded="false" />
+                <element signature="e#4192#4392#0" expanded="false" />
+                <element signature="e#4555#5282#0" expanded="false" />
+                <element signature="e#4903#5080#0" expanded="false" />
+                <element signature="e#5341#5992#0" expanded="false" />
+                <element signature="e#5763#5966#0" expanded="false" />
+                <element signature="e#6056#6927#0" expanded="false" />
+                <element signature="e#6569#6788#0" expanded="false" />
+                <element signature="e#6991#7827#0" expanded="false" />
+                <element signature="e#7472#7688#0" expanded="false" />
+                <element signature="e#8275#8456#0" expanded="false" />
+                <element signature="e#8735#9466#0" expanded="false" />
+                <element signature="e#9221#9440#0" expanded="false" />
+                <element signature="e#9526#10394#0" expanded="false" />
+                <element signature="e#10080#10291#0" expanded="false" />
+                <element signature="e#10454#11266#0" expanded="false" />
+                <element signature="e#10923#11131#0" expanded="false" />
+                <element signature="e#11336#12232#0" expanded="false" />
+                <element signature="e#11849#12028#0" expanded="false" />
+                <element signature="e#12292#13056#0" expanded="false" />
+                <element signature="e#12819#13030#0" expanded="false" />
+                <element signature="e#13119#13829#0" expanded="false" />
+                <element signature="e#13592#13803#0" expanded="false" />
+                <element signature="e#13898#14736#0" expanded="false" />
+                <element signature="e#14490#14711#0" expanded="false" />
+                <element signature="e#14807#15615#0" expanded="false" />
+                <element signature="e#15413#15615#0" expanded="false" />
+                <element signature="e#15681#16452#0" expanded="false" />
+                <element signature="e#16151#16342#0" expanded="false" />
+                <element signature="e#16515#17318#0" expanded="false" />
+                <element signature="e#16986#17208#0" expanded="false" />
+                <element signature="e#17396#18361#0" expanded="false" />
+                <element signature="e#18026#18251#0" expanded="false" />
+                <element signature="e#18470#19810#0" expanded="false" />
+                <element signature="e#19469#19698#0" expanded="false" />
+                <element signature="e#19879#20621#0" expanded="false" />
+                <element signature="e#20401#20595#0" expanded="false" />
+                <element signature="e#20692#21447#0" expanded="false" />
+                <element signature="e#21222#21421#0" expanded="false" />
+                <element signature="e#21517#22358#0" expanded="false" />
+                <element signature="e#22110#22332#0" expanded="false" />
+                <element signature="e#22430#23287#0" expanded="false" />
+                <element signature="e#23039#23261#0" expanded="false" />
+                <element signature="e#23356#24160#0" expanded="false" />
+                <element signature="e#23913#24134#0" expanded="false" />
+                <element signature="e#24241#25015#0" expanded="false" />
+                <element signature="e#24790#24989#0" expanded="false" />
+                <element signature="e#25824#25895#0" expanded="false" />
+                <element signature="e#25947#27758#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="53" lean-forward="false" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>encountered</find>
+      <find>dumps</find>
+    </findStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/qipy.py" />
+        <option value="$PROJECT_DIR$/readme_quickstart.md" />
+        <option value="$PROJECT_DIR$/program.py" />
+        <option value="$PROJECT_DIR$/QiClient.py" />
+        <option value="$PROJECT_DIR$/config.ini" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QiPy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="QiPy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/Programs/Python/Python36/python.exe" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.program">
+    <configuration default="false" name="Unittests in program.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/program.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method />
+    </configuration>
+    <configuration default="false" name="program" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/program.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerJest" factoryName="Jest">
+      <node-interpreter value="project" />
+      <working-dir value="" />
+      <envs />
+      <scope-kind value="ALL" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PyLettuceRunConfigurationType" factoryName="Lettuce">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <module name="QiPy" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="QiPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in program.py" />
+      <item index="1" class="java.lang.String" itemvalue="Python.program" />
+    </list>
+    <recent_temporary>
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="Python.program" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in program.py" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0f6ed9f-86fe-4ee2-9086-f9cf7a53e639" name="Default" comment="" />
+      <created>1496963181128</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1496963181128</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 50m 34s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 52m 08s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 52m 28s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 52m 56s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 58m 05s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 58m 19s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 58m 53s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 59m 05s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_py - 2017.06.08 at 16h 59m 23s.xml">
+      <configuration name="Unittests in test.py" configurationId="tests" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11354167" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30021143" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4027484" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3192389" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="processedProjectFiles" value="true" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/QiClient.py</url>
+          <line>490</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+      <option name="time" value="77" />
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="type._QiType__id" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1496">
+          <caret line="88" column="41" lean-forward="false" selection-start-line="88" selection-start-column="41" selection-end-line="88" selection-end-column="41" />
+          <folding>
+            <element signature="e#946#967#0" expanded="false" />
+            <element signature="e#1010#1027#0" expanded="false" />
+            <element signature="e#1487#1635#0" expanded="false" />
+            <element signature="e#3432#3623#0" expanded="false" />
+            <element signature="e#3776#4507#0" expanded="false" />
+            <element signature="e#4192#4392#0" expanded="false" />
+            <element signature="e#4555#5282#0" expanded="false" />
+            <element signature="e#4903#5080#0" expanded="false" />
+            <element signature="e#5341#5992#0" expanded="false" />
+            <element signature="e#5763#5966#0" expanded="false" />
+            <element signature="e#6056#6927#0" expanded="false" />
+            <element signature="e#6569#6788#0" expanded="false" />
+            <element signature="e#6991#7827#0" expanded="false" />
+            <element signature="e#7472#7688#0" expanded="false" />
+            <element signature="e#8275#8456#0" expanded="false" />
+            <element signature="e#8735#9466#0" expanded="false" />
+            <element signature="e#9221#9440#0" expanded="false" />
+            <element signature="e#9526#10394#0" expanded="false" />
+            <element signature="e#10080#10291#0" expanded="false" />
+            <element signature="e#10454#11266#0" expanded="false" />
+            <element signature="e#10923#11131#0" expanded="false" />
+            <element signature="e#11336#12232#0" expanded="false" />
+            <element signature="e#11849#12028#0" expanded="false" />
+            <element signature="e#12292#13056#0" expanded="false" />
+            <element signature="e#12819#13030#0" expanded="false" />
+            <element signature="e#13119#13829#0" expanded="false" />
+            <element signature="e#13592#13803#0" expanded="false" />
+            <element signature="e#13898#14736#0" expanded="false" />
+            <element signature="e#14490#14711#0" expanded="false" />
+            <element signature="e#14807#15615#0" expanded="false" />
+            <element signature="e#15413#15615#0" expanded="false" />
+            <element signature="e#15681#16452#0" expanded="false" />
+            <element signature="e#16151#16342#0" expanded="false" />
+            <element signature="e#16515#17318#0" expanded="false" />
+            <element signature="e#16986#17208#0" expanded="false" />
+            <element signature="e#17396#18361#0" expanded="false" />
+            <element signature="e#18026#18251#0" expanded="false" />
+            <element signature="e#18470#19810#0" expanded="false" />
+            <element signature="e#19469#19698#0" expanded="false" />
+            <element signature="e#19879#20621#0" expanded="false" />
+            <element signature="e#20401#20595#0" expanded="false" />
+            <element signature="e#20692#21447#0" expanded="false" />
+            <element signature="e#21222#21421#0" expanded="false" />
+            <element signature="e#21517#22358#0" expanded="false" />
+            <element signature="e#22110#22332#0" expanded="false" />
+            <element signature="e#22430#23287#0" expanded="false" />
+            <element signature="e#23039#23261#0" expanded="false" />
+            <element signature="e#23356#24160#0" expanded="false" />
+            <element signature="e#23913#24134#0" expanded="false" />
+            <element signature="e#24241#25015#0" expanded="false" />
+            <element signature="e#24790#24989#0" expanded="false" />
+            <element signature="e#25824#25895#0" expanded="false" />
+            <element signature="e#25947#27758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="53" lean-forward="false" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2108">
+          <caret line="128" column="40" lean-forward="false" selection-start-line="128" selection-start-column="40" selection-end-line="128" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="53" lean-forward="false" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="850">
+          <caret line="84" column="22" lean-forward="true" selection-start-line="84" selection-start-column="22" selection-end-line="84" selection-end-column="22" />
+          <folding>
+            <element signature="e#946#967#0" expanded="false" />
+            <element signature="e#1010#1027#0" expanded="false" />
+            <element signature="e#1487#1635#0" expanded="false" />
+            <element signature="e#3432#3623#0" expanded="false" />
+            <element signature="e#3776#4507#0" expanded="false" />
+            <element signature="e#4192#4392#0" expanded="false" />
+            <element signature="e#4555#5282#0" expanded="false" />
+            <element signature="e#4903#5080#0" expanded="false" />
+            <element signature="e#5341#5992#0" expanded="false" />
+            <element signature="e#5763#5966#0" expanded="false" />
+            <element signature="e#6056#6927#0" expanded="false" />
+            <element signature="e#6569#6788#0" expanded="false" />
+            <element signature="e#6991#7827#0" expanded="false" />
+            <element signature="e#7472#7688#0" expanded="false" />
+            <element signature="e#8275#8456#0" expanded="false" />
+            <element signature="e#8735#9466#0" expanded="false" />
+            <element signature="e#9221#9440#0" expanded="false" />
+            <element signature="e#9526#10394#0" expanded="false" />
+            <element signature="e#10080#10291#0" expanded="false" />
+            <element signature="e#10454#11266#0" expanded="false" />
+            <element signature="e#10923#11131#0" expanded="false" />
+            <element signature="e#11336#12232#0" expanded="false" />
+            <element signature="e#11849#12028#0" expanded="false" />
+            <element signature="e#12292#13056#0" expanded="false" />
+            <element signature="e#12819#13030#0" expanded="false" />
+            <element signature="e#13119#13829#0" expanded="false" />
+            <element signature="e#13592#13803#0" expanded="false" />
+            <element signature="e#13898#14736#0" expanded="false" />
+            <element signature="e#14490#14711#0" expanded="false" />
+            <element signature="e#14807#15615#0" expanded="false" />
+            <element signature="e#15413#15615#0" expanded="false" />
+            <element signature="e#15681#16452#0" expanded="false" />
+            <element signature="e#16151#16342#0" expanded="false" />
+            <element signature="e#16515#17318#0" expanded="false" />
+            <element signature="e#16986#17208#0" expanded="false" />
+            <element signature="e#17396#18361#0" expanded="false" />
+            <element signature="e#18026#18251#0" expanded="false" />
+            <element signature="e#18470#19810#0" expanded="false" />
+            <element signature="e#19469#19698#0" expanded="false" />
+            <element signature="e#19879#20621#0" expanded="false" />
+            <element signature="e#20401#20595#0" expanded="false" />
+            <element signature="e#20692#21447#0" expanded="false" />
+            <element signature="e#21222#21421#0" expanded="false" />
+            <element signature="e#21517#22358#0" expanded="false" />
+            <element signature="e#22110#22332#0" expanded="false" />
+            <element signature="e#22430#23287#0" expanded="false" />
+            <element signature="e#23039#23261#0" expanded="false" />
+            <element signature="e#23356#24160#0" expanded="false" />
+            <element signature="e#23913#24134#0" expanded="false" />
+            <element signature="e#24241#25015#0" expanded="false" />
+            <element signature="e#24790#24989#0" expanded="false" />
+            <element signature="e#25824#25895#0" expanded="false" />
+            <element signature="e#25947#27758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding>
+            <element signature="e#946#967#0" expanded="false" />
+            <element signature="e#1010#1027#0" expanded="false" />
+            <element signature="e#1487#1635#0" expanded="false" />
+            <element signature="e#3432#3623#0" expanded="false" />
+            <element signature="e#3776#4507#0" expanded="false" />
+            <element signature="e#4192#4392#0" expanded="false" />
+            <element signature="e#4555#5282#0" expanded="false" />
+            <element signature="e#4903#5080#0" expanded="false" />
+            <element signature="e#5341#5992#0" expanded="false" />
+            <element signature="e#5763#5966#0" expanded="false" />
+            <element signature="e#6056#6927#0" expanded="false" />
+            <element signature="e#6569#6788#0" expanded="false" />
+            <element signature="e#6991#7827#0" expanded="false" />
+            <element signature="e#7472#7688#0" expanded="false" />
+            <element signature="e#8275#8456#0" expanded="false" />
+            <element signature="e#8735#9466#0" expanded="false" />
+            <element signature="e#9221#9440#0" expanded="false" />
+            <element signature="e#9526#10394#0" expanded="false" />
+            <element signature="e#10080#10291#0" expanded="false" />
+            <element signature="e#10454#11266#0" expanded="false" />
+            <element signature="e#10923#11131#0" expanded="false" />
+            <element signature="e#11336#12232#0" expanded="false" />
+            <element signature="e#11849#12028#0" expanded="false" />
+            <element signature="e#12292#13056#0" expanded="false" />
+            <element signature="e#12819#13030#0" expanded="false" />
+            <element signature="e#13119#13829#0" expanded="false" />
+            <element signature="e#13592#13803#0" expanded="false" />
+            <element signature="e#13898#14736#0" expanded="false" />
+            <element signature="e#14490#14711#0" expanded="false" />
+            <element signature="e#14807#15615#0" expanded="false" />
+            <element signature="e#15413#15615#0" expanded="false" />
+            <element signature="e#15681#16452#0" expanded="false" />
+            <element signature="e#16151#16342#0" expanded="false" />
+            <element signature="e#16515#17318#0" expanded="false" />
+            <element signature="e#16986#17208#0" expanded="false" />
+            <element signature="e#17396#18361#0" expanded="false" />
+            <element signature="e#18026#18251#0" expanded="false" />
+            <element signature="e#18470#19810#0" expanded="false" />
+            <element signature="e#19469#19698#0" expanded="false" />
+            <element signature="e#19879#20621#0" expanded="false" />
+            <element signature="e#20401#20595#0" expanded="false" />
+            <element signature="e#20692#21447#0" expanded="false" />
+            <element signature="e#21222#21421#0" expanded="false" />
+            <element signature="e#21517#22358#0" expanded="false" />
+            <element signature="e#22110#22332#0" expanded="false" />
+            <element signature="e#22430#23287#0" expanded="false" />
+            <element signature="e#23039#23261#0" expanded="false" />
+            <element signature="e#23356#24160#0" expanded="false" />
+            <element signature="e#23913#24134#0" expanded="false" />
+            <element signature="e#24241#25015#0" expanded="false" />
+            <element signature="e#24790#24989#0" expanded="false" />
+            <element signature="e#25824#25895#0" expanded="false" />
+            <element signature="e#25947#27758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="53" lean-forward="false" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2720">
+          <caret line="164" column="25" lean-forward="false" selection-start-line="164" selection-start-column="25" selection-end-line="164" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiStream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiType.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1445">
+          <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1547">
+          <caret line="464" column="32" lean-forward="false" selection-start-line="464" selection-start-column="32" selection-end-line="464" selection-end-column="32" />
+          <folding>
+            <element signature="e#946#967#0" expanded="false" />
+            <element signature="e#1010#1027#0" expanded="false" />
+            <element signature="e#1487#1635#0" expanded="false" />
+            <element signature="e#3432#3623#0" expanded="false" />
+            <element signature="e#3776#4507#0" expanded="false" />
+            <element signature="e#4192#4392#0" expanded="false" />
+            <element signature="e#4555#5282#0" expanded="false" />
+            <element signature="e#4903#5080#0" expanded="false" />
+            <element signature="e#5341#5992#0" expanded="false" />
+            <element signature="e#5763#5966#0" expanded="false" />
+            <element signature="e#6056#6927#0" expanded="false" />
+            <element signature="e#6569#6788#0" expanded="false" />
+            <element signature="e#6991#7827#0" expanded="false" />
+            <element signature="e#7472#7688#0" expanded="false" />
+            <element signature="e#8275#8456#0" expanded="false" />
+            <element signature="e#8735#9466#0" expanded="false" />
+            <element signature="e#9221#9440#0" expanded="false" />
+            <element signature="e#9526#10394#0" expanded="false" />
+            <element signature="e#10080#10291#0" expanded="false" />
+            <element signature="e#10454#11266#0" expanded="false" />
+            <element signature="e#10923#11131#0" expanded="false" />
+            <element signature="e#11336#12232#0" expanded="false" />
+            <element signature="e#11849#12028#0" expanded="false" />
+            <element signature="e#12292#13056#0" expanded="false" />
+            <element signature="e#12819#13030#0" expanded="false" />
+            <element signature="e#13119#13829#0" expanded="false" />
+            <element signature="e#13592#13803#0" expanded="false" />
+            <element signature="e#13898#14736#0" expanded="false" />
+            <element signature="e#14490#14711#0" expanded="false" />
+            <element signature="e#14807#15615#0" expanded="false" />
+            <element signature="e#15413#15615#0" expanded="false" />
+            <element signature="e#15681#16452#0" expanded="false" />
+            <element signature="e#16151#16342#0" expanded="false" />
+            <element signature="e#16515#17318#0" expanded="false" />
+            <element signature="e#16986#17208#0" expanded="false" />
+            <element signature="e#17396#18361#0" expanded="false" />
+            <element signature="e#18026#18251#0" expanded="false" />
+            <element signature="e#18470#19810#0" expanded="false" />
+            <element signature="e#19469#19698#0" expanded="false" />
+            <element signature="e#19879#20621#0" expanded="false" />
+            <element signature="e#20401#20595#0" expanded="false" />
+            <element signature="e#20692#21447#0" expanded="false" />
+            <element signature="e#21222#21421#0" expanded="false" />
+            <element signature="e#21517#22358#0" expanded="false" />
+            <element signature="e#22110#22332#0" expanded="false" />
+            <element signature="e#22430#23287#0" expanded="false" />
+            <element signature="e#23039#23261#0" expanded="false" />
+            <element signature="e#23356#24160#0" expanded="false" />
+            <element signature="e#23913#24134#0" expanded="false" />
+            <element signature="e#24241#25015#0" expanded="false" />
+            <element signature="e#24790#24989#0" expanded="false" />
+            <element signature="e#25824#25895#0" expanded="false" />
+            <element signature="e#25947#27758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="34" lean-forward="false" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme_quickstart.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="25" lean-forward="true" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+          <folding>
+            <element signature="e#946#967#0" expanded="false" />
+            <element signature="e#1010#1027#0" expanded="false" />
+            <element signature="e#1487#1635#0" expanded="false" />
+            <element signature="e#3432#3623#0" expanded="false" />
+            <element signature="e#3776#4507#0" expanded="false" />
+            <element signature="e#4192#4392#0" expanded="false" />
+            <element signature="e#4555#5282#0" expanded="false" />
+            <element signature="e#4903#5080#0" expanded="false" />
+            <element signature="e#5341#5992#0" expanded="false" />
+            <element signature="e#5763#5966#0" expanded="false" />
+            <element signature="e#6056#6927#0" expanded="false" />
+            <element signature="e#6569#6788#0" expanded="false" />
+            <element signature="e#6991#7827#0" expanded="false" />
+            <element signature="e#7472#7688#0" expanded="false" />
+            <element signature="e#8275#8456#0" expanded="false" />
+            <element signature="e#8735#9466#0" expanded="false" />
+            <element signature="e#9221#9440#0" expanded="false" />
+            <element signature="e#9526#10394#0" expanded="false" />
+            <element signature="e#10080#10291#0" expanded="false" />
+            <element signature="e#10454#11266#0" expanded="false" />
+            <element signature="e#10923#11131#0" expanded="false" />
+            <element signature="e#11336#12232#0" expanded="false" />
+            <element signature="e#11849#12028#0" expanded="false" />
+            <element signature="e#12292#13056#0" expanded="false" />
+            <element signature="e#12819#13030#0" expanded="false" />
+            <element signature="e#13119#13829#0" expanded="false" />
+            <element signature="e#13592#13803#0" expanded="false" />
+            <element signature="e#13898#14736#0" expanded="false" />
+            <element signature="e#14490#14711#0" expanded="false" />
+            <element signature="e#14807#15615#0" expanded="false" />
+            <element signature="e#15413#15615#0" expanded="false" />
+            <element signature="e#15681#16452#0" expanded="false" />
+            <element signature="e#16151#16342#0" expanded="false" />
+            <element signature="e#16515#17318#0" expanded="false" />
+            <element signature="e#16986#17208#0" expanded="false" />
+            <element signature="e#17396#18361#0" expanded="false" />
+            <element signature="e#18026#18251#0" expanded="false" />
+            <element signature="e#18470#19810#0" expanded="false" />
+            <element signature="e#19469#19698#0" expanded="false" />
+            <element signature="e#19879#20621#0" expanded="false" />
+            <element signature="e#20401#20595#0" expanded="false" />
+            <element signature="e#20692#21447#0" expanded="false" />
+            <element signature="e#21222#21421#0" expanded="false" />
+            <element signature="e#21517#22358#0" expanded="false" />
+            <element signature="e#22110#22332#0" expanded="false" />
+            <element signature="e#22430#23287#0" expanded="false" />
+            <element signature="e#23039#23261#0" expanded="false" />
+            <element signature="e#23356#24160#0" expanded="false" />
+            <element signature="e#23913#24134#0" expanded="false" />
+            <element signature="e#24241#25015#0" expanded="false" />
+            <element signature="e#24790#24989#0" expanded="false" />
+            <element signature="e#25824#25895#0" expanded="false" />
+            <element signature="e#25947#27758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/qipy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#11#40#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiPy.pyproj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiPy.sln">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/JsonEncoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1479">
+          <caret line="91" column="48" lean-forward="true" selection-start-line="91" selection-start-column="48" selection-end-line="91" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiNamespace.py" />
+    <entry file="file://$PROJECT_DIR$/readme.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiPy.pyproj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiPy.sln">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/unittest/case.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="343">
+          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/http/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="1241" column="72" lean-forward="true" selection-start-line="1241" selection-start-column="72" selection-end-line="1241" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/configparser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="799" column="0" lean-forward="false" selection-start-line="799" selection-start-column="0" selection-end-line="799" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/qipy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding>
+            <element signature="e#11#40#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiType.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-28">
+          <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiStreamExtrapolation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiBoundaryType.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="4" lean-forward="true" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme_quickstart.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="38" lean-forward="true" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/JsonEncoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiStream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiStreamBehavior.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="81" column="29" lean-forward="true" selection-start-line="81" selection-start-column="29" selection-end-line="81" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#21#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="1584" column="0" lean-forward="false" selection-start-line="1584" selection-start-column="0" selection-end-line="1584" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/QiClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="634" column="61" lean-forward="false" selection-start-line="634" selection-start-column="61" selection-end-line="634" selection-end-column="61" />
+          <folding>
+            <element signature="e#946#967#0" expanded="false" />
+            <element signature="e#1010#1027#0" expanded="false" />
+            <element signature="e#1487#1635#0" expanded="false" />
+            <element signature="e#3432#3623#0" expanded="false" />
+            <element signature="e#3776#4507#0" expanded="false" />
+            <element signature="e#4192#4392#0" expanded="false" />
+            <element signature="e#4555#5282#0" expanded="false" />
+            <element signature="e#4903#5080#0" expanded="false" />
+            <element signature="e#5341#5992#0" expanded="false" />
+            <element signature="e#5763#5966#0" expanded="false" />
+            <element signature="e#6056#6927#0" expanded="false" />
+            <element signature="e#6569#6788#0" expanded="false" />
+            <element signature="e#6991#7827#0" expanded="false" />
+            <element signature="e#7472#7688#0" expanded="false" />
+            <element signature="e#8275#8456#0" expanded="false" />
+            <element signature="e#8735#9466#0" expanded="false" />
+            <element signature="e#9221#9440#0" expanded="false" />
+            <element signature="e#9526#10394#0" expanded="false" />
+            <element signature="e#10080#10291#0" expanded="false" />
+            <element signature="e#10454#11266#0" expanded="false" />
+            <element signature="e#10923#11131#0" expanded="false" />
+            <element signature="e#11336#12232#0" expanded="false" />
+            <element signature="e#11849#12028#0" expanded="false" />
+            <element signature="e#12292#13056#0" expanded="false" />
+            <element signature="e#12819#13030#0" expanded="false" />
+            <element signature="e#13119#13829#0" expanded="false" />
+            <element signature="e#13592#13803#0" expanded="false" />
+            <element signature="e#13898#14736#0" expanded="false" />
+            <element signature="e#14490#14711#0" expanded="false" />
+            <element signature="e#14807#15615#0" expanded="false" />
+            <element signature="e#15413#15615#0" expanded="false" />
+            <element signature="e#15681#16452#0" expanded="false" />
+            <element signature="e#16151#16342#0" expanded="false" />
+            <element signature="e#16515#17318#0" expanded="false" />
+            <element signature="e#16986#17208#0" expanded="false" />
+            <element signature="e#17396#18361#0" expanded="false" />
+            <element signature="e#18026#18251#0" expanded="false" />
+            <element signature="e#18470#19810#0" expanded="false" />
+            <element signature="e#19469#19698#0" expanded="false" />
+            <element signature="e#19879#20621#0" expanded="false" />
+            <element signature="e#20401#20595#0" expanded="false" />
+            <element signature="e#20692#21447#0" expanded="false" />
+            <element signature="e#21222#21421#0" expanded="false" />
+            <element signature="e#21517#22358#0" expanded="false" />
+            <element signature="e#22110#22332#0" expanded="false" />
+            <element signature="e#22430#23287#0" expanded="false" />
+            <element signature="e#23039#23261#0" expanded="false" />
+            <element signature="e#23356#24160#0" expanded="false" />
+            <element signature="e#23913#24134#0" expanded="false" />
+            <element signature="e#24241#25015#0" expanded="false" />
+            <element signature="e#24790#24989#0" expanded="false" />
+            <element signature="e#25824#25895#0" expanded="false" />
+            <element signature="e#25947#27758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="53" lean-forward="false" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="162" column="51" lean-forward="false" selection-start-line="162" selection-start-column="51" selection-end-line="162" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

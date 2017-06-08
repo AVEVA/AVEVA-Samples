@@ -133,7 +133,7 @@ public class WaveData
 		return new WaveData(multiplier, radians, order);
 	}
 	
-	public static double seconds (Calendar cal)
+	public static double seconds(Calendar cal)
 	{
 		double sec = 0; 
 		sec += cal.get(Calendar.HOUR_OF_DAY)* 60 * 60* 1000;
@@ -148,15 +148,15 @@ public class WaveData
 	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("Order   = " + Order);
-		builder.append("Radians = " +  Radians);
-		builder.append("Tau     = "+ Tau);
-		builder.append("Sine    = "+ Sin);
-		builder.append("Cosine  = "+ Cos);
-		builder.append("Tangent = "+ Tan);
-		builder.append("Sinh    = "+ Sinh);
-		builder.append("Cosh    = "+ Cosh);
-		builder.append("Tanh    = "+ Tanh);
+		builder.append("  Order   = " + Order);
+		builder.append(", Radians = " + Radians);
+		builder.append(", Tau     = " + Tau);
+		builder.append(", Sine    = " + Sin);
+		builder.append(", Cosine  = " + Cos);
+		builder.append(", Tangent = " + Tan);
+		builder.append(", Sinh    = " + Sinh);
+		builder.append(", Cosh    = " + Cosh);
+		builder.append(", Tanh    = " + Tanh);
 		return builder.toString();
 	}
 }
