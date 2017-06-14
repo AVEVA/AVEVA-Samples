@@ -10,5 +10,6 @@ public class Constants {
 	public final static String _appKey = "PLACEHOLDER_REPLACE_WITH_USER_SECRET";
 	public final static String _qiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"; // a Guid (not the app Id)
 	public final static String _tenantId = "PLACEHOLDER_REPLACE_WITH_TENANT_ID";
+	public final static String _namespaceId = "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID";
 
 }
