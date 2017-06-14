@@ -13,6 +13,7 @@ public class Program
 {
 	public static void main(String[] args) throws InterruptedException
 	{
+		final String sampleNamespaceId = "WaveData_SampleNamespace";
 		final String sampleTypeId = "WaveData_SampleType";
 		final String sampleStreamId = "WaveData_SampleStream";
 		final String sampleBehaviorId = "WaveData_SampleBehavior";
@@ -24,18 +25,21 @@ public class Program
 
 		try
 		{
-			// following is only for testing purposes
-//			System.out.println(qiclient.createTenant());
-//			System.out.println(qiclient.createNamespace());
-
+			System.out.println("Creating a QiNamespace...");
+            QiNamespace sampleNamespace = new QiNamespace(sampleNamespaceId);
+			
+			//create QiNamespace
+			qiclient.createNamespace(Constants._tenantId, sampleNamespace);
+			
+			delayForQiConsistency();
+			
 			// create properties for double Value, DateTime Timstamp, string Units
 			System.out.println("Creating a Qi type for WaveData instances");
-			System.out.println("=========================================");
 			QiType sampleType = getWaveDataType(sampleTypeId);
 			
 			// create the type in the Qi Service
-			String evtTypeString = qiclient.createType(Constants._tenantId, Constants._namespaceId, sampleType);
-			sampleType = qiclient.mGson.fromJson(evtTypeString, QiType.class); // sampleType built from returned JSON object
+			String evtTypeString = qiclient.createType(Constants._tenantId, sampleNamespaceId, sampleType);
+			sampleType = qiclient.mGson.fromJson(evtTypeString, QiType.class);
 			
 			delayForQiConsistency();
 
@@ -55,10 +59,9 @@ public class Program
 			//create a stream named WaveData_SampleStream
 			System.out.println();
 			System.out.println("Creating a stream in this tenant for simple event measurements");
-			System.out.println("==============================================================");
-			QiStream sampleStream = new QiStream(sampleStreamId, sampleType.getId());
-			String evtStreamString = qiclient.createStream(Constants._tenantId, Constants._namespaceId, sampleStream);
-			sampleStream = qiclient.mGson.fromJson(evtStreamString, QiStream.class); // sampleStream built from returned JSON object
+			QiStream sampleStream = new QiStream(sampleStreamId,sampleTypeId);
+			String evtStreamString = qiclient.createStream(Constants._tenantId, sampleNamespaceId, sampleStream);
+			sampleStream = qiclient.mGson.fromJson(evtStreamString, QiStream.class);
 			
 			delayForQiConsistency();
 
@@ -77,10 +80,8 @@ public class Program
 
 			System.out.println();
 			System.out.println("Artificially generating 100 events and inserting them into the Qi Service");
-			System.out.println("=========================================================================");
 
 			// How to insert a single event
-			System.out.println("*** creating first event ***");
 			WaveData evt = WaveData.next(1, 2.0, 0);
 			qiclient.insertValue(Constants._tenantId, Constants._namespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
 
@@ -114,7 +115,7 @@ public class Program
 			System.out.println();
 			System.out.println("Retrieving the inserted events");
 			System.out.println("==============================");
-			String jCollection = qiclient.getWindowValues(Constants._tenantId, Constants._namespaceId, sampleStreamId, "0", "198");
+			String jCollection = qiclient.getWindowValues(Constants._tenantId, sampleNamespaceId, sampleStreamId, "0", "198");
 			Type listType = new TypeToken<ArrayList<WaveData>>() {
 			}.getType();			   
 			ArrayList<WaveData> foundEvents = qiclient.mGson.fromJson(jCollection, listType);
@@ -122,11 +123,10 @@ public class Program
 			
 			System.out.println();
 			System.out.println("Updating values");
-			System.out.println("===============");
 			// take the first value inserted and update 
 			//evt = foundEvents.get(0);
 			evt = WaveData.next(1, 4.0, 0);
-			qiclient.updateValue(Constants._tenantId, Constants._namespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
+			qiclient.updateValue(Constants._tenantId, sampleNamespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
 
 			// update the remaining events and then some (same span, multiplier, order)
 			List<WaveData> newEvents = new ArrayList<WaveData>();
@@ -136,13 +136,12 @@ public class Program
 				newEvents.add(newEvt);
 			}
 			qiclient.updateValues(Constants._tenantId, Constants._namespaceId, sampleStreamId,qiclient.mGson.toJson(newEvents));
-
 			delayForQiConsistency();
 
     		// check the results
     		System.out.println("Retrieving the updated values");
     		System.out.println("=============================");
-    		jCollection = qiclient.getWindowValues(Constants._tenantId, Constants._namespaceId, sampleStreamId, "0", "198");
+    		jCollection = qiclient.getWindowValues(Constants._tenantId, sampleNamespaceId, sampleStreamId, "0", "198");          
     		foundEvents = qiclient.mGson.fromJson(jCollection, listType);
     		DumpEvents(foundEvents);
 
@@ -175,8 +174,7 @@ public class Program
     		// The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
     		System.out.println();
     		System.out.println("Retrieving three events without a stream behavior");
-			System.out.println("=================================================");
-    		jCollection = qiclient.getRangeValues(Constants._tenantId, Constants._namespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
+    		jCollection = qiclient.getRangeValues(Constants._tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
             foundEvents = qiclient.mGson.fromJson(jCollection, listType);
             DumpEvents(foundEvents);
             
@@ -216,28 +214,23 @@ public class Program
     		// repeat the retrieval
     		System.out.println();
     		System.out.println("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
-			System.out.println("==============================================================================================");
-    		jCollection = qiclient.getRangeValues(Constants._tenantId, Constants._namespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
+    		jCollection = qiclient.getRangeValues(Constants._tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
     		foundEvents = qiclient.mGson.fromJson(jCollection, listType);
 			DumpEvents(foundEvents);
 						
 			System.out.println();
 			System.out.println("Deleting events");
-			System.out.println("===============");
-
-			System.out.println("*** deleting first event ***");
-			qiclient.removeValue(Constants._tenantId, Constants._namespaceId, sampleStreamId, "0");
+			qiclient.removeValue(Constants._tenantId, sampleNamespaceId, sampleStreamId, "0");
 			
 			// remove the first value -- index is the timestamp of the event
-			System.out.println("*** deleting remaining events ***");
-			qiclient.removeWindowValues(Constants._tenantId, Constants._namespaceId, sampleStreamId, "1", "198");
+			qiclient.removeWindowValues(Constants._tenantId, sampleNamespaceId, sampleStreamId, "1", "198");
 			
 			delayForQiConsistency();
 			
 			System.out.println("Checking for events");
 			System.out.println("===================");
 
-			jCollection = qiclient.getWindowValues(Constants._tenantId, Constants._namespaceId, sampleStreamId, "0", "198");
+			jCollection = qiclient.getWindowValues(Constants._tenantId, sampleNamespaceId, sampleStreamId, "0", "198");
 			Type listType1 = new TypeToken<ArrayList<WaveData>>() {
 			}.getType();
 		     

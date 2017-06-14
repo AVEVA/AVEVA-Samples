@@ -2,7 +2,7 @@ package samples;
 
 
 public class Constants {
-
+	
 	//VERY IMPORTANT: edit the following values to reflect the authorization items you were given
 	public final static String _resource = "PLACEHOLDER_REPLACE_WITH_RESOURCE";
 	public final static String _authority = "PLACEHOLDER_REPLACE_WITH_AUTHORITY"; //Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com";
