@@ -1,7 +1,6 @@
 ﻿# qipy.py
 
 from QiClient import QiClient
-from QiNamespace import QiNamespace
 from QiType import QiType
 from QiTypeCode import QiTypeCode
 from QiTypeProperty import QiTypeProperty
