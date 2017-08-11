@@ -3,160 +3,136 @@ package samples;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class WaveData
-{
+public class WaveData {
 
-	private int Order;
-	private double Tau;
-	private double Radians;
-	private double Sin;
-	private double Cos;
-	private double Tan;
-	private double Sinh;
-	private double Cosh;
-	private double Tanh;
+    private int Order;
+    private double Tau;
+    private double Radians;
+    private double Sin;
+    private double Cos;
+    private double Tan;
+    private double Sinh;
+    private double Cosh;
+    private double Tanh;
 
-	public int getOrder() 
-	{
-		return Order;
-	}
+    public WaveData() {
+    }
 
-	public void setOrder(int order) 
-	{
-		this.Order = order;
-	}
-	
-	public double getTau()
-	{
-		return Tau;
-	}
+    public WaveData(double multiplier, double radians, int order) {
+        this.Order = order;
+        this.Radians = radians;
+        this.Tau = radians / (2 * Math.PI);
+        this.Sin = multiplier * Math.sin(radians);
+        this.Cos = multiplier * Math.cos(radians);
+        this.Tan = multiplier * Math.tan(radians);
+        this.Sinh = multiplier * Math.sinh(radians);
+        this.Cosh = multiplier * Math.cosh(radians);
+        this.Tanh = multiplier * Math.tanh(radians);
+    }
 
-	public void setTau(double tau) 
-	{
-		this.Tau = tau;
-	}
+    public static WaveData next(int interval, double multiplier, int order) {
+        Calendar cal = new GregorianCalendar();
+        long milliSec = cal.getTimeInMillis() * 60;
+        int intervalInMilliSec = interval * 60 * 1000;
+        double radians = (((double) milliSec % intervalInMilliSec) / intervalInMilliSec) * 2 * Math.PI;
 
-	public double getRadians()
-	{
-		return Radians;
-	}
+        return new WaveData(multiplier, radians, order);
+    }
 
-	public void setRadians(double radians) 
-	{
-		this.Radians = radians;
-	}
-	
-	public double getSin() 
-	{
-		return Sin;
-	}
+    public static double seconds(Calendar cal) {
+        double sec = 0;
+        sec += cal.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000;
+        sec += cal.get(Calendar.MINUTE) * 60 * 1000;
+        sec += cal.get(Calendar.SECOND) * 1000;
+        sec += (double) cal.get(Calendar.MILLISECOND);
 
-	public void setSin(double sin) 
-	{
-		this.Sin = sin;
-	}
+        return sec;
+    }
 
-	public double getCos() 
-	{
-		return Cos;
-	}
+    public int getOrder() {
+        return Order;
+    }
 
-	public void setCos(double cos) 
-	{
-		this.Cos = cos;
-	}
+    public void setOrder(int order) {
+        this.Order = order;
+    }
 
-	public double getTan() 
-	{
-		return Tan;
-	}
+    public double getTau() {
+        return Tau;
+    }
 
-	public void setTan(double tan)
-	{
-		this.Tan = tan;
-	}
+    public void setTau(double tau) {
+        this.Tau = tau;
+    }
 
-	public double getSinh() 
-	{
-		return Sinh;
-	}
+    public double getRadians() {
+        return Radians;
+    }
 
-	public void setSinh(double sinh)
-	{
-		this.Sinh = sinh;
-	}
+    public void setRadians(double radians) {
+        this.Radians = radians;
+    }
 
-	public double getCosh() 
-	{
-		return Cosh;
-	}
+    public double getSin() {
+        return Sin;
+    }
 
-	public void setCosh(double cosh)
-	{
-		this.Cosh = cosh;
-	}
+    public void setSin(double sin) {
+        this.Sin = sin;
+    }
 
-	public double getTanh() 
-	{
-		return Tanh;
-	}
+    public double getCos() {
+        return Cos;
+    }
 
-	public void setTanh(double tanh) 
-	{
-		this.Tanh = tanh;
-	}
+    public void setCos(double cos) {
+        this.Cos = cos;
+    }
 
-	public WaveData()
-	{
-	}
+    public double getTan() {
+        return Tan;
+    }
 
-	public WaveData(double multiplier,double  radians,int order )
-	{
-		this.Order = order;
-		this.Radians = radians;
-		this.Tau = radians / (2 * Math.PI);
-		this.Sin = multiplier * Math.sin(radians);
-		this.Cos = multiplier * Math.cos(radians);
-		this.Tan = multiplier * Math.tan(radians);
-		this.Sinh = multiplier * Math.sinh(radians);
-		this.Cosh = multiplier * Math.cosh(radians);
-		this.Tanh = multiplier * Math.tanh(radians);
-	}
+    public void setTan(double tan) {
+        this.Tan = tan;
+    }
 
-	public static WaveData next(int interval, double multiplier, int order)
-	{
-		Calendar cal =  new GregorianCalendar();
-		long milliSec = cal.getTimeInMillis()* 3;
-		int intervalInMilliSec = interval * 60 * 1000;
-		double radians = (((double)milliSec % intervalInMilliSec) / intervalInMilliSec ) * 2 * Math.PI;
+    public double getSinh() {
+        return Sinh;
+    }
 
-		return new WaveData(multiplier, radians, order);
-	}
-	
-	public static double seconds (Calendar cal)
-	{
-		double sec = 0; 
-		sec += cal.get(Calendar.HOUR_OF_DAY)* 60 * 60* 1000;
-		sec += cal.get(Calendar.MINUTE) * 60 * 1000 ;
-		sec += cal.get(Calendar.SECOND)* 1000;
-		sec += (double)cal.get(Calendar.MILLISECOND);
+    public void setSinh(double sinh) {
+        this.Sinh = sinh;
+    }
 
-		return sec;
-	}
+    public double getCosh() {
+        return Cosh;
+    }
 
-	@Override
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("Order   = " + Order);
-		builder.append("Radians = " +  Radians);
-		builder.append("Tau     = "+ Tau);
-		builder.append("Sine    = "+ Sin);
-		builder.append("Cosine  = "+ Cos);
-		builder.append("Tangent = "+ Tan);
-		builder.append("Sinh    = "+ Sinh);
-		builder.append("Cosh    = "+ Cosh);
-		builder.append("Tanh    = "+ Tanh);
-		return builder.toString();
-	}
+    public void setCosh(double cosh) {
+        this.Cosh = cosh;
+    }
+
+    public double getTanh() {
+        return Tanh;
+    }
+
+    public void setTanh(double tanh) {
+        this.Tanh = tanh;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("  Order   = " + Order);
+        builder.append(", Radians = " + Radians);
+        builder.append(", Tau     = " + Tau);
+        builder.append(", Sine    = " + Sin);
+        builder.append(", Cosine  = " + Cos);
+        builder.append(", Tangent = " + Tan);
+        builder.append(", Sinh    = " + Sinh);
+        builder.append(", Cosh    = " + Cosh);
+        builder.append(", Tanh    = " + Tanh);
+        return builder.toString();
+    }
 }

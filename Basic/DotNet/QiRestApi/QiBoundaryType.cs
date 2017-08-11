@@ -1,4 +1,8 @@
-﻿namespace QiRestApiSample
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace QiRestApiCore
 {
     public enum QiBoundaryType
     {

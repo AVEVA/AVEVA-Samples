@@ -1,96 +1,113 @@
-﻿import QiType
+﻿from enum import Enum
+import QiType
 
 class QiTypeProperty(object):
     """Qi type property definition"""
 
     def __init__(self):
-            self.__Id = ""
-            self.__Name = None
-            self.__Description = None
-            self.__QiType = None
-            self.__IsKey = False
+            self.__isKey = False
             
-    def getId(self):
-        return self.__Id
+    @property
+    def Id(self):
+        return self.__id
+    @Id.setter
+    def Id(self, id):
+        self.__id = id
 
-    def setId(self, Id):
-        self.__Id = Id
+    @property
+    def Name(self):
+        return self.__name
+    @Name.setter
+    def Name(self, name):
+        self.__name = name
 
-    Id = property(getId, setId)
+    @property
+    def Description(self):
+        return self.__description
+    @Description.setter
+    def Description(self, Description):
+        self.__description = Description
 
-    def getIsKey(self):
-        return self.__IsKey
+    @property
+    def IsKey(self):
+        return self.__isKey
+    @IsKey.setter
+    def IsKey(self, iskey):
+        self.__isKey = iskey
 
-    def setIsKey(self, iskey):
-        self.__IsKey = iskey
+    @property
+    def QiType(self):
+        return self.__qiType
+    @QiType.setter
+    def QiType(self, qiType):
+        self.__qiType = qiType
 
-    IsKey = property(getIsKey, setIsKey)
+    @property
+    def Value(self):
+        return self.__value
+    @Value.setter
+    def Value(self, value):
+        self.__value = value
 
-    def getName(self):
-        return self.__Name
-
-    def setName(self, Name):
-        self.__Name = Name
-
-    Name = property(getName, setName)
-
-    
-    def getDescription(self):
-        return self.__Description
-
-    def setDescription(self, Description):
-        self.__Description = Description
-
-    Description = property(getDescription, setDescription)
-
-    
-    def getQiType(self):
-        return self.__QiType
-
-    def setQiType(self, QiType):
-        self.__QiType = QiType
-
-    QiType = property(getQiType, setQiType)
-
+    @property
+    def Order(self):
+        return self.__order
+    @Order.setter
+    def Order(self, order):
+        self.__order = order
     
     def toDictionary(self):
-        dictionary = {
-            "Id" : self.__Id }
+        dictionary = { 'IsKey' : self.IsKey }
 
-        dictionary["IsKey"] = self.__IsKey
+        if hasattr(self, 'Id'):
+            dictionary['Id'] = self.Id
 
-        if self.__Name is not None and len(self.__Name) > 0:
-            dictionary["Name"] = self.__Name
+        if hasattr(self, 'Name'):
+            dictionary['Name'] = self.Name
 
-        if self.__Description is not None and len(self.__Description) > 0:
-            dictionary["Description"] = self.__Description
+        if hasattr(self, 'Description'):
+            dictionary['Description'] = self.Description
 
-        if self.__QiType is not None:
-            dictionary["QiType"] = self.__QiType.toDictionary()
+        if hasattr(self, 'QiType'):
+            dictionary['QiType'] = self.QiType.toDictionary()
+
+        if hasattr(self, 'Value'):
+            if (isinstance(self.Value, Enum)):
+                dictionary['Value'] = self.Value.name
+            else:
+                dictionary['Value'] = self.Value
+
+        if hasattr(self, 'Order'):
+            dictionary['Order'] = self.Order
 
         return dictionary
 
     @staticmethod
     def fromDictionary(content):
-        
         typeProperty = QiTypeProperty()
 
         if len(content) == 0:
             return typeProperty
 
-        if "Id" in content:
-            typeProperty.Id = content["Id"]
+        if 'Id' in content:
+            typeProperty.Id = content['Id']
             
-        if "IsKey" in content:
-            typeProperty.IsKey = content["IsKey"]
+        if 'IsKey' in content:
+            typeProperty.IsKey = content['IsKey']
 
-        if "Name" in content:
-            typeProperty.Name = content["Name"]
+        if 'Name' in content:
+            typeProperty.Name = content['Name']
 
-        if "Description" in content:
-            typeProperty.Description = content["Description"]
+        if 'Description' in content:
+            typeProperty.Description = content['Description']
 
-        if "QiType" in content:
-            typeProperty.QiType = QiType.QiType.fromDictionary(content["QiType"])
+        if 'QiType' in content:
+            typeProperty.QiType = QiType.QiType.fromDictionary(content['QiType'])
+
+        if 'Value' in content:
+            typeProperty.Value = content['Value']
+
+        if 'Order' in content:
+            typeProperty.Order = content['Order']
             
         return typeProperty

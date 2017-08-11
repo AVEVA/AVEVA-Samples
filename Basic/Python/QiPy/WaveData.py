@@ -1,118 +1,111 @@
 import datetime
 import math
+import json
+import inspect
 
 class WaveData:
+    """Represents a data point to be injected into Qi Service"""
     
     def __init__(self):
-        self.__Order = None
-        self.__Tau = None
-        self.__Radians = None
-        self.__Sin = None
-        self.__Cos = None
-        self.__Tan = None
-        self.__Sinh = None
-        self.__Cosh = None
-        self.__Tanh = None
+        self._order = None
+        self._tau = None
+        self._radians = None
+        self._sin = None
+        self._cos = None
+        self._tan = None
+        self._sinh = None
+        self._cosh = None
+        self._tanh = None
     
-    def getOrder(self):
-        return self.__Order
+    @property
+    def Order(self):
+        return self._order
+    @Order.setter
+    def Order(self, order):
+        self._order = order
 
-    def setOrder(self, Order):
-        self.__Order = Order
+    @property
+    def Tau(self):
+        return self._tau
+    @Tau.setter
+    def Tau(self, tau):
+        self._tau = tau
     
-    Order = property(getOrder, setOrder)
+    @property
+    def Radians(self):
+        return self._radians
+    @Radians.setter
+    def Radians(self, radians):
+        self._radians = radians
     
-    def getTau(self):
-        return self.__Tau
-
-    def setTau(self, Tau):
-        self.__Tau = Tau
+    @property
+    def Sin(self):
+        return self._sin
+    @Sin.setter
+    def Sin(self, sin):
+        self._sin = sin
     
-    Tau = property(getTau, setTau)
+    @property
+    def Cos(self):
+        return self._cos
+    @Cos.setter
+    def Cos(self, cos):
+        self._cos = cos
 
-    def getRadians(self):
-        return self.__Radians
+    @property
+    def Tan(self):
+        return self._tan
+    @Tan.setter
+    def Tan(self, tan):
+        self._tan = tan
 
-    def setRadians(self, Radians):
-        self.__Radians = Radians
+    @property
+    def Sinh(self):
+        return self._sinh
+    @Sinh.setter
+    def Sinh(self, sinh):
+        self._sinh = sinh
+
+    @property
+    def Cosh(self):
+        return self._cosh
+    @Cosh.setter
+    def Cosh(self, cosh):
+        self._cosh = cosh
     
-    Radians = property(getRadians, setRadians)
-
-    def getSin(self):
-        return self.__Sin
-
-    def setSin(self, Sin):
-        self.__Sin= Sin
-    
-    Sin = property(getSin, setSin)
-
-    def getCos(self):
-        return self.__Cos
-
-    def setCos(self, Cos):
-        self.__Cos = Cos
-    
-    Cos = property(getCos, setCos)
-
-    def getTan(self):
-        return self.__Tan
-
-    def setTan(self, Tan):
-        self.__Tan= Tan
-    
-    Tan = property(getTan, setTan)
-
-    def getSinh(self):
-        return self.__Sinh 
-
-    def setSinh(self, Sinh):
-        self.__Sinh = Sinh
-    
-    Sinh = property(getSinh, setSinh)
-
-    def getCosh(self):
-        return self.__Cosh
-
-    def setCosh(self, Cosh):
-        self.__Cosh = Cosh
-    
-    Cosh = property(getCosh, setCosh)
-
-    def getTanh(self):
-        return self.__Tanh
-
-    def setTanh(self, Tanh):
-        self.__Tanh = Tanh
-    
-    Tanh = property(getTanh, setTanh)    
+    @property
+    def Tanh(self):
+        return self._tanh
+    @Tanh.setter
+    def Tanh(self, tanh):
+        self._tanh = tanh
         
-    def toString(self):
-        return '\n'.join('Order = {0}'.format(self.__Order),
-                         'Radians = {0}'.format(self.__Radians),
-                         'Tau = {0}'.format(self.__Tau),
-                         'Sine = {0}'.format(self.__Sin),
-                         'Cosine = {0}'.format(self.__Sin),
-                         'Tangent = {0}'.format(self.__Tan),
-                         'Sinh = {0}'.format(self.__Tan),
-                         'Cosh = {0}'.format(self.__Cosh),
-                         'Tanh = {0}'.format(self.__Tanh))
-        
+    def isprop(v):
+        return isinstance(v, property)
+
+    def toJsonString(self):
+        string = ""
+        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
+            value = prop[1].fget(self)
+            if value is None:
+                string += "{name}: , ".format(name = prop[0])
+            else:
+                string += "{name}: {value}, ".format(name = prop[0], value = value)
+        return string
+
     @staticmethod
-    def nextWave(interval, multiplier, order):
-        now = datetime.datetime.now()
-        totalSecondsDay = (now - now.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds() * 1000
-        intervalSeconds = (interval - interval.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds() * 1000
-        radians = ((totalSecondsDay % intervalSeconds ) / intervalSeconds) * 2 * math.pi
-        
-        newWave = WaveData()
-        newWave.Order = order
-        newWave.Radians = radians
-        newWave.Tau = radians / (2 * math.pi)
-        newWave.Sin = multiplier * math.sin(radians)
-        newWave.Cos = multiplier * math.cos(radians)
-        newWave.Tan = multiplier * math.tan(radians)
-        newWave.Sinh = multiplier * math.sinh(radians)
-        newWave.Cosh = multiplier * math.cosh(radians)
-        newWave.Tanh = multiplier * math.tanh(radians)
-        
-        return newWave
+    def fromJson(jsonObj):
+        if jsonObj is None:
+            return None
+        wave = WaveData()
+        properties = inspect.getmembers(type(wave), lambda v : isinstance(v, property))
+        for prop in properties:
+            # Pre-Assign the default
+            prop[1].fset(wave, 0)
+
+            # If found in JSON object, then set
+            if prop[0] in jsonObj:
+                value = jsonObj[prop[0]]
+                if value is not None:
+                    prop[1].fset(wave, value)
+        return wave

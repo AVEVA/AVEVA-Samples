@@ -1,386 +1,433 @@
-Python Samples: Building a Client to make REST API Calls to the Qi Service.
-===========================================================================
+Building a Python client to make REST API calls to the Qi Service
+==================================================================
 
-The examples in this topic demonstrate how Qi REST APIs are invoked
-using Python.
+The sample code in this topic demonstrates how to invoke Qi REST APIs
+using Python. By examining the code, you will see how to establish a connection 
+to Qi, obtain an authorization token, create a QiNamespace, QiType, and QiStream, 
+and how to create, read, update, and delete values in Qi.
+
+The sections that follow provide a brief description of the process from
+beginning to end.
+
+To Run this Sample:
+-------------------
+1. Clone the GitHub repository
+2. Open the folder with your favorite IDE
+3. Update ``config.ini`` with the credentials provided by OSIsoft
+4. Run ``program.py``
 
 Establish a Connection
 ----------------------
 
-The sample in this topic uses ``httplib`` module to connect a service
-endpoint. A new connection is opened as follows:
+The sample code uses the ``requests`` module, which 
+exposes simple methods for specifying request types to a given
+destination address. The client calls the requests method by passing a destination
+URL, payload, and headers. The server's response is stored.
 
 .. code:: python
 
-        conn = httplib.HTTPConnection(url-name)
+    response = requests.post(url, data=payload, headers=client_headers)
 
--  *url-name* is the service endpoint (for example: "localhost:3380").
-   The connection is used by the ``QiClient`` class, which encapsulates
-   the REST API and performs authentication.
+-  *url* is the service endpoint (for example:
+   ``https://qi-data.osisoft.com``). The connection is used by the
+   ``QiClient`` class.
+
+Each call to the Qi REST API consists of an HTTP request along with a specific 
+URL and HTTP method. The URL consists of the server name plus the extension that 
+is specific to the call. Like all REST APIs, the Qi REST API maps HTTP
+methods to CRUD as shown in the following table:
+
++---------------+------------------+--------------------+
+| HTTP Method   | CRUD Operation   | Content Found In   |
++===============+==================+====================+
+| POST          | Create           | Message body       |
++---------------+------------------+--------------------+
+| GET           | Retrieve         | URL parameters     |
++---------------+------------------+--------------------+
+| PUT           | Update           | Message body       |
++---------------+------------------+--------------------+
+| DELETE        | Delete           | URL parameters     |
++---------------+------------------+--------------------+
+
+Configure the Sample:
+-----------------------
+
+Included in the sample there is a configuration file with placeholders that 
+need to be replaced with the proper values. They include information for 
+authentication, connecting to the Qi Service, and pointing to a namespace.
+
+The Qi Service is secured using Azure Active Directory. The sample application 
+is an example of a *confidential client*. Confidential clients provide an application ID 
+and secret that are authenticated against the directory. These are referred to as client 
+IDs and a client secrets, which are associated with a given tenant. They are created through 
+the tenant's administration portal. The steps necessary to create a new cient ID and secret 
+are described below.
+
+First, log on to the `Cloud Portal <http://cloud.osisoft.com>`__ with admin credentials 
+and navigate to the ``Client Keys`` page under the ``Manage`` tab, which is situated along 
+the top of the webpage. Two types of keys may be created. For a complete explanation of 
+key roles look at the help bar on the right side of the page. This sample program covers 
+data creation, deletion and retrieval, so an administration key must be used in the 
+configuration file. Creating a new key is simple. Enter a name for the key, select 
+``Administrator role``, then click ``Add Key``.
+
+Next, view the key by clicking the small eye icon on the right of the created key, 
+located in the list of available keys. A pop-up will appear with the tenant ID, client 
+ID and client secret. These must replace the corresponding  values in the sample's 
+configuration file. 
+
+Along with client ID and secret values, add the tenant name to the authority value 
+so authenticaiton occurs against the correct tenant. The URL for the Qi Service 
+conneciton must also be changed to reflect the destination address of the requests. 
+
+Finally, a valid namespace ID for the tenant must be given as well. To create a 
+namespace, click on the ``Manage`` tab then navigate to the ``Namespaces`` page. 
+At the top the add button will create a new namespace after the required forms are 
+completed. This namespace is now associated with the logged-in tenant and may be 
+used in the sample.
+
+The values to be replaced are in ``config.ini``:
+
+.. code:: python
+
+    [Configurations]
+    Namespace = REPLACE_WITH_NAMESPACE
+
+    [Access]
+    Address = REPLACE_WITH_QI_SERVER_URL
+    Tenant = REPLACE_WITH_TENANT_ID
+
+    [Credentials]
+    Resource = https://pihomemain.onmicrosof.com/historian
+    Authority = https://login.windows.net/<PLACEHOLDER_REPLACE_WITH_TENANT_NAME>.onmicrosoft.com
+    ClientId = REPLACE_WITH_CLIENT_IDENTIFIER
+    ClientSecret = REPLACE_WITH_CLIENT_SECRET
 
 Obtain an Authentication Token
 ------------------------------
 
-The Qi service is secured by obtaining tokens from an Azure Active
-Directory instance. For a request to succeed, a token must be attached
-to every request made to Qi. The sample applications described here are
-examples of a *confidential client*. Such clients provide a user ID and
-secret key that are authenticated against the directory. The sample code
-includes several placeholder strings. You must replace these strings
-with the authentication-related values you received from OSIsoft. The
-strings are found in ``Constants.py``:
+The Asure Active Directory python library ``adal`` provides a simple way
+to authenticate and obtain bearer tokens to use Qi Service. Within each
+request to Qi, the headers are provided by a function that is also
+responsible for refreshing the token. An authentication context is created 
+and a token is acquired from that context.
 
 .. code:: python
 
-        #VERY IMPORTANT: edit the following values to reflect the authorization items you were given
-        authItems = {'resource' : "PLACEHOLDER_REPLACE_WITH_RESOURCE",
-                     'authority' : "PLACEHOLDER_REPLACE_WITH_AUTHORITY",#Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token,
-                     'appId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
-                     'appKey' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
-        
-        TenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
-        QiServerUrl = "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL"
+    context = adal.AuthenticationContext(self.__authority,
+       validate_authority=True)
+    token = context.acquire_token_with_client_credentials(self.__resource, 
+       self.__clientId, self.__clientSecret)
 
-You must replace ``resource``, ``authority``, ``appId``, and ``appKey``
-with the appropriate values provided by OSIsoft. The ``authItems`` array
-is passed to the ``QiClient`` constructor.
+Acquire a QiNamespace
+---------------------
 
-The Python sample in this topic uses raw OAuth 2 calls to obtain an
-authentication token. The other samples use libraries from Microsoft
-that handles token acquisition, caching, and refreshing, but such a
-library is not currently available for Python.
+In Qi, a namespace provides isolation within a Tenant. Each namespace
+has its own collection of Streams, Types, and Behaviors. It is not
+possible to programmatically create or delete a namespace. If you are a
+new user, be sure to go to the `Cloud
+Portal <http://cloud.osisoft.com>`__ and create a namespace using your
+tenant login credentials provided by OSIsoft. You must provide the
+namespace ID of a valid namespace in ``config.ini`` for the sample to
+function properly.
 
-During initialization, ``QiClient`` makes the following calls:
-
-.. code:: python
-
-        self.__getToken()
-        if not self.__token:
-            return
-
-The first call, ``__getToken``, makes the OAuth call to the Azure Active
-Directory instance to get a token, then assigns the value (assuming the
-application is successfully authenticated) to the member variable
-``__token``. Next, QiClient checks to ensure it has an authentication
-token. If a token is not found the call will fail and the call returns.
-The following shows the code for ``__getToken``:
-
-.. code:: python
-
-        def __getToken(self):     
-            if self.__expiration < (time.time()/100):
-                return
-                
-            response = requests.post(self.__authItems['authority'], 
-                                     data = { 'grant_type' : 'client_credentials',
-                                             'client_id' : self.__authItems['appId'],
-                                                'client_secret' : self.__authItems['appKey'],
-                                                'resource' : self.__authItems['resource']
-                                                })
-            if response.status_code == 200:
-                self.__token = response.json()['access_token']
-                self.__expiration = response.json()['expires_on']
-            else:
-                self.__token = ""
-                print "Authentication Failure : "+response.reason
-
-Authentication tokens expire after a period of time so the token must be
-periodically refreshed. The first lines of ``__getToken`` check whether
-the token has expired and returns if it has not. Otherwise, the
-credentials are submitted to Azure Active Directory to obtain a fresh
-token. The ``__getToken`` method is called before each REST API call,
-and the token is passed as part of the headers:
-
-.. code:: python
-
-    def __qi_headers(self):
-        return {
-            "Authorization" : "bearer %s" % self.__token,
-            "Content-type": "application/json", 
-            "Accept": "text/plain"
-        }
-
-Note that the value of the ``Authorization`` header is the word
-"bearer," followed by a space, followed by the token value itself.
-
-
-Create a Namespace
-------------------
-
-A Qi Namespace can be thought of as a container to hold streams, types, and behaviors. 
-Namespaces allow you to separate streams or simply have a sandbox in which to test Qi.
-
-.. code:: python
-
-  client.createNamespace(constants.TenantId, sampleNamespace)
-
+Each QiClient is associated with the tenant passed as an argument to the
+constructor. There is a one-to-one correspondance between them. However,
+multiple namespaces may be allocated to a single tenant, so you will see
+that each function in ``QiClient.py`` takes in a namespace ID as an
+argument.
 
 Create a QiType
 ---------------
 
-QiStreams represent open-ended collections of strongly-typed, ordered
-events. Qi is capable of storing any data type you care to define. The
-only requirement is that the data type must have one or more properties
-that constitute an ordered key. While a timestamp is a very common type
-of key, any ordered value is permitted. The sample type in this example
-uses an integer.
+To use Qi, you define QiTypes that describe the kinds of data you want
+to store in QiStreams. QiTypes are the model that define QiStreams.
+QiTypes can define simple atomic types, such as integers, floats, or
+strings, or they can define complex types by grouping other QiTypes. For
+more information about QiTypes, refer to the `Qi
+documentation <https://cloud.osisoft.com/documentation>`__.
 
-Each data stream is associated with a QiType, so that only events
-conforming to that type can be inserted into the stream. The first step
-in Qi programming, then, is to define the types for your tenant.
-
-Because the example uses the Qi REST API, you must build your own type
-definitions. A type definition in Qi consists of one or more properties.
-Each property has its own type. The type can be a simple data type such
-as an integer or string, or a previously defined complex QiType. You can
-create nested data types; that is, QiTypes whose properties are
-user-defined types. ``QiType`` and ``QiTypeProperty`` classes have been
-created that match those in the Qi Client Libraries. Simple types are
-denoted by an enumeration specified in ``QiTypeCode.py``. The ordinal
-values in the latter file are those the Qi service expects; you must
-specify these values if you want to create your own classes.
-
-From QiType.py:
+In the sample code, the QiType representing WaveData is defined in the
+``getWaveDataType`` method of program.py. WaveData contains properties
+of integer and double atomic types. The function begins by defining a
+base QiType for each atomic type.
 
 .. code:: python
 
-        self.__Id = ""
-        self.__Name = None
-        self.__Description = None
-        self.__QiTypeCode = self.__qiTypeCodeMap[QiTypeCode.Object]
-        self.__Properties = []
+    intType = QiType()
+    intType.Id = "intType"
+    intType.QiTypeCode = QiTypeCode.Int32
 
-From QiTypeProperty.py:
-
-.. code:: python
-
-        def __init__(self):
-                self.__Id = ""
-                self.__Name = None
-                self.__Description = None
-                self.__QiType = None
-                self.__IsKey = False
-
-Type creation is encapsulated by the ``createType`` method in
-``QiClient.py``. The following code shows how the method is called in
-``test.py``:
+Next, the WaveData properties are each represented by a QiTypeProperty.
+Each QiType field in QiTypeProperty is assigned an integer or double
+QiType. The WaveData Order property represents the type’s key, and its
+IsKey property is set to true.
 
 .. code:: python
 
-        wave = QiType()
-        wave.Id = "WaveDataPySample"
-        wave.Name = "WaveDataPySample"
-        wave.Description = "This is a sample Qi type for storing WaveData type events"
-        wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
-                           cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
+    orderProperty = QiTypeProperty()
+    orderProperty.Id = "Order"
+    orderProperty.QiType = intType
+    orderProperty.IsKey = True
 
-        #create the type in Qi service
-        print "Creating the WaveData Qi type in Qi service"
-        evtType = client.createType(wave)
+The WaveData QiType is defined as a collection of the QiTypeProperties.
 
--  Returns the QiType object in JSON format.
--  If a Qi type with the same ID exists, the URL of the existing Qi type
-   is returned.
--  The QiType object is passed in JSON format
+.. code:: python
+
+    #create a QiType for WaveData Class
+    wave = QiType()
+    wave.Id = sampleTypeId
+    wave.Name = "WaveDataPySample"
+    wave.Description = "This is a sample Qi type for storing WaveData type events"
+    wave.QiTypeCode = QiTypeCode.Object
+    wave.Properties = [orderProperty, tauProperty, radiansProperty, 
+                       sinProperty, cosProperty, tanProperty, sinhProperty, 
+                       coshProperty, tanhProperty]
+
+The WaveData type is created in Qi using the ``createType`` method in
+QiClient.py.
+
+.. code:: python
+
+    type = getWaveDataType(sampleTypeId)
+    type = client.createType(namespace_id, type)
+
+All QiTypes are constructed in a similar manner. Basic QiTypes form the basis for
+QiTypeProperties, which are then assigned to a complex user-defined
+type. These types can then be used in properties and become part of
+another QiType's property list.
 
 Create a QiStream
 -----------------
 
-An ordered series of events is stored in a QiStream. We've created a
-``QiStream`` class mirroring the properties of the native Qi service
-``QiStream`` class. All you have to do is create a local QiStream
-instance, provide an ID, assign a type, and submit it to the Qi service.
-You may optionally assign a QiStreamBehavior to the stream. The value of
-the stream's ``TypeId`` property is the value of the QiType ``Id``
-property. The ``CreateStream`` method of ``QiClient`` is similar to
-``createType``, except that it uses a different URL. The following code
-shows how it is called from the main program:
+A QiStream stores an ordered series of events. To create a
+QiStream instance, you simply provide an Id, assign it a type, and
+submit it to the Qi service. The ``createStream`` method of QiClient is
+similar to createType, except that it uses a different URL. Here is how
+it is called from the main program:
 
 .. code:: python
 
-        stream = QiStream()
-        stream.Id = "WaveStreamPySample"
-        stream.Name = "WaveStreamPySample"
-        stream.Description = "A Stream to store the WaveData Qi types events"
-        stream.TypeId = "WaveDataPySample"
-        stream.BehaviorId = None
-        evtStream = client.createStream(stream)
+    stream = QiStream()
+    stream.Id = sampleStreamId
+    stream.Name = "WaveStreamPySample"
+    stream.Description = "A Stream to store the WaveData events"
+    stream.TypeId = type.Id
+    stream.BehaviorId = None
+    stream = client.createStream(namespace_id, stream)
 
-Create and Insert Events into the Stream
+Create and Insert Values into the Stream
 ----------------------------------------
 
-A single event is a data point in the Stream. An event object cannot be
-emtpy and should have at least the key value of the Qi type for the
-event. Events are passed in JSON format. The following code shows the
-call to create a single event in a data stream in ``QiClient.py``:
+A single QiValue is a data point in the Stream. It cannot be
+empty and must have at least the key value of the QiType for the
+event. Events are passed in JSON format and are serialized in
+``QiClient.py``, which is then sent along with a POST request.
 
 .. code:: python
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertSingle, 
-                     payload, self.__qi_headers())
+    payload = json.dumps(value, cls=Encoder)
+    response = requests.post(self.__uri 
+                   + self.__insertValuePath.format(tenant_id=self.__tenant, 
+                     namespace_id=namespace_id,
+                     stream_id=stream_id), data=payload, 
+                     headers=self.__qiHeaders())
 
--  qi\_Stream.Id is the stream ID
--  payload is the event object in JSON format
+You use a similar process to insert multiple values; however, the payload has a
+collection of events and InsertValue is plural ``insertValues`` in the
+URL. See the sample code for an example.
 
-Inserting multiple values is similar, but the payload has list of events
-and the URL for POST call is slightly different:
+Retrieve Values from a Stream
+-----------------------------
 
-.. code:: python
+There are many methods in the Qi REST API that allow the retrieval of
+events from a stream. Many of the retrieval methods accept indexes,
+which are passed using the URL. The index values must be capable of
+conversion to the type of the index assigned in the QiType.
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("POST", self.__streamsBase + '/' + qi_stream.Id + self.__insertMultiple, 
-                     payload, self.__qi_headers())
+In this sample, four of the available methods are implemented in
+QiClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
+``getWindowValues`` can be used to retrieve events over a specific index
+range. ``getRangeValues`` can be used to retrieve a specified number of
+events from a starting index.
 
-Retrieve Events
----------------
-
-There are many methods in the Qi REST API that allow for the retrieval
-of events from a stream. The retrieval methods take string-type start
-and end values; in this case, the start and end ordinal indices are
-expressed as strings ("0" and "99", respectively). The index values must
-be capable of conversion to the type of the index that is assigned in
-the QiType. Timestamp keys are expressed as ISO 8601 format strings.
-Compound indices are values concatenated with a pipe ('\|') separator.
-``QiClient`` implements three of the many available retrieval methods:
-``getLastValue``, ``getWindowValues``, and ``getRangeValues``.
-
-``GetWindowValues`` can be used to get events over a specific index
-range. ``GetRangeValues`` can be used to obtain a specified number of
-events from a starting index point.
-
-Shown below is the code for the ``GetWindowValues`` call:
+Here is how to use ``getWindowValues``:
 
 .. code:: python
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("GET", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
-                    self.__getTemplate.format(stream_id = qi_stream.Id, 
-                                             start = urllib.urlencode({"startIndex": start}), 
-                                                end = urllib.urlencode({"endIndex": end})), 
-                    headers = self.__qi_headers())
+    def getWindowValues(self, namespace_id, stream_id, start, end):
 
-Update Events
--------------
-
-Updating events is handled by ``PUT`` REST call as shown below:
+*start* and *end* (inclusive) represent the starting and ending indices for the
+retrieval. Additionally, the namespace ID and stream ID must
+be provided to the function call. A JSON object containing a list of the
+found values is returned. In the sample it the call is:
 
 .. code:: python
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase + '/' + qi_stream.Id + self.__updateSingle, 
-                     payload, self.__qi_headers())
+    events = client.getWindowValues(namespace_id, stream.Id, 0, 198)
 
--  payload is the new event with an index value specifying the existing
-   event to overwrite.
-
-Updating multiple events is similar but the payload has an array of
-event objects and URL for POST is slightly different:
+Optionally, you can retrieve a range of values from a start index using the
+``getRangeValues`` method in ``QiClient``. The starting index is the ID
+of the ``QiTypeProperty`` that corresponds to the key value of the
+WaveData type. In this case, it is ``Order``. Following is the
+declaration of getRangeValues in QiClient.py:
 
 .. code:: python
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("PUT", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + 
-        '/' + qi_stream.Id + self.__updateMultiple, payload, self.__qi_headers())
+    def getRangeValues(self, namespace_id, stream_id, start, skip, 
+        count, reverse, boundary_type):
 
-QiStreamBehaviors
------------------
+*skip* is the increment by which the retrieval will happen. *count* is
+how many values you wish to have returned. *reverse* is a boolean that,
+when ``true``, causes the retrieval to work backward from the starting
+point. Finally, *boundary\_type* is a ``QiBoundaryType`` value that
+determines the behavior if the starting index cannot be found. Refer the
+to the `Qi documentation <https://cloud.osisoft.com/documentation>`__
+for more information about QiBoundaryTypes.
 
-You can specify a QiBoundarytype for certain data retrieval calls. For
-example, if ``GetRangeValues`` is called with an ``ExactOrCalculated``
-boundary type, an event at the request start index will be calculated
-using linear interpolation (default) or based on the QiStreamBehavior
-associated with the QiStream. Because the example QiStream was created
-without an associated ``QiStreamBehavior``, it displays the default
-linear interpolation.
-
-The first event returned by the following call will be at index 1 (start
-index) and calculated using linear interpolation:
+The ``getRangeValues`` method is called as shown here in
+program.py:
 
 .. code:: python
 
-        foundEvents = client.getRangeValues("WaveStreamPy", "1", 0, 3, False, QiBoundaryType.ExactOrCalculated.value)
+    events = client.getRangeValues(namespace_id, stream.Id, 
+             "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
 
-To see how QiStreamBehaviors can change the query results, the following
-code defines a new stream behavior object and submits it to the Qi
-service:
+Updating and Replacing Values
+-----------------------------
 
-.. code:: python
+Values can be updated or replaced after they are inserted into a stream. The
+distinction between updating and replacing operations is that updating inserts a
+value if none exists previously, but replacing does not. The sample
+demonstrates this behavior by first inserting ten values into the
+stream, then updating and adding ninety more values using the update
+methods. Afterwards, it replaces all one hundred values using the replace
+methods.
 
-        behaviour = QiStreamBehaviour()
-        behaviour.Id = "evtStreamStepLeading";
-        behaviour.Mode = QiStreamMode.StepwiseContinuousLeading.value
-        behaviour = client.createBehaviour(behaviour)
+Here are the calls that accomplish these steps:
 
-Setting the ``Mode`` property to ``StepwiseContinuousLeading`` ensures
-that any calculated event will have an interpolated index, but every
-other property will have the value of the previous event. The following
-code attaches this behavior to the existing stream by setting the
-``BehaviorId`` property of the stream and updating the stream definition
-in the Qi service:
+Update values:
 
 .. code:: python
 
-        evtStream.BehaviourId = behaviour.Id
-        client.updateStream(evtStream)
+    # update one value
+    event = nextWave(start, span, 4.0, 0)
+    client.updateValue(namespace_id, stream.Id, event)
+    # update multiple values
+    updatedEvents = []
+    for i in range(2, 200, 2):
+        event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 2.0, i)
+        updatedEvents.append(event)
+    client.updateValues(namespace_id, stream.Id, updatedEvents)
 
-The example repeats the call to ``GetRangeValues`` with the same
-parameters as before, allowing you to compare the values of the event at
-index 1 using different stream behaviors.
-
-Delete Events
--------------
-
-An event at a particular index can be deleted by passing the index value
-for that data point to the following DELETE REST call. The index values
-are expressed as string representations of the underlying type. DateTime
-index values must be expressed as ISO 8601 strings.
-
-Deleting a single value is done using the QiClient's ``removeValue``
-method:
+Replace values:
 
 .. code:: python
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("DELETE", self.__streamsBase + '/' + self.__removeSingleTemplate.format(stream_id = qi_stream.Id, param = params), 
-                     headers = self.__qi_headers())
+    # replace one value
+    event = nextWave(start, span, 10.0, 0)
+    client.replaceValue(namespace_id, stream.Id, event)
+    # replace multiple values
+    replacedEvents = []
+    for i in range(2, 200, 2):
+        event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 10.0, i)
+        replacedEvents.append(event)
+    client.replaceValues(namespace_id, stream.Id, replacedEvents)
 
-Delete can also be done over a range of index values, as in the
-following ``removeValues`` method:
+Deleting Values from a Stream
+-----------------------------
+
+There are two methods in the sample that illustrate removing values from
+a stream of data. The first method deletes only a single value. The second method 
+removes a window of values, much like retrieving a window of values.
+Removing values depends on the value's key type ID value. If a match is
+found within the stream, then that value will be removed. Below are the
+declarations of both functions:
 
 .. code:: python
 
-        conn = http.HTTPSConnection(self.url)
-        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) + '/' + 
-                    self.__removeMultipleTemplate.format(stream_id = qi_stream.Id, 
-                    start = urllib.urlencode({"startIndex": start}),
-                    end = urllib.urlencode({"endIndex": end})), 
-                    headers = self.__qi_headers())
+    # remove a single value from the stream
+    def removeValue(self, namespace_id, stream_id, index):
+    # remove multiple values from the stream
+    def removeWindowValues(self, namespace_id, stream_id, index):
+
+Here is how the methods are used in the sample:
+
+.. code:: python
+
+    client.removeValue(namespace_id, stream.Id, 0)
+    client.removeWindowValues(namespace_id, stream.Id, 0, 198)
+
+As when retrieving a window of values, removing a window is
+inclusive; that is, both values corresponding to Order=0 and Order=198
+are removed from the stream.
+
+Changing Stream Behavior
+------------------------
+
+When retrieving a value, the behavior of a stream can be altered
+using the ``QiBehavior`` class. A stream is updated with a behavior,
+which changes how "get" operations are performed when an index falls between,
+before, or after existing values. The default behavior is continuous, so
+any indices not in the stream are interpolated using the previous
+and next values.
+
+In the sample, the behavior is updated to discrete, meaning that if an index
+does not correspond to a real value in the stream then ``null`` is
+returned by the Qi Service. The following shows how this is done in the
+code:
+
+.. code:: python
+
+    # create the behavior
+    discreteBehavior = QiStreamBehavior()
+    discreteBehavior.Id = sampleBehaviorId
+    discreteBehavior.Mode = QiStreamMode.Discrete
+    discreteBehavior = client.createBehavior(namespace_id, discreteBehavior)
+    # update the stream
+    stream.BehaviorId = discreteBehavior.Id
+    client.updateStream(namespace_id, stream)
+
+The process consiste of two steps. First, the behavior must be created, then the
+stream must be updated. Note that the sample retrieves three data points
+before and after updating the stream to show that it has changed. See
+the `Qi documentation <https://cloud.osisoft.com/documentation>`__ for
+more information about QiBehaviors.
+
+Additional Methods
+------------------
+
+Notice that there are more methods provided in QiClient than are discussed in this
+document, including get methods for types, behaviors, and streams.
+Each has both a single get method and a multiple get method, which
+reflect the data retrieval methods covered above. Below are the function declarations:
+
+.. code:: python
+
+    def getType(self, namespace_id, type_id):
+    def getTypes(self, namespace_id):
+    def getBehavior(self, namespace_id, behavior_id):
+    def getBehaviors(self, namespace_id, skip, count):
+    def getStream(self, namespace_id, stream_id):
+    def getStreams(self, namespace_id, query, skip, count):
+
+For a complete list of HTTP request URLs refer to the `Qi
+documentation <https://cloud.osisoft.com/documentation>`__.
 
 Cleanup: Deleting Types, Behaviors, and Streams
 -----------------------------------------------
 
-To prevent name collisions if the sample program is run repeadly, some
-cleanup is required before exiting. Deleting streams, stream behaviors,
-and types is done using a ``DELETE`` REST call and passing the
-corresponding ID. Note that types and behaviors cannot be deleted until
-any streams that reference those types and behaviors are deleted first.
+In order for the program to run repeatedly without collisions, the sample
+performs some cleanup before exiting. Deleting streams, stream
+behaviors, and types can be achieved by a DELETE REST call and passing
+the corresponding Id. The following calls are made in the sample code.
 
 .. code:: python
 
-        conn.request("DELETE", self.__streamsBase.format(tenant_id = tenant_id, namespace_id = namespace_id) 
-        + '/' + stream_id, headers = self.__qi_headers())
-        response = conn.getresponse()
+    client.deleteStream(namespace_id, sampleStreamId)
+    client.deleteType(namespace_id, sampleTypeId)
+    client.deleteBehavior(namespace_id, sampleBehaviorId)
 
-.. code:: python
-
-        conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__typesBase.format(tenant_id = tenant_id, namespace_id = namespace_id) 
-        + '/' +  type_id, headers = self.__qi_headers())
-
-.. code:: python
-
-        conn = http.HTTPSConnection(self.url)
-        conn.request('DELETE', self.__behaviorBase.format(tenant_id = tenant_id, namespace_id = namespace_id)
-        + '/' +  behaviorId, headers = self.__qi_headers())
-
+*Note: Types and behaviors cannot be deleted until any streams
+referencing them are deleted first. Their references are counted so
+deletion will fail if any streams still reference them.*

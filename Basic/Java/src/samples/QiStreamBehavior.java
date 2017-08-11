@@ -2,67 +2,55 @@ package samples;
 
 import java.util.List;
 
-public class QiStreamBehavior 
-{
-	private String Id;
-	private String Name;
-	private QiStreamMode Mode;
-	private QiStreamExtrapolation ExtrapolationMode;
-	private List<QiStreamBehaviorOverride> Overrides;
-	
-	public String getId() 
-	{
-		return Id;
-	}
+public class QiStreamBehavior {
+    private String Id;
+    private String Name;
+    private QiStreamMode Mode;
+    private QiStreamExtrapolation ExtrapolationMode;
+    private List<QiStreamBehaviorOverride> Overrides;
 
-	public void setId(String id) 
-	{
-		this.Id = id;
-	}
-	
-	public String getName() 
-	{
-		return Name;
-	}
+    public QiStreamBehavior() {
+        this.Mode = QiStreamMode.Continuous;
 
-	public void setName(String name) 
-	{
-		this.Name = name;
-	}
+    }
 
-	public QiStreamMode getMode()
-	{
-		return Mode;
-	}
+    public String getId() {
+        return Id;
+    }
 
-	public void setMode(QiStreamMode mode)
-	{
-		this.Mode = mode;
-	}
+    public void setId(String id) {
+        this.Id = id;
+    }
 
-	public QiStreamExtrapolation getExtrapolationMode() 
-	{
-		return ExtrapolationMode;
-	}
+    public String getName() {
+        return Name;
+    }
 
-	public void setExtrapolationMode(QiStreamExtrapolation extrapolationMode)
-	{
-		ExtrapolationMode = extrapolationMode;
-	}
+    public void setName(String name) {
+        this.Name = name;
+    }
 
-	public List<QiStreamBehaviorOverride> getOverrides()
-	{
-		return Overrides;
-	}
+    public QiStreamMode getMode() {
+        return Mode;
+    }
 
-	public void setOverrides(List<QiStreamBehaviorOverride> overrides)
-	{
-		this.Overrides = overrides;
-	}
+    public void setMode(QiStreamMode mode) {
+        this.Mode = mode;
+    }
 
-	public QiStreamBehavior()
-	{
-		this.Mode = QiStreamMode.Continuous;
-		
-	}
+    public QiStreamExtrapolation getExtrapolationMode() {
+        return ExtrapolationMode;
+    }
+
+    public void setExtrapolationMode(QiStreamExtrapolation extrapolationMode) {
+        ExtrapolationMode = extrapolationMode;
+    }
+
+    public List<QiStreamBehaviorOverride> getOverrides() {
+        return Overrides;
+    }
+
+    public void setOverrides(List<QiStreamBehaviorOverride> overrides) {
+        this.Overrides = overrides;
+    }
 }

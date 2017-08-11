@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace QiRestApiSample
+namespace QiRestApiCore
 {
     public class QiStreamBehavior
     {
-        public QiStreamBehavior()
-        {
-            Mode = QiStreamMode.Continuous;
-        }
-
         public string Id
         {
             get;
@@ -22,18 +19,6 @@ namespace QiRestApiSample
         }
 
         public QiStreamMode Mode
-        {
-            get;
-            set;
-        }
-
-        public QiStreamExtrapolation ExtrapolationMode
-        {
-            get;
-            set;
-        }
-
-        public IList<QiStreamBehaviorOverride> Overrides
         {
             get;
             set;

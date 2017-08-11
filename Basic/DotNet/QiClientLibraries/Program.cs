@@ -1,321 +1,329 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using OSIsoft.Qi;
-using OSIsoft.Qi.Http;
-using OSIsoft.Qi.Http.Security;
-using OSIsoft.Qi.Reflection;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
-namespace QiClientLibsSample
+namespace QiRestApiCore
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        private const string StreamId = "WaveStreamId";
+        private const string TypeId = "WaveDataTypeId";
+        private const string BehaviorId = "WaveStreamBehaviorId";
+
+        public static void Main()
         {
-            string sampleNamespaceId = "WaveData_SampleNamespace";
-            string sampleTypeId = "WaveData_SampleType";
-            string sampleStreamId = "WaveData_SampleStream";
-            string sampleBehaviorId = "WaveData_SampleBehavior";
+            MainAsync().GetAwaiter().GetResult();
+        }
 
-            Console.WriteLine("Creating a .NET Qi Administration Service...");
-            IQiAdministrationService qiAdministrationService = GetQiAdministrationService();
+         private static async Task MainAsync()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            IConfiguration configuration = builder.Build();
 
-            Console.WriteLine("Creating a .NET Qi Metadata Service...");
-            IQiMetadataService qiMetadataService = GetQiMetadataService(sampleNamespaceId);
+            string tenantId = configuration["Tenant"];
+            string namespaceId = configuration["Namespace"];
+            string address = configuration["Address"];
+            string resource = configuration["Resource"];
+            string appId = configuration["AppId"];
+            string appKey = configuration["AppKey"];
+            string aadInstanceFormat = configuration["AADInstanceFormat"];
 
-            Console.WriteLine("Creating a .NET Qi Data Service...");
-            IQiDataService qiDataService = GetQiDataService(sampleNamespaceId);
+            QiSecurityHandler securityHandler =
+                new QiSecurityHandler(resource, tenantId, aadInstanceFormat, appId, appKey);
+            HttpClient httpClient = new HttpClient(securityHandler)
+            {
+                BaseAddress = new Uri(address)
+            };
 
             try
             {
-                // Create a QiNamespace to hold the streams, types, and behaviors
-                Console.WriteLine("Creating a QiNamespace to hold the streams, types, and behaviors");
-                QiNamespace sampleNamespace = new QiNamespace(sampleNamespaceId);
-                sampleNamespace = qiAdministrationService.GetOrCreateNamespaceAsync(sampleNamespace).GetAwaiter().GetResult();
-                
-                DelayForQiConsistency();
-
-                // Create a Qi Type to reflect the event data being stored in Qi.
-                // The Qi Client Libraries provide QiTypeBuilder which constructs a QiType object 
-                // based upon a class you define in your code.  
-                Console.WriteLine("Creating a Qi type for WaveData instances");
-                QiTypeBuilder typeBuilder = new QiTypeBuilder();
-                QiType sampleType = typeBuilder.Create<WaveData>();
-                sampleType.Id = sampleTypeId;
-                sampleType = qiMetadataService.GetOrCreateTypeAsync(sampleType).GetAwaiter().GetResult();
-
-                DelayForQiConsistency();
-
-                // now let's create the stream to contain the events
-                // specify the type id of the QiType created above in the TypeId property of the QiStream object
-                // All events submitted to this stream must be of this type
-                Console.WriteLine("Creating a stream for simple event measurements");
-                QiStream sampleStream = new QiStream()
+                // to write data, we need a QiType and a QiStream
+                QiType waveType = BuildWaveDataType(TypeId);
+                HttpResponseMessage response =
+                    await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types",
+                        new StringContent(JsonConvert.SerializeObject(waveType)));
+                if (!response.IsSuccessStatusCode)
                 {
-                    Name = "Wave Data Sample Stream",
-                    Id = sampleStreamId,
-                    TypeId = sampleTypeId,
-                    Description = "This is a sample QiStream for storing WaveData type measurements"
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                QiStream waveStream = new QiStream
+                {
+                    Id = StreamId,
+                    Name = "WaveStream",
+                    TypeId = waveType.Id
                 };
+                response = await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams",
+                    new StringContent(JsonConvert.SerializeObject(waveStream)));
+                if (response.StatusCode == HttpStatusCode.Found)
+                {
+                    response = await httpClient.GetAsync(
+                        $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}");
+                    waveStream = JsonConvert.DeserializeObject<QiStream>(await response.Content.ReadAsStringAsync());
+                }
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
 
-                sampleStream = qiMetadataService.GetOrCreateStreamAsync(sampleStream).GetAwaiter().GetResult();
+                // insert and read one value
+                WaveData wave = GetWave(1, 1, 2.0);
+                response = await httpClient.PostAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValue",
+                    new StringContent(JsonConvert.SerializeObject(wave)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
 
-                DelayForQiConsistency();
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetValue?index={wave.Order}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+                WaveData retrievedData =
+                    JsonConvert.DeserializeObject<WaveData>(await response.Content.ReadAsStringAsync());
+                Console.WriteLine($"Read data back:{retrievedData}");
 
-                #region CRUD Operations
-
-                #region Create Events (Insert)
-
-                Console.WriteLine("Artificially generating 100 events and inserting them into the Qi Service");
-
-                // Insert a single event into a stream
-                TimeSpan span = new TimeSpan(0, 1, 0);
-                WaveData waveDataEvent = WaveData.Next(span, 2.0, 0);
-
-                Console.WriteLine("Inserting the first event");
-                qiDataService.InsertValueAsync(sampleStreamId, waveDataEvent).GetAwaiter().GetResult();
-
-                // Inserting a collection of events into a stream
-                List<WaveData> waveDataEvents = new List<WaveData>();
+                // insert many data points at once
+                List<WaveData> waves = new List<WaveData>();
                 for (int i = 2; i < 200; i += 2)
                 {
-                    waveDataEvent = WaveData.Next(span, 2.0, i);
-                    waveDataEvents.Add(waveDataEvent);
+                    WaveData newEvent = GetWave(i, 2, 2.0);
+                    waves.Add(newEvent);
+                }
+                response = await httpClient.PostAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValues",
+                    new StringContent(JsonConvert.SerializeObject(waves)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException();
                 }
 
-                Console.WriteLine("Inserting the rest of the events");
-                qiDataService.InsertValuesAsync(sampleStreamId, waveDataEvents).GetAwaiter().GetResult();
-
-                DelayForQiConsistency();
-
-                #endregion
-
-                #region Retrieve events for a time range
-
-                // use the round trip formatting for time
-                Console.WriteLine("Retrieving the inserted events");
-                Console.WriteLine("==============================");
-                IEnumerable<WaveData> foundEvents = qiDataService.GetWindowValuesAsync<WaveData>(sampleStreamId, "0", "198").GetAwaiter().GetResult();
-                DumpEvents(foundEvents);
-                #endregion
-
-                #region Update an event
-
-                Console.WriteLine();
-                Console.WriteLine("Updating the first event");
-
-                // take the first value inserted and update the value using a multiplier of 4, while retaining the order
-                waveDataEvent = foundEvents.First();
-                waveDataEvent = WaveData.Next(span, 4.0, waveDataEvent.Order);
-                qiDataService.UpdateValueAsync(sampleStreamId, waveDataEvent).GetAwaiter().GetResult();
-
-                // update the collection of events (same span, multiplier of 4, retain order)
-                waveDataEvents = new List<WaveData>();
-                foreach (WaveData evnt in waveDataEvents)
+                // read all of our data back at once
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetWindowValues?startIndex={waves[0].Order}&endIndex={waves[waves.Count - 1].Order}");
+                if (!response.IsSuccessStatusCode)
                 {
-                    waveDataEvent = WaveData.Next(span, 4.0, evnt.Order);
-                    waveDataEvents.Add(waveDataEvent);
+                    throw new HttpRequestException(response.ToString());
+                }
+                List<WaveData> retrievedList =
+                    JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
+                Console.WriteLine($"Retrieved {retrievedList.Count} events using GetWindowValues");
+
+                // change the data slightly and then update
+                foreach (var waveData in waves)
+                {
+                    waveData.Order += 2;
+                }
+                response = await httpClient.PutAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValues",
+                    new StringContent(JsonConvert.SerializeObject(waves)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
                 }
 
-                Console.WriteLine("Updating the rest of the events");
-                qiDataService.UpdateValuesAsync(sampleStreamId, waveDataEvents).GetAwaiter().GetResult();
-
-                DelayForQiConsistency();
-
-                Console.WriteLine("Retrieving the updated values");
-                Console.WriteLine("=============================");
-                foundEvents = qiDataService.GetWindowValuesAsync<WaveData>(sampleStreamId, "0", "198").GetAwaiter().GetResult();
-                DumpEvents(foundEvents);
-
-                // illustrate how stream behaviors modify retrieval
-                // First, pull three items back with GetRangeValues for range values between events.
-                // The default behavior is continuous, so ExactOrCalculated should bring back interpolated values
-                Console.WriteLine();
-                Console.WriteLine(@"Retrieving three events without a stream behavior");
-                foundEvents = qiDataService.GetRangeValuesAsync<WaveData>(sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).GetAwaiter().GetResult();
-                DumpEvents(foundEvents);
-
-                // now, create a stream behavior with Discrete and attach it to the existing stream
-                Console.WriteLine("Creating a QiStreamBehavior");
-                QiStreamBehavior sampleBehavior = new QiStreamBehavior()
+                // QiStreams use the "Continous" interpolation mode, so when we read at a nonexistent 
+                // index, it should interpolate a value using the previous and next index values
+                Console.WriteLine("Reading values with Continuous behavior:");
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetRangeValues?startIndex={5}&count={3}&boundaryType={QiBoundaryType.ExactOrCalculated}");
+                if (!response.IsSuccessStatusCode)
                 {
-                    Id = sampleBehaviorId,
-                    Mode = QiStreamMode.StepwiseContinuousLeading
+                    throw new HttpRequestException(response.ToString());
+                }
+                List<WaveData> rangeValuesContinuous =
+                    JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
+                foreach (var waveData in rangeValuesContinuous)
+                {
+                    Console.WriteLine($"Order: {waveData.Order}, Radians: {waveData.Radians}");
+                }
+
+                // behaviors allow users to dictate how Qi will interpolate or extrapolate when reading data from a stream
+                // the discrete mode for this behavior will only allow values explicitly written to be read back
+                QiStreamBehavior waveStreamBehavior = new QiStreamBehavior
+                {
+                    Id = BehaviorId,
+                    Mode = QiStreamMode.Discrete,
+                    Name = "WaveStreamBehavior"
                 };
-                sampleBehavior = qiMetadataService.GetOrCreateBehaviorAsync(sampleBehavior).GetAwaiter().GetResult();
+                response = await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Behaviors",
+                    new StringContent(JsonConvert.SerializeObject(waveStreamBehavior)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+                if (response.StatusCode == HttpStatusCode.Found)
+                {
+                    response = await httpClient.GetAsync(
+                        $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Behaviors/{waveStreamBehavior.Id}");
+                    waveStreamBehavior =
+                        JsonConvert.DeserializeObject<QiStreamBehavior>(await response.Content.ReadAsStringAsync());
+                }
 
-                DelayForQiConsistency();
+                // update stream to use behavior
+                waveStream.BehaviorId = waveStreamBehavior.Id;
+                response = await httpClient.PutAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}",
+                    new StringContent(JsonConvert.SerializeObject(waveStream)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
 
-                // update the stream to include this behavior
-                Console.WriteLine("Updating the QiStream with the new QiStreamBehaivor");
-                sampleStream.BehaviorId = sampleBehaviorId;
-                qiMetadataService.UpdateStreamAsync(sampleStreamId, sampleStream).GetAwaiter().GetResult();
+                // the Discrete behavior should only return values explicitly written
+                Console.WriteLine("Reading values with Discrete behavior:");
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetRangeValues?startIndex={5}&count={3}&boundaryType={QiBoundaryType.ExactOrCalculated}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+                List<WaveData> rangeValuesDiscrete =
+                    JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
+                foreach (var waveData in rangeValuesDiscrete)
+                {
+                    Console.WriteLine($"Order: {waveData.Order}, Radians: {waveData.Radians}");
+                }
 
-                DelayForQiConsistency();
-
-                // repeat the retrieval
-                Console.WriteLine();
-                Console.WriteLine("Retrieving three events with a stepwise stream behavior in effect -- compare to last retrieval");
-                foundEvents = qiDataService.GetRangeValuesAsync<WaveData>(sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated).GetAwaiter().GetResult();
-                DumpEvents(foundEvents);
-
-                #endregion
-
-                #region Delete events
-
-                Console.WriteLine();
-                Console.WriteLine("Deleting first event");
-                qiDataService.RemoveValueAsync(sampleStreamId, 0).GetAwaiter().GetResult();
-                Console.WriteLine("Deleting the rest of the events");
-                qiDataService.RemoveWindowValuesAsync(sampleStreamId, 2, 198).GetAwaiter().GetResult();
-
-                DelayForQiConsistency();
-
-                Console.WriteLine("Checking for events");
-                Console.WriteLine("===================");
-                foundEvents = qiDataService.GetWindowValuesAsync<WaveData>(sampleStreamId, "0", "198").GetAwaiter().GetResult();
-                DumpEvents(foundEvents);
-                Console.WriteLine("Test ran successfully");
-                Console.WriteLine("====================");
-                Console.WriteLine("Press any button to shutdown");
-                Console.ReadLine();
-
-                #endregion
-                
-                #endregion
+                // delete a value (we delete the stream later, which also deletes the stream's data)
+                response = await httpClient.DeleteAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveValue?index={waves[0].Order}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
             }
-            catch (QiHttpClientException qerr)
+            catch (Exception e)
             {
-                PrintError("Error in Qi Service", qerr);
-            }
-            catch (Exception ex)
-            {
-                PrintError("Unknown Error", ex);
+                Console.WriteLine(e.InnerException);
             }
             finally
             {
-                // clean up all created entities so you can run this again
-                // all entities are reference counted, so you must delete the stream, then the type it uses
-                Console.WriteLine("Deleting the stream...");
-                HandleQiCallAsync(async () => await qiMetadataService.DeleteStreamAsync(sampleStreamId)).GetAwaiter().GetResult();
-
-                Console.WriteLine("Deleting the behavior...");
-                HandleQiCallAsync(async () => await qiMetadataService.DeleteBehaviorAsync(sampleBehaviorId)).GetAwaiter().GetResult();
-
-                Console.WriteLine("Deleting the type...");
-                HandleQiCallAsync(async () => await qiMetadataService.DeleteTypeAsync(sampleTypeId)).GetAwaiter().GetResult();
+                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}");
+                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TypeId}");
+                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Behaviors/{BehaviorId}");
             }
+            
+            Console.ReadKey();
         }
 
-        /// <summary>
-        ///     Returns a service which makes calls taht manage namespaces
-        /// </summary>
-        /// <returns></returns>
-        protected static IQiAdministrationService GetQiAdministrationService()
+        private static QiType BuildWaveDataType(string id)
         {
-            QiSecurityHandler qiSecurityHandler = GetQiSecurityHandler();
-            Uri qiServerUri = new Uri(Constants.QiServerUrl);
-            IQiAdministrationService qiAdministrationService = QiService.GetAdministrationService(qiServerUri, Constants.TenantId, qiSecurityHandler);
-
-            return qiAdministrationService;
-        }
-
-        /// <summary>
-        ///     Returns a service which makes calls that manage streams, types, and behaviors
-        /// </summary>
-        /// <param name="namespaceId">The id of the namespace that the service will interface with</param>
-        /// <returns></returns>
-        protected static IQiMetadataService GetQiMetadataService(string namespaceId)
-        {
-            QiSecurityHandler qiSecurityHandler = GetQiSecurityHandler();
-            Uri qiServerUri = new Uri(Constants.QiServerUrl);
-            IQiMetadataService qiMetadataService = QiService.GetMetadataService(qiServerUri, Constants.TenantId, namespaceId, qiSecurityHandler);
-
-            return qiMetadataService;
-        }
-
-        /// <summary>
-        ///     Returns a service which makes calls taht manage data held in streams
-        /// </summary>
-        /// <param name="namespaceId"></param>
-        /// <returns></returns>
-        protected static IQiDataService GetQiDataService(string namespaceId)
-        {
-            QiSecurityHandler qiSecurityHandler = GetQiSecurityHandler();
-            Uri qiServerUri = new Uri(Constants.QiServerUrl);
-            IQiDataService qiDataService = QiService.GetDataService(qiServerUri, Constants.TenantId, namespaceId, qiSecurityHandler);
-
-            return qiDataService;
-        }
-
-        /// <summary>
-        ///     This will return a QiSecurityHandler using the values held in Constants
-        /// </summary>
-        /// <returns></returns>
-        protected static QiSecurityHandler GetQiSecurityHandler()
-        {
-            QiSecurityHandler qiSecurityHandler = new QiSecurityHandler(Constants.SecurityResource, Constants.TenantId, Constants.SecurityAppId, Constants.SecurityAppKey.ConvertToSecureString());
-
-            return qiSecurityHandler;
-        }
-
-        /// <summary>
-        ///     Prints out each event in the list of events given
-        /// </summary>
-        /// <param name="evnts"></param>
-        protected static void DumpEvents(IEnumerable<WaveData> evnts)
-        {
-            Console.WriteLine(string.Format("Found {0} events, writing", evnts.Count<WaveData>()));
-            foreach (WaveData evnt in evnts)
+            QiType intQiType = new QiType
             {
-                Console.WriteLine(evnt.ToString());
-            }
+                Id = "intQiType",
+                QiTypeCode = QiTypeCode.Int32
+            };
+
+            QiType doubleQiType = new QiType
+            {
+                Id = "doubleQiType",
+                QiTypeCode = QiTypeCode.Double
+            };
+
+            QiTypeProperty orderProperty = new QiTypeProperty
+            {
+                Id = "Order",
+                QiType = intQiType,
+                IsKey = true
+            };
+
+            QiTypeProperty tauProperty = new QiTypeProperty
+            {
+                Id = "Tau",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty radiansProperty = new QiTypeProperty
+            {
+                Id = "Radians",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty sinProperty = new QiTypeProperty
+            {
+                Id = "Sin",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty cosProperty = new QiTypeProperty
+            {
+                Id = "Cos",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty tanProperty = new QiTypeProperty
+            {
+                Id = "Tan",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty sinhProperty = new QiTypeProperty
+            {
+                Id = "Sinh",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty coshProperty = new QiTypeProperty
+            {
+                Id = "Cosh",
+                QiType = doubleQiType
+            };
+
+            QiTypeProperty tanhProperty = new QiTypeProperty
+            {
+                Id = "Tanh",
+                QiType = doubleQiType
+            };
+
+            QiType waveType = new QiType
+            {
+                Id = id,
+                Name = "WaveData",
+                Properties = new List<QiTypeProperty>
+                {
+                    orderProperty,
+                    tauProperty,
+                    radiansProperty,
+                    sinProperty,
+                    cosProperty,
+                    tanProperty,
+                    sinhProperty,
+                    coshProperty,
+                    tanhProperty
+                },
+                QiTypeCode = QiTypeCode.Empty
+            };
+
+            return waveType;
         }
 
-        /// <summary>
-        ///     Makes the asynchronous Qi call and handles any exceptions that may follow
-        /// </summary>
-        /// <param name="qiCallAsync">A function that returns an asychronous call to Qi</param>
-        protected static async Task HandleQiCallAsync(Func<Task> qiCallAsync)
+        private static WaveData GetWave(int order, int range, double multiplier)
         {
-            try
-            {
-                await qiCallAsync();
-            }
-            catch (QiHttpClientException qerr)
-            {
-                PrintError("Error in Qi Service", qerr);
-            }
-            catch (Exception ex)
-            {
-                PrintError("Uknown Error", ex);
-            }
-        }
+            var radians = order / range * 2 * Math.PI;
 
-        /// <summary>
-        ///     Prints out a formated error string
-        /// </summary>
-        /// <param name="exceptionDescription">A description of what may have caused the exception</param>
-        /// <param name="exception">The exception itself</param>
-        protected static void PrintError(string exceptionDescription, Exception exception)
-        {
-            Console.WriteLine("\n\n======= " + exceptionDescription + " =======");
-            Console.WriteLine(exception.ToString());
-            Console.WriteLine("======= End of " + exceptionDescription + " =======\n");
-        }
-
-        /// <summary>
-        ///     Delays the program for an amount of time to allow the multiple servers on Qi to become consistent with recent calls.
-        /// </summary>
-        protected static void DelayForQiConsistency()
-        {
-            int millisecondsToWait = 5000;
-            double seconds = millisecondsToWait / 1000.0;
-
-            Console.WriteLine("Waiting for " + seconds + " seconds in order to allow the multiple servers on Qi to become consistent with recent calls...\n");
-            Thread.Sleep(millisecondsToWait);
+            return new WaveData
+            {
+                Order = order,
+                Radians = radians,
+                Tau = radians / (2 * Math.PI),
+                Sin = multiplier * Math.Sin(radians),
+                Cos = multiplier * Math.Cos(radians),
+                Tan = multiplier * Math.Tan(radians),
+                Sinh = multiplier * Math.Sinh(radians),
+                Cosh = multiplier * Math.Cosh(radians),
+                Tanh = multiplier * Math.Tanh(radians),
+            };
         }
     }
 }

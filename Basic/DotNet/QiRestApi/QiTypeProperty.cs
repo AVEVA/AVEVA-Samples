@@ -1,4 +1,8 @@
-﻿namespace QiRestApiSample
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace QiRestApiCore
 {
     public class QiTypeProperty
     {
@@ -15,6 +19,12 @@
         }
 
         public string Description
+        {
+            get;
+            set;
+        }
+
+        public int Order
         {
             get;
             set;

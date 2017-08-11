@@ -1,27 +1,11 @@
-﻿namespace QiRestApiSample
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace QiRestApiCore
 {
     public class QiStream
     {
-        public QiStream()
-        {
-        }
-
-        public QiStream(string name, string typeid)
-        {
-            Id = name;
-            Name = name;
-            TypeId = typeid;
-        }
-
-        public QiStream(string name, string typeid, string description, string behavior)
-        {
-            Id = name;
-            Name = name;
-            TypeId = typeid;
-            Description = description;
-            BehaviorId = behavior;
-        }
-
         public string Id
         {
             get;
@@ -45,8 +29,20 @@
             get;
             set;
         }
-        
+
         public string BehaviorId
+        {
+            get;
+            set;
+        }
+
+        public IDictionary<string, string> Metadata
+        {
+            get;
+            set;
+        }
+
+        public IList<string> Tags
         {
             get;
             set;

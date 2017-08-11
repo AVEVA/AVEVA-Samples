@@ -1,4 +1,8 @@
-﻿namespace QiRestApiSample
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace QiRestApiCore
 {
     public class QiType
     {
@@ -26,7 +30,7 @@
             set;
         }
 
-        public QiTypeProperty[] Properties
+        public IList<QiTypeProperty> Properties
         {
             get;
             set;

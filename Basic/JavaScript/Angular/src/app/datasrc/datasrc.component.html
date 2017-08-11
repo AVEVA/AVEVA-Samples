@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<div class="container-fluid text-center">
+  <h3>Creating a QiType</h3>
+  <p>To insert data into Qi, you must first create a QiType that will enforce what type of data is written to a stream.
+    For this sample, we will be writing events of the WaveData type discussed in the README.
+    Press the button below to create the WaveData QiType.</p>
+  <div>
+    <button class="btn btn-primary" (click)="createType()">Create Type</button>
+    <span *ngIf="button1Message">Response: {{button1Message}}</span>
+  </div>
+  <h3>Creating a QiStream</h3>
+  <p>Now that we have a QiType, we can create a QiStream. Once we create a stream and associate it with a type,
+  we can write data of that type to Qi. Press the button below to create a stream.</p>
+  <button class="btn btn-primary" (click)="createStream()">Create Stream</button>
+  <span *ngIf="button2Message">Response: {{button2Message}}</span>
+  <h3>Write data to Qi</h3>
+  <p>Press the button below to write 100 WaveData events to Qi using the InsertValues call.</p>
+  <button class="btn btn-primary" (click)="writeWaveDataEvents()">Insert Values</button>
+  <span *ngIf="button3Message">Response: {{button3Message}}</span>
+  <h3>Retrieving events from Qi</h3>
+  <p>There are several ways to read data back from Qi. Using GetRangeValues, we can start at index "3" of our wave data
+  and get the next 50 events. We didn't actually write a value with an index of 3, but since we use QiBoundaryType.ExactOrCalculated
+    in our request, we get an interpolated value at 3 if the "Retrieve Events" button is pressed again.</p>
+  <button class="btn btn-primary" (click)="retrieveWaveDataEvents()">Retrieve Events</button>
+  <span *ngIf="button4Message">Response: {{button4Message}}</span>
+  <div *ngIf="hasEvents">
+    <table class="table table-striped table-responsive">
+      <tr>
+        <th>Order</th>
+        <th>Radians</th>
+        <th>Tau</th>
+        <th>Sin</th>
+        <th>Cos</th>
+        <th>Tan</th>
+        <th>Sinh</th>
+        <th>Cosh</th>
+        <th>Tanh</th>
+      </tr>
+      <tr *ngFor="let event of events">
+        <td>{{event.Order}}</td>
+        <td>{{event.Radians}}</td>
+        <td>{{event.Tau}}</td>
+        <td>{{event.Sin}}</td>
+        <td>{{event.Cos}}</td>
+        <td>{{event.Tan}}</td>
+        <td>{{event.Sinh}}</td>
+        <td>{{event.Cosh}}</td>
+        <td>{{event.Tanh}}</td>
+      </tr>
+    </table>
+  </div>
+  <h3>Using QiStreamBehaviors</h3>
+  <p>The default behavior for a QiStream is Continuous, which will allow interpolation when a requested index
+  isn't present. In order to change this to only give us exact values that were written, we can create a
+  behavior with Discrete mode and update the stream to use it. Once the stream is updated, we should no longer see a value at 3.</p>
+  <button class="btn btn-primary" (click)="createBehaviorAndUpdateStream()" >Create Behavior and Update Stream</button>
+  <span *ngIf="button5Message">Response: {{button5Message}}</span>
+  <h3>Deleting types, streams, and behaviors</h3>
+  <p>Press the button below to delete the types, streams, and behaviors that this sample has created. Failure to do
+  so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
+  written to that stream.</p>
+  <button class="btn btn-primary" (click)="cleanup()">Clean up</button>
+  <span *ngIf="button6Message">Response: {{button6Message}}</span>
+</div>
+

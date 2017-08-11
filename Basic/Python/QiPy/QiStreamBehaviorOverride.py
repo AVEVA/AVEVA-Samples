@@ -1,57 +1,49 @@
+from enum import Enum
 import json
+from QiStreamMode import QiStreamMode
 
 class QiStreamBehaviorOverride(object):
-    """description of class"""
+    """Qi behavior override definition"""
+
     def __init__(self):
-        self.__QiTypePropertyId = 0
-        self.__Mode = Continuous
+        self.__mode = QiStreamMode.Default
     
-    def getTypePropertyId(self):
-        return self.__QiTypePropertyId
+    @property
+    def Mode(self):
+        return self.__mode
+    @Mode.setter
+    def Mode(self, mode):
+        self.__mode = mode
 
-    def setTypePropertyId(self, Id):
-        self.__QiTypePropertyId = Id
+    @property
+    def QiTypePropertyId(self):
+        return self.__qiTypePropertyId
+    @QiTypePropertyId.setter
+    def QiTypePropertyId(self, qiTypePropertyId):
+        self.__qiTypePropertyId = qiTypePropertyId
 
-    QiTypePropertyId = property(getTypePropertyId, setTypePropertyId)
-
-    def getMode(self):
-        return self.__Mode
-
-    def setMode(self, Mode):
-        self.__Mode = Mode
-
-    Mode = property(getMode, setMode)
-
-    def toString(self):
+    def toJsonString(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
+        dictionary = { 'Mode' : self.Mode }
         
-        dictionary = {
-            "QiTypePropertyId" : self.__QiTypePropertyId }
+        if hasattr(self, 'QiTypePropertyId'):
+            dictionary['QiTypePropertyId'] = self.QiTypePropertyId
 
-        if self.__Mode is not None:
-            dictionary["Mode"] = self.__Mode
-
-        return dictionary
-
-    @staticmethod
-    def fromString(content):
-         dictionary = json.loads(content)
-         return QiStreamBehaviorOverride.fromDictionary(dictionary)
+        return json.loads(dictionary)
 
     @staticmethod
     def fromDictionary(content):
-
-        streambehavioroverride = QiStreamBehaviorOverride()
+        streamBehaviorOverride = QiStreamBehaviorOverride()
 
         if len(content) == 0:
-            return None
+            return streamBehaviorOverride
 
-        if "Mode" in content:
-            streambehavioroverride.Mode = content["Mode"]
+        if 'Mode' in content:
+            streamBehaviorOverride.Mode = content['Mode']
 
-        if "QiTypePropertyId" in content:
-            stream.QiTypePropertyId = content["QiTypePropertyId"]
+        if 'QiTypePropertyId' in content:
+            stream.QiTypePropertyId = content['QiTypePropertyId']
             
         return stream
