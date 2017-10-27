@@ -8,19 +8,14 @@ class QiStreamIndex(object):
     def QiTypePropertyId(self, qiTypePropertyId):
         self.__qiTypePropertyId = qiTypePropertyId
 
-    def toString(self):
+    def toJson(self):
         return json.dumps(self.toDictionary())
     
     def toDictionary(self):
         # required properties
         dictionary = { 'QiTypePropertyId' : self.QiTypePropertyId }
 
-        return dictionary
- 
-    @staticmethod
-    def fromString(content):
-         dictionary = json.loads(content)
-         return QiType.fromDictionary(dictionary)
+        return json.loads(dictionary)
 
     @staticmethod
     def fromDictionary(content):
