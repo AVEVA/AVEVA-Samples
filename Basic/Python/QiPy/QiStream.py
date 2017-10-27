@@ -45,10 +45,7 @@ class QiStream(object):
     def Indexes(self, indexes):
         self.__indexes = indexes 
 
-    #TODO support IDictionary<string, object> Metadata { get; set; }
-    #TODO support IList<string> Tags { get; set; }
-    
-    def toString(self):
+    def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
@@ -73,9 +70,8 @@ class QiStream(object):
         return dictionary
 
     @staticmethod
-    def fromString(content):
-         dictionary = json.loads(content)
-         return QiStream.fromDictionary(dictionary)
+    def fromJson(jsonObj):
+        return QiStream.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):

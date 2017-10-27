@@ -3,7 +3,8 @@ import json
 from QiStreamMode import QiStreamMode
 
 class QiStreamBehaviorOverride(object):
-    """description of class"""
+    """Qi behavior override definition"""
+
     def __init__(self):
         self.__mode = QiStreamMode.Default
     
@@ -21,7 +22,7 @@ class QiStreamBehaviorOverride(object):
     def QiTypePropertyId(self, qiTypePropertyId):
         self.__qiTypePropertyId = qiTypePropertyId
 
-    def toString(self):
+    def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
@@ -30,12 +31,7 @@ class QiStreamBehaviorOverride(object):
         if hasattr(self, 'QiTypePropertyId'):
             dictionary['QiTypePropertyId'] = self.QiTypePropertyId
 
-        return dictionary
-
-    @staticmethod
-    def fromString(content):
-         dictionary = json.loads(content)
-         return QiStreamBehaviorOverride.fromDictionary(dictionary)
+        return json.loads(dictionary)
 
     @staticmethod
     def fromDictionary(content):

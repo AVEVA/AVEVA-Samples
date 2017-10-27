@@ -5,7 +5,8 @@ from QiStreamExtrapolation import QiStreamExtrapolation
 from QiStreamBehaviorOverride import QiStreamBehaviorOverride
 
 class QiStreamBehavior(object):
-    
+    """Qi behavior definition"""
+
     def __init__(self):
         self.__mode = QiStreamMode.Default
         self.__extrapolationMode = QiStreamExtrapolation.All
@@ -45,7 +46,7 @@ class QiStreamBehavior(object):
     def Overrides(self, overrides):
         self.__overrides = overrides
 
-    def toString(self):
+    def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
@@ -62,12 +63,11 @@ class QiStreamBehavior(object):
                 dictionary['Overrides'].append(value.toDictionary())
 
         return dictionary
-        
-    @staticmethod
-    def fromString(content):
-         dictionary = json.loads(content)
-         return QiStreamBehavior.fromDictionary(dictionary)
 
+    @staticmethod
+    def fromJson(jsonObj):
+        return QiStreamBehavior.fromDictionary(jsonObj)
+    
     @staticmethod
     def fromDictionary(content):
 
