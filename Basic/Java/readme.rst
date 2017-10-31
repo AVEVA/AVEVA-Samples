@@ -382,7 +382,7 @@ or when the properties have the same name, Qi will map the properties automatica
         jsonMultipleValues = qiclient.getRangeValues(tenantId, namespaceId, sampleStream.getId(), "1", 0, 3, false, QiBoundaryType.ExactOrCalculated, sampleViewId);
 
 To map a property that is beyond the ability of Qi to map on its own, 
-you should define a QiViewProperty and add it to the QiView’s Properties collection.
+you should define a QiViewProperty and add it to the QiView\’s Properties collection.
 
 .. code:: java
 
