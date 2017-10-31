@@ -1,13 +1,14 @@
 package samples;
 
 
-public class QiType {
+public class QiView {
 
     private String Id = "";
     private String Name = "";
     private String Description = "";
-    private QiTypeCode QiTypeCode;
-    private QiTypeProperty[] Properties = new QiTypeProperty[0];
+    private String SourceTypeId = "";
+    private String TargetTypeId = "";
+    private QiViewProperty[] Properties = new QiViewProperty[0];
 
     public String getId() {
         return Id;
@@ -33,19 +34,27 @@ public class QiType {
         this.Description = description;
     }
 
-    public QiTypeCode getQiTypeCode() {
-        return QiTypeCode;
+    public String getSourceTypeId() {
+        return this.SourceTypeId;
     }
 
-    public void setQiTypeCode(QiTypeCode qiTypeCode) {
-        this.QiTypeCode = qiTypeCode;
+    public void setSourceTypeId(String sourceTypeId) {
+        this.SourceTypeId = sourceTypeId;
+    }
+    
+    public String getTargetTypeId() {
+        return TargetTypeId;
     }
 
-    public QiTypeProperty[] getProperties() {
+    public void setTargetTypeId(String targetTypeId) {
+        this.TargetTypeId = targetTypeId;
+    }
+
+    public QiViewProperty[] getProperties() {
         return Properties;
     }
 
-    public void setProperties(QiTypeProperty[] properties) {
+    public void setProperties(QiViewProperty[] properties) {
         this.Properties = properties;
     }
 }
