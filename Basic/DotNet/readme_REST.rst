@@ -101,7 +101,7 @@ Properties of those atomic types.
 		QiType = doubleQiType
 	};
 
-These properties are assembled into collection and assigned to the Properties 
+These properties are assembled into a collection and assigned to the Properties 
 property of a new QiType object:
 
 .. code:: cs
@@ -177,8 +177,6 @@ An event can be created using the following POST request:
 		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValue",
 			new StringContent(JsonConvert.SerializeObject(wave)));
 
--  waveStream.Id is the stream Id
--  body is the event object in json format
 
 Inserting multiple values is similar, but the payload has list of events
 and the url for POST call varies:
