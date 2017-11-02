@@ -136,7 +136,7 @@ The values to be replaced are in ``config.js``:
 .. code:: javascript
 
         authItems : {'resource' : "https://qihomeprod.onmicrosoft.com/ocsapi",
-                         'authority' : "PLACEHOLDER_REPLACE_WITH_AUTHORITY", //Ex: "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token",
+                         'authority' : "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token",
                          'clientId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
                          'clientSecret' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
         qiServerUrl : "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL",
