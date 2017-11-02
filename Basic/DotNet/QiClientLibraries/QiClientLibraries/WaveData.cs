@@ -1,4 +1,4 @@
-﻿using OSIsoft.Qi;
+﻿using OSIsoft.Data;
 using System.Text;
 
 namespace QiClientLibraries
@@ -27,15 +27,74 @@ namespace QiClientLibraries
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"Order = {Order}");
-            builder.AppendLine($"Radians = {Radians}");
-            builder.AppendLine($"Tau     = {Tau}");
-            builder.AppendLine($"Sine    = {Sin}");
-            builder.AppendLine($"Cosine  = {Cos}");
-            builder.AppendLine($"Tangent = {Tan}");
-            builder.AppendLine($"Sinh    = {Sinh}");
-            builder.AppendLine($"Cosh    = {Cosh}");
-            builder.AppendLine($"Tanh    = {Tanh}");
+            builder.Append($"Order: {Order}");
+            builder.Append($", Radians: {Radians}");
+            builder.Append($", Tau: {Tau}");
+            builder.Append($", Sin: {Sin}");
+            builder.Append($", Cos: {Cos}");
+            builder.Append($", Tan: {Tan}");
+            builder.Append($", Sinh: {Sinh}");
+            builder.Append($", Cosh: {Cosh}");
+            builder.Append($", Tanh: {Tanh}");
+            return builder.ToString();
+        }
+    }
+
+    public class WaveDataTarget
+    {
+        [QiMember(IsKey = true)]
+        public int OrderTarget { get; set; }
+
+        public double TauTarget { get; set; }
+
+        public double RadiansTarget { get; set; }
+
+        public double SinTarget { get; set; }
+
+        public double CosTarget { get; set; }
+
+        public double TanTarget { get; set; }
+
+        public double SinhTarget { get; set; }
+
+        public double CoshTarget { get; set; }
+
+        public double TanhTarget { get; set; }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.Append($"OrderTarget: {OrderTarget}");
+            builder.Append($", RadiansTarget: {RadiansTarget}");
+            builder.Append($", TauTarget: {TauTarget}");
+            builder.Append($", SinTarget: {SinTarget}");
+            builder.Append($", CosTarget: {CosTarget}");
+            builder.Append($", TanTarget: {TanTarget}");
+            builder.Append($", SinhTarget: {SinhTarget}");
+            builder.Append($", CoshTarget: {CoshTarget}");
+            builder.Append($", TanhTarget: {TanhTarget}");
+            return builder.ToString();
+        }
+    }
+
+    public class WaveDataInteger
+    {
+        [QiMember(IsKey = true)]
+        public int OrderTarget { get; set; }
+
+        public int SinInt { get; set; }
+
+        public int CosInt { get; set; }
+
+        public int TanInt { get; set; }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.Append($"OrderTarget: {OrderTarget}");
+            builder.Append($", SinInt: {SinInt}");
+            builder.Append($", CosInt: {CosInt}");
+            builder.Append($", TanInt: {TanInt}");
             return builder.ToString();
         }
     }
