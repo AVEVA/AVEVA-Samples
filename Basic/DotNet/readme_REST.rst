@@ -30,6 +30,7 @@ Authentication-related values are received from OSIsoft. The values are provided
 the sample in the appsettings.json configuration file as follows:
 
 ::
+
 {
   "Namespace": "Samples",
   "Tenant": "REPLACE_WITH_TENANT_ID",
