@@ -23,17 +23,17 @@ authenticated against the directory. The sample includes an appsettings.json con
 file to hold configuration strings, including the authentication strings. You must 
 replace the placeholders with the authentication-related values you received from OSIsoft. 
 
-..code:: cs
+.. code:: json
 
-    <!--Configurations-->
-    <add key="Namespace" value="Samples" />
-    <add key="Tenant" value="PROVIDED_TENANT_ID" />
-    <add key="Address" value="https://qi-data.osisoft.com" />
+{
+  "Namespace": "Samples",
+  "Tenant": "REPLACE_WITH_TENANT_ID",
+  "Address": "https://qi-data.osisoft.com",
+  "Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
+  "AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
+  "AppKey": "REPLACE_WITH_APPLICATION_SECRET"
+}
 
-    <!--Credentials-->
-    <add key="Resource" value="https://qihomeprod.onmicrosoft.com/ocsapi" />
-    <add key="AppId" value="PROVIDED_CLIENT_APPLICATION_ID" />
-    <add key="AppKey" value="PROVIDED_CLIENT_APPLICATION_KEY" />
 
 
 The authentication values are provided to the ``OSIsoft.Http.Security.QiSecurityHandler``. 
@@ -49,17 +49,15 @@ The client example works through two client interfaces:
 
 The following code block illustrates how to configure clients to use throughout the sample:
 
-::
+.. code:: cs
 
-  var admin = QiService.GetAdministrationService(new Uri(address), tenant, 
-  new QiSecurityHandler(resource, tenant, appId, appKey));
-  var config = QiService.GetMetadataService(new Uri(address), tenant, namespaceId, 
-  new QiSecurityHandler(resource, tenant, appId, appKey));
-  var client = QiService.GetDataService(new Uri(address), tenant, namespaceId, 
-  new QiSecurityHandler(resource, tenant, appId, appKey));
+    var metadataService = QiService.GetMetadataService(new Uri(address), tenant, namespaceId,
+        new QiSecurityHandler(resource, tenant, appId, appKey));
+
+    var dataService = QiService.GetDataService(new Uri(address), tenant, namespaceId,
+        new QiSecurityHandler(resource, tenant, appId, appKey));
   
   
-A similar pattern is followed in the sample to set up the IQiAdministrationService and IQiMetadataService.
 
 Create a QiType
 ---------------
@@ -137,7 +135,7 @@ object:
 	return new WaveData
 		{
 		Order = order,
-        Radians = radians,
+		Radians = radians,
 		Tau = radians / (2 * Math.PI),
 		Sin = multiplier * Math.Sin(radians),
 		Cos = multiplier * Math.Cos(radians),
@@ -189,18 +187,16 @@ Updating events is handled using the data service client as follows:
 
 	await dataService.UpdateValueAsync(stream.Id, updatedWave);
 
-- parameters are the QiStream Id and an object of the WaveData type
-
 Updates can be made in bulk by passing a collection of WaveData objects:
 
 .. code:: cs
 
 	var updatedCollection = new List<WaveData>();
-    for (int i = 2; i < 40; i = i+2)
-    {
+	for (int i = 2; i < 40; i = i+2)
+	{
 		updatedCollection.Add(GetWave(i, 400, 4));
 	}
-    await dataService.UpdateValuesAsync(stream.Id, updatedCollection);
+	await dataService.UpdateValuesAsync(stream.Id, updatedCollection);
 
 If you attempt to update values that do not exist they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
@@ -214,7 +210,7 @@ identical to ``updateValue`` and ``updateValues``:
 .. code:: cs
 
 	await dataService.ReplaceValueAsync<WaveData>(streamId, replaceEvent);	
-	...	
+
 	await dataService.ReplaceValuesAsync<WaveData>(streamId, allEvents);
 
 Changing Stream Behavior
@@ -239,7 +235,7 @@ code:
 	{
 		Id = behaviorId,
 		Mode = QiStreamMode.Discrete
-    };	
+	};	
 	behavior = await metadataService.GetOrCreateBehaviorAsync(behavior);
 
 	// update the stream
@@ -267,7 +263,7 @@ or when the properties have the same name, Qi will map the properties automatica
       var autoViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, QiBoundaryType.ExactOrCalculated, autoViewId);
 
 To map a property that is beyond the ability of Qi to map on its own, 
-you should define a QiViewProperty and add it to the QiView’s Properties collection.
+you should define a QiViewProperty and add it to the QiView's Properties collection.
 
 .. code:: cs
 
@@ -278,7 +274,7 @@ you should define a QiViewProperty and add it to the QiView’s Properties collect
 	var vp4 = new QiViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
     var manualView = new QiView()
-    {
+	{
 		Id = manualViewId,
 		SourceTypeId = typeId,
 		TargetTypeId = targetIntTypeId,
