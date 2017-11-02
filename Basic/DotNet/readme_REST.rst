@@ -27,36 +27,36 @@ The Authentication Handler accepts a resource, tenant, AAD instance format,
 client identifier and client secret. The handler supports an application identity.
 
 Authentication-related values are received from OSIsoft. The values are provided to 
-the sample in the App.Config configuration file as follows:
+the sample in the appsettings.json configuration file as follows:
 
-..code:: cs
+::
+{
+  "Namespace": "Samples",
+  "Tenant": "REPLACE_WITH_TENANT_ID",
+  "Address": "https://qi-data.osisoft.com",
+  "Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
+  "AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
+  "AppKey": "REPLACE_WITH_APPLICATION_SECRET",
+  "AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>.onmicrosoft.com/oauth2/token"
+}
 
-    <!--Configurations-->
-    <add key="Namespace" value="Samples" />
-    <add key="Tenant" value="PROVIDED_TENANT_ID" />
-    <add key="Address" value="https://qi-data.osisoft.com" />
 
-    <!--Credentials-->
-    <add key="Resource" value="https://qihomeprod.onmicrosoft.com/ocsapi" />
-    <add key="AppId" value="PROVIDED_CLIENT_APPLICATION_ID" />
-    <add key="AppKey" value="PROVIDED_CLIENT_APPLICATION_KEY" />
+The security handler is attached to the HttpClient as follows:
 
+.. code:: cs
 
-The Authorization context is attached to HttpClient using the 
-System.Net.Http.HttpClientFactory Create extension method as follows:
-
-..code:: cs
-
-	HttpClient client = HttpClientFactory.Create(new WebRequestHandler(),
-		new AuthenticationHandler(resource, tenant, aadFormat, appId, appKey));
+	QiSecurityHandler securityHandler =
+		new QiSecurityHandler(resource, tenantId, aadInstanceFormat, appId, appKey);
+			HttpClient httpClient = new HttpClient(securityHandler)
+			{
+				BaseAddress = new Uri(address)
+			};
             
 Note that Qi returns a status of 302 (Found), when metadata collisions exist. The HttpClient 
 auto-redirect, which automatically issues a GET when receiving a 302, will result in an 
 unauthorized response. Because HttpClient does not retain the authorization token on a redirect, 
 it is recommended that auto redirect be disabled.
 
-In the sample, redirection is managed by invoking GET before POST. POST is invoked only if 
-the object is not found.
 
 Create a QiType
 ---------------
@@ -73,7 +73,7 @@ method of Program.cs. WaveData contains properties of integer and double atomic 
 The constructions begins by defining a base QiType for each atomic type and then defining
 Properties of those atomic types.
 
-..code:: cs
+.. code:: cs
 
 	QiType intQiType = new QiType
 	{
@@ -103,7 +103,7 @@ Properties of those atomic types.
 These properties are assembled into collection and assigned to the Properties 
 property of a new QiType object:
 
-..code:: cs
+.. code:: cs
 
 	QiType waveType = new QiType
 	{
@@ -126,7 +126,7 @@ property of a new QiType object:
 
 Finally, the new QiType object is submitted to the Qi Service:
 
-..code:: cs
+.. code:: cs
 
 	HttpResponseMessage response =
 	await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{waveType.Id}",
@@ -196,7 +196,7 @@ and the url for POST call varies:
 
 The Qi REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
-`Qi documentation<https://cloud.osisoft.com/documentation>`_ for more information
+Qi documentation<https://cloud.osisoft.com/documentation> for more information
 on available REST API calls.
 
 Retrieve Values from a Stream
@@ -220,7 +220,7 @@ conversion to the type of the index assigned in the QiType.
 
 As with data insertion, the Qi REST API provides many more types of data retrieval calls beyond
 those demonstrated in this application. Go to the 
-`Qi documentation<https://cloud.osisoft.com/documentation>`_ for more information
+Qi documentation<https://cloud.osisoft.com/documentation> for more information
 on available REST API calls.
 
 Update Events and Replacing Values
@@ -328,7 +328,7 @@ or when the properties have the same name, Qi will map the properties automatica
 			new StringContent(JsonConvert.SerializeObject(autoView)));
 
 To map a property that is beyond the ability of Qi to map on its own, 
-you should define a QiViewProperty and add it to the QiView’s Properties collection.
+you should define a QiViewProperty and add it to the QiView's Properties collection.
 
 .. code:: cs
 
