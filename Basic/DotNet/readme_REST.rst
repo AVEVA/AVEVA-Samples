@@ -31,15 +31,15 @@ the sample in the appsettings.json configuration file as follows:
 
 ::
 
-{
-  "Namespace": "Samples",
-  "Tenant": "REPLACE_WITH_TENANT_ID",
-  "Address": "https://qi-data.osisoft.com",
-  "Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
-  "AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
-  "AppKey": "REPLACE_WITH_APPLICATION_SECRET",
-  "AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>.onmicrosoft.com/oauth2/token"
-}
+	{
+		"Namespace": "Samples",
+		"Tenant": "REPLACE_WITH_TENANT_ID",
+		"Address": "https://qi-data.osisoft.com",
+		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
+		"AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
+		"AppKey": "REPLACE_WITH_APPLICATION_SECRET",
+		"AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>.onmicrosoft.com/oauth2/token"
+	}
 
 
 The security handler is attached to the HttpClient as follows:
