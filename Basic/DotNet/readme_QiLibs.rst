@@ -23,16 +23,16 @@ authenticated against the directory. The sample includes an appsettings.json con
 file to hold configuration strings, including the authentication strings. You must 
 replace the placeholders with the authentication-related values you received from OSIsoft. 
 
-.. code:: json
+::
 
-{
-  "Namespace": "Samples",
-  "Tenant": "REPLACE_WITH_TENANT_ID",
-  "Address": "https://qi-data.osisoft.com",
-  "Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
-  "AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
-  "AppKey": "REPLACE_WITH_APPLICATION_SECRET"
-}
+	{
+		"Namespace": "Samples",
+		"Tenant": "REPLACE_WITH_TENANT_ID",
+		"Address": "https://qi-data.osisoft.com",
+		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
+		"AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
+		"AppKey": "REPLACE_WITH_APPLICATION_SECRET"
+	}
 
 
 
@@ -273,7 +273,7 @@ you should define a QiViewProperty and add it to the QiView's Properties collect
 	var vp3 = new QiViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
 	var vp4 = new QiViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-    var manualView = new QiView()
+	var manualView = new QiView()
 	{
 		Id = manualViewId,
 		SourceTypeId = typeId,
