@@ -1,11 +1,13 @@
-﻿using OSIsoft.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace QiClientLibraries
+namespace QiRestApiCore
 {
     public class WaveData
     {
-        [QiMember(IsKey = true)]
+        [Key]
         public int Order { get; set; }
 
         public double Tau { get; set; }
@@ -42,7 +44,7 @@ namespace QiClientLibraries
 
     public class WaveDataTarget
     {
-        [QiMember(IsKey = true)]
+        [Key]
         public int OrderTarget { get; set; }
 
         public double TauTarget { get; set; }
@@ -79,7 +81,7 @@ namespace QiClientLibraries
 
     public class WaveDataInteger
     {
-        [QiMember(IsKey = true)]
+        [Key]
         public int OrderTarget { get; set; }
 
         public int SinInt { get; set; }
