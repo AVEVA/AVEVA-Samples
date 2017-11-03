@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<div *ngIf="isAuthenticated()">
+  <div class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand">OSIsoft Cloud Services</a>
+        <button type="button" class="btn btn-default navbar-btn" (click)="logOutUser()">Sign out ({{getUserName()}})</button>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isAuthenticated()">
+  <div class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand">OSIsoft Cloud Services</a>
+        <button type="button" class="btn btn-default navbar-btn" (click)="loginUser()">Sign in</button>
+      </div>
+    </div>
+  </div>
+  <p class="text-center">Sign in to get started</p>
+</div>
+

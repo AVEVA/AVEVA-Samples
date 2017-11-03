@@ -1,0 +1,199 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<div class="container-fluid text-center">
+  <h3>Creating a QiType</h3>
+  <p>To insert data into Qi, you must first create a QiType that will enforce what type of data is written to a stream.
+    For this sample, we will be writing events of the WaveData type discussed in the README.
+    Press the button below to create the WaveData QiType.</p>
+  <div>
+    <button class="btn btn-primary" (click)="createType()">Create Type</button>
+    <br>
+    <span *ngIf="button1Message">Response: {{button1Message}}</span>
+  </div>
+  <h3>Creating a QiStream</h3>
+  <p>Now that we have a QiType, we can create a QiStream. Once we create a stream and associate it with a type,
+  we can write data of that type to Qi. Press the button below to create a stream.</p>
+  <button class="btn btn-primary" (click)="createStream()">Create Stream</button>
+  <br>
+  <span *ngIf="button2Message">Response: {{button2Message}}</span>
+  <h3>Write data to Qi</h3>
+  <p>Press the button below to write 10 WaveData events to Qi using the InsertValues call.</p>
+  <button class="btn btn-primary" (click)="writeWaveDataEvents()">Insert Values</button>
+  <br>
+  <span *ngIf="button3Message">Response: {{button3Message}}</span>
+  <h3>Retrieving events from Qi</h3>
+  <p>There are several ways to read data back from Qi. Using GetRangeValues, we can start at index location "1" of our wave data
+  and get the remaining events. We didn't actually write a value with an index of 1, but since we use QiBoundaryType.ExactOrCalculated
+  in our request, we get an interpolated value at index location 1.</p>
+  <button class="btn btn-primary" (click)="retrieveWaveDataEvents()">Retrieve Events</button>
+  <br>
+  <span *ngIf="button4Message">Response: {{button4Message}}</span>
+  <div *ngIf="hasEvents">
+    <table class="table table-striped table-responsive">
+      <tr>
+        <th>Order</th>
+        <th>Radians</th>
+        <th>Tau</th>
+        <th>Sin</th>
+        <th>Cos</th>
+        <th>Tan</th>
+        <th>Sinh</th>
+        <th>Cosh</th>
+        <th>Tanh</th>
+      </tr>
+      <tr *ngFor="let event of events">
+        <td>{{event.Order}}</td>
+        <td>{{event.Radians}}</td>
+        <td>{{event.Tau}}</td>
+        <td>{{event.Sin}}</td>
+        <td>{{event.Cos}}</td>
+        <td>{{event.Tan}}</td>
+        <td>{{event.Sinh}}</td>
+        <td>{{event.Cosh}}</td>
+        <td>{{event.Tanh}}</td>
+      </tr>
+    </table>
+  </div>
+  <h4>Update values</h4>
+  <p>A call to update values will either create or replace an event at the associated index location.  We will send a collection of
+    twenty events to Qi, causing ten events to be updated and an additionaly ten to be created. Press Retrieve Events above to 
+    see the updated data.
+  </p>
+  <button class="btn btn-primary" (click)="updateWaveDataEvents()" >Update values</button>
+  <br>
+  <span *ngIf="button14Message">Response: {{button14Message}}</span>
+
+  <h4>Replace values</h4>
+  <p>A call to replace values will either create or replace an event at the associated Index location. Press Retrieve Events above to 
+    see the replaced data.</p>
+  <button class="btn btn-primary" (click)="replaceWaveDataEvents()" >Replace values</button>
+  <br>
+  <span *ngIf="button15Message">Response: {{button15Message}}</span>
+  <h3>Using QiStreamBehaviors</h3>
+  <p>The default behavior for a QiStream is Continuous, which will allow interpolation when a requested index
+  isn't present. In order to change this to only give us exact values that were written, we can create a
+  behavior with Discrete mode and update the stream to use it. Once the stream is updated, we should no longer see a value at 1.</p>
+  <button class="btn btn-primary" (click)="createBehaviorAndUpdateStream()" >Create Behavior and Update Stream</button>
+  <br>
+  <span *ngIf="button5Message">Response: {{button5Message}}</span>
+  <h3>Using QiStreamViews</h3>
+  <p>QiStreamViews can return a view of the data stored on the server, we can use them to coerce QiStream data of 
+    a certain type to be returned as another type. A simple example of this would be to provide a type with the same 
+    data shape using different names for each property.</p>
+  <button class="btn btn-primary" (click)="createAutoviewTargetType()" >Create a target QiType</button>
+  <br>
+  <span *ngIf="button6Message">Response: {{button6Message}}</span>
+  <p>Once we have created our target type we create a QiView specifying a SourceTypeId (our original QiType) and 
+    a TargetTypeId.</p>
+  <button class="btn btn-primary" (click)="createAutoview()" >Create a QiView</button>
+  <br>
+  <span *ngIf="button7Message">Response: {{button7Message}}</span>
+  <p>We can now use this QiView on any GET request and our data will be returned with the structure of the target QiType.</p>
+    <button class="btn btn-primary" (click)="retrieveWaveDataEventsAutoview()" >Retrieve Events</button>
+    <br>
+    <span *ngIf="button8Message">Response: {{button8Message}}</span>
+    <div *ngIf="hasView1Events">
+      <table class="table table-striped table-responsive">
+        <tr>
+          <th>OrderTarget</th>
+          <th>RadiansTarget</th>
+          <th>TauTarget</th>
+          <th>SinTarget</th>
+          <th>CosTarget</th>
+          <th>TanTarget</th>
+          <th>SinhTarget</th>
+          <th>CoshTarget</th>
+          <th>TanhTarget</th>
+        </tr>
+        <tr *ngFor="let event of targetEvents">
+          <td>{{event.OrderTarget}}</td>
+          <td>{{event.RadiansTarget}}</td>
+          <td>{{event.TauTarget}}</td>
+          <td>{{event.SinTarget}}</td>
+          <td>{{event.CosTarget}}</td>
+          <td>{{event.TanTarget}}</td>
+          <td>{{event.SinhTarget}}</td>
+          <td>{{event.CoshTarget}}</td>
+          <td>{{event.TanhTarget}}</td>
+        </tr>
+      </table>
+    </div>
+  <p>We can also specify target types that have different shapes and data types, in the simple example above Qi 
+    was able to perform the mapping automatically.  To make more complex changes we will need to specify the mappings
+    explicitly.  For this we add a QiViewProperty mapping the source property to the target property.  We will create 
+    three QiViewProperties and return Sin, Cos and Tan as though they were integers.  
+  </p>
+    <button class="btn btn-primary" (click)="createQiViewPropertiesAndManualType()" >Create QiView with QiViewProperties</button>
+    <br>
+    <span *ngIf="button9Message">Response: {{button9Message}}</span>
+    <p>  Speficying this QiView on our GET request we see that Qi has only returned values for those Properties that have
+      an explicit mapping.
+      </p>
+        <button class="btn btn-primary" (click)="retrieveWaveDataEventsManualview()" >Retrieve Events</button>
+        <br>
+        <span *ngIf="button10Message">Response: {{button10Message}}</span>
+        <div *ngIf="hasView2Events">
+            <table class="table table-striped table-condensed">
+              <tr>
+                <th>OrderTarget</th>
+                <th>SinInt</th>
+                <th>CosInt</th>
+                <th>TanInt</th>
+              </tr>
+              <tr *ngFor="let event of integerEvents">
+                <td>{{event.OrderTarget}}</td>
+                <td>{{event.SinhInt}}</td>
+                <td>{{event.CoshInt}}</td>
+                <td>{{event.TanhInt}}</td>
+              </tr>
+            </table>
+          </div>
+        <p>  Finally, if we are ever curious about the mapping for a specific view we can request its QiViewMap.  This will show the relationship 
+          between the SourceType and the TargetType.
+            </p>
+              <button class="btn btn-primary" (click)="getQiViewMap()" >Request QiViewMap</button>
+              <br>
+              <span *ngIf="button11Message">Response: {{button11Message}}</span>
+              <div *ngIf="hasMapProperties">
+                  <table class="table table-striped table-bordered">
+                    <tr>
+                      <th>SourceTypeId</th>
+                      <th>TargetTypeId</th>
+                    </tr>
+                      <td width="50%">{{viewMap.SourceTypeId}}</td>
+                      <td width="50%">{{viewMap.TargetTypeId}}</td>
+                  </table>
+                </div>
+                <p></p>
+                <p></p>
+                <div *ngIf="hasMapProperties">
+                  <table class="table table-striped table-bordered">
+                      <tr>
+                        <th>SourcePropertyId</th>
+                        <th>TargetPropertyId</th>
+                      </tr>
+                      <ng-container *ngFor="let prop of viewMap.Properties">
+                         <tr *ngIf="prop.TargetId">
+                      <td>{{prop.SourceId}}</td>
+                      <td>{{prop.TargetId}}</td>
+                    </tr>
+                  </ng-container>
+                  </table>
+                </div>
+  <h3>Delete Values</h3>
+  <p>Press the button below to delete all values from the QiStream, pressing Retrieve Events 
+    above should now return an empty array.
+  </p>
+  <button class="btn btn-primary" (click)="deleteAllValues()">Delete Values</button>
+  <br>
+  <span *ngIf="button13Message">Response: {{button13Message}}</span>
+
+  <h4>Deleting types, streams, views and behaviors</h4>
+  <p>Press the button below to delete the types, streams, views and behaviors that this sample has created. Failure to do
+  so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
+  written to that stream.</p>
+  <button class="btn btn-primary" (click)="cleanup()">Clean up</button>
+  <br>
+  <span *ngIf="button12Message">Response: {{button12Message}}</span>
+</div>
+
