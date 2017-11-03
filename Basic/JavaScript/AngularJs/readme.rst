@@ -57,7 +57,7 @@ The Qi Services page contains several buttons that demonstrate the main function
 
     Create and Insert: Create the type, then the stream, then inserts WaveData events into the stream.
     Retrieve Events: Get the latest event and then get all events from the QiStream.
-    Update and Replace: Updates the events that were previously inserted, and adds additional events, then replace all.
+    Update and Replace: Updates events, adds an additional ten events, then replace all.
     Add Behavior: Creates and adds the behavior to the streams
     QiViews: Create and demonstrate QiViews and QiViewMaps
     Cleanup: Deletes the events, stream, stream behavior, views and types.
@@ -196,7 +196,7 @@ and the url for POST call varies:
 
 The Qi REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
-`Qi documentation<https://cloud.osisoft.com/documentation>`_ for more information
+Qi documentation<https://cloud.osisoft.com/documentation> for more information
 on available REST API calls.
 
 Retrieve Values from a Stream
