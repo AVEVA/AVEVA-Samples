@@ -29,7 +29,7 @@ with values you received from OSIsoft.
 
 Edit the following values in the src/app/app.component.ts file:
 
-.. code :: javascript
+:: 
 
 const config: IQiConfigSet = {
   Subscription: 'REPLACE_WITH_AZURE_SUBSCRIPTION',
@@ -53,14 +53,14 @@ Running the example
 
 The Qi Services page contains several buttons that demonstrate the main functionality of Qi:
 
-	1) **Create and Insert**: Create the type, then the stream, then inserts WaveData events into the stream.
-    2) **Retrieve Events**: Get the latest event and then get all events from the QiStream.
-    3) **Update**: Updates the events that were previously inserted, and adds additional events.
-    4) **Replace Events**: Replace events present in the QiStream.
-	5) **Add Behavior**: Creates and adds the behavior to the streams
-	6) **Range Events**: Retrieves events from a stream based on a starting index and a specified number of events.
-    7) **QiViews**: Create and demonstrate QiViews and QiViewMaps
-	8) **Cleanup**: Deletes the events, stream, stream behavior, and type.
+	**Create and Insert**: Create the type, then the stream, then inserts WaveData events into the stream.
+    **Retrieve Events**: Get the latest event and then get all events from the QiStream.
+    **Update**: Updates the events that were previously inserted, and adds additional events.
+    **Replace Events**: Replace events present in the QiStream.
+	**Add Behavior**: Creates and adds the behavior to the streams
+	**Range Events**: Retrieves events from a stream based on a starting index and a specified number of events.
+    **QiViews**: Create and demonstrate QiViews and QiViewMaps
+	**Cleanup**: Deletes the events, stream, stream behavior, and type.
 
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
