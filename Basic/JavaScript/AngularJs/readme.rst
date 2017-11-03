@@ -53,14 +53,16 @@ Running the example
 
 The Qi Services page contains several buttons that demonstrate the main functionality of Qi:
 
-	*Create and Insert: Create the type, then the stream, then inserts WaveData events into the stream.
-    *Retrieve Events: Get the latest event and then get all events from the QiStream.
-    *Update: Updates the events that were previously inserted, and adds additional events.
-    *Replace Events: Replace events present in the QiStream.
-    *Add Behavior: Creates and adds the behavior to the streams
-    *Range Events: Retrieves events from a stream based on a starting index and a specified number of events.
-    *QiViews: Create and demonstrate QiViews and QiViewMaps
-    *Cleanup: Deletes the events, stream, stream behavior, and type.
+::
+
+    Create and Insert: Create the type, then the stream, then inserts WaveData events into the stream.
+    Retrieve Events: Get the latest event and then get all events from the QiStream.
+    Update: Updates the events that were previously inserted, and adds additional events.
+    Replace Events: Replace events present in the QiStream.
+    Add Behavior: Creates and adds the behavior to the streams
+    Range Events: Retrieves events from a stream based on a starting index and a specified number of events.
+    QiViews: Create and demonstrate QiViews and QiViewMaps
+    Cleanup: Deletes the events, stream, stream behavior, and type.
 
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
@@ -134,8 +136,8 @@ A QiType can be created by a POST request as follows:
         this.qiService.createType(type).subscribe(res => {
         this.button1Message = res.status;
         },
-    err => {
-        this.button1Message = err;
+        err => {
+            this.button1Message = err;
         });
     }
 
