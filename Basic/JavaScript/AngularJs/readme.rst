@@ -4,23 +4,22 @@ Qi JavaScript Example using AngularJS
 Building a client to make REST API calls to the Qi Service
 ----------------------------------------------------------
 
-This example demonstrates how Qi REST APIs are invoked using AngularJS 1.0. Although this example uses AngularJS, other javascript frameworks should also work.
+This example demonstrates how Qi REST APIs are invoked using AngularJS 4.0. Although this example uses AngularJS, other javascript frameworks should also work.
 
-Because the example is an ASP.Net Web Application, you must use Microsoft Visual Studio to run it.
 
 Prerequisites
 -------------
 
 You must have the following software installed on your computer:
- - AngularJS version 1 (available on GitHub)
- - Microsoft Visual Studio 2015
+ - AngularJS version 4 (available on GitHub) or greater
+ - Angular CLI version 1.1.2 or greater
  - A modern browser (OSIsoft recommends Google Chrome or Mozilla Firefox)
 
 
 Preparation
 -----------
 
-The Qi service is secured by obtaining tokens from an Azure Active
+The Qi Service is secured by obtaining tokens from an Azure Active
 Directory instance. This example uses ADAL (Active Directory Authentication Library) 
 to authenticate clients against the QI server. Contact OSIsoft support
 to obtain a tenant for use with Qi. 
@@ -28,45 +27,43 @@ to obtain a tenant for use with Qi.
 The sample code includes several placeholder strings that must be modified 
 with values you received from OSIsoft. 
 
-Follow these steps to prepare your environment to run the example:
+Edit the following values in the src/app/app.component.ts file:
 
- 1. Clone or download the example from the GitHub repository. If you download the ZIP file, extract the file to a directory on your computer.
- 2. Start Visual Studio and select **File > Open > Project/Solution**.
- 3. Navigate to the directory in which the example was downloaded, select the file: ``qiSampleApp.sln`` and then click **Open**.
- 4. In Visual Studio, use the Solution Explorer window to find and select the file: ``app.js``.
- 5. Modify the following values within ``app.js`` using the values that were provided by OSIsoft:
- 
- .. code:: javascript
- 
-  .constant('QI_SERVER_URL', 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL')
-  .constant('QI_SERVER_APPID', 'PLACEHOLDER_REPLACE_WITH_RESOURCE')
-  .constant('QI_SAMPLEWEBAPP_EXTERNAL_CLIENTID', 'PLACEHOLDER_REPLACE_WITH_CLIENTID')
+.. code :: javascript
 
-  var endpoints = {
-        // Map the location of a request to an API to a the identifier of the associated resource
-        'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL': 'PLACEHOLDER_REPLACE_WITH_RESOURCE'
-  };
- 6. In Visual Studio, run the example by clicking **Start**.
- 7. After your browser opens, click the **Login** button in the top-right corner of the screen and log in using a Microsoft account that is configured to use the Qi service.
- 8. After you are logged in, click the **Qi Service** tab at the top of the screen.
- 
+const config: IQiConfigSet = {
+  Subscription: 'REPLACE_WITH_AZURE_SUBSCRIPTION',
+  ClientID: 'REPLACE_WITH_APPLICATION_ID',
+  SystemEndpoint: 'REPLACE_WITH_SYSTEM_ENDPOINT',
+  SystemResourceURI: 'REPLACE_WITH_SYSTEM_RESOURCE_URI',
+  QiEndPoint: 'REPLACE_WITH_QI_ENDPOINT',
+  QiResourceURI: 'REPLACE_WITH_QI_RESOURCE_URI',
+  TenantId: 'REPLACE_WITH_TENANT_ID',
+  NamespaceId: 'REPLACE_WITH_NAMESPACE'
+} 
+
+The application relies on the OAuth2 implicit grant flow.  Upon navigating to the webpage, users will be prompted to login to Azure Active Directory. 
+In addition to these credentials, the application must be configured to allow for token retrieval on the user's behalf.  Once this is 
+correctly set up, the application will retrieve a bearer token and pass this token along with every request to the Qi Service.  If the this token
+is not present, the Qi Service will return 401 Unauthorized for every request.  Users are encouraged to use their browser's development tools
+to troubleshoot any issues with authentication.
 
 Running the example
 ------------------------------
 
-The Qi Services page contains seven buttons that demonstrate the main functionality of Qi:
+The Qi Services page contains several buttons that demonstrate the main functionality of Qi:
 
-	1) **Create and Insert**: Creates the namespace, then the type, then the stream, then inserts WaveData events into the stream.
-        2) **Retrieve Events**: Updates the events that were inserted in the first step.
-        3) **Update**: Updates the events that were previously inserted.
-        4) **Retrieve Events**: Retrieves events from the stream.
+	1) **Create and Insert**: Create the type, then the stream, then inserts WaveData events into the stream.
+    2) **Retrieve Events**: Get the latest event and then get all events from the QiStream.
+    3) **Update**: Updates the events that were previously inserted, and adds additional events.
+    4) **Replace Events**: Replace events present in the QiStream.
 	5) **Add Behavior**: Creates and adds the behavior to the streams
-	6)  **Range Events**; Retrieves events from a stream based on a starting index and a specified number of events.
-	7) **Cleanup**: Deletes the events, stream, stream behavior, and type.
+	6) **Range Events**: Retrieves events from a stream based on a starting index and a specified number of events.
+    7) **QiViews**: Create and demonstrate QiViews and QiViewMaps
+	8) **Cleanup**: Deletes the events, stream, stream behavior, and type.
 
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
-
 
 
 The rest of the sections in this document outline the operation of Qi and the underlying process and technology of the example.
@@ -75,9 +72,9 @@ The rest of the sections in this document outline the operation of Qi and the un
 How the example works
 ----------------------
 
-The sample uses the ``request-promise`` module to connect to a service
-endpoint. Qi REST API calls are sent to the Qi service. The Qi REST API
-maps HTTP methods to CRUD (Create, Read, Update, Delete) as in the following table:
+The sample uses the AuthHttp class to connect to the Qi Service
+endpoint. Qi REST API calls are sent to the Qi Service. The Qi REST API
+maps HTTP methods to CRUD operations as in the following table:
 
 +---------------+------------------+--------------------+
 | HTTP Method   | CRUD Operation   | Content Found In   |
@@ -91,425 +88,315 @@ maps HTTP methods to CRUD (Create, Read, Update, Delete) as in the following tab
 | DELETE        | Delete           | URL parameters     |
 +---------------+------------------+--------------------+
 
-The REST calls in this example are configured as follows:
-
-.. code:: javascript
-
-				var deferred = $q.defer();
-
-                $http({
-                    url: 'URL',
-                    method: 'REST-METHOD',
-                    data: JSON.stringify(qiStream).toString()
-                }).then(function (response) {
-                    deferred.resolve(response);
-                }, function (error) {
-                    deferred.reject(error);
-                });
-                return deferred.promise;
-
-
--  URL - The service endpoint
--  REST-METHOD - Denotes the type of REST call
--  DATA - Object in the JSON format
-
 
 Create a QiType
 ---------------
 
-QiStreams represent open-ended collections of strongly-typed, ordered
-events. Qi is capable of storing any data type you care to define. The
-only requirement is that the data type must have one or more properties
-that constitute an ordered key. While a timestamp is a very common type
-of key, any ordered value is permitted. This example uses an integer type.
+To use Qi, you define QiTypes that describe the kinds of data you want
+to store in QiStreams. QiTypes are the model that define QiStreams.
+QiTypes can define simple atomic types, such as integers, floats, or
+strings, or they can define complex types by grouping other QiTypes. For
+more information about QiTypes, refer to the Qi
+documentation <https://cloud.osisoft.com/documentation>.
 
-Each data stream is associated with a QiType, so that only events
-conforming to that type can be inserted into the stream. The first step
-in Qi programming, then, is to define the types for your tenant.
-
-A QiType has the following properties: 
-
-- Id
-- Name
-- Description
-- QiTypeCode
-- Properties.
-
-The ``Id`` property is the identifier for a particular type. ``Name`` and
-``Description`` are optional string properties that describe the type.
-``QiTypeCode`` is used to identify the datatypes that are stored by the QiType. The
-file *QiObjects.js* enumerates the available datatypes in the
-qiTypeCodeMap.
-
-A type definition in Qi consists of one or more *Properties*. Each
-property has its own type. The type can be a simple data type such as integer
-or string, or a previously defined complex QiType, which allows the
-creation of nested data types; that is, QiTypes whose properties may be
-user-defined types.
-
-From QiObjects.js:
+In the sample code, the QiType representing WaveData is defined in the buildWaveDataType method of
+datasrc.component.ts. WaveData contains properties of integer and double atomic types. 
+The constructions begins by defining a base QiType for each atomic type and then defining
+Properties of those atomic types.
 
 .. code:: javascript
 
-       QiType : function (qiType){
-            if(qiType.Id){
-                this.Id = qiType.Id
-            }
-            if(qiType.Name){
-                this.Name = qiType.Name;
-            }
-            if(qiType.Description){
-                this.Description = qiType.Description;
-            }
-            if(qiType.QiTypeCode){ 
-                this.QiTypeCode = qiType.QiTypeCode;
-            }
-            if(qiType.Properties){
-                this.Properties = qiType.Properties;
-            }
-        }
+    buildWaveDataType() {
+        const doubleType = new QiType();
+        doubleType.Id = 'doubleType';
+        doubleType.QiTypeCode = QiTypeCode.Double;
+
+        const intType = new QiType();
+        intType.Id = 'intType';
+        intType.QiTypeCode = QiTypeCode.Int32;
+
+        const orderProperty = new QiTypeProperty();
+        orderProperty.Id = 'Order';
+        orderProperty.QiType = intType;
+        orderProperty.IsKey = true;
+
+        const radiansProperty = new QiTypeProperty();
+        radiansProperty.Id = 'Radians';
+        radiansProperty.QiType = doubleType;
+        ...
 
 A QiType can be created by a POST request as follows:
 
 .. code:: javascript
 
-        restCall({
-                    url : this.url+this.typesBase,
-                    method: 'POST',
-                    headers : this.getHeaders(),
-                    body : JSON.stringify(wave).toString()
-                });
-
--  Returns the QiType object in JSON format
--  If a type with the same Id apready exists, the URL path of the existing Qi type
-   is returned.
--  The QiType object is passed in JSON format.
+    createType() {
+        const type = this.buildWaveDataType();
+        this.qiService.createType(type).subscribe(res => {
+        this.button1Message = res.status;
+        },
+    err => {
+        this.button1Message = err;
+        });
+    }
 
 
 Create a QiStream
 -----------------
 
-An ordered series of events is stored in a QiStream. 
-To create a local QiStream instance, you provide an Id, assign a type,
+An ordered series of events is stored in a QiStream. All you have to do
+is create a local QiStream instance, give it an Id, assign it a type,
 and submit it to the Qi service. You may optionally assign a
 QiStreamBehavior to the stream. The value of the ``TypeId`` property is
 the value of the QiType ``Id`` property.
 
 .. code:: javascript
 
-       QiStream : function(qiStream){
-            this.Id = qiStream.Id;
-            this.Name = qiStream.Name;
-            this.Description = qiStream.Description;
-            this.TypeId = qiStream.TypeId;
-            if(qiStream.BehaviorId){
-                this.BehaviorId = qiStream.BehaviorId;
-            }
-        }
+    this.stream = new QiStream();
+    this.stream.Id = streamId;
+    this.stream.TypeId = typeId;
 
 The local QiStream can be created in the Qi service by a POST request as
 follows:
 
 .. code:: javascript
 
-    createStream: function(tenantId, nameSpaceId, qiStream){
+    this.qiService.createStream(this.stream)
+        .subscribe(res => {
+        this.button2Message = res.status;
+        },
+    err => {
+        this.button2Message = err;
+        });;
 
-                var deferred = $q.defer();
-                var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams";
-                $http({
-                    url: myurl,
-                    method: 'POST',
-                    data: JSON.stringify(qiStream).toString()
-                }).then(function (response) {
-                    deferred.resolve(response);
-                }, function (error) {
-                    deferred.reject(error);
-                });
-                return deferred.promise;
-    }
-
--  QiStream object is passed in json format
-
-Create and Insert Events into the Stream
+Create and Insert Values into the Stream
 ----------------------------------------
 
 A single event is a data point in the stream. An event object cannot be
-emtpy and should have at least the key value of the Qi type for the
-event. Events are passed in JSON format.
+empty and should have at least the key value of the Qi type for the
+event. Events are passed in json format.
 
 An event can be created using the following POST request:
 
 .. code:: javascript
 
-   insertValue: function (tenantId, nameSpaceId, qiStreamId, evt) {
-
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId+ "/Data/InsertValue";
-            $http({
-                url: myurl,
-                method: 'POST',
-                data: JSON.stringify(evt).toString()
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
+    insertValue(streamId: string, event: any) {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
+        return this.authHttp.post(url, JSON.stringify(event).toString());
     }
 
--  qiStreamId is the stream Id
--  data is the event object in json format
-
-Inserting multiple values is similar, but the payload has a list of events
-and the URL for the POST call varies:
+Inserting multiple values is similar, but the payload has list of events
+and the url for POST call varies:
 
 .. code:: javascript
 
-    //insert an array of events
-        insertValues: function (tenantId, nameSpaceId, qiStreamId, events) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId + "/Data/InsertValues";
-            $http({
-                url: myurl,
-                method: 'POST',
-                data: JSON.stringify(events).toString()
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
-    }
-
-The Qi REST API provides many more types of data insertion calls beyond
-those demonstrated in this application.
-
-Retrieve Events
----------------
-
-There are many methods in the Qi REST API that allow for the retrieval of
-events from a stream. The retrieval methods take string-type start and
-end values; in our case, these start and end ordinal indices
-are expressed as strings ("0" and "99", respectively). The index values must
-be capable of conversion to the type of the index assigned in the QiType.
-Timestamp keys are expressed as ISO 8601 format strings. Compound
-indices are values concatenated with a pipe ('\|') separator. This
-example implements only two of the many available retrieval methods -
-GetWindowValues (getTemplate in ``QiClient.js``) and GetRangeValues
-(``getRangeTemplate`` in ``QiClient.js``).
-
-.. code:: javascript
-
-    getWindowValues: function (tenantId, nameSpaceId, qiStreamId, start, end) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId + "/Data/GetWindowValues?startIndex="
-                + start + "&endIndex=" + end;
-            $http({
-                url: myurl,
-                method: 'GET'
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
+    insertValues(streamId: string, events: Array<any>) {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
+        return this.authHttp.post(url, JSON.stringify(events).toString());
         }
 
--  parameters are the QiStream Id and the starting and ending index
-   values for the desired window Ex: For a time index, request URL
-   format will be:
-   
-   ``"/{streamId}/Data/GetWindowValues?startIndex={startTime}&endIndex={endTime}``
+The Qi REST API provides many more types of data insertion calls beyond
+those demonstrated in this application. Go to the 
+`Qi documentation<https://cloud.osisoft.com/documentation>`_ for more information
+on available REST API calls.
 
-Update Events
--------------
+Retrieve Values from a Stream
+-----------------------------
+
+There are many methods in the Qi REST API allowing for the retrieval of
+events from a stream. The retrieval methods take string type start and
+end values; in our case, these are the start and end ordinal indices
+expressed as strings. The index values must
+capable of conversion to the type of the index assigned in the QiType.
+
+This sample implements only two of the many available retrieval methods -
+getRangeValues and getLastValue.
+
+.. code:: javascript
+
+    getRangeValues(streamId: string, start, count, boundary: QiBoundaryType, viewId: string = ''): Observable<any> {
+        const url = this.qiUrl +
+            `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+            `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&viewId=${viewId}`;
+        return this.authHttp.get(url);
+    }
+
+
+Update Events and Replacing Values
+----------------------------------
 
 Updating events is handled by PUT REST call as follows:
 
 .. code:: javascript
 
-     updateValue: function (tenantId, nameSpaceId, qiStreamId, evt) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId + "/Data/UpdateValue";
-            $http({
-                url: myurl,
-                method: 'PUT',
-                data: JSON.stringify(evt).toString()
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
-        }
+    updateValue(streamId: string, event: any) {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
+        return this.authHttp.put(url, JSON.stringify(event).toString());
+    }
 
 -  the request body has the new event that will update an existing event
-   at the same index.
+   at the same index
 
-Updating multiple events is similar, but the payload contains an array of
-event objects and the URL for PUT is slightly different:
-
-.. code:: javascript
-
-      //update an array of events
-        updateValues: function (tenantId, nameSpaceId, qiStreamId, events) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId + "/Data/UpdateValues";
-            $http({
-                url: myurl,
-                method: 'PUT',
-                data: JSON.stringify(events).toString()
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
-        }
-
-QiStreamBehaviors
------------------
-
-With certain data retrieval calls, a QiBoundarytype may be specified.
-For example, if ``GetRangeValues`` is called with an ExactOrCalculated
-boundary type, an event at the request start index will be calculated
-using linear interpolation (default) or based on the QiStreamBehavior
-associated with the QiStream. Because our sample QiStream was created
-without any QiStreamBehavior associated, it should display the default
-linear interpolation.
-
-The first event returned by the following call will be at index 1 (start
-index) and calculated via linear interpolation:
+Updating multiple events is similar, but the payload has an array of
+event objects and url for PUT is slightly different:
 
 .. code:: javascript
 
-      QiClient.getRangeValues(stream, 1, 0, 3, False, qiObjs.qiBoundaryType.ExactOrCalculated);
+    updateValues(streamId: string, events: Array<any>) {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
+        return this.authHttp.put(url, JSON.stringify(events).toString());
+    }
 
-To see how QiStreamBehaviors can change the query results, the following example
-defines a new stream behavior object and submits it to the Qi service:
+If you attempt to update values that do not exist they will be created. The sample updates
+the original ten values and then adds another ten values by updating with a
+collection of twenty values.
+
+In contrast to updating, replacing a value only considers existing
+values and will not insert any new values into the stream. The sample
+program demonstrates this by replacing all twenty values. The calling conventions are
+identical to ``updateValue`` and ``updateValues``:
 
 .. code:: javascript
 
-        var behavior = new qiObjs.QiBehavior({"Mode":qiObjs.qiStreamMode.Continuous});
-        behavior.Id = "evtStreamStepLeading";
-        behavior.Mode = qiObjs.qiStreamMode.StepWiseContinuousLeading;
+    replaceValue(streamId: string, event: any) {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
+        return this.authHttp.put(url, JSON.stringify(event).toString());
+    }
+
+    replaceValues(streamId: string, events: Array<any>) {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
+        return this.authHttp.put(url, JSON.stringify(events).toString());
+    }
+
+
+Changing Stream Behavior
+------------------------
+
+When retrieving a value, the behavior of a stream can be altered
+using ``QiStreamBehaviors``. A stream is updated with a behavior,
+which changes how "get" operations are performed when an index falls between,
+before, or after existing values. The default behavior is continuous, so
+any indices not in the stream are interpolated using the previous
+and next values.
+
+In the sample, the behavior is updated to discrete, meaning that if an index
+does not correspond to a real value in the stream then ``null`` is
+returned by the Qi Service. The following shows how this is done in the
+code:
+
+.. code:: javascript
+
+    const behavior = new QiStreamBehavior();
+    behavior.Id = behaviorId;
+    behavior.Name = 'SampleBehavior';
+    behavior.Mode = QiStreamMode.Discrete;
+    this.qiService.createBehavior(behavior).subscribe(() => {
+        this.stream.BehaviorId = behaviorId;
+        this.qiService.updateStream(this.stream).subscribe
         ...
-        QiClient.createBehavior(behavior);
 
-Setting the ``Mode`` property to ``StepwiseContinuousLeading`` 
-ensures that any calculated event has an interpolated index, but
-every other property has the value of the previous event. Now
-attach this behavior to the existing stream by setting the
-``BehaviorId`` property of the stream and updating the stream definition
-in the Qi service:
-
-.. code:: javascript
-
-        stream.BehaviorId = behavior.Id;
-        ...
-        QiClient.updateStream(stream);
-
-The sample repeats the call to ``GetRangeValues`` with the same
+The sample repeats the call to ``getRangeValues`` with the same
 parameters as before, allowing you to compare the values of the event at
-index 1 using different stream behaviors.
+``Order=1``.
 
+QiViews
+-------
 
-Delete Events
--------------
+A QiView provides a way to map Stream data requests from one data type 
+to another. You can apply a View to any read or GET operation. QiView 
+is used to specify the mapping between source and target types.
 
-An event at a particular index can be deleted by passing the index value
-for that data point to following DELETE REST call. The index values are
-expressed as string representations of the underlying type. DateTime
-index values must be expressed as ISO 8601 strings.
-
-.. code:: javascript
-
-    removeValue: function (tenantId, nameSpaceId, qiStreamId, index) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId + "/Data/RemoveValue?index=" + index;
-            $http({
-                url: myurl,
-                method: 'DELETE'
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
-        }
-
--  parameters are the stream Id and the index at which to delete an
-   event Ex: For a time index, the request url will have the format:
-   
-   ``"/{streamId}/Data/RemoveValue?index={deletionTime}";``
-
-Delete can also be performed over a window of key value as follows:
+Qi attempts to determine how to map Properties from the source to the 
+destination. When the mapping is straightforward, such as when 
+the properties are in the same position and of the same data type, 
+or when the properties have the same name, Qi will map the properties automatically.
 
 .. code:: javascript
 
-     removeWindowValues: function (tenantId, nameSpaceId, qiStreamId, start, end) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + qiStreamId + "/Data/RemoveWindowValues?startIndex="
-                + start + "&endIndex=" + end;
-            $http({
-                url: myurl,
-                method: 'DELETE'
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
-        }
+    this.qiService.getRangeValues(streamId, '3', 5, QiBoundaryType.ExactOrCalculated, autoViewId)
 
--  Parameters are the stream Id and the starting and ending index values
-   of the window. Example: For a time index, the request URL will have the following
-   format:
-   
-   ``/{streamId}/Data/RemoveWindowValues?startIndex={startTime}&endIndex={endTime}``
-
-Cleanup: Deleting Types, Behaviors, and Streams
------------------------------------------------
-
-So that it can run repeatedly without name collisions, the examples performs
-some cleanup before exiting. Deleting streams, stream behaviors, and
-types can be achieved by a DELETE REST call and passing the
-corresponding Id. Note: types and behaviors cannot be deleted until any
-streams referencing them are deleted first.
+To map a property that is beyond the ability of Qi to map on its own, 
+you should define a QiViewProperty and add it to the QiView’s Properties collection.
 
 .. code:: javascript
 
-     deleteStream: function (tenantId, nameSpaceId, streamId) {
-            var deferred = $q.defer();
-            var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Streams/" + streamId;
-            $http({
-                url: myurl,
-                method: 'DELETE'
-            }).then(function (response) {
-                deferred.resolve(response);
-            }, function (error) {
-                deferred.reject(error);
-            });
-            return deferred.promise;
-        }
+    const manualView = new QiView();
+    manualView.Id = manualViewId;
+    manualView.Name = "WaveData_AutoView";
+    manualView.Description = "This view uses Qi Types of different shapes, mappings are made explicitly with QiViewProperties."
+    manualView.SourceTypeId = typeId;
+    manualView.TargetTypeId = targetIntTypeId;
+
+    const viewProperty0 = new QiViewProperty();
+    viewProperty0.SourceId = 'Order';
+    viewProperty0.TargetId = 'OrderTarget';
+
+    const viewProperty1 = new QiViewProperty();
+    viewProperty1.SourceId = 'Sinh';
+    viewProperty1.TargetId = 'SinhInt';
+
+QiViewMap
+---------
+
+When a QiView is added, Qi defines a plan mapping. Plan details are retrieved as a QiViewMap. 
+The QiViewMap provides a detailed Property-by-Property definition of the mapping.
+The QiViewMap cannot be written, it can only be retrieved from Qi.
 
 .. code:: javascript
 
-    deleteType: function (tenantId, nameSpaceId, typeId) {
-                var deferred = $q.defer();
-                var myurl = url + "/Qi/" + tenantId + "/" + nameSpaceId + "/Types/" + typeId;
-                $http({
-                    url: myurl,
-                    method: 'DELETE',
-                    data: { Id: typeId }
-                }).then(function (response) {
-                    deferred.resolve(response);
-                }, function (error) {
-                    deferred.reject(error);
-                });
-                return deferred.promise;
-        }
+    getViewMap(viewId: string): Observable<any> {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}/Map`;
+        return this.authHttp.get(url);
+    }
 
+Delete Values from a Stream
+---------------------------
 
+There are two methods in the sample that illustrate removing values from
+a stream of data. The first method deletes only a single value. The second method 
+removes a window of values, much like retrieving a window of values.
+Removing values depends on the value's key type ID value. If a match is
+found within the stream, then that value will be removed. Code from both functions
+is shown below:
 
+.. code:: javascript
+
+    deleteValue(streamId: string, index): Observable<any> {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+        return this.authHttp.delete(url);
+    }
+
+    deleteWindowValues(streamId: string, start, end): Observable<any> {
+        const url = this.qiUrl +
+        `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+        `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
+        return this.authHttp.delete(url);
+    }
+
+As when retrieving a window of values, removing a window is
+inclusive; that is, both values corresponding to start and end
+are removed from the stream.
+
+Cleanup: Deleting Types, Behaviors, Views and Streams
+-----------------------------------------------------
+
+In order for the program to run repeatedly without collisions, the sample
+performs some cleanup before exiting. Deleting streams, stream
+behaviors, views and types can be achieved by a DELETE REST call and passing
+the corresponding Id.
+
+.. code:: javascript
+
+    deleteValue(streamId: string, index): Observable<any> {
+        const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+        return this.authHttp.delete(url);
+    }
+
+.. code:: javascript
+
+    deleteWindowValues(streamId: string, start, end): Observable<any> {
+        const url = this.qiUrl +
+        `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+        `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
+        return this.authHttp.delete(url);
+    }
 
