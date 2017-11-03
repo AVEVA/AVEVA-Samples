@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using OSIsoft.Data;
 using OSIsoft.Data.Http.Security;
 using OSIsoft.Data.Reflection;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace QiClientLibraries
 {
@@ -41,13 +42,15 @@ namespace QiClientLibraries
             string autoViewId = "SampleAutoView";
             string manualViewId = "SampleManualView";
 
-
             // Get Qi Services to communicate with server
             var metadataService = QiService.GetMetadataService(new Uri(address), tenant, namespaceId,
                 new QiSecurityHandler(resource, tenant, appId, appKey));
 
             var dataService = QiService.GetDataService(new Uri(address), tenant, namespaceId,
                 new QiSecurityHandler(resource, tenant, appId, appKey));
+
+            LoggerCallbackHandler.UseDefaultLogging = false;
+
 
             Console.WriteLine(@"---------------------------------------------------");
             Console.WriteLine(@"________  .__      _______  ______________________");
