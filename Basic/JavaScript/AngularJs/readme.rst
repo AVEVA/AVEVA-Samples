@@ -57,12 +57,10 @@ The Qi Services page contains several buttons that demonstrate the main function
 
     Create and Insert: Create the type, then the stream, then inserts WaveData events into the stream.
     Retrieve Events: Get the latest event and then get all events from the QiStream.
-    Update: Updates the events that were previously inserted, and adds additional events.
-    Replace Events: Replace events present in the QiStream.
+    Update and Replace: Updates the events that were previously inserted, and adds additional events, then replace all.
     Add Behavior: Creates and adds the behavior to the streams
-    Range Events: Retrieves events from a stream based on a starting index and a specified number of events.
     QiViews: Create and demonstrate QiViews and QiViewMaps
-    Cleanup: Deletes the events, stream, stream behavior, and type.
+    Cleanup: Deletes the events, stream, stream behavior, views and types.
 
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
