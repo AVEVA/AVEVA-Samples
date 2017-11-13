@@ -51,11 +51,11 @@ The following code block illustrates how to configure clients to use throughout 
 
 .. code:: cs
 
-    var metadataService = QiService.GetMetadataService(new Uri(address), tenant, namespaceId,
-        new QiSecurityHandler(resource, tenant, appId, appKey));
+	QiSecurityHandler securityHandler = new QiSecurityHandler(resource, tenant, appId, appKey);
 
-    var dataService = QiService.GetDataService(new Uri(address), tenant, namespaceId,
-        new QiSecurityHandler(resource, tenant, appId, appKey));
+	QiService qiService = new QiService(new Uri(address), securityHandler);
+	var metadataService = qiService.GetMetadataService(tenant, namespaceId);
+	var dataService = qiService.GetDataService(tenant, namespaceId);
   
   
 
