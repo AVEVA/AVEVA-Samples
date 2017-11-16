@@ -6,10 +6,11 @@ Building a Client with the Qi Client Libraries
 
 The sample described in this section makes use of the OSIsoft Qi Client Libraries. When working in .NET, 
 it is recommended that you use these libraries. The libraries are available as NuGet packages 
-from https://osisoft.myget.org/F/qi/. The packages used are:
+from https://api.nuget.org/v3/index.json . The packages used are:
 
-* OSIsoft.Contracts, 
-* OSIsoft.Data.Core,  
+* OSIsoft.Contracts,
+* OSIsoft.Models
+* OSIsoft.Http.Client,  
 * OSIsoft.Http.Security. 
 
 The libraries offer a framework of classes that make client development easier.
@@ -26,12 +27,12 @@ replace the placeholders with the authentication-related values you received fro
 ::
 
 	{
-		"Namespace": "Samples",
-		"Tenant": "REPLACE_WITH_TENANT_ID",
+		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+		"TenantId": "REPLACE_WITH_TENANT_ID",
 		"Address": "https://qi-data.osisoft.com",
 		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
-		"AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
-		"AppKey": "REPLACE_WITH_APPLICATION_SECRET"
+		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+		"ClientKey": "REPLACE_WITH_CLIENT_SECRET"
 	}
 
 
@@ -51,7 +52,7 @@ The following code block illustrates how to configure clients to use throughout 
 
 .. code:: cs
 
-	QiSecurityHandler securityHandler = new QiSecurityHandler(resource, tenant, appId, appKey);
+	QiSecurityHandler securityHandler = new QiSecurityHandler(resource, tenant, clientId, clientKey);
 
 	QiService qiService = new QiService(new Uri(address), securityHandler);
 	var metadataService = qiService.GetMetadataService(tenant, namespaceId);
