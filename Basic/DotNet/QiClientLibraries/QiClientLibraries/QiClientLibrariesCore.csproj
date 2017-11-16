@@ -8,9 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
-    <PackageReference Include="OSIsoft.Contracts" Version="1.0.8" />
-    <PackageReference Include="OSIsoft.Data.Core" Version="1.0.8" />
-    <PackageReference Include="OSIsoft.Http.Security" Version="1.0.8" />
+    <PackageReference Include="OSIsoft.Contracts" Version="1.0.10" />
+    <PackageReference Include="OSIsoft.Http.Client" Version="1.0.10" />
+    <PackageReference Include="OSIsoft.Http.Security" Version="1.0.10" />
+    <PackageReference Include="OSIsoft.Models" Version="1.0.10" />
   </ItemGroup>
 
 </Project>

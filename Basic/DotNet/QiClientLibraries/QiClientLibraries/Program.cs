@@ -26,12 +26,12 @@ namespace QiClientLibraries
             IConfiguration configuration = builder.Build();
 
             // ==== Client constants ====
-            var tenant = configuration["Tenant"];
-            var namespaceId = configuration["Namespace"];
+            var tenantId = configuration["TenantId"];
+            var namespaceId = configuration["NamespaceId"];
             var address = configuration["Address"];
             var resource = configuration["Resource"];
-            var appId = configuration["AppId"];
-            var appKey = configuration["AppKey"];
+            var clientId = configuration["ClientId"];
+            var clientKey = configuration["ClientKey"];
 
             // ==== Metadata IDs ====
             string streamId = "SampleStream";
@@ -43,11 +43,11 @@ namespace QiClientLibraries
             string manualViewId = "SampleManualView";
 
             // Get Qi Services to communicate with server
-            QiSecurityHandler securityHandler = new QiSecurityHandler(resource, tenant, appId, appKey);
+            QiSecurityHandler securityHandler = new QiSecurityHandler(resource, tenantId, clientId, clientKey);
 
             QiService qiService = new QiService(new Uri(address), securityHandler);
-            var metadataService = qiService.GetMetadataService(tenant, namespaceId);
-            var dataService = qiService.GetDataService(tenant, namespaceId);
+            var metadataService = qiService.GetMetadataService(tenantId, namespaceId);
+            var dataService = qiService.GetDataService(tenantId, namespaceId);
 
             LoggerCallbackHandler.UseDefaultLogging = false;
 
