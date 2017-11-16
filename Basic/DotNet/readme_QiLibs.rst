@@ -8,10 +8,10 @@ The sample described in this section makes use of the OSIsoft Qi Client Librarie
 it is recommended that you use these libraries. The libraries are available as NuGet packages 
 from https://api.nuget.org/v3/index.json . The packages used are:
 
-* OSIsoft.Contracts,
+* OSIsoft.Contracts
 * OSIsoft.Models
-* OSIsoft.Http.Client,  
-* OSIsoft.Http.Security. 
+* OSIsoft.Http.Client  
+* OSIsoft.Http.Security 
 
 The libraries offer a framework of classes that make client development easier.
 
