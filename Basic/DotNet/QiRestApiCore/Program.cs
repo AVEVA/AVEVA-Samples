@@ -11,7 +11,6 @@ namespace QiRestApiCore
 {
     class Program
     {
-
         public static void Main()
         {
             MainAsync().GetAwaiter().GetResult();
@@ -25,12 +24,12 @@ namespace QiRestApiCore
             IConfiguration configuration = builder.Build();
 
 			// ==== Client constants ====
-            string tenantId = configuration["Tenant"];
-            string namespaceId = configuration["Namespace"];
+            string tenantId = configuration["TenantId"];
+            string namespaceId = configuration["NamespaceId"];
             string address = configuration["Address"];
             string resource = configuration["Resource"];
-            string appId = configuration["AppId"];
-            string appKey = configuration["AppKey"];
+            string clientId = configuration["ClientId"];
+            string clientKey = configuration["ClientKey"];
             string aadInstanceFormat = configuration["AADInstanceFormat"];
 			
 			// ==== Metadata IDs ====
@@ -43,7 +42,7 @@ namespace QiRestApiCore
 			string ManualViewId = "WaveDataManualViewId";
 
             QiSecurityHandler securityHandler =
-                new QiSecurityHandler(resource, tenantId, aadInstanceFormat, appId, appKey);
+                new QiSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
             HttpClient httpClient = new HttpClient(securityHandler)
             {
                 BaseAddress = new Uri(address)
