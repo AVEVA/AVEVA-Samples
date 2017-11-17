@@ -32,13 +32,13 @@ the sample in the appsettings.json configuration file as follows:
 ::
 
 	{
-		"Namespace": "Samples",
-		"Tenant": "REPLACE_WITH_TENANT_ID",
+		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+		"TenantId": "REPLACE_WITH_TENANT_ID",
 		"Address": "https://qi-data.osisoft.com",
 		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
-		"AppId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
-		"AppKey": "REPLACE_WITH_APPLICATION_SECRET",
-		"AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>.onmicrosoft.com/oauth2/token"
+		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+		"ClientKey": "REPLACE_WITH_CLIENT_SECRET",
+		"AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>/oauth2/token"
 	}
 
 
@@ -47,7 +47,7 @@ The security handler is attached to the HttpClient as follows:
 .. code:: cs
 
 	QiSecurityHandler securityHandler =
-		new QiSecurityHandler(resource, tenantId, aadInstanceFormat, appId, appKey);
+		new QiSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
 			HttpClient httpClient = new HttpClient(securityHandler)
 			{
 				BaseAddress = new Uri(address)
