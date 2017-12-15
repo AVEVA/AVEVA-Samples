@@ -1,6 +1,4 @@
-﻿from urllib.parse import urlparse
-import urllib.request, urllib.parse, urllib.error
-import http.client as http
+﻿import urlparse
 import json
 
 import adal as adal
@@ -12,7 +10,7 @@ from QiView import QiView
 from QiViewMap import QiViewMap
 from QiStreamBehavior import QiStreamBehavior
 from QiBoundaryType import QiBoundaryType
-from JsonEncoder import Encoder
+
 import requests
 import time
 
@@ -669,6 +667,7 @@ class QiClient(object):
             events = []
             for value in values:
                 events.append(value.toDictionary())
+
             payload = json.dumps(events)
         else:
             payload = values

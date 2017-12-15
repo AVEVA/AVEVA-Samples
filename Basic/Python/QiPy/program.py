@@ -198,11 +198,14 @@ def isprop(v):
 
 def toString(event):
     string = ""
-    props = inspect.getmembers(type(event), isprop)
+
+    props = inspect.getmembers(WaveData,
+                                    lambda o: isinstance(o, property))
+
     printOrder = [2,3,4,0,6,5,1,7,8]
     orderedProps = [props[i] for i in printOrder]
     for prop in orderedProps:
-        value = prop[1].fget(event)
+        value = getattr(event, prop[0])
         if value is None:
             string += "{name}: , ".format(name = prop[0])
         else:
@@ -242,10 +245,6 @@ try:
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    client = QiClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
-                      config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
-
-    namespaceId = config.get('Configurations', 'Namespace')
 
     print("----------------------------------")
     print("  ___  _ ____")        
@@ -255,6 +254,12 @@ try:
     print(" \__\_\_|_|    \__, |")
     print("               |___/ ")	
     print("----------------------------------")
+
+    client = QiClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'),
+                      config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
+
+    namespaceId = config.get('Configurations', 'Namespace')
+
     print("Qi endpoint at {url}".format(url = client.Uri))
     print()
 
