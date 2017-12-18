@@ -14,7 +14,7 @@ Python Version:
 
 Two versions of the sample code are provided, one targets environments running Python 2.x 
 and the other targets those running Python 3.x.  Please use the sample that is appropriate 
-to your environment.  You can determine which version of Python you are running by typing 
+for your environment.  You can determine which version of Python you are running by typing 
 the following at the command line:
 
 .. code::
