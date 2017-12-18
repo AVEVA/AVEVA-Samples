@@ -9,6 +9,18 @@ and how to create, read, update, and delete values in Qi.
 The sections that follow provide a brief description of the process from
 beginning to end.
 
+Python Version:
+---------------
+
+Two versions of the sample code are provided, one targets environments running Python 2.x 
+and the other targets those running Python 3.x.  Please use the sample that is appropriate 
+for your environment.  You can determine which version of Python you are running by typing 
+the following at the command line:
+
+.. code::
+
+	python -V
+
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
@@ -90,18 +102,18 @@ The values to be replaced are in ``config.ini``:
 
 .. code:: python
 
-    [Configurations]
-    Namespace = REPLACE_WITH_NAMESPACE
+	[Configurations]
+	Namespace = Samples
 
-    [Access]
-    Address = REPLACE_WITH_QI_SERVER_URL
-    Tenant = REPLACE_WITH_TENANT_ID
+	[Access]
+	Address = https://qi-data.osisoft.com
+	Tenant = REPLACE_WITH_TENANT_ID
 
-    [Credentials]
-    Resource = https://pihomemain.onmicrosof.com/ocsapi
-    Authority = https://login.windows.net/<PLACEHOLDER_REPLACE_WITH_TENANT_NAME>.onmicrosoft.com
-    ClientId = REPLACE_WITH_CLIENT_IDENTIFIER
-    ClientSecret = REPLACE_WITH_CLIENT_SECRET
+	[Credentials]
+	Resource = https://qihomeprod.onmicrosoft.com/ocsapi
+	Authority = https://login.microsoftonline.com/<REPLACE_WITH_TENANT_ID>
+	ClientId = REPLACE_WITH_APPLICATION_IDENTIFIER
+	ClientSecret = REPLACE_WITH_APPLICATION_SECRET
 
 Obtain an Authentication Token
 ------------------------------
