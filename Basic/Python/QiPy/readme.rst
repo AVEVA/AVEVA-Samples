@@ -9,6 +9,18 @@ and how to create, read, update, and delete values in Qi.
 The sections that follow provide a brief description of the process from
 beginning to end.
 
+Python Version:
+---------------
+
+Two versions of the sample code are provided, one targets environments running Python 2.x 
+and the other targets those running Python 3.x.  Please use the sample that is appropriate 
+to your environment.  You can determine which version of Python you are running by typing 
+the following at the command line:
+
+.. code::
+
+	python -V
+
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
