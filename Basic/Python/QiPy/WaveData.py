@@ -88,9 +88,12 @@ class WaveData:
 
     def toDictionary(self):
         dictionary = { }
-        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
-            if hasattr(self, prop[0]):
-                dictionary[prop[0]] = prop[1].fget(self)
+
+        properties = inspect.getmembers(WaveData,
+                                        lambda o: isinstance(o, property))
+
+        for p in properties:
+            dictionary[p[0]] = self.__dict__[p[0]]
 
         return dictionary
 
@@ -105,15 +108,11 @@ class WaveData:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
-            # Pre-Assign the default
-            prop[1].fset(wave, 0)
-
-            # If found in JSON object, then set
-            if prop[0] in content:
-                value = content[prop[0]]
-                if value is not None:
-                    prop[1].fset(wave, value)
+        properties = inspect.getmembers(WaveData,
+                                        lambda o: isinstance(o, property))
+        for p in properties:
+            if p[0] in content:
+                setattr(wave, p[0], content[p[0]])
 
         return wave
 
@@ -141,7 +140,7 @@ class WaveDataInteger:
     @SinInt.setter
     def SinInt(self, SinInt):
         self._SinInt = SinInt
-    
+
     @property
     def CosInt(self):
         return self._CosInt
