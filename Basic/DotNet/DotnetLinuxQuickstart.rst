@@ -1,4 +1,4 @@
-Quick Start .NET on Linux
+Quick Start .NET Core on Linux
 ========================
 
 Qi Client Libraries are Portable
