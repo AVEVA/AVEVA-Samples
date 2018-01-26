@@ -50,7 +50,6 @@ will need to be specified, this step is shown here by opening the appsettings.js
 	sudo git clone https://github.com/osisoft/Qi-Samples.git
 	cd Qi-Samples/Basic/DotNet/QiClientLibraries/QiClientLibraries/
 	sudo nano appsettings.json
-	sudo nano QiClientLibrariesCore.csproj
 	sudo dotnet publish
 	sudo dotnet run bin/Debug/netcoreapp2.0/publish/QiClientLibrariesCore.dll 
 
@@ -62,5 +61,8 @@ The following links are provided for those that would like further information r
 or the Nano text editor:
 
 https://docs.microsoft.com/en-us/dotnet/core/
+
 https://help.ubuntu.com/community/UsingTheTerminal
+
 https://www.nano-editor.org/dist/v2.9/nano.html
+
