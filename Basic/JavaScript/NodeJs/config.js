@@ -7,7 +7,7 @@ module.exports = {
         'clientId': "REPLACE_WITH_APPLICATION_IDENTIFIER",
         'clientSecret': "REPLACE_WITH_APPLICATION_SECRET"
     },
-    qiServerUrl: "PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL",
+    qiServerUrl: "https://qi-data.osisoft.com",
     tenantId: "REPLACE_WITH_TENANT_ID",
     namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID"
 }
