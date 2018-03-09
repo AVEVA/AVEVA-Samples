@@ -221,3 +221,9 @@ pip-log.txt
 ##############
 
 JavaScript/node_modules
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs
+/Basic/DotNet/QiRestApiCore/.vs
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/QiClientLibrariesCore.sln
+/Basic/DotNet/QiRestApiCore/QiRestApiCore.sln
+/Basic/JavaScript/AngularJs
+/Basic/JavaScript/NodeJs
