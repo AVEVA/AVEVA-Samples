@@ -123,9 +123,37 @@ export class QiRestService {
     return this.authHttp.put(url, JSON.stringify(qiStream).toString());
   }
 
+  getStreams(query: string): Observable<any> {
+    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
+    return this.authHttp.get(url);
+  }
+
+
   deleteStream(streamId: string): Observable<any> {
     const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
     return this.authHttp.delete(url);
+  }
+
+  createTags(streamId: string, tags: string[]): Observable<any> {
+    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Tags`;
+    return this.authHttp.put(url, JSON.stringify(tags).toString());
+  }
+
+  createMetadata(streamId: string, metadata: object): Observable<any> {
+    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
+    return this.authHttp.put(url, JSON.stringify(metadata).toString());
+  }
+
+  getTags(streamId: string): Observable<any> {
+    const url = this.qiUrl +
+      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Tags`;
+    return this.authHttp.get(url);
+  }
+
+  getMetadata(streamId: string): Observable<any> {
+    const url = this.qiUrl +
+      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Metadata`;
+    return this.authHttp.get(url);
   }
 
   getLastValue(streamId: string): Observable<any> {

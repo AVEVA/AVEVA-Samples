@@ -1,12 +1,15 @@
 package samples;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,7 +78,6 @@ public class QiClient {
 
             urlConnection.setRequestProperty("Authorization", token.getAccessTokenType() + " " + token.getAccessToken());
             if (method == "POST" || method == "PUT" || method == "DELETE") {
-                urlConnection.setChunkedStreamingMode(0);
                 urlConnection.setDoOutput(true);
             } else if (method == "GET") {
                 //Do nothing
@@ -664,7 +666,7 @@ public class QiClient {
         return jsonResults.toString();
     }
 
-    public String getStreams(String tenantId, String namespaceId, String query, String skip, String count) throws QiError {
+    public ArrayList<QiStream> getStreams(String tenantId, String namespaceId, String query, String skip, String count) throws QiError {
         java.net.URL url;
         java.net.HttpURLConnection urlConnection = null;
         String inputLine;
@@ -700,8 +702,10 @@ public class QiClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return jsonResults.toString();
+     
+        ArrayList<QiStream> results = mGson.fromJson(jsonResults.toString(), new TypeToken<ArrayList<QiStream>>(){}.getType());
+        return results;
+        //   return jsonResults.toString();
     }
 
     public void updateStream(String tenantId, String namespaceId, String streamId, QiStream streamDef) throws QiError {
@@ -769,6 +773,162 @@ public class QiClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateTags(String tenantId, String namespaceId, String streamId, ArrayList<String> tags) throws QiError {
+
+        java.net.URL url = null;
+        java.net.HttpURLConnection urlConnection = null;
+
+
+        try {
+            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
+            urlConnection = getConnection(url, "PUT");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            String body = mGson.toJson(tags);
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(out);
+            writer.write(body);
+            writer.close();
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new QiError(urlConnection, "update tags request failed");
+            }
+        } catch (QiError qiError) {
+            printQiErrorMessage(qiError);
+            throw qiError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<String> getTags(String tenantId, String namespaceId, String streamId) throws QiError {
+        java.net.URL url;
+        java.net.HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer jsonResults = new StringBuffer();
+
+        try {
+            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            int httpResponse = urlConnection.getResponseCode();
+            if (httpResponse == HttpURLConnection.HTTP_OK) {
+            } else {
+                throw new QiError(urlConnection, "get multiple streams request failed");
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            while ((inputLine = in.readLine()) != null) {
+                jsonResults.append(inputLine);
+            }
+            in.close();
+        } catch (QiError qiError) {
+            printQiErrorMessage(qiError);
+            throw qiError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> test = new ArrayList<String>();
+        
+        ArrayList<String> results = mGson.fromJson(jsonResults.toString(), new TypeToken<ArrayList<String>>(){}.getType());
+        return results;
+    }
+    
+    public void updateMetadata(String tenantId, String namespaceId, String streamId, Map<String, String> metadata) throws QiError {
+
+        java.net.URL url = null;
+        java.net.HttpURLConnection urlConnection = null;
+
+
+        try {
+            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata");
+            urlConnection = getConnection(url, "PUT");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            String body = mGson.toJson(metadata);
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(out);
+            writer.write(body);
+            writer.close();
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new QiError(urlConnection, "update stream request failed");
+            }
+        } catch (QiError qiError) {
+            printQiErrorMessage(qiError);
+            throw qiError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String getMetadata(String tenantId, String namespaceId, String streamId, String key) throws QiError {
+        java.net.URL url;
+        java.net.HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer jsonResults = new StringBuffer();
+
+        try {
+            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata/" + key);
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            int httpResponse = urlConnection.getResponseCode();
+            if (httpResponse == HttpURLConnection.HTTP_OK) {
+            } else {
+                throw new QiError(urlConnection, "get metadata request failed");
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            while ((inputLine = in.readLine()) != null) {
+                jsonResults.append(inputLine);
+            }
+            in.close();
+        } catch (QiError qiError) {
+            printQiErrorMessage(qiError);
+            throw qiError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonResults.toString();
     }
 
     public void insertValue(String tenantId, String namespaceId, String streamId, String evt) throws QiError {

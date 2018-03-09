@@ -745,8 +745,128 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err);});   
                 
+    //tags, metadata and search
+    var createTags = dumpMapResult.then( 
+        function(res) {
+           console.log("\nLet's add some Tags and Metadata to our stream:");
+           var tags = [ "waves", "periodic", "2018", "validated" ];
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.updateTags(tenantId, sampleNamespaceId, sampleStreamId, tags);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.updateTags(tenantId, sampleNamespaceId, sampleStreamId, tags);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    var createMetadata = createTags.then( 
+        function(res) {
+           var metadata = {Region: "North America", Country: "Canada", Province: "Quebec"};
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.updateMetadata(tenantId, sampleNamespaceId, sampleStreamId, metadata);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.updateTags(tenantId, sampleNamespaceId, sampleStreamId, metadata);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    var getTags = createMetadata.then( 
+        function(res) {
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getTags(tenantId, sampleNamespaceId, sampleStreamId);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getTags(tenantId, sampleNamespaceId, sampleStreamId);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+    
+    // print tags
+    var printTags = getTags.then(
+        function (res) {
+            var obj = JSON.parse(res);
+            console.log("\nTags now associated with " + sampleStreamId + ":");
+            obj.forEach(function (elem, index) {
+                    console.log(elem)               
+            });
+        }
+    ).catch(function (err) { logError(err);});   
+
+    // get metadata
+    var getMetadata = printTags.then( 
+        function(res) {
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getMetadata(tenantId, sampleNamespaceId, sampleStreamId, "");
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getMetadata(tenantId, sampleNamespaceId, sampleStreamId, "");
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    // print metadata
+    var printMetadata = getMetadata.then(
+        function (res) {
+            console.log("\nMetadata now associated with " + sampleStreamId + ":");
+            var obj = JSON.parse(res);
+            console.log("Metadata key Region: " + obj["Region"])
+            console.log("Metadata key Country: " + obj["Country"])
+            console.log("Metadata key Province: " + obj["Province"])                           
+        }
+    ).catch(function (err) { logError(err);});   
+
+    // allow time for search indexing
+    var pauseForSearchIndexing = printMetadata.then(
+        function (res) {
+            console.log("\nPausing to allow for search indexing...")
+            return new Promise(resolve => setTimeout(resolve, 15000));
+        }
+    ).catch(function (err) { logError(err);}); 
+    
+
+    var searchForStream = pauseForSearchIndexing.then( 
+        function(res) {
+           console.log("\nWe can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getStreams(tenantId, sampleNamespaceId, "periodic");
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getStreams(tenantId, sampleNamespaceId, "periodic");
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    // print search result
+    var printResult = searchForStream.then(
+        function (res) {
+            var obj = JSON.parse(res);
+            if(obj)
+            {
+                obj.forEach(function (elem) {
+                    console.log(elem.Id)
+                })
+            }                           
+        }
+    ).catch(function (err) { logError(err);});
+
     //delete an event
-    var deleteOneEvent = dumpMapResult.then( 
+    var deleteOneEvent = printResult.then( 
         function(res) {
            console.log("\nDeleting values from the QiStream");
            if (client.tokenExpires < nowSeconds) {

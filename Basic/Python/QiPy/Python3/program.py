@@ -1,4 +1,4 @@
-﻿from qipy import *
+from qipy import *
 import configparser
 import datetime
 import time
@@ -459,6 +459,44 @@ try:
             print(("{source} => {dest}".format(source = prop.SourceId, dest = prop.TargetId)))
         else:
             print(("{source} => {dest}".format(source = prop.SourceId, dest = 'Not mapped')))
+
+    ######################################################################################################
+    # Tags, Metadata and Search
+    ######################################################################################################
+    print()
+    print("Let's add some Tags and Metadata to our stream:")
+
+    tags = ["waves", "periodic", "2018", "validated"]
+    metadata = { "Region":"North America" , "Country":"Canada","Province":"Quebec" }
+
+    client.createOrUpdateTags(namespaceId, stream.Id, tags)
+    client.createOrUpdateMetadata(namespaceId, stream.Id, metadata)
+
+    print()
+    print("Tags now associated with ", stream.Id)
+    print(client.getTags(namespaceId, stream.Id))
+
+    region = client.getMetadata(namespaceId, stream.Id, "Region")
+    country = client.getMetadata(namespaceId, stream.Id, "Country")
+    province = client.getMetadata(namespaceId, stream.Id, "Province")
+
+    print()
+    print("Metadata now associated with", stream.Id, ":")
+    print("Metadata key Region: ", region)
+    print("Metadata key Country: ", country)
+    print("Metadata key Province: ", province)
+    print()
+
+    #pause to allow for search indexing
+    print("Pausing to allow for search indexing...")
+    time.sleep(15)
+
+    print()
+    print("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':")
+
+    streams = client.getStreams(namespaceId, "periodic")
+    for x in range(len(streams)):
+        print(streams[x].Id)
 
     ######################################################################################################
     # Delete events
