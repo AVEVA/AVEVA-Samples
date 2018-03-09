@@ -221,3 +221,17 @@ pip-log.txt
 ##############
 
 JavaScript/node_modules
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/QiClientLibrariesCore/v15/Server/sqlite3/storage.ide-wal
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/QiClientLibrariesCore/v15/Server/sqlite3/storage.ide-shm
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/QiClientLibrariesCore/v15/Server/sqlite3/storage.ide
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/QiClientLibrariesCore/v15/Server/sqlite3/db.lock
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/QiClientLibrariesCore/v15/Server/sqlite3
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/config/applicationhost.config
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/.vs/config
+/Basic/DotNet/QiClientLibraries/QiClientLibraries/QiClientLibrariesCore.sln
+/Basic/DotNet/QiRestApiCore/.vs/config/applicationhost.config
+/Basic/DotNet/QiRestApiCore/QiRestApiCore.sln
+/Basic/JavaScript/AngularJs/node_modules
+/Basic/JavaScript/AngularJs/ssl
+/Basic/JavaScript/NodeJs/node_modules
+/Basic/JavaScript/NodeJs/package-lock.json

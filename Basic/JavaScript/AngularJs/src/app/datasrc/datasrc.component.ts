@@ -53,10 +53,12 @@ export class DatasrcComponent {
   targetEvents: WaveDataTarget[];
   integerEvents: WaveDataInteger[];
   viewMap: QiViewMap;
+  metadataMap: Map<string, string>;
   hasEvents: boolean;
   hasView1Events: boolean;
   hasView2Events: boolean;
   hasMapProperties: boolean;
+  hasMetadata: boolean;
 
   button1Message: string;
   button2Message: string;
@@ -73,6 +75,10 @@ export class DatasrcComponent {
   button13Message: string;
   button14Message: string;
   button15Message: string;
+  button16Message: string;
+  button17Message: string;
+  button18Message: string;
+  button19Message: string;
 
   constructor(private qiService: QiRestService) {
     this.hasEvents = false;
@@ -457,6 +463,76 @@ export class DatasrcComponent {
     },
       err => {
         this.button11Message = err;
+      });
+  }
+
+  createTagsAndMetadata() {
+    var tags = [ "waves", "periodic", "2018", "validated" ];
+    var metadata = {Region: "North America", Country: "Canada", Province: "Quebec"};
+    this.qiService.createTags(streamId, tags)
+    .subscribe(res => {
+      this.button16Message = res.status;
+    },
+    err => {
+      this.button16Message = err;
+    });
+    this.qiService.createMetadata(streamId, metadata)
+    .subscribe(res => {
+      this.button16Message = res.status;
+    },
+    err => {
+      this.button16Message = err;
+    });
+  }
+
+  getAndPrintTags() {
+    this.qiService.getTags(streamId)
+      .map(res => res.json())
+      .subscribe(res => {
+        var tags = res as Array<string>;
+        var result = "Tags associated with " + streamId + ": "        
+        for(var i = 0; i < tags.length; i++)
+        {
+          result += (tags[i] + ", ")
+        }
+        this.button17Message = result;
+    },
+      err => {
+        this.button17Message = err;
+      });
+  }
+
+  getAndPrintMetadata() {
+    this.qiService.getMetadata(streamId)
+      .map(res => res.json())
+      .subscribe(res => {        
+        this.metadataMap = res as Map<string, string>;
+        this.hasMetadata = true;
+    },
+      err => {
+        this.button18Message = err;
+      });
+  }
+
+  searchForQiStream() {
+    this.qiService.getStreams("periodic")
+      .map(res => res.json())
+      .subscribe(res => {
+        var result = "Streams associated with 'periodic': "
+        var streams = res as Array<QiStream>;
+        if(streams.length > 0){
+        for(var i = 0; i < streams.length; i++){
+          result += (streams[i].Id.toString() + " ")
+        }
+        this.button19Message = result;
+      }
+      else
+      {
+        this.button19Message = "No results found, search indexing can take up to 15 seconds, please try your request again."        
+      }
+    },
+      err => {
+        this.button19Message = err;
       });
   }
 

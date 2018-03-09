@@ -180,6 +180,47 @@
                   </ng-container>
                   </table>
                 </div>
+  <h3>Tags, Metadata and Search</h3>
+  <p>Let's add some tags and metadata to our stream</p>
+  <button class="btn btn-primary" (click)="createTagsAndMetadata()">Create Tags and Metadata</button>
+  <br>
+  <span *ngIf="button16Message">Response: {{button16Message}}</span>
+  
+  <p></p>
+  <button class="btn btn-primary" (click)="getAndPrintTags()">Get Tags</button>
+  <br>
+  <span *ngIf="button17Message">{{button17Message}}</span>
+
+  <p></p>
+  <button class="btn btn-primary" (click)="getAndPrintMetadata()" >Get Metadata</button>
+  <br>
+  <span *ngIf="button18Message">Response: {{button18Message}}</span>
+  <div *ngIf="hasMetadata">
+      <table class="table table-striped table-bordered">
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+            <tr>
+          <td>Region</td>
+          <td>{{metadataMap["Region"]}}</td>
+        </tr>
+        <tr>
+            <td>Country</td>
+            <td>{{metadataMap["Country"]}}</td>
+          </tr>
+          <tr>
+              <td>Province</td>
+              <td>{{metadataMap["Province"]}}</td>
+            </tr>
+      </table>
+    </div>
+  <p></p>
+  <p>We can also use our tags to search for streams, let's search for streams tagged with 'periodic':</p>
+  <button class="btn btn-primary" (click)="searchForQiStream()">Search For Streams</button>
+  <br>
+  <span *ngIf="button19Message">{{button19Message}}</span>
+
   <h3>Delete Values</h3>
   <p>Press the button below to delete all values from the QiStream, pressing Retrieve Events 
     above should now return an empty array.
