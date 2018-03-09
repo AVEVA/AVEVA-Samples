@@ -82,6 +82,15 @@ module.exports = {
             });
         };
 
+        // get streams from the Qi Service
+        this.getStreams = function (tenantId, namespaceId, queryString, skip, count) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString,
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
         // create behavior
         this.createBehavior = function (tenantId, namespaceId, behavior) {
             return restCall({
@@ -106,6 +115,44 @@ module.exports = {
         this.getViewMap = function (tenantId, namespaceId, viewId) {
             return restCall({
                 url: this.url + this.viewsBase.format([tenantId, namespaceId]) + "/" + viewId + "/Map",
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // create tags
+        this.updateTags = function (tenantId, namespaceId, streamId, tags) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId + "/Tags",
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify(tags)
+            });
+        };
+
+        // create metadata
+        this.updateMetadata = function (tenantId, namespaceId, streamId, metadata) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId + "/Metadata",
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify(metadata)
+            });
+        };
+
+        // get tags
+        this.getTags = function (tenantId, namespaceId, streamId) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId + "/Tags",
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // get metadata
+        this.getMetadata = function (tenantId, namespaceId, streamId, key) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId + "/Metadata/" + key,
                 method: 'GET',
                 headers: this.getHeaders()
             });

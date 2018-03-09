@@ -495,6 +495,68 @@ class QiClient(object):
 
         response.close()
 
+    def createOrUpdateTags(self, namespace_id, streamId, tags):
+        """Tells Qi Service to create tags and associate them with the given streamId """
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.put(
+            self.__url + self.__streamsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
+            data=json.dumps(tags), 
+            headers=self.__qiHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise QiError("Failed to create tags for Stream: {stream_id}. {status}:{reason}".
+                          format(stream_id=stream.Id, status=response.status_code, reason=response.text))
+
+    def createOrUpdateMetadata(self, namespace_id, streamId, metadata):
+        """Tells Qi Service to create metadata and associate them with the given streamId"""
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.put(
+            self.__url + self.__streamsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata",
+            data=json.dumps(metadata), 
+            headers=self.__qiHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise QiError("Failed to create metadata for Stream: {stream_id}. {status}:{reason}".
+                          format(stream_id=stream.Id, status=response.status_code, reason=response.text))                          
+
+    def getTags(self, namespace_id, streamId):
+        """Tells Qi Service to get tags associated with the given streamId """
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__url + self.__streamsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
+            headers=self.__qiHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise QiError("Failed to get tags for Stream: {stream_id}. {status}:{reason}".
+                          format(stream_id=stream.Id, status=response.status_code, reason=response.text))
+                
+        content = json.loads(response.content)
+        response.close()
+        return content
+
+
+    def getMetadata(self, namespace_id, streamId, key):
+        """Tells Qi Service to get metadata associated with the given streamId and key"""
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__url + self.__streamsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata/" + key,
+            headers=self.__qiHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise QiError("Failed to get metadata for Stream: {stream_id} and Key {key}. {status}:{reason}".
+                          format(stream_id=stream.Id, status=response.status_code, reason=response.text))        
+
+        content = json.loads(response.content)
+        response.close()
+        return content
 
     # The following section provides functionality to interact with Data
     #    We assume the value(s) passed follow the Qi object patterns supporting fromJson and toJson method

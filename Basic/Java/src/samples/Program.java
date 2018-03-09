@@ -7,8 +7,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class Program {
     // get configuration
@@ -255,8 +258,57 @@ public class Program {
    		 	dumpQiViewMap(viewMap);
    		 	System.out.println();
          
-         
-   		 	// delete data
+   		 	// tags, metadata and search
+   		 	System.out.println("Let's add some Tags and Metadata to our stream:");
+   		 	System.out.println();
+   		 
+   		 	ArrayList<String> tags = new ArrayList<String>();
+   		 	tags.add("waves");
+   		 	tags.add("periodic");
+   		 	tags.add("2018");
+   		 	tags.add("validated");
+   		 	
+   		 	Map<String, String> metadata = new HashMap<String, String>();
+   		 	metadata.put("Region", "North America");
+   		    metadata.put("Country", "Canada");
+   		    metadata.put("Province", "Quebec");
+   		    
+   		    qiclient.updateTags(tenantId, namespaceId, sampleStreamId, tags);
+   		    qiclient.updateMetadata(tenantId, namespaceId, sampleStreamId, metadata);
+   		    
+   		    System.out.println("Tags now associated with " + sampleStreamId);
+   		    tags = qiclient.getTags(tenantId, namespaceId, sampleStreamId);
+   		    
+   		    for (String tag: tags) {
+		 		System.out.println(tag);
+		 	}   		    
+   		    System.out.println();
+   		 	
+   		    String region = qiclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Region");
+   		    String country = qiclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Country"); 
+   		    String province =  qiclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Province");
+   		    
+   		    System.out.println("Metadata now associated with " + sampleStreamId);
+   		    System.out.println("Metadata key Region: " + region);
+   		    System.out.println("Metadata key Country: " + country);
+   		 	System.out.println("Metadata key Province: " + province);
+   		    
+   		 	System.out.println();
+   		 	
+   		 	// pause for search indexing
+   		 	System.out.println("Pausing to allow for search indexing...");
+   		 	TimeUnit.SECONDS.sleep(15);
+   		 	
+   		 	System.out.println("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
+
+   		 	ArrayList<QiStream> streams = qiclient.getStreams(tenantId, namespaceId, "periodic", "0", "100");
+   		 	
+   		 	for (QiStream stream: streams) {
+   		 		System.out.println("Found stream associated with 'periodic' with Id: " + stream.getId());
+   		 	}
+   		 	System.out.println();
+   		 	
+   		    // delete data
    		 	
    		 	// remove the first value
    		 	System.out.println("Deleting values from the QiStream");

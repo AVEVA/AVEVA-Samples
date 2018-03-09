@@ -430,6 +430,100 @@ namespace QiRestApiCore
 
                 PrintViewMapProperties(qiViewMap);
 
+                // tags, metadata and search
+                Console.WriteLine("Let's add some Tags and Metadata to our stream:");
+                var tags = new List<string> { "waves", "periodic", "2018", "validated" };
+                var metadata = new Dictionary<string, string>() { { "Region", "North America" }, { "Country", "Canada" }, { "Province", "Quebec" } };
+
+
+                response =
+                    await httpClient.PutAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Tags",
+                    new StringContent(JsonConvert.SerializeObject(tags)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                response =
+                    await httpClient.PutAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Metadata",
+                    new StringContent(JsonConvert.SerializeObject(metadata)));
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Tags");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                tags = JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync());
+
+                Console.WriteLine();
+                Console.WriteLine($"Tags now associated with {StreamId}:");
+                foreach (var tag in tags)
+                {
+                    Console.WriteLine(tag);
+                }
+                Console.WriteLine();
+                Console.WriteLine($"Metadata now associated with {StreamId}:");
+
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Metadata/Region");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                var region = JsonConvert.DeserializeObject<string>(await response.Content.ReadAsStringAsync());
+
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Metadata/Country");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                var country = JsonConvert.DeserializeObject<string>(await response.Content.ReadAsStringAsync());
+
+                response = await httpClient.GetAsync(
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Metadata/Province");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                var province = JsonConvert.DeserializeObject<string>(await response.Content.ReadAsStringAsync());
+
+                Console.WriteLine("Metadata key Region: " + region);
+                Console.WriteLine("Metadata key Country: " + country);
+                Console.WriteLine("Metadata key Province: " + province);
+
+                Console.WriteLine();
+                Console.WriteLine("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
+
+                Console.WriteLine();
+                Console.WriteLine("Pausing to allow for search indexing...");
+                // allow time for search indexing
+                await Task.Delay(15000);
+
+                response = await httpClient.GetAsync(
+                $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams?query=periodic");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException(response.ToString());
+                }
+
+                var streams = JsonConvert.DeserializeObject<List<QiStream>>(await response.Content.ReadAsStringAsync());
+
+                foreach (var strm in streams)
+                {
+                    Console.WriteLine(strm.Id);
+                }
+                Console.WriteLine();
+
                 Console.WriteLine("Deleting values from the QiStream");
 
                 // delete one event
