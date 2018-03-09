@@ -1,17 +1,17 @@
-Qi JavaScript Example using AngularJS
-======================================
+Qi JavaScript Example using Angular
+===================================
 
 Building a client to make REST API calls to the Qi Service
 ----------------------------------------------------------
 
-This example demonstrates how Qi REST APIs are invoked using AngularJS 4.0. Although this example uses AngularJS, other javascript frameworks should also work.
+This example demonstrates how Qi REST APIs are invoked using Angular 4.0. Although this example uses Angular, other javascript frameworks should also work.
 
 
 Prerequisites
 -------------
 
 You must have the following software installed on your computer:
- - AngularJS version 4 (available on GitHub) or greater
+ - Angular version 4 (available on GitHub) or greater
  - Angular CLI version 1.1.2 or greater
  - A modern browser (OSIsoft recommends Google Chrome or Mozilla Firefox)
 
@@ -399,4 +399,3 @@ the corresponding Id.
         `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
         return this.authHttp.delete(url);
     }
-
