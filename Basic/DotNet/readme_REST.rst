@@ -34,7 +34,7 @@ the sample in the appsettings.json configuration file as follows:
 	{
 		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
 		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"Address": "https://qi-data.osisoft.com",
+		"Address": "https://dat-a.osisoft.com",
 		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
 		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
 		"ClientKey": "REPLACE_WITH_CLIENT_SECRET",
