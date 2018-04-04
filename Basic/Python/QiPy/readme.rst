@@ -41,7 +41,7 @@ URL, payload, and headers. The server's response is stored.
     response = requests.post(url, data=payload, headers=client_headers)
 
 -  *url* is the service endpoint (for example:
-   ``https://qi-data.osisoft.com``). The connection is used by the
+   ``https://dat-a.osisoft.com``). The connection is used by the
    ``QiClient`` class.
 
 Each call to the Qi REST API consists of an HTTP request along with a specific 
@@ -106,7 +106,7 @@ The values to be replaced are in ``config.ini``:
 	Namespace = Samples
 
 	[Access]
-	Address = https://qi-data.osisoft.com
+	Address = https://dat-a.osisoft.com
 	Tenant = REPLACE_WITH_TENANT_ID
 
 	[Credentials]
