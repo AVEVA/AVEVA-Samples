@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 
-import {QiBoundaryType, QiRestService} from '../qi.rest.service'
-import {QiType, QiStream, QiTypeProperty, QiTypeCode, QiStreamBehavior, QiStreamMode, QiView, QiViewProperty, QiViewMap} from '../qi.rest.service'
+import { QiBoundaryType, QiRestService } from '../qi.rest.service'
+import { QiType, QiStream, QiTypeProperty, QiTypeCode, QiStreamBehavior,
+  QiStreamMode, QiView, QiViewProperty, QiViewMap} from '../qi.rest.service'
 
 const streamId = 'WaveDataStream';
 const typeId = 'WaveDataType';
-const targetTypeId = "WaveDataTargetType"
-const targetIntTypeId = "WaveDataTargetIntType"
-const autoViewId = "WaveDataAutoView"
-const manualViewId = "WaveDataManualView"
+const targetTypeId = 'WaveDataTargetType'
+const targetIntTypeId = 'WaveDataTargetIntType';
+const autoViewId = 'WaveDataAutoView';
+const manualViewId = 'WaveDataManualView';
 const behaviorId = 'SampleBehavior';
 
 class  WaveData {
@@ -235,8 +236,8 @@ export class DatasrcComponent {
   buildAutoView() {
         const autoView = new QiView();
         autoView.Id = autoViewId;
-        autoView.Name = "WaveData_AutoView";
-        autoView.Description = "This view uses Qi Types of the same shape and will map automatically."
+        autoView.Name = 'WaveData_AutoView';
+        autoView.Description = 'This view uses Qi Types of the same shape and will map automatically.'
         autoView.SourceTypeId = typeId;
         autoView.TargetTypeId = targetTypeId;
         return autoView;
@@ -245,8 +246,8 @@ export class DatasrcComponent {
   buildManualView() {
         const manualView = new QiView();
         manualView.Id = manualViewId;
-        manualView.Name = "WaveData_AutoView";
-        manualView.Description = "This view uses Qi Types of different shapes, mappings are made explicitly with QiViewProperties."
+        manualView.Name = 'WaveData_AutoView';
+        manualView.Description = 'This view uses Qi Types of different shapes, mappings are made explicitly with QiViewProperties.'
         manualView.SourceTypeId = typeId;
         manualView.TargetTypeId = targetIntTypeId;
 
@@ -265,12 +266,13 @@ export class DatasrcComponent {
         const viewProperty3 = new QiViewProperty();
         viewProperty3.SourceId = 'Tanh';
         viewProperty3.TargetId = 'TanhInt';
-        
+
         manualView.Properties = [viewProperty0, viewProperty1, viewProperty2, viewProperty3];
         return manualView;
-  }   
+  }
+
   newWaveDataEvent(order: number, range: number, multiplier: number) {
-    const radians = 2 * Math.PI/ multiplier;
+    const radians = 2 * Math.PI / multiplier;
 
     const waveData = new WaveData();
     waveData.Order = order;
@@ -301,12 +303,12 @@ export class DatasrcComponent {
     this.stream.Id = streamId;
     this.stream.TypeId = typeId;
     this.qiService.createStream(this.stream)
-      .subscribe(res => {
-      this.button2Message = res.status;
-    },
+    .subscribe(res => {
+        this.button2Message = res.status;
+      },
       err => {
         this.button2Message = err;
-      });;
+      });
   }
 
   writeSingleWaveDataEvent() {
@@ -346,7 +348,7 @@ export class DatasrcComponent {
       });
   }
 
-  updateWaveDataEvents(){    
+  updateWaveDataEvents() {
     const list: Array<WaveData> = [];
     for (let i = 0; i < 40; i += 2) {
       list.push(this.newWaveDataEvent(i, 2.5, 5));
@@ -359,7 +361,7 @@ export class DatasrcComponent {
     });
   }
 
-  replaceWaveDataEvents(){    
+  replaceWaveDataEvents() {
     const list: Array<WaveData> = [];
     for (let i = 0; i < 40; i += 2) {
       list.push(this.newWaveDataEvent(i, 1.5, 10));
@@ -467,8 +469,8 @@ export class DatasrcComponent {
   }
 
   createTagsAndMetadata() {
-    var tags = [ "waves", "periodic", "2018", "validated" ];
-    var metadata = {Region: "North America", Country: "Canada", Province: "Quebec"};
+    const tags = [ 'waves', 'periodic', '2018', 'validated' ];
+    const metadata = {Region: 'North America', Country: 'Canada', Province: 'Quebec'};
     this.qiService.createTags(streamId, tags)
     .subscribe(res => {
       this.button16Message = res.status;
@@ -489,12 +491,12 @@ export class DatasrcComponent {
     this.qiService.getTags(streamId)
       .map(res => res.json())
       .subscribe(res => {
-        var tags = res as Array<string>;
-        var result = "Tags associated with " + streamId + ": "        
-        for(var i = 0; i < tags.length; i++)
-        {
-          result += (tags[i] + ", ")
+        const tags = res as Array<string>;
+        let result = 'Tags associated with ' + streamId + ': ';
+        for (let i = 0; i < tags.length; i++) {
+          result += (tags[i] + ', ');
         }
+
         this.button17Message = result;
     },
       err => {
@@ -505,7 +507,7 @@ export class DatasrcComponent {
   getAndPrintMetadata() {
     this.qiService.getMetadata(streamId)
       .map(res => res.json())
-      .subscribe(res => {        
+      .subscribe(res => {
         this.metadataMap = res as Map<string, string>;
         this.hasMetadata = true;
     },
@@ -515,21 +517,19 @@ export class DatasrcComponent {
   }
 
   searchForQiStream() {
-    this.qiService.getStreams("periodic")
+    this.qiService.getStreams('periodic')
       .map(res => res.json())
       .subscribe(res => {
-        var result = "Streams associated with 'periodic': "
-        var streams = res as Array<QiStream>;
-        if(streams.length > 0){
-        for(var i = 0; i < streams.length; i++){
-          result += (streams[i].Id.toString() + " ")
+        let result = 'Streams associated with "periodic": ';
+        const streams = res as Array<QiStream>;
+        if (streams.length > 0) {
+          for (let i = 0; i < streams.length; i++) {
+            result += (streams[i].Id.toString() + ' ')
+          }
+          this.button19Message = result;
+        } else {
+          this.button19Message = 'No results found, search indexing can take up to 15 seconds, please try your request again.';
         }
-        this.button19Message = result;
-      }
-      else
-      {
-        this.button19Message = "No results found, search indexing can take up to 15 seconds, please try your request again."        
-      }
     },
       err => {
         this.button19Message = err;
@@ -537,7 +537,7 @@ export class DatasrcComponent {
   }
 
   deleteAllValues() {
-    this.qiService.deleteWindowValues(streamId, "0", "200")
+    this.qiService.deleteWindowValues(streamId, '0', '200')
       .subscribe(res => {
         this.button13Message = res.status;
     },
@@ -558,6 +558,6 @@ export class DatasrcComponent {
       this.qiService.deleteBehavior(behaviorId).subscribe();
     });
     this.hasEvents = false;
-    this.button12Message = "All Objects Deleted"
+    this.button12Message = 'All Objects Deleted'
   }
 }
