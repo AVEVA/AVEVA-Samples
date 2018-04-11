@@ -31,16 +31,14 @@ Edit the following values in the src/app/app.component.ts file:
 
 :: 
 
-    const config: IQiConfigSet = {
-        Subscription: 'REPLACE_WITH_AZURE_SUBSCRIPTION',
-        ClientID: 'REPLACE_WITH_APPLICATION_ID',
-        SystemEndpoint: 'REPLACE_WITH_SYSTEM_ENDPOINT',
-        SystemResourceURI: 'REPLACE_WITH_SYSTEM_RESOURCE_URI',
-        QiEndPoint: 'REPLACE_WITH_QI_ENDPOINT',
-        QiResourceURI: 'REPLACE_WITH_QI_RESOURCE_URI',
-        TenantId: 'REPLACE_WITH_TENANT_ID',
-        NamespaceId: 'REPLACE_WITH_NAMESPACE'
-    } 
+        const config: IQiConfigSet = {
+            ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
+            QiEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
+            QiResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
+            TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
+            NamespaceId: 'REPLACE_WITH_NAMESPACE'
+        };
+
 
 The application relies on the OAuth2 implicit grant flow.  Upon navigating to the webpage, users will be prompted to login to Azure Active Directory. 
 In addition to these credentials, the application must be configured to allow for token retrieval on the user's behalf.  Once this is 
