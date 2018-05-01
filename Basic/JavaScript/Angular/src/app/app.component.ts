@@ -2,18 +2,15 @@ import { Component } from '@angular/core';
 
 import { AdalService } from './adal/adal.service'
 import { ConfigurationService, IQiConfigSet } from './osiconfiguration.service'
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 const config: IQiConfigSet = {
-  Subscription: 'REPLACE_WITH_AZURE_SUBSCRIPTION',
-  ClientID: 'REPLACE_WITH_APPLICATION_ID',
-  SystemEndpoint: 'REPLACE_WITH_SYSTEM_ENDPOINT',
-  SystemResourceURI: 'REPLACE_WITH_SYSTEM_RESOURCE_URI',
-  QiEndPoint: 'REPLACE_WITH_QI_ENDPOINT',
-  QiResourceURI: 'REPLACE_WITH_QI_RESOURCE_URI',
-  TenantId: 'REPLACE_WITH_TENANT_ID',
+  ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
+  QiEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
+  QiResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
+  TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
   NamespaceId: 'REPLACE_WITH_NAMESPACE'
-} 
+};
 
 @Component({
   selector: 'app-root',
