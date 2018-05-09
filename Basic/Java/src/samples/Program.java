@@ -17,54 +17,53 @@ public class Program {
     // get configuration
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
-    static String qiServerUrl = getConfiguration("qiServerUrl");	
+    static String sdsServerUrl = getConfiguration("sdsServerUrl");	
 	
     // id strings
     static String sampleTypeId = "WaveData_SampleType";
     static String targetTypeId = "WaveData_SampleTargetType";
     static String integerTargetTypeId = "WaveData_SampleIntegerTargetType";
     static String sampleStreamId = "WaveData_SampleStream";
-    static String sampleBehaviorId = "WaveData_SampleBehavior";  
     static String sampleViewId = "WaveData_SampleView";
     static String sampleManualViewId = "WaveData_SampleManualView";
     
     
     public static void main(String[] args) throws InterruptedException {
     	
-        // Create Qi client to communicate with server
+        // Create Sds client to communicate with server
     	System.out.println("---------------------------------------------------");
-        System.out.println("________  .__     ____.                   ");
-        System.out.println("\\_____  \\ |__|   |    |____ ___  _______   ");
-        System.out.println(" /  / \\  \\|  |   |    \\__  \\\\  \\/ /\\__  \\  ");
-        System.out.println("/   \\_/.  \\  /\\__|    |/ __ \\\\   /  / __ \\_");
-        System.out.println("\\_____\\ \\_/__\\________(____  /\\_/  (____  /");
-        System.out.println("       \\__>                \\/           \\/ ");
+        System.out.println("  _________    .___          ____.                    ");
+        System.out.println(" /   _____/  __| _/______   |    |____ ___  _______   ");
+        System.out.println(" \\_____  \\  / __ |/  ___/   |    \\__  \\\\  \\/ /\\__  \\  ");
+        System.out.println(" /        \\/ /_/ |\\___ \\/\\__|    |/ __ \\\\   /  / __ \\_");
+        System.out.println("/_______  /\\____ /____  >________(____  /\\_/  (____  /");
+        System.out.println("        \\/      \\/    \\/              \\/           \\/ ");
         System.out.println("---------------------------------------------------");
         
-        String server = qiServerUrl + "/";
-        QiClient qiclient = new QiClient(server);
-        System.out.println("Qi endpoint at " + server);
+        String server = sdsServerUrl + "/";
+        SdsClient sdsclient = new SdsClient(server);
+        System.out.println("Sds endpoint at " + server);
         System.out.println();
 
         try { 	          	
-            // create a QiType
-        	System.out.println("Creating a QiType");
-            QiType sampleType = getWaveDataType(sampleTypeId);
-            String jsonType = qiclient.createType(tenantId, namespaceId, sampleType);
-            sampleType = qiclient.mGson.fromJson(jsonType, QiType.class);
+            // create a SdsType
+        	System.out.println("Creating a SdsType");
+            SdsType sampleType = getWaveDataType(sampleTypeId);
+            String jsonType = sdsclient.createType(tenantId, namespaceId, sampleType);
+            sampleType = sdsclient.mGson.fromJson(jsonType, SdsType.class);
             
-            //create a QiStream
-            System.out.println("Creating a QiStream");
-            QiStream sampleStream = new QiStream(sampleStreamId, sampleTypeId);
-            String jsonStream = qiclient.createStream(tenantId, namespaceId, sampleStream);
-            sampleStream = qiclient.mGson.fromJson(jsonStream, QiStream.class);	
+            //create a SdsStream
+            System.out.println("Creating a SdsStream");
+            SdsStream sampleStream = new SdsStream(sampleStreamId, sampleTypeId);
+            String jsonStream = sdsclient.createStream(tenantId, namespaceId, sampleStream);
+            sampleStream = sdsclient.mGson.fromJson(jsonStream, SdsStream.class);	
             
             // insert data
             System.out.println("Inserting data");
             
             // insert a single event
             WaveData evt = WaveData.next(1, 2.0, 0);
-            qiclient.insertValue(tenantId, namespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
+            sdsclient.insertValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
 
             // insert a list of events
             List<WaveData> events = new ArrayList<WaveData>();
@@ -73,20 +72,20 @@ public class Program {
                 events.add(evt);
                 Thread.sleep(10);
             	}
-            qiclient.insertValues(tenantId, namespaceId, sampleStreamId, qiclient.mGson.toJson(events));
+            sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(events));
             
             // get the last value in stream
             System.out.println("Getting latest event");
-            String jsonSingleValue = qiclient.getLastValue(tenantId, namespaceId, sampleStreamId);
-            WaveData data = qiclient.mGson.fromJson(jsonSingleValue, WaveData.class);
+            String jsonSingleValue = sdsclient.getLastValue(tenantId, namespaceId, sampleStreamId);
+            WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
             System.out.println(data.toString());
             System.out.println();
             
             // get all values
             System.out.println("Getting all events");            
-            String jsonMultipleValues = qiclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "20");
+            String jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "20");
             Type listType = new TypeToken<ArrayList<WaveData>>() {}.getType(); // necessary for gson to decode list of WaveData, represents ArrayList<WaveData> type
-            ArrayList<WaveData> foundEvents = qiclient.mGson.fromJson(jsonMultipleValues, listType);
+            ArrayList<WaveData> foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
@@ -94,7 +93,7 @@ public class Program {
             // update the first value
             System.out.println("Updating events");
             evt = WaveData.next(1, 1.0, 0);
-            qiclient.updateValue(tenantId, namespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
+            sdsclient.updateValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
 
             // update existing values and add 10 new values using update
             List<WaveData> newEvents = new ArrayList<WaveData>();
@@ -104,12 +103,12 @@ public class Program {
                 newEvents.add(newEvt);
                 Thread.sleep(10); // sleep for a bit because WaveData.radians is based on clock
             }
-            qiclient.updateValues(tenantId, namespaceId, sampleStreamId, qiclient.mGson.toJson(newEvents));
+            sdsclient.updateValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvents));
 
             // retrieve values
             System.out.println("Getting updated events");
-            jsonMultipleValues = qiclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "40");
-            foundEvents = qiclient.mGson.fromJson(jsonMultipleValues, listType);
+            jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "40");
+            foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
@@ -117,7 +116,7 @@ public class Program {
             // replace the first value
             System.out.println("Replacing events");
             evt = WaveData.next(1, 0.5, 0);
-            qiclient.replaceValue(tenantId, namespaceId, sampleStreamId, qiclient.mGson.toJson(evt));
+            sdsclient.replaceValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
 
             // replace the remaining values
             newEvents = new ArrayList<WaveData>();
@@ -126,136 +125,138 @@ public class Program {
                 newEvents.add(newEvt);
                 Thread.sleep(10);
             }
-            qiclient.replaceValues(tenantId, namespaceId, sampleStreamId, qiclient.mGson.toJson(newEvents));
+            sdsclient.replaceValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvents));
 
             // retrieve values again to see replaced values
             System.out.println("Getting replaced events");
-            jsonMultipleValues = qiclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "40");
-            foundEvents = qiclient.mGson.fromJson(jsonMultipleValues, listType);
+            jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "40");
+            foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
             
-   		 	// QiStreamBehaviors 
-            System.out.println("QiStreamBehaviors determine whether Qi interpolates or extrapolates data at the requested index location");
+   		 	// Interpolation
+            System.out.println("Interpolation");
+            System.out.println("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
             System.out.println();
    		 	listType = new TypeToken<ArrayList<WaveData>>() {}.getType(); 
-   		 	jsonMultipleValues = qiclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
-   		 	foundEvents = qiclient.mGson.fromJson(jsonMultipleValues, listType);
+   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
+   		 	foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
          
-   		 	System.out.println("Default (Continuous) stream behavior, requesting data starting at index location '1', Qi will interpolate this value:");
+   		 	System.out.println("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:");
    		 	for (WaveData evnt : foundEvents) {
-   		 		System.out.println("Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians());
+   		 		System.out.println("Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
    		 	}
    		 	System.out.println();
          
-   		 	// create a stream behavior with Discrete and attach it to the existing stream
-   		 	QiStreamBehavior behavior = new QiStreamBehavior();
-   		 	behavior.setId(sampleBehaviorId);
-   		 	behavior.setMode(QiStreamMode.Discrete);
-   		 	String behaviorString = qiclient.createBehavior(tenantId, namespaceId, behavior);
-   		 	behavior = qiclient.mGson.fromJson(behaviorString, QiStreamBehavior.class);
-   		 	sampleStream.setBehaviorId(sampleBehaviorId);
-   		 	qiclient.updateStream(tenantId, namespaceId, sampleStreamId, sampleStream);
+   		 	// Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
+   		 	SdsStreamPropertyOverride propertyOverride = new SdsStreamPropertyOverride();
+   		 	propertyOverride.setSdsTypePropertyId("Radians");
+   		 	propertyOverride.setInterpolationModeOverride(SdsInterpolationMode.Discrete);
+   		 	List<SdsStreamPropertyOverride> propertyOverrides = new ArrayList<SdsStreamPropertyOverride>();
+   		 	propertyOverrides.add(propertyOverride);
+   		 	sampleStream.setPropertyOverrides(propertyOverrides);
+   		 	sdsclient.updateStream(tenantId, namespaceId, sampleStreamId, sampleStream);
 
    		 	// repeat the retrieval
-   		 	jsonMultipleValues = qiclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated);
-   		 	foundEvents = qiclient.mGson.fromJson(jsonMultipleValues, listType);
-   		 	System.out.println("Discrete stream behavior, Qi does not interpolate and returns the data starting at the next index location containing data:");
+   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
+   		 	foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
+   		    System.out.println("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
+   		    System.out.println("Sds will now return the default value for the data type:");
    		 	for (WaveData evnt : foundEvents) {
-   		 		System.out.println("Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians());
+   		 		System.out.println("Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
    		 	}
    		 	System.out.println();
          
-   		 	// QiViews 
-   		 	System.out.println("QiViews"); 
+   		 	// SdsViews 
+   		 	System.out.println("SdsViews"); 
    		 	System.out.println("Here is some of our data as it is stored on the server:");
    		 	for (WaveData evnt : foundEvents) {
    		 		System.out.println("Sin: " + evnt.getSin() + ", Cos: " + evnt.getCos() + ", Tan" + evnt.getTan());            
    		 	}
    		 	System.out.println();
          
-   		 	// create target QiTypes         
-   		 	QiType targetType = getWaveDataTargetType(targetTypeId);
-   		 	String jsonTargetType = qiclient.createType(tenantId, namespaceId, targetType);
-   		 	targetType = qiclient.mGson.fromJson(jsonTargetType, QiType.class);         
-   		 	QiType targetIntegerType = getWaveDataTargetIntegerType(integerTargetTypeId);
-   		 	String jsonTargetIntegerType = qiclient.createType(tenantId, namespaceId, targetIntegerType);
-   		 	targetIntegerType = qiclient.mGson.fromJson(jsonTargetIntegerType, QiType.class);
+   		 	// create target SdsTypes         
+   		 	SdsType targetType = getWaveDataTargetType(targetTypeId);
+   		 	String jsonTargetType = sdsclient.createType(tenantId, namespaceId, targetType);
+   		 	targetType = sdsclient.mGson.fromJson(jsonTargetType, SdsType.class);         
+   		 	SdsType targetIntegerType = getWaveDataTargetIntegerType(integerTargetTypeId);
+   		 	String jsonTargetIntegerType = sdsclient.createType(tenantId, namespaceId, targetIntegerType);
+   		 	targetIntegerType = sdsclient.mGson.fromJson(jsonTargetIntegerType, SdsType.class);
          
-   		 	// create a QiView
-   		 	QiView autoView = new QiView();
+   		 	// create a SdsView
+   		 	SdsView autoView = new SdsView();
    		 	autoView.setId(sampleViewId);
    		 	autoView.setName("SampleAutoView");
    		 	autoView.setDescription("This is a view mapping SampleType to SampleTargetType");
    		 	autoView.setSourceTypeId(sampleTypeId);
    		 	autoView.setTargetTypeId(targetTypeId);
-   		 	String jsonAutoView = qiclient.createView(tenantId, namespaceId, autoView);
-   		 	autoView = qiclient.mGson.fromJson(jsonAutoView, QiView.class);
+   		 	String jsonAutoView = sdsclient.createView(tenantId, namespaceId, autoView);
+   		 	autoView = sdsclient.mGson.fromJson(jsonAutoView, SdsView.class);
                   
-   		 	// create QiViewProperties
-   		 	QiViewProperty vp1 = new QiViewProperty();
+   		 	// create SdsViewProperties
+   		 	SdsViewProperty vp1 = new SdsViewProperty();
    		 	vp1.setSourceId("Order");
    		 	vp1.setTargetId("OrderTarget");
          
-   		 	QiViewProperty vp2 = new QiViewProperty();
+   		 	SdsViewProperty vp2 = new SdsViewProperty();
    		 	vp2.setSourceId("Sin");
    		 	vp2.setTargetId("SinInt");
          
-   		 	QiViewProperty vp3 = new QiViewProperty();
+   		 	SdsViewProperty vp3 = new SdsViewProperty();
    		 	vp3.setSourceId("Cos");
    		 	vp3.setTargetId("CosInt");
          
-   		 	QiViewProperty vp4 = new QiViewProperty();
+   		 	SdsViewProperty vp4 = new SdsViewProperty();
    		 	vp4.setSourceId("Tan");
    		 	vp4.setTargetId("TanInt");
          
-   		 	QiViewProperty[] props = {vp1,vp2,vp3,vp4};
+   		 	SdsViewProperty[] props = {vp1,vp2,vp3,vp4};
          
-   		 	// create a QiView with explicit QiViewProperties         
-   		 	QiView manualView = new QiView();
+   		 	// create a SdsView with explicit SdsViewProperties         
+   		 	SdsView manualView = new SdsView();
    		 	manualView.setId(sampleManualViewId);
    		 	manualView.setName("SampleManualView");
    		 	manualView.setDescription("This is a view mapping SampleType to SampleTargetType");
    		 	manualView.setSourceTypeId(sampleTypeId);
    		 	manualView.setTargetTypeId(integerTargetTypeId);
    		 	manualView.setProperties(props);
-   		 	String jsonManualView = qiclient.createView(tenantId, namespaceId, manualView);
-   		 	manualView = qiclient.mGson.fromJson(jsonManualView, QiView.class);
+   		 	String jsonManualView = sdsclient.createView(tenantId, namespaceId, manualView);
+   		 	manualView = sdsclient.mGson.fromJson(jsonManualView, SdsView.class);
          
-   		 	// range values with automatically mapped QiView
-   		 	System.out.println("Specifying a view with a QiType of the same shape returns values that are automatically mapped to the target QiType's properties:");
+   		 	// range values with automatically mapped SdsView
+   		 	System.out.println("Specifying a view with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
    		 	Type targetListType = new TypeToken<ArrayList<WaveDataTarget>>() {}.getType(); 
-   		 	jsonMultipleValues = qiclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated, sampleViewId);
-   		 	ArrayList<WaveDataTarget> foundTargetEvents = qiclient.mGson.fromJson(jsonMultipleValues, targetListType);
+   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleViewId);
+   		 	ArrayList<WaveDataTarget> foundTargetEvents = sdsclient.mGson.fromJson(jsonMultipleValues, targetListType);
    		 	for (WaveDataTarget evnt : foundTargetEvents) {
    		 		System.out.println("SinTarget: " + evnt.getSinTarget() + ", CosTarget: " + evnt.getCosTarget() + ", TanTarget: " + evnt.getTanTarget());            
    		 	}
    		 	System.out.println();
 
-   		 	// range values with manually mapped QiView
-   		 	System.out.println("QiViews can also convert certain types of data, here we return integers where the original values were doubles:");
+   		 	// range values with manually mapped SdsView
+   		 	System.out.println("SdsViews can also convert certain types of data, here we return integers where the original values were doubles:");
    		 	Type integerListType = new TypeToken<ArrayList<WaveDataInteger>>() {}.getType(); 
-   		 	jsonMultipleValues = qiclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, QiBoundaryType.ExactOrCalculated, sampleManualViewId);
-   		 	ArrayList<WaveDataInteger> foundIntegerEvents = qiclient.mGson.fromJson(jsonMultipleValues, integerListType);
+   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleManualViewId);
+   		 	ArrayList<WaveDataInteger> foundIntegerEvents = sdsclient.mGson.fromJson(jsonMultipleValues, integerListType);
    		 	for (WaveDataInteger evnt : foundIntegerEvents) {
    		 		System.out.println("SinInt: " + evnt.getSinInt() + ", CosInt: " + evnt.getCosInt() + ", TanInt: " + evnt.getTanInt());            
    		 	}
    		 	System.out.println();
          
-   		 	// QiViewMaps
-   		 	System.out.println("We can query Qi to return the QiViewMap for our QiView, here is the one generated automatically:");
-   		 	Type qiViewType = new TypeToken<QiViewMap>() {}.getType(); 
-   		 	String jsonViewMap = qiclient.getViewMap(tenantId, namespaceId, sampleViewId);
-   		 	QiViewMap viewMap = qiclient.mGson.fromJson(jsonViewMap, qiViewType);
-   		 	dumpQiViewMap(viewMap);
+   		 	// SdsViewMaps
+   		 	System.out.println("We can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:");
+   		 	Type sdsViewType = new TypeToken<SdsViewMap>() {}.getType(); 
+   		 	String jsonViewMap = sdsclient.getViewMap(tenantId, namespaceId, sampleViewId);
+   		 	SdsViewMap viewMap = sdsclient.mGson.fromJson(jsonViewMap, sdsViewType);
+   		 	dumpSdsViewMap(viewMap);
    		 	System.out.println();
          
-   		 	System.out.println("Here is our explicit mapping, note QiViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
-   		 	qiViewType = new TypeToken<QiViewMap>() {}.getType(); 
-   		 	jsonViewMap = qiclient.getViewMap(tenantId, namespaceId, sampleManualViewId);
-   		 	viewMap = qiclient.mGson.fromJson(jsonViewMap, qiViewType);
-   		 	dumpQiViewMap(viewMap);
+   		 	System.out.println("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
+   		 	sdsViewType = new TypeToken<SdsViewMap>() {}.getType(); 
+   		 	jsonViewMap = sdsclient.getViewMap(tenantId, namespaceId, sampleManualViewId);
+   		 	viewMap = sdsclient.mGson.fromJson(jsonViewMap, sdsViewType);
+   		 	dumpSdsViewMap(viewMap);
    		 	System.out.println();
          
    		 	// tags, metadata and search
@@ -273,20 +274,20 @@ public class Program {
    		    metadata.put("Country", "Canada");
    		    metadata.put("Province", "Quebec");
    		    
-   		    qiclient.updateTags(tenantId, namespaceId, sampleStreamId, tags);
-   		    qiclient.updateMetadata(tenantId, namespaceId, sampleStreamId, metadata);
+   		    sdsclient.updateTags(tenantId, namespaceId, sampleStreamId, tags);
+   		    sdsclient.updateMetadata(tenantId, namespaceId, sampleStreamId, metadata);
    		    
    		    System.out.println("Tags now associated with " + sampleStreamId);
-   		    tags = qiclient.getTags(tenantId, namespaceId, sampleStreamId);
+   		    tags = sdsclient.getTags(tenantId, namespaceId, sampleStreamId);
    		    
    		    for (String tag: tags) {
 		 		System.out.println(tag);
 		 	}   		    
    		    System.out.println();
    		 	
-   		    String region = qiclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Region");
-   		    String country = qiclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Country"); 
-   		    String province =  qiclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Province");
+   		    String region = sdsclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Region");
+   		    String country = sdsclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Country"); 
+   		    String province =  sdsclient.getMetadata(tenantId, namespaceId, sampleStreamId, "Province");
    		    
    		    System.out.println("Metadata now associated with " + sampleStreamId);
    		    System.out.println("Metadata key Region: " + region);
@@ -301,9 +302,9 @@ public class Program {
    		 	
    		 	System.out.println("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
 
-   		 	ArrayList<QiStream> streams = qiclient.getStreams(tenantId, namespaceId, "periodic", "0", "100");
+   		 	ArrayList<SdsStream> streams = sdsclient.getStreams(tenantId, namespaceId, "periodic", "0", "100");
    		 	
-   		 	for (QiStream stream: streams) {
+   		 	for (SdsStream stream: streams) {
    		 		System.out.println("Found stream associated with 'periodic' with Id: " + stream.getId());
    		 	}
    		 	System.out.println();
@@ -311,15 +312,15 @@ public class Program {
    		    // delete data
    		 	
    		 	// remove the first value
-   		 	System.out.println("Deleting values from the QiStream");
-   		 	qiclient.removeValue(tenantId, namespaceId, sampleStreamId, "0");
+   		 	System.out.println("Deleting values from the SdsStream");
+   		 	sdsclient.removeValue(tenantId, namespaceId, sampleStreamId, "0");
 
    		 	// remove remaining values
-   		 	qiclient.removeWindowValues(tenantId, namespaceId, sampleStreamId, "2", "40");
+   		 	sdsclient.removeWindowValues(tenantId, namespaceId, sampleStreamId, "2", "40");
 
    		 	// retrieve values to check deletion
-   		 	jsonMultipleValues = qiclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "200");
-   		 	foundEvents = qiclient.mGson.fromJson(jsonMultipleValues, listType);
+   		 	jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "200");
+   		 	foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
    		 	if(foundEvents.isEmpty())
    		 		System.out.println("All values deleted successfully!"); 	
 
@@ -328,176 +329,176 @@ public class Program {
         } finally {
             try {
                 System.out.println("Cleaning up");          
-                cleanUp(qiclient);
+                cleanUp(sdsclient);
                 System.out.println("done");
             } catch (Exception e) {
-                printError("Error deleting the Qi Objects", e);
+                printError("Error deleting the Sds Objects", e);
             }
         }
     }
 
     /**
-     * Returns the WaveData QiType for the sample
+     * Returns the WaveData SdsType for the sample
      *
      * @param sampleTypeId - the id for the type
-     * @return WaveData QiType
+     * @return WaveData SdsType
      */
-    private static QiType getWaveDataType(String sampleTypeId) {
-        QiType intType = new QiType();
+    private static SdsType getWaveDataType(String sampleTypeId) {
+        SdsType intType = new SdsType();
         intType.setId("intType");
-        intType.setQiTypeCode(QiTypeCode.Int32);
+        intType.setSdsTypeCode(SdsTypeCode.Int32);
 
-        QiType doubleType = new QiType();
+        SdsType doubleType = new SdsType();
         doubleType.setId("doubleType");
-        doubleType.setQiTypeCode(QiTypeCode.Double);
+        doubleType.setSdsTypeCode(SdsTypeCode.Double);
 
-        QiTypeProperty orderProperty = new QiTypeProperty();
+        SdsTypeProperty orderProperty = new SdsTypeProperty();
         orderProperty.setId("Order");
-        orderProperty.setQiType(intType);
+        orderProperty.setSdsType(intType);
         orderProperty.setIsKey(true);
 
-        QiTypeProperty tauProperty = new QiTypeProperty();
+        SdsTypeProperty tauProperty = new SdsTypeProperty();
         tauProperty.setId("Tau");
-        tauProperty.setQiType(doubleType);
+        tauProperty.setSdsType(doubleType);
 
-        QiTypeProperty radiansProperty = new QiTypeProperty();
+        SdsTypeProperty radiansProperty = new SdsTypeProperty();
         radiansProperty.setId("Radians");
-        radiansProperty.setQiType(doubleType);
+        radiansProperty.setSdsType(doubleType);
 
-        QiTypeProperty sinProperty = new QiTypeProperty();
+        SdsTypeProperty sinProperty = new SdsTypeProperty();
         sinProperty.setId("Sin");
-        sinProperty.setQiType(doubleType);
+        sinProperty.setSdsType(doubleType);
 
-        QiTypeProperty cosProperty = new QiTypeProperty();
+        SdsTypeProperty cosProperty = new SdsTypeProperty();
         cosProperty.setId("Cos");
-        cosProperty.setQiType(doubleType);
+        cosProperty.setSdsType(doubleType);
 
-        QiTypeProperty tanProperty = new QiTypeProperty();
+        SdsTypeProperty tanProperty = new SdsTypeProperty();
         tanProperty.setId("Tan");
-        tanProperty.setQiType(doubleType);
+        tanProperty.setSdsType(doubleType);
 
-        QiTypeProperty sinhProperty = new QiTypeProperty();
+        SdsTypeProperty sinhProperty = new SdsTypeProperty();
         sinhProperty.setId("Sinh");
-        sinhProperty.setQiType(doubleType);
+        sinhProperty.setSdsType(doubleType);
 
-        QiTypeProperty coshProperty = new QiTypeProperty();
+        SdsTypeProperty coshProperty = new SdsTypeProperty();
         coshProperty.setId("cosh");
-        coshProperty.setQiType(doubleType);
+        coshProperty.setSdsType(doubleType);
 
-        QiTypeProperty tanhProperty = new QiTypeProperty();
+        SdsTypeProperty tanhProperty = new SdsTypeProperty();
         tanhProperty.setId("Tanh");
-        tanhProperty.setQiType(doubleType);
+        tanhProperty.setSdsType(doubleType);
 
-        // Create a QiType for our WaveData class; the metadata properties are the ones we just created
-        QiType type = new QiType();
+        // Create a SdsType for our WaveData class; the metadata properties are the ones we just created
+        SdsType type = new SdsType();
         type.setId(sampleTypeId);
         type.setName("WaveDataTypeJ");
-        QiTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty};
+        SdsTypeProperty[] props = {orderProperty, tauProperty, radiansProperty, sinProperty, cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty};
         type.setProperties(props);
-        type.setQiTypeCode(QiTypeCode.Object);
+        type.setSdsTypeCode(SdsTypeCode.Object);
 
         return type;
     }
     
     /**
-     * Returns the WaveDataTarget QiType for the sample
+     * Returns the WaveDataTarget SdsType for the sample
      *
      * @param sampleTypeId - the id for the type
-     * @return WaveDataTarget QiType
+     * @return WaveDataTarget SdsType
      */
-    private static QiType getWaveDataTargetType(String sampleTypeId) {
-        QiType intType = new QiType();
+    private static SdsType getWaveDataTargetType(String sampleTypeId) {
+        SdsType intType = new SdsType();
         intType.setId("intType");
-        intType.setQiTypeCode(QiTypeCode.Int32);
+        intType.setSdsTypeCode(SdsTypeCode.Int32);
 
-        QiType doubleType = new QiType();
+        SdsType doubleType = new SdsType();
         doubleType.setId("doubleType");
-        doubleType.setQiTypeCode(QiTypeCode.Double);
+        doubleType.setSdsTypeCode(SdsTypeCode.Double);
 
-        QiTypeProperty orderTargetProperty = new QiTypeProperty();
+        SdsTypeProperty orderTargetProperty = new SdsTypeProperty();
         orderTargetProperty.setId("OrderTarget");
-        orderTargetProperty.setQiType(intType);
+        orderTargetProperty.setSdsType(intType);
         orderTargetProperty.setIsKey(true);
 
-        QiTypeProperty tauTargetProperty = new QiTypeProperty();
+        SdsTypeProperty tauTargetProperty = new SdsTypeProperty();
         tauTargetProperty.setId("TauTarget");
-        tauTargetProperty.setQiType(doubleType);
+        tauTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty radiansTargetProperty = new QiTypeProperty();
+        SdsTypeProperty radiansTargetProperty = new SdsTypeProperty();
         radiansTargetProperty.setId("RadiansTarget");
-        radiansTargetProperty.setQiType(doubleType);
+        radiansTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty sinTargetProperty = new QiTypeProperty();
+        SdsTypeProperty sinTargetProperty = new SdsTypeProperty();
         sinTargetProperty.setId("SinTarget");
-        sinTargetProperty.setQiType(doubleType);
+        sinTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty cosTargetProperty = new QiTypeProperty();
+        SdsTypeProperty cosTargetProperty = new SdsTypeProperty();
         cosTargetProperty.setId("CosTarget");
-        cosTargetProperty.setQiType(doubleType);
+        cosTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty tanTargetProperty = new QiTypeProperty();
+        SdsTypeProperty tanTargetProperty = new SdsTypeProperty();
         tanTargetProperty.setId("TanTarget");
-        tanTargetProperty.setQiType(doubleType);
+        tanTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty sinhTargetProperty = new QiTypeProperty();
+        SdsTypeProperty sinhTargetProperty = new SdsTypeProperty();
         sinhTargetProperty.setId("SinhTarget");
-        sinhTargetProperty.setQiType(doubleType);
+        sinhTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty coshTargetProperty = new QiTypeProperty();
+        SdsTypeProperty coshTargetProperty = new SdsTypeProperty();
         coshTargetProperty.setId("CoshTarget");
-        coshTargetProperty.setQiType(doubleType);
+        coshTargetProperty.setSdsType(doubleType);
 
-        QiTypeProperty tanhTargetProperty = new QiTypeProperty();
+        SdsTypeProperty tanhTargetProperty = new SdsTypeProperty();
         tanhTargetProperty.setId("TanhTarget");
-        tanhTargetProperty.setQiType(doubleType);
+        tanhTargetProperty.setSdsType(doubleType);
 
-        // Create a QiType for our WaveData class; the metadata properties are the ones we just created
-        QiType type = new QiType();
+        // Create a SdsType for our WaveData class; the metadata properties are the ones we just created
+        SdsType type = new SdsType();
         type.setId(sampleTypeId);
         type.setName("WaveDataTypeJ");
-        QiTypeProperty[] props = {orderTargetProperty, tauTargetProperty, radiansTargetProperty, sinTargetProperty, cosTargetProperty, tanTargetProperty, sinhTargetProperty, coshTargetProperty, tanhTargetProperty};
+        SdsTypeProperty[] props = {orderTargetProperty, tauTargetProperty, radiansTargetProperty, sinTargetProperty, cosTargetProperty, tanTargetProperty, sinhTargetProperty, coshTargetProperty, tanhTargetProperty};
         type.setProperties(props);
-        type.setQiTypeCode(QiTypeCode.Object);
+        type.setSdsTypeCode(SdsTypeCode.Object);
 
         return type;
     	
     }
 
     /**
-     * Returns the WaveDataInteger QiType for the sample
+     * Returns the WaveDataInteger SdsType for the sample
      *
      * @param sampleTypeId - the id for the type
-     * @return WaveDataInteger QiType
+     * @return WaveDataInteger SdsType
      */    
-    private static QiType getWaveDataTargetIntegerType(String sampleTypeId) {
-        QiType intType = new QiType();
+    private static SdsType getWaveDataTargetIntegerType(String sampleTypeId) {
+        SdsType intType = new SdsType();
         intType.setId("intType");
-        intType.setQiTypeCode(QiTypeCode.Int32);
+        intType.setSdsTypeCode(SdsTypeCode.Int32);
 
-        QiTypeProperty orderTargetProperty = new QiTypeProperty();
+        SdsTypeProperty orderTargetProperty = new SdsTypeProperty();
         orderTargetProperty.setId("OrderTarget");
-        orderTargetProperty.setQiType(intType);
+        orderTargetProperty.setSdsType(intType);
         orderTargetProperty.setIsKey(true);
 
-        QiTypeProperty sinIntProperty = new QiTypeProperty();
+        SdsTypeProperty sinIntProperty = new SdsTypeProperty();
         sinIntProperty.setId("SinInt");
-        sinIntProperty.setQiType(intType);
+        sinIntProperty.setSdsType(intType);
 
-        QiTypeProperty cosIntProperty = new QiTypeProperty();
+        SdsTypeProperty cosIntProperty = new SdsTypeProperty();
         cosIntProperty.setId("CosInt");
-        cosIntProperty.setQiType(intType);
+        cosIntProperty.setSdsType(intType);
 
-        QiTypeProperty tanIntProperty = new QiTypeProperty();
+        SdsTypeProperty tanIntProperty = new SdsTypeProperty();
         tanIntProperty.setId("TanInt");
-        tanIntProperty.setQiType(intType);
+        tanIntProperty.setSdsType(intType);
         
-        // Create a QiType for our WaveData class; the metadata properties are the ones we just created
-        QiType type = new QiType();
+        // Create a SdsType for our WaveData class; the metadata properties are the ones we just created
+        SdsType type = new SdsType();
         type.setId(sampleTypeId);
         type.setName("WaveDataTypeJ");
-        QiTypeProperty[] props = {orderTargetProperty, sinIntProperty, cosIntProperty, tanIntProperty};
+        SdsTypeProperty[] props = {orderTargetProperty, sinIntProperty, cosIntProperty, tanIntProperty};
         type.setProperties(props);
-        type.setQiTypeCode(QiTypeCode.Object);
+        type.setSdsTypeCode(SdsTypeCode.Object);
 
         return type;
     }
@@ -520,8 +521,8 @@ public class Program {
         }
     }
     
-    private static void dumpQiViewMap(QiViewMap qiViewMap) { 
-        for (QiViewProperty prop : qiViewMap.getProperties()) {
+    private static void dumpSdsViewMap(SdsViewMap sdsViewMap) { 
+        for (SdsViewProperty prop : sdsViewMap.getProperties()) {
             if(prop.getTargetId() != null)
            	 System.out.println(prop.getSourceId() + " => " + prop.getTargetId());
             else
@@ -546,18 +547,16 @@ public class Program {
         return property;
     }
 	
-    public static void cleanUp(QiClient qiclient) throws QiError 
+    public static void cleanUp(SdsClient sdsclient) throws SdsError 
 	{
 		System.out.println("Deleting the stream");
-        qiclient.deleteStream(tenantId, namespaceId, sampleStreamId);
-        System.out.println("Deleting the types");
-        qiclient.deleteType(tenantId, namespaceId, sampleTypeId);
-        qiclient.deleteType(tenantId, namespaceId, targetTypeId);
-        qiclient.deleteType(tenantId, namespaceId, integerTargetTypeId);
-        System.out.println("Deleting the behavior");
-        qiclient.deleteBehavior(tenantId, namespaceId, sampleBehaviorId);
+        sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
         System.out.println("Deleting the views");
-        qiclient.deleteView(tenantId, namespaceId, sampleViewId);
-        qiclient.deleteView(tenantId, namespaceId, sampleManualViewId);        
+        sdsclient.deleteView(tenantId, namespaceId, sampleViewId);
+        sdsclient.deleteView(tenantId, namespaceId, sampleManualViewId);        
+        System.out.println("Deleting the types");
+        sdsclient.deleteType(tenantId, namespaceId, sampleTypeId);
+        sdsclient.deleteType(tenantId, namespaceId, targetTypeId);
+        sdsclient.deleteType(tenantId, namespaceId, integerTargetTypeId);
 	};
 }
