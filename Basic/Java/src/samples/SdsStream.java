@@ -7,6 +7,8 @@ public class SdsStream {
     private String Name;
     private String Description;
     private String TypeId;
+    private SdsInterpolationMode InterpolationMode;
+    private SdsStreamExtrapolation ExtrapolationMode;
     private List<SdsStreamPropertyOverride> PropertyOverrides;
     private List<SdsTypeProperty> Properties;
 
@@ -53,6 +55,22 @@ public class SdsStream {
 
     public void setTypeId(String typeId) {
         TypeId = typeId;
+    }
+
+    public SdsInterpolationMode getInterpolationMode() {
+        return InterpolationMode;
+    }
+
+    public void setInterpolationMode(SdsInterpolationMode interpolationMode) {
+        InterpolationMode = interpolationMode;
+    }
+
+    public SdsStreamExtrapolation getExtrapolationMode() {
+        return ExtrapolationMode;
+    }
+
+    public void setExtrapolationMode(SdsStreamExtrapolation extrapolationMode) {
+        ExtrapolationMode = extrapolationMode;
     }
 
     public List<SdsStreamPropertyOverride> getPropertyOverrides() {
