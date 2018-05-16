@@ -32,6 +32,7 @@ class SdsStream(object):
     def TypeId(self, typeId):
         self.__typeId = typeId
 
+		
     @property
     def PropertyOverrides(self):
         return self.__propertyOverrides
@@ -44,7 +45,22 @@ class SdsStream(object):
         return self.__indexes 
     @Indexes.setter
     def Indexes(self, indexes):
-        self.__indexes = indexes 
+
+        self.__indexes = indexes
+
+    @property
+    def InterpolationMode(self):
+        return self.__interpolationMode
+    @InterpolationMode.setter
+    def InterpolationMode(self, interpolationMode):
+        self.__interpolationMode = interpolationMode
+
+    @property
+    def ExtrapolationMode(self):
+        return self.__extrapolationMode
+    @ExtrapolationMode.setter
+    def ExtrapolationMode(self, extrapolationMode):
+        self.__extrapolationMode = extrapolationMode
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -60,6 +76,12 @@ class SdsStream(object):
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
 
+        if hasattr(self, 'InterpolationMode'):
+            dictionary['InterpolationMode'] = self.InterpolationMode
+
+        if hasattr(self, 'ExtrapolationMode'):
+            dictionary['ExtrapolationMode'] = self.ExtrapolationMode
+            
         if hasattr(self, 'PropertyOverrides'):
             dictionary['PropertyOverrides'] = []
             for value in self.PropertyOverrides:
@@ -92,16 +114,24 @@ class SdsStream(object):
         if 'Description' in content:
             stream.Description = content['Description']
 
+        if 'InterpolationMode' in content:
+            stream.InterpolationMode = content['InterpolationMode']
+
+        if 'ExtrapolationMode' in content:
+            stream.ExtrapolationMode = content['ExtrapolationMode']
+
         if 'TypeId' in content:
             stream.TypeId = content['TypeId']
- 
+
+        
         if 'PropertyOverrides' in content:
             propertyOverrides = content['PropertyOverrides']
             if propertyOverrides is not None and len(propertyOverrides) > 0:
                 stream.PropertyOverrides = []
                 for value in propertyOverrides:
                     stream.PropertyOverrides.append(SdsStreamPropertyOverride.fromDictionary(value))
-           
+
+            
         if 'Indexes' in content:
             indexes = content['Indexes']
             if indexes is not None and len(indexes) > 0:
