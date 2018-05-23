@@ -5,11 +5,12 @@ import { ConfigurationService, IQiConfigSet } from './osiconfiguration.service'
 import { Router } from '@angular/router';
 
 const config: IQiConfigSet = {
-  ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
-  QiEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
-  QiResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
-  TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
-  NamespaceId: 'REPLACE_WITH_NAMESPACE'
+  ClientID: 'bfe32ce8-4237-48ef-8898-f64b65a5ab3c',
+  // QiEndPoint: 'https://historianmain.osipi.com',
+  QiEndPoint: 'https://historiandev2.osipi.com',
+  QiResourceURI: 'https://pihomemain.onmicrosoft.com/ocsapi',
+  TenantId: 'a445ee81-2b91-4806-883b-1dc673d59147',
+  NamespaceId: 'jakeTest'
 };
 
 @Component({
