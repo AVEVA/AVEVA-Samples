@@ -125,7 +125,7 @@ export class AuthHttp {
                                                             });
                 }
              } else {
-                authenticatedCall =  Observable.throw(new Error('User Not Authenticated.'));
+                authenticatedCall =  Observable.throwError(new Error('User Not Authenticated.'));
              }
         } else {
             authenticatedCall = this.http.request(url, options).map(this.extractData).catch(this.handleError);
@@ -154,6 +154,6 @@ export class AuthHttp {
         const errMsg = error.message || 'Server error';
         console.error(JSON.stringify(error)); // log to console instead
 
-        return Observable.throw(error);
+        return Observable.throwError(error);
     }
 }
