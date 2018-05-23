@@ -1298,7 +1298,7 @@ export class AuthenticationContext {
 
                 adalFrame = document.getElementsByTagName('body')[0].appendChild(ifr) as HTMLElement;
             } else if (document.body && document.body.insertAdjacentHTML) {
-                document.body.insertAdjacentHTML('beforeEnd', '<iframe name="'
+                document.body.insertAdjacentHTML('beforeend', '<iframe name="'
                   + iframeId + '" id="' + iframeId + '" style="display:none" sandbox="allow-popups"></iframe>');
             }
             if (window.frames && window.frames[iframeId]) {
