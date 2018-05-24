@@ -8,9 +8,9 @@ import { QiRestService } from './qi.rest.service';
 import { AuthHttp } from './adal/authHttp.service';
 import { DatasrcComponent } from './datasrc/datasrc.component';
 import { routing, appRoutingProviders  } from './app.routing';
-import { HttpModule } from '@angular/http';
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {AuthInterceptor} from "./adal/authInterceptor";
+import {OptionInterceptor} from "./adal/optionInterceptor";
 
 @NgModule({
   declarations: [
@@ -21,7 +21,6 @@ import {AuthInterceptor} from "./adal/authInterceptor";
     BrowserModule,
     NgbModule.forRoot(),
     routing,
-    HttpModule,
     HttpClientModule
   ],
   providers: [
@@ -31,10 +30,16 @@ import {AuthInterceptor} from "./adal/authInterceptor";
     QiRestService,
     AuthHttp,
     {
+        provide: HTTP_INTERCEPTORS,
+        useClass: OptionInterceptor,
+        multi: true
+    },
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     }
+
   ],
   bootstrap: [AppComponent]
 })

@@ -4,7 +4,7 @@ import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest} from '@angular/com
 import { Observable } from 'rxjs';
 import {AdalService} from "./adal.service";
 
-/** Pass untouched request through to the next request handler. */
+/** Append ADAL Authentication Headers to Outbound Requests */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
@@ -32,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (!req.headers.has('Authorization')) {
                     req = req.clone({
                         setHeaders: {
-                            Authorization: `Bearer ${tokenStored}`
+                            'Authorization': `Bearer ${tokenStored}`
                         }
                     });
                 }
@@ -41,8 +41,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 return Observable.throwError('User not authenticated');
             }
         } else {
-            // TODO How to handle this?
-            console.log(`ADAL resource for endpoint ${req.url} is null or undefined`);
+           return Observable.throwError(`ADAL resource for endpoint ${req.url} is null or undefined`);
         }
 
         return next.handle(req);

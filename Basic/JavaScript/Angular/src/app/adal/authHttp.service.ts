@@ -5,155 +5,60 @@
  * @license MIT
  */
 import {Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptionsArgs, RequestOptions, RequestMethod, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/mergeMap';
 
-import {AdalService} from './adal.service';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
+
+type HttpClientOptions = {
+    headers?: HttpHeaders,
+    observe: 'response',
+    params?: HttpParams,
+    reportProgress?: boolean,
+    responseType?: 'json',
+    withCredentials?: boolean,
+}
 
 @Injectable()
 export class AuthHttp {
     constructor
     (
-        private http: Http,
-        private adalService: AdalService
+        private http: HttpClient,
     ) {
     }
 
-    get(url: string, options?: RequestOptionsArgs): Observable<any> {
-        const acceptheader = new Headers({ 'Accept': 'application/json;q=0.9' });
-        let options1 = new RequestOptions({ method: RequestMethod.Get, headers: acceptheader });
-        options1 = options1.merge(options);
-        return this.sendRequest(url, options1);
-    }
-
-    post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
-
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        let options1 = new RequestOptions({ method: RequestMethod.Post, headers: headers });
-
-        if (body != null) {
-            options1.body = body;
-        }
-        options1 = options1.merge(options);
-        return this.sendRequest(url, options1);
-    }
-
-    delete(url: string, options?: RequestOptionsArgs): Observable<any> {
-        const acceptheader = new Headers({'Accept': 'application/json'});
-        let options1 = new RequestOptions({ method: RequestMethod.Delete, headers: acceptheader });
-        options1 = options1.merge(options);
-        return this.sendRequest(url, options1);
-    }
-
-
-    patch(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        let options1 = new RequestOptions({ method: RequestMethod.Patch, headers: headers });
-
-        if (body != null) {
-            options1.body = body;
-        }
-        options1 = options1.merge(options);
-        return this.sendRequest(url, options1);
-    }
-
-    put(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
-
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        let options1 = new RequestOptions({ method: RequestMethod.Put, headers: headers });
-
-        if (body != null) {
-          options1.body = body;
-        }
-        options1 = options1.merge(options);
-        return this.sendRequest(url, options1);
-    }
-
-    head(url: string, options?: RequestOptionsArgs): Observable<any> {
-        let options1 = new RequestOptions({ method: RequestMethod.Put });
-        options1 = options1.merge(options);
-        return this.sendRequest(url, options1);
-    }
-
-    private sendRequest(url: string, options: RequestOptionsArgs): Observable<any> {
-        const options1 = new RequestOptions();
-        options1.method = options.method;
-
-        if (options.search != null) {
-            options1.search = new URLSearchParams(options.search.toString()).clone();
-        }
-        if (options.body != null) {
-            options1.body = options.body ;
+    private coerceObserve(options: HttpClientOptions) {
+        if (!options) {
+            options = {
+                observe: 'response'
+            } as HttpClientOptions
         }
 
-
-        if (options.headers != null) {
-            options1.headers = new Headers(options.headers.toJSON());
-        }
-
-        const resource = this.adalService.GetResourceForEndpoint(url);
-        let authenticatedCall: Observable<any>;
-
-         if (resource) {
-             if (this.adalService.userInfo.isAuthenticated) {
-
-                const tokenstored = this.adalService.getCachedToken(resource);
-                if (tokenstored) {
-                    if (options1.headers == null) {
-                            options1.headers = new Headers();
-                    }
-
-                    options1.headers.append('Authorization', 'Bearer ' + tokenstored);
-                        return this.http.request(url, options1)
-                            .catch(this.handleError);
-                } else {
-                    authenticatedCall = this.adalService.acquireToken(resource)
-                                                        .flatMap( (token: string) => {
-                                                                    console.log(token);
-
-                                                                    if (options1.headers == null) {
-                                                                        options1.headers = new Headers();
-                                                                    }
-
-                                                                    options1.headers.append('Authorization', 'Bearer ' + token);
-                                                                    return this.http.request(url, options1).catch(this.handleError);
-                                                            });
-                }
-             } else {
-                authenticatedCall =  Observable.throwError(new Error('User Not Authenticated.'));
-             }
-        } else {
-            authenticatedCall = this.http.request(url, options).map(this.extractData).catch(this.handleError);
-        }
-
-        return authenticatedCall;
+        return options;
     }
 
-    private extractData(res: Response) {
-        if (res.status < 200 || res.status >= 300) {
-            throw new Error('Bad response status: ' + res.status);
-        }
-
-        let body = {};
-        // if there is some content, parse it
-        if (res.status !== 204 ) {
-            body = res.json();
-        }
-
-        return body || {};
+    head (url: string, options?: HttpClientOptions): Observable<HttpResponse<Object>> {
+        return this.http.head(url, this.coerceObserve(options));
     }
 
-    private handleError(error: any) {
-        // debugger;
-        // In a real world app, we might send the error to remote logging infrastructure
-        const errMsg = error.message || 'Server error';
-        console.error(JSON.stringify(error)); // log to console instead
-
-        return Observable.throwError(error);
+    get(url: string, options?: HttpClientOptions): Observable<HttpResponse<Object>> {
+        return this.http.get(url, this.coerceObserve(options));
     }
+
+    delete(url: string, options?: HttpClientOptions) : Observable<HttpResponse<Object>> {
+        return this.http.delete(url, this.coerceObserve(options));
+    }
+
+    post(url: string, body: any, options?: HttpClientOptions ): Observable<HttpResponse<Object>> {
+        return this.http.post(url, body, this.coerceObserve(options));
+    }
+
+    patch(url: string, body: any, options?: HttpClientOptions): Observable<HttpResponse<Object>> {
+        return this.http.patch(url, body, this.coerceObserve(options));
+    }
+
+    put (url: string, body: any, options?: HttpClientOptions): Observable<HttpResponse<Object>> {
+        return this.http.put(url, body, this.coerceObserve(options));
+    }
+
 }
