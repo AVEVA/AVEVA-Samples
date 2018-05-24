@@ -7,7 +7,7 @@ import {of as observableOf, Observable} from 'rxjs';
  * @license MIT
  */
 import {Injectable} from '@angular/core';
-import {Router, NavigationStart } from '@angular/router';
+import {NavigationStart } from '@angular/router';
 import 'rxjs/Rx';
 import 'rxjs/Observable'
 import {AuthenticationContext, AdalConfig, AdalUser} from './adaljs';
