@@ -1,3 +1,5 @@
+
+import {timeout} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest} from '@angular/common/http';
 
@@ -18,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 let tokenStored = this.adalService.getCachedToken(resource);
 
                 if (!tokenStored) {
-                    this.adalService.acquireToken(resource).timeout(5000)
+                    this.adalService.acquireToken(resource).pipe(timeout(5000))
                         .subscribe(
                             (token: string) => {
                             console.log(`Token Acquired: ${token}`);

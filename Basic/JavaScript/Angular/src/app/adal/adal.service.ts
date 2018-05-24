@@ -1,3 +1,5 @@
+
+import {of as observableOf, Observable} from 'rxjs';
 /**
  * angular2-adal - Use Azure AD Library - ADAL in Angular 2
  * @version v0.1.4
@@ -7,7 +9,6 @@
 import {Injectable} from '@angular/core';
 import {Router, NavigationStart } from '@angular/router';
 import 'rxjs/Rx';
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/Observable'
 import {AuthenticationContext, AdalConfig, AdalUser} from './adaljs';
 import {OAuthData} from './oauthdata.model';
@@ -128,7 +129,7 @@ export class AdalService {
             }
         }
 
-        return Observable.of(isHash);
+        return observableOf(isHash);
     }
 
     public getCachedToken(resource: string): string {
