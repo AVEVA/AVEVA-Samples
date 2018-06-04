@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular4sample": {
+    "angular6sample": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -48,18 +48,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular4sample:build"
+            "browserTarget": "angular6sample:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular4sample:build:production"
+              "browserTarget": "angular6sample:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular4sample:build"
+            "browserTarget": "angular6sample:build"
           }
         },
         "test": {
@@ -91,7 +91,7 @@
         }
       }
     },
-    "angular4sample-e2e": {
+    "angular6sample-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -100,7 +100,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "angular4sample:serve"
+            "devServerTarget": "angular6sample:serve"
           }
         },
         "lint": {
@@ -115,7 +115,7 @@
       }
     }
   },
-  "defaultProject": "angular4sample",
+  "defaultProject": "angular6sample",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

@@ -4,7 +4,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigurationService } from './osiconfiguration.service';
 import { AdalService } from './adal/adal.service';
 import { AppComponent } from './app.component';
-import { QiRestService } from './qi.rest.service';
+import { SdsRestService } from './sds.rest.service';
 import { AuthHttp } from './adal/authHttp.service';
 import { DatasrcComponent } from './datasrc/datasrc.component';
 import { routing, appRoutingProviders  } from './app.routing';
@@ -27,7 +27,7 @@ import {OptionInterceptor} from "./adal/optionInterceptor";
     ConfigurationService,
     appRoutingProviders,
     AdalService,
-    QiRestService,
+    SdsRestService,
     AuthHttp,
     {
         provide: HTTP_INTERCEPTORS,

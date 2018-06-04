@@ -7,23 +7,23 @@ import { ConfigurationService } from './osiconfiguration.service';
 import {HttpHeaders} from "@angular/common/http";
 
 
-export class QiStream {
+export class SdsStream {
   Id: string;
   Name: string;
   Description: string;
   TypeId: string;
-  BehaviorId: string;
+  PropertyOverrides: SdsStreamPropertyOverride[];
 }
 
-export class QiType {
+export class SdsType {
   Id: string;
   Name: string;
   Description: string;
-  QiTypeCode: QiTypeCode;
-  Properties: QiTypeProperty[];
+  SdsTypeCode: SdsTypeCode;
+  Properties: SdsTypeProperty[];
 }
 
-export enum QiTypeCode {
+export enum SdsTypeCode {
   Empty = 0,
   Object = 1,
   DBNull = 2,
@@ -48,201 +48,191 @@ export enum QiTypeCode {
   Version = 22
 }
 
-export enum QiStreamMode {
+export enum SdsStreamMode {
   Continuous = 0,
   StepWiseContinuousLeading = 1,
   StepwiseContinuousTrailing = 2,
   Discrete = 3
 }
 
-export class QiStreamBehavior {
-  Id: string;
-  Name: string;
-  Mode: QiStreamMode;
+export class SdsStreamPropertyOverride {
+  SdsTypePropertyId: string;
+  Uom: string;
+  InterpolationMode: SdsStreamMode;
 }
 
 
-export class QiTypeProperty {
+export class SdsTypeProperty {
   Id: string;
   Name: string;
   Description: string;
-  QiType: QiType;
+  SdsType: SdsType;
   IsKey: boolean;
 }
 
-export enum QiBoundaryType {
+export enum SdsBoundaryType {
   Exact = 0,
   Inside = 1,
   Outside = 2,
   ExactOrCalculated = 3
 }
 
-export class QiView {
+export class SdsView {
   Id: string;
   Name: string;
   Description: string;
   SourceTypeId: string;
   TargetTypeId: string;
-  Properties: QiViewProperty[];
+  Properties: SdsViewProperty[];
 }
 
-export class QiViewProperty {
+export class SdsViewProperty {
   SourceId: string;
   TargetId: string;
-  QiView: QiView;
+  SdsView: SdsView;
 }
 
-export class QiViewMap {
+export class SdsViewMap {
   SourceTypeId: string;
   TargetTypeId: string;
-  Properties: QiViewProperty[];
+  Properties: SdsViewProperty[];
 }
 
 @Injectable()
-export class QiRestService {
-  qiUrl: string;
-  qiResource: string;
+export class SdsRestService {
+  sdsUrl: string;
+  sdsResource: string;
   tenantId: string;
   namespaceId: string;
 
   constructor(private authHttp: AuthHttp,
               private configService: ConfigurationService
               ) {
-    this.qiUrl = configService.AmbientConfiguration.QiEndPoint;
-    this.qiResource = configService.AmbientConfiguration.QiResourceURI;
+    this.sdsUrl = configService.AmbientConfiguration.SdsEndPoint;
+    this.sdsResource = configService.AmbientConfiguration.SdsResourceURI;
     this.tenantId = configService.AmbientConfiguration.TenantId;
     this.namespaceId = configService.AmbientConfiguration.NamespaceId;
   }
 
-  createStream(qiStream: QiStream): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${qiStream.Id}`;
-    return this.authHttp.post(url, JSON.stringify(qiStream).toString());
+  createStream(sdsStream: SdsStream): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
+    return this.authHttp.post(url, JSON.stringify(sdsStream).toString());
   }
 
-  updateStream(qiStream: QiStream): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${qiStream.Id}`;
-    return this.authHttp.put(url, JSON.stringify(qiStream).toString());
+  updateStream(sdsStream: SdsStream): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
+    return this.authHttp.put(url, JSON.stringify(sdsStream).toString());
   }
 
   getStreams(query: string): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
     return this.authHttp.get(url);
   }
 
 
   deleteStream(streamId: string): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
     return this.authHttp.delete(url);
   }
 
   createTags(streamId: string, tags: string[]): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Tags`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Tags`;
     return this.authHttp.put(url, JSON.stringify(tags).toString());
   }
 
   createMetadata(streamId: string, metadata: object): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
     return this.authHttp.put(url, JSON.stringify(metadata).toString());
   }
 
   getTags(streamId: string): Observable<any> {
-    const url = this.qiUrl +
+    const url = this.sdsUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Tags`;
     return this.authHttp.get(url);
   }
 
   getMetadata(streamId: string): Observable<any> {
-    const url = this.qiUrl +
+    const url = this.sdsUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Metadata`;
     return this.authHttp.get(url);
   }
 
   getLastValue(streamId: string): Observable<any> {
-    const url = this.qiUrl +
+    const url = this.sdsUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/GetlastValue`;
     return this.authHttp.get(url);
   }
 
-  getRangeValues(streamId: string, start, count, boundary: QiBoundaryType, viewId: string = ''): Observable<any> {
-    const url = this.qiUrl +
+  getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, viewId: string = ''): Observable<any> {
+    const url = this.sdsUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&viewId=${viewId}`;
     return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control','no-cache')});
   }
 
-  createType(qiType: QiType): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${qiType.Id}`;
-    return this.authHttp.post(url, JSON.stringify(qiType).toString());
+  createType(sdsType: SdsType): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${sdsType.Id}`;
+    return this.authHttp.post(url, JSON.stringify(sdsType).toString());
   }
 
   deleteType(typeId: string): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${typeId}`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${typeId}`;
     return this.authHttp.delete(url);
   }
 
   insertValue(streamId: string, event: any) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
     return this.authHttp.post(url, JSON.stringify(event).toString());
   }
 
   insertValues(streamId: string, events: Array<any>) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
     return this.authHttp.post(url, JSON.stringify(events).toString());
   }
 
   updateValue(streamId: string, event: any) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
     return this.authHttp.put(url, JSON.stringify(event).toString());
   }
 
   updateValues(streamId: string, events: Array<any>) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
   replaceValue(streamId: string, event: any) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
     return this.authHttp.put(url, JSON.stringify(event).toString());
   }
 
   replaceValues(streamId: string, events: Array<any>) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
-  createBehavior(behavior: QiStreamBehavior) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Behaviors/${behavior.Id}`;
-    return this.authHttp.post(url, JSON.stringify(behavior).toString());
-  }
-
-  deleteBehavior(behaviorId: string) {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Behaviors/${behaviorId}`;
-    return this.authHttp.delete(url);
-  }
-
-  createView(qiView: QiView): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${qiView.Id}`;
-    return this.authHttp.post(url, JSON.stringify(qiView).toString());
+  createView(sdsView: SdsView): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${sdsView.Id}`;
+    return this.authHttp.post(url, JSON.stringify(sdsView).toString());
   }
 
   deleteView(viewId: string): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}`;
     return this.authHttp.delete(url);
   }
 
   getViewMap(viewId: string): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}/Map`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}/Map`;
     return this.authHttp.get(url);
   }
 
   deleteValue(streamId: string, index): Observable<any> {
-    const url = this.qiUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
     return this.authHttp.delete(url);
   }
 
   deleteWindowValues(streamId: string, start, end):Observable<any> {
-    const url = this.qiUrl +
+    const url = this.sdsUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
     return this.authHttp.delete(url);

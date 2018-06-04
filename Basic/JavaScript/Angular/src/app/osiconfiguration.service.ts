@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { AdalConfig } from './adal/adaljs'
 
 
-export interface IQiConfigSet {
+export interface ISdsConfigSet {
   ClientID: string;
-  QiEndPoint: string;
-  QiResourceURI: string;
+  SdsEndPoint: string;
+  SdsResourceURI: string;
   TenantId: string;
   NamespaceId: string;
 }
@@ -14,25 +14,25 @@ export interface IQiConfigSet {
 @Injectable()
 export class ConfigurationService {
 
-  private ambientConfiguration: IQiConfigSet = null;
+  private ambientConfiguration: ISdsConfigSet = null;
 
 
-  public get AmbientConfiguration(): IQiConfigSet {
+  public get AmbientConfiguration(): ISdsConfigSet {
         return this.ambientConfiguration;
     }
 
-  public set  AmbientConfiguration(subscription: IQiConfigSet){
+  public set  AmbientConfiguration(subscription: ISdsConfigSet){
     this.ambientConfiguration = subscription;
   }
 
   public get adalConfig(): AdalConfig {
 
-    const config: IQiConfigSet = this.ambientConfiguration;
+    const config: ISdsConfigSet = this.ambientConfiguration;
 
     return {
          tenant: 'common',
          clientId: config.ClientID,
-         endpoints: [ { endpointURL: config.QiEndPoint, endpointResourceURI : config.QiResourceURI },
+         endpoints: [ { endpointURL: config.SdsEndPoint, endpointResourceURI : config.SdsResourceURI },
                     ],
 
          redirectUri: window.location.origin + '/',

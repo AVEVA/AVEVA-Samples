@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 
 import { AdalService } from './adal/adal.service'
-import { ConfigurationService, IQiConfigSet } from './osiconfiguration.service'
+import { ConfigurationService, ISdsConfigSet } from './osiconfiguration.service'
 import { Router } from '@angular/router';
 
-const config: IQiConfigSet = {
+const config: ISdsConfigSet = {
     ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
-    QiEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
-    QiResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
+    SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
+    SdsResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
     TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
     NamespaceId: 'REPLACE_WITH_NAMESPACE'
 };
