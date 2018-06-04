@@ -3,10 +3,11 @@ import { Component } from '@angular/core';
 import { QiBoundaryType, QiRestService } from '../qi.rest.service'
 import { QiType, QiStream, QiTypeProperty, QiTypeCode, QiStreamBehavior,
   QiStreamMode, QiView, QiViewProperty, QiViewMap} from '../qi.rest.service'
+import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 
 const streamId = 'WaveDataStream';
 const typeId = 'WaveDataType';
-const targetTypeId = 'WaveDataTargetType'
+const targetTypeId = 'WaveDataTargetType';
 const targetIntTypeId = 'WaveDataTargetIntType';
 const autoViewId = 'WaveDataAutoView';
 const manualViewId = 'WaveDataManualView';
@@ -237,7 +238,7 @@ export class DatasrcComponent {
         const autoView = new QiView();
         autoView.Id = autoViewId;
         autoView.Name = 'WaveData_AutoView';
-        autoView.Description = 'This view uses Qi Types of the same shape and will map automatically.'
+        autoView.Description = 'This view uses Qi Types of the same shape and will map automatically.';
         autoView.SourceTypeId = typeId;
         autoView.TargetTypeId = targetTypeId;
         return autoView;
@@ -247,7 +248,7 @@ export class DatasrcComponent {
         const manualView = new QiView();
         manualView.Id = manualViewId;
         manualView.Name = 'WaveData_AutoView';
-        manualView.Description = 'This view uses Qi Types of different shapes, mappings are made explicitly with QiViewProperties.'
+        manualView.Description = 'This view uses Qi Types of different shapes, mappings are made explicitly with QiViewProperties.';
         manualView.SourceTypeId = typeId;
         manualView.TargetTypeId = targetIntTypeId;
 
@@ -291,10 +292,10 @@ export class DatasrcComponent {
   createType() {
     const type = this.buildWaveDataType();
     this.qiService.createType(type).subscribe(res => {
-      this.button1Message = res.status;
+      this.button1Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button1Message = err;
+      this.button1Message = this.unhealthyResponseMessage(err);
     });
   }
 
@@ -304,19 +305,19 @@ export class DatasrcComponent {
     this.stream.TypeId = typeId;
     this.qiService.createStream(this.stream)
     .subscribe(res => {
-        this.button2Message = res.status;
+        this.button2Message = this.healthyResponseMessage(res);
       },
       err => {
-        this.button2Message = err;
+        this.button2Message = this.unhealthyResponseMessage(err);
       });
   }
 
   writeSingleWaveDataEvent() {
     this.qiService.insertValue(streamId, this.newWaveDataEvent(0, 2.5, 2)).subscribe(res => {
-      this.button3Message = res.status;
+      this.button3Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button3Message = err;
+      this.button3Message = this.unhealthyResponseMessage(err);
     });
   }
 
@@ -327,24 +328,23 @@ export class DatasrcComponent {
     }
 
     this.qiService.insertValues(streamId, list).subscribe(res => {
-      this.button3Message = res.status;
+      this.button3Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button3Message = err;
+      this.button3Message = this.unhealthyResponseMessage(err);
     });
   }
 
   retrieveWaveDataEvents() {
     this.hasEvents = false;
     this.qiService.getRangeValues(streamId, '1', 40, QiBoundaryType.ExactOrCalculated)
-      .map(res => res.json())
       .subscribe(res => {
-        this.events = res as WaveData[];
+        this.events = res.body as WaveData[];
         this.hasEvents = true;
         this.button4Message = `Found ${this.events.length} events`
       },
       err => {
-        this.button4Message = err;
+        this.button4Message = this.unhealthyResponseMessage(err);
       });
   }
 
@@ -354,10 +354,10 @@ export class DatasrcComponent {
       list.push(this.newWaveDataEvent(i, 2.5, 5));
     }
     this.qiService.updateValues(streamId, list).subscribe(res => {
-      this.button14Message = res.status;
+      this.button14Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button14Message = err;
+      this.button14Message = this.unhealthyResponseMessage(err);
     });
   }
 
@@ -367,10 +367,10 @@ export class DatasrcComponent {
       list.push(this.newWaveDataEvent(i, 1.5, 10));
     }
     this.qiService.replaceValues(streamId, list).subscribe(res => {
-      this.button15Message = res.status;
+      this.button15Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button15Message = err;
+      this.button15Message = this.unhealthyResponseMessage(err);
     });
   }
 
@@ -382,10 +382,10 @@ export class DatasrcComponent {
     this.qiService.createBehavior(behavior).subscribe(() => {
       this.stream.BehaviorId = behaviorId;
       this.qiService.updateStream(this.stream).subscribe(res => {
-        this.button5Message = res.status;
+        this.button5Message = this.healthyResponseMessage(res);
       },
       err => {
-        this.button5Message = err;
+        this.button5Message = this.unhealthyResponseMessage(err);
       });
     })
   }
@@ -393,78 +393,75 @@ export class DatasrcComponent {
   createAutoviewTargetType() {
     const type = this.buildWaveDataTargetType();
     this.qiService.createType(type).subscribe(res => {
-      this.button6Message = res.status;
+      this.button6Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button6Message = err;
+      this.button6Message = this.unhealthyResponseMessage(err);
     });
   }
 
   createAutoview() {
     const view = this.buildAutoView();
     this.qiService.createView(view).subscribe(res => {
-      this.button7Message = res.status;
+      this.button7Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button7Message = err;
+      this.button7Message = this.unhealthyResponseMessage(err);
     });
   }
 
   retrieveWaveDataEventsAutoview() {
     this.hasView1Events = false;
     this.qiService.getRangeValues(streamId, '1', 5, QiBoundaryType.ExactOrCalculated, autoViewId)
-      .map(res => res.json())
       .subscribe(res => {
-        this.targetEvents = res as WaveDataTarget[];
+        this.targetEvents = res.body as WaveDataTarget[];
         this.hasView1Events = true;
         this.button8Message = `Found ${this.targetEvents.length} events`
       },
       err => {
-        this.button8Message = err;
+        this.button8Message = this.unhealthyResponseMessage(err);
       });
   }
 
   createQiViewPropertiesAndManualType() {
     const type = this.buildWaveDataIntegerType();
     this.qiService.createType(type).subscribe(res => {
-      this.button9Message = res.status;
+      this.button9Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button9Message = err;
+      this.button9Message = this.unhealthyResponseMessage(err);
     });
     const view = this.buildManualView();
     this.qiService.createView(view).subscribe(res => {
-      this.button9Message = res.status;
+      this.button9Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button9Message = err;
+      this.button9Message = this.unhealthyResponseMessage(err);
     });
   }
 
   retrieveWaveDataEventsManualview() {
     this.hasView2Events = false;
     this.qiService.getRangeValues(streamId, '3', 5, QiBoundaryType.ExactOrCalculated, manualViewId)
-      .map(res => res.json())
       .subscribe(res => {
-        this.integerEvents = res as WaveDataInteger[];
+        this.integerEvents = res.body as WaveDataInteger[];
         this.hasView2Events = true;
         this.button10Message = `Found ${this.integerEvents.length} events`
       },
       err => {
-        this.button10Message = err;
+        this.button10Message = this.unhealthyResponseMessage(err);
       });
   }
 
   getQiViewMap() {
     this.qiService.getViewMap(manualViewId)
-      .map(res => res.json())
       .subscribe(res => {
-        this.viewMap = res as QiViewMap;
+        this.viewMap = res.body as QiViewMap;
         this.hasMapProperties = true;
       this.button11Message = `QiViewMap`
     },
       err => {
-        this.button11Message = err;
+        this.button11Message = this.unhealthyResponseMessage(err);
       });
   }
 
@@ -473,25 +470,24 @@ export class DatasrcComponent {
     const metadata = {Region: 'North America', Country: 'Canada', Province: 'Quebec'};
     this.qiService.createTags(streamId, tags)
     .subscribe(res => {
-      this.button16Message = res.status;
+      this.button16Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button16Message = err;
+      this.button16Message = this.unhealthyResponseMessage(err);
     });
     this.qiService.createMetadata(streamId, metadata)
     .subscribe(res => {
-      this.button16Message = res.status;
+      this.button16Message = this.healthyResponseMessage(res);
     },
     err => {
-      this.button16Message = err;
+      this.button16Message = this.unhealthyResponseMessage(err);
     });
   }
 
   getAndPrintTags() {
     this.qiService.getTags(streamId)
-      .map(res => res.json())
       .subscribe(res => {
-        const tags = res as Array<string>;
+        const tags = res.body as Array<string>;
         let result = 'Tags associated with ' + streamId + ': ';
         for (let i = 0; i < tags.length; i++) {
           result += (tags[i] + ', ');
@@ -500,28 +496,26 @@ export class DatasrcComponent {
         this.button17Message = result;
     },
       err => {
-        this.button17Message = err;
+        this.button17Message = this.unhealthyResponseMessage(err);
       });
   }
 
   getAndPrintMetadata() {
     this.qiService.getMetadata(streamId)
-      .map(res => res.json())
       .subscribe(res => {
-        this.metadataMap = res as Map<string, string>;
+        this.metadataMap = res.body as Map<string, string>;
         this.hasMetadata = true;
     },
       err => {
-        this.button18Message = err;
+        this.button18Message = this.unhealthyResponseMessage(err);
       });
   }
 
   searchForQiStream() {
     this.qiService.getStreams('periodic')
-      .map(res => res.json())
       .subscribe(res => {
         let result = 'Streams associated with "periodic": ';
-        const streams = res as Array<QiStream>;
+        const streams = res.body as Array<QiStream>;
         if (streams.length > 0) {
           for (let i = 0; i < streams.length; i++) {
             result += (streams[i].Id.toString() + ' ')
@@ -532,17 +526,17 @@ export class DatasrcComponent {
         }
     },
       err => {
-        this.button19Message = err;
+        this.button19Message = this.unhealthyResponseMessage(err);
       });
   }
 
   deleteAllValues() {
     this.qiService.deleteWindowValues(streamId, '0', '200')
       .subscribe(res => {
-        this.button13Message = res.status;
+        this.button13Message = this.healthyResponseMessage(res);
     },
       err => {
-        this.button13Message = err;
+        this.button13Message = this.unhealthyResponseMessage(err);
       });
   }
 
@@ -550,14 +544,22 @@ export class DatasrcComponent {
     this.qiService.deleteStream(streamId).subscribe(() => {
       // you can't delete a type/behavior if there are existing streams
       // that depend on it, so we must make sure the stream is deleted first.
-      this.qiService.deleteType(typeId).subscribe()
-      this.qiService.deleteType(targetTypeId).subscribe()
-      this.qiService.deleteType(targetIntTypeId).subscribe()
-      this.qiService.deleteView(autoViewId).subscribe()
-      this.qiService.deleteView(manualViewId).subscribe()
+      this.qiService.deleteType(typeId).subscribe();
+      this.qiService.deleteType(targetTypeId).subscribe();
+      this.qiService.deleteType(targetIntTypeId).subscribe();
+      this.qiService.deleteView(autoViewId).subscribe();
+      this.qiService.deleteView(manualViewId).subscribe();
       this.qiService.deleteBehavior(behaviorId).subscribe();
     });
     this.hasEvents = false;
     this.button12Message = 'All Objects Deleted'
+  }
+
+  healthyResponseMessage(res: HttpResponse<any>) {
+    return `${res.status} (${res.statusText})`;
+  }
+
+  unhealthyResponseMessage(err: HttpErrorResponse) {
+      return `${err.status} (${err.statusText}) [${err.error ? err.error.Message: 'No error message'}]`;
   }
 }

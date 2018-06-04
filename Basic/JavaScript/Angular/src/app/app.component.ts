@@ -5,11 +5,11 @@ import { ConfigurationService, IQiConfigSet } from './osiconfiguration.service'
 import { Router } from '@angular/router';
 
 const config: IQiConfigSet = {
-  ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
-  QiEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
-  QiResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
-  TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
-  NamespaceId: 'REPLACE_WITH_NAMESPACE'
+    ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
+    QiEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
+    QiResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
+    TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
+    NamespaceId: 'REPLACE_WITH_NAMESPACE'
 };
 
 @Component({
@@ -27,7 +27,11 @@ export class AppComponent {
 
     this.router.events.subscribe((path: any) => {
       console.log('path = ', path);
-      this.adalService.handleWindowCallbackUrl(path.url.substring(1));
+      if (path) {
+        if (path.url) {
+            this.adalService.handleWindowCallbackUrl(path.url.substring(1));
+        }
+      }
     });
   }
 

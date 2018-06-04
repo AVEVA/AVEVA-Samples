@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import 'rxjs/Rx';
 
 import { AuthHttp } from './adal/authHttp.service';
 import { ConfigurationService } from './osiconfiguration.service';
+import {HttpHeaders} from "@angular/common/http";
 
 
 export class QiStream {
@@ -167,7 +168,7 @@ export class QiRestService {
     const url = this.qiUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&viewId=${viewId}`;
-    return this.authHttp.get(url);
+    return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control','no-cache')});
   }
 
   createType(qiType: QiType): Observable<any> {
