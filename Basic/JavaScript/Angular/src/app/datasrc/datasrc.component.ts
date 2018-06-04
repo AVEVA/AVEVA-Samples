@@ -560,6 +560,6 @@ export class DatasrcComponent {
   }
 
   unhealthyResponseMessage(err: HttpErrorResponse) {
-      return `${err.status} (${err.statusText}) [${err.error.Message}]`;
+      return `${err.status} (${err.statusText}) [${err.error ? err.error.Message: 'No error message'}]`;
   }
 }
