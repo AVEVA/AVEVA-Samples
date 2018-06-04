@@ -45,7 +45,7 @@ replace the placeholders with the authentication-related values you received fro
 
 ::
     &lt;appSettings&gt;	  
-        &lt;add key="address" value="https://qi-data.osisoft.com" /&gt;
+        &lt;add key="address" value="https://dat-a.osisoft.com" /&gt;
         &lt;add key="accountId" value="REPLACE_WITH_ACCOUNT_ID" /&gt;
         &lt;add key="resource" value="https://qihomeprod.onmicrosoft.com/ocsapi" /&gt;
         &lt;add key="clientId" value="REPLACE_WITH_CLIENT_IDENTIFIER" /&gt;
