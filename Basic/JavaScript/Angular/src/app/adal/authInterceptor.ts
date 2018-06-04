@@ -20,25 +20,31 @@ export class AuthInterceptor implements HttpInterceptor {
                 let tokenStored = this.adalService.getCachedToken(resource);
 
                 if (!tokenStored) {
-                    this.adalService.acquireToken(resource).pipe(timeout(5000))
-                        .subscribe(
-                            (token: string) => {
-                            console.log(`Token Acquired: ${token}`);
-                            tokenStored = token;
-                        }, err => {
-                            console.log('Unable to acquire token');
-                            return Observable.throwError(err);
-                        });
-                }
 
-                if (!req.headers.has('Authorization')) {
-                    req = req.clone({
-                        setHeaders: {
-                            'Authorization': `Bearer ${tokenStored}`
+                    return this.adalService.acquireToken(resource).mergeMap((token: string) => {
+                        tokenStored = token;
+                        if (!req.headers.has('Authorization')) {
+                            req = req.clone({
+                                setHeaders: {
+                                    'Authorization': `Bearer ${tokenStored}`
+                                }
+                            });
                         }
-                    });
-                }
 
+                        return next.handle(req);
+                    });
+                    
+                } else {
+                    if (!req.headers.has('Authorization')) {
+                        req = req.clone({
+                            setHeaders: {
+                                'Authorization': `Bearer ${tokenStored}`
+                            }
+                        });
+                    }
+
+                    return next.handle(req);
+                }
             } else {
                 return Observable.throwError('User not authenticated');
             }
@@ -46,6 +52,5 @@ export class AuthInterceptor implements HttpInterceptor {
            return Observable.throwError(`ADAL resource for endpoint ${req.url} is null or undefined`);
         }
 
-        return next.handle(req);
     }
 }
