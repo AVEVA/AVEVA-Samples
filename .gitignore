@@ -220,3 +220,6 @@ pip-log.txt
 ## JavaScript
 ##############
 /Basic/JavaScript/Angular/node_modules
+/.vs
+/Basic/DotNet/SdsClientLibraries/SdsClientLibraries/.vs/config/applicationhost.config
+/Basic/DotNet/SdsRestApiCore/.vs/config/applicationhost.config

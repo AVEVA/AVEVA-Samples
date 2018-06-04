@@ -1,10 +1,10 @@
 .NET Samples
 ============
 
-Building a Client with the Qi REST API
+Building a Client with the Sds REST API
 --------------------------------------
 
-This sample demonstrates how to interact with Qi using the Qi REST API. The REST API 
+This sample demonstrates how to interact with Sds using the Sds REST API. The REST API 
 is language independent. Objects are passed as JSON strings. The sample uses the Newtonsoft.Json 
 JSON framework, however, any method of creating a JSON representation of objects will work.
 
@@ -18,8 +18,8 @@ System.Net.Http.DelegatingHandler that retrieves and attaches the authorization 
 Authorization Handler
 ---------------------
 
-The Qi Service is secured by Azure Active Directory. For a request to succeed, 
-a valid token must be attached to every request sent to Qi. 
+The Sds Service is secured by Azure Active Directory. For a request to succeed, 
+a valid token must be attached to every request sent to Sds. 
 
 The sample includes a simple DelegatingHandler that relies on the 
 Microsoft.IdentityModel.Clients.ActiveDirectory assembly to acquire the security token. 
@@ -46,71 +46,71 @@ The security handler is attached to the HttpClient as follows:
 
 .. code:: cs
 
-	QiSecurityHandler securityHandler =
-		new QiSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
+	SdsSecurityHandler securityHandler =
+		new SdsSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
 			HttpClient httpClient = new HttpClient(securityHandler)
 			{
 				BaseAddress = new Uri(address)
 			};
             
-Note that Qi returns a status of 302 (Found), when metadata collisions exist. The HttpClient 
+Note that Sds returns a status of 302 (Found), when metadata collisions exist. The HttpClient 
 auto-redirect, which automatically issues a GET when receiving a 302, will result in an 
 unauthorized response. Because HttpClient does not retain the authorization token on a redirect, 
 it is recommended that auto redirect be disabled.
 
 
-Create a QiType
+Create an SdsType
 ---------------
 
-To use Qi, you define QiTypes that describe the kinds of data you want
-to store in QiStreams. QiTypes are the model that define QiStreams.
-QiTypes can define simple atomic types, such as integers, floats, or
-strings, or they can define complex types by grouping other QiTypes. For
-more information about QiTypes, refer to the `Qi
+To use Sds, you define SdsTypes that describe the kinds of data you want
+to store in SdsStreams. SdsTypes are the model that define SdsStreams.
+SdsTypes can define simple atomic types, such as integers, floats, or
+strings, or they can define complex types by grouping other SdsTypes. For
+more information about SdsTypes, refer to the `Sds
 documentation <https://cloud.osisoft.com/documentation>`__.
 
-In the sample code, the QiType representing WaveData is defined in the BuildWaveDataType
+In the sample code, the SdsType representing WaveData is defined in the BuildWaveDataType
 method of Program.cs. WaveData contains properties of integer and double atomic types. 
-The constructions begins by defining a base QiType for each atomic type and then defining
+The constructions begins by defining a base SdsType for each atomic type and then defining
 Properties of those atomic types.
 
 .. code:: cs
 
-	QiType intQiType = new QiType
+	SdsType intSdsType = new SdsType
 	{
-		Id = "intQiType",
-		QiTypeCode = QiTypeCode.Int32
+		Id = "intSdsType",
+		SdsTypeCode = SdsTypeCode.Int32
 	};
 
-	QiType doubleQiType = new QiType
+	SdsType doubleSdsType = new SdsType
 	{
-		Id = "doubleQiType",
-		QiTypeCode = QiTypeCode.Double
+		Id = "doubleSdsType",
+		SdsTypeCode = SdsTypeCode.Double
 	};
 
-	QiTypeProperty orderProperty = new QiTypeProperty
+	SdsTypeProperty orderProperty = new SdsTypeProperty
 	{
 		Id = "Order",
-		QiType = intQiType,
+		SdsType = intSdsType,
 		IsKey = true
 	};
 	
-	QiTypeProperty tauProperty = new QiTypeProperty
+	SdsTypeProperty tauProperty = new SdsTypeProperty
 	{
 		Id = "Tau",
-		QiType = doubleQiType
+		SdsType = doubleSdsType
 	};
 
 These properties are assembled into a collection and assigned to the Properties 
-property of a new QiType object:
+property of a new SdsType object:
 
 .. code:: cs
 
-	QiType waveType = new QiType
+	SdsType waveType = new SdsType
 	{
 		Id = id,
 		Name = "WaveData",
-		Properties = new List<QiTypeProperty>
+		Properties = new List<SdsTypeProperty>
 		{
 			orderProperty,
 			tauProperty,
@@ -122,10 +122,10 @@ property of a new QiType object:
 			coshProperty,
 			tanhProperty
 		},
-		QiTypeCode = QiTypeCode.Object
+		SdsTypeCode = SdsTypeCode.Object
 	};
 
-Finally, the new QiType object is submitted to the Qi Service:
+Finally, the new SdsType object is submitted to the Sds Service:
 
 .. code:: cs
 
@@ -134,18 +134,18 @@ Finally, the new QiType object is submitted to the Qi Service:
 		new StringContent(JsonConvert.SerializeObject(waveType)));
 
 
-Create a QiStream
+Create an SdsStream
 -----------------
 
-An ordered series of events is stored in a QiStream. All you have to do
-is create a local QiStream instance, give it an Id, assign it a type,
-and submit it to the Qi service. You may optionally assign a
-QiStreamBehavior to the stream. The value of the ``TypeId`` property is
-the value of the QiType ``Id`` property.
+An ordered series of events is stored in an SdsStream. All you have to do
+is create a local SdsStream instance, give it an Id, assign it a type,
+and submit it to the Sds service. You may optionally assign a
+SdsStreamBehavior to the stream. The value of the ``TypeId`` property is
+the value of the SdsType ``Id`` property.
 
 .. code:: cs
 
-	QiStream waveStream = new QiStream
+	SdsStream waveStream = new SdsStream
 	{
 		Id = StreamId,
 		Name = "WaveStream",
@@ -153,7 +153,7 @@ the value of the QiType ``Id`` property.
 	};
 
 
-The local QiStream can be created in the Qi service by a POST request as
+The local SdsStream can be created in the Sds service by a POST request as
 follows:
 
 .. code:: cs
@@ -166,7 +166,7 @@ Create and Insert Values into the Stream
 ----------------------------------------
 
 A single event is a data point in the stream. An event object cannot be
-empty and should have at least the key value of the Qi type for the
+empty and should have at least the key value of the Sds type for the
 event. Events are passed in json format.
 
 An event can be created using the following POST request:
@@ -193,33 +193,33 @@ and the url for POST call varies:
 		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValues",
 			new StringContent(JsonConvert.SerializeObject(waves)));
 
-The Qi REST API provides many more types of data insertion calls beyond
+The Sds REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
-Qi documentation<https://cloud.osisoft.com/documentation> for more information
+Sds documentation<https://cloud.osisoft.com/documentation> for more information
 on available REST API calls.
 
 Retrieve Values from a Stream
 -----------------------------
 
-There are many methods in the Qi REST API allowing for the retrieval of
+There are many methods in the Sds REST API allowing for the retrieval of
 events from a stream. The retrieval methods take string type start and
 end values; in the case of the GetWindowValues call, these are the start and 
 end ordinal indices expressed as strings. The index values must capable of 
-conversion to the type of the index assigned in the QiType.
+conversion to the type of the index assigned in the SdsType.
 
 .. code:: cs
 
 	response = await httpClient.GetAsync(
 		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetWindowValues?startIndex=0&endIndex={waves[waves.Count - 1].Order}");
 
--  parameters are the QiStream Id and the starting and ending index
+-  parameters are the SdsStream Id and the starting and ending index
    values for the desired window Ex: For a time index, request url
    format will be
    "/{streamId}/Data/GetWindowValues?startIndex={startTime}&endIndex={endTime}
 
-As with data insertion, the Qi REST API provides many more types of data retrieval calls beyond
+As with data insertion, the Sds REST API provides many more types of data retrieval calls beyond
 those demonstrated in this application. Go to the 
-Qi documentation<https://cloud.osisoft.com/documentation> for more information
+Sds documentation<https://cloud.osisoft.com/documentation> for more information
 on available REST API calls.
 
 Update Events and Replacing Values
@@ -271,54 +271,53 @@ identical to ``updateValue`` and ``updateValues``:
 		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValues",
 			new StringContent(JsonConvert.SerializeObject(replaceEvents)));
 
-Changing Stream Behavior
-------------------------
+Property Overrides
+------------------
 
-When retrieving a value, the behavior of a stream can be altered
-using ``QiStreamBehaviors``. A stream is updated with a behavior,
-which changes how "get" operations are performed when an index falls between,
-before, or after existing values. The default behavior is continuous, so
-any indices not in the stream are interpolated using the previous
-and next values.
+Sds has the ability to override certain aspects of an Sds Type at the Sds Stream level.  
+Meaning we apply a change to a specific Sds Stream without changing the Sds Type or the
+behavior of any other Sds Streams based on that type.  
 
-In the sample, the behavior is updated to discrete, meaning that if an index
-does not correspond to a real value in the stream then ``null`` is
-returned by the Qi Service. The following shows how this is done in the
-code:
+In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
+Now if a requested index does not correspond to a real value in the stream then ``null``, 
+or the default value for the data type, is returned by the Sds Service. 
+The following shows how this is done in the code:
 
 .. code:: cs
 
-	QiStreamBehavior waveStreamBehavior = new QiStreamBehavior
+	// Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream
+	SdsStreamPropertyOverride propertyOverride = new SdsStreamPropertyOverride
 	{
-		Id = BehaviorId,
-		Mode = QiStreamMode.Discrete,
-		Name = "WaveStreamBehavior"
+		SdsTypePropertyId = "Radians",
+		InterpolationMode = SdsInterpolationMode.Discrete
 	};
 
-	response = await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Behaviors/{BehaviorId}",
-		new StringContent(JsonConvert.SerializeObject(waveStreamBehavior)));
+	var propertyOverrides = new List<SdsStreamPropertyOverride>() { propertyOverride };
 
 	// update the stream
-	waveStream.BehaviorId = waveStreamBehavior.Id;
+	waveStream.PropertyOverrides = propertyOverrides;
 	response = await httpClient.PutAsync(
 		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}",
 			new StringContent(JsonConvert.SerializeObject(waveStream)));
 
-The sample repeats the call to ``getRangeValues`` with the same
-parameters as before, allowing you to compare the values of the event at
-``Order=1``.
+The process consists of two steps. First, the Property Override must be created, then the
+stream must be updated. Note that the sample retrieves three data points
+before and after updating the stream to show that it has changed. See
+the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
+more information about Sds Property Overrides.
 
-QiViews
+
+SdsViews
 -------
 
-A QiView provides a way to map Stream data requests from one data type 
-to another. You can apply a View to any read or GET operation. QiView 
+An SdsView provides a way to map Stream data requests from one data type 
+to another. You can apply a View to any read or GET operation. SdsView 
 is used to specify the mapping between source and target types.
 
-Qi attempts to determine how to map Properties from the source to the 
+Sds attempts to determine how to map Properties from the source to the 
 destination. When the mapping is straightforward, such as when 
 the properties are in the same position and of the same data type, 
-or when the properties have the same name, Qi will map the properties automatically.
+or when the properties have the same name, Sds will map the properties automatically.
 
 .. code:: cs
 
@@ -326,31 +325,31 @@ or when the properties have the same name, Qi will map the properties automatica
 		await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}",
 			new StringContent(JsonConvert.SerializeObject(autoView)));
 
-To map a property that is beyond the ability of Qi to map on its own, 
-you should define a QiViewProperty and add it to the QiView's Properties collection.
+To map a property that is beyond the ability of Sds to map on its own, 
+you should define an SdsViewProperty and add it to the SdsView's Properties collection.
 
 .. code:: cs
 
 	// create explicit mappings 
-	var vp1 = new QiViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-	var vp2 = new QiViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-	var vp3 = new QiViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-	var vp4 = new QiViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+	var vp1 = new SdsViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+	var vp2 = new SdsViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+	var vp3 = new SdsViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+	var vp4 = new SdsViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-	var manualView = new QiView()
+	var manualView = new SdsView()
 	{
 		Id = ManualViewId,
 		SourceTypeId = TypeId,
 		TargetTypeId = TargetIntTypeId,
-		Properties = new List<QiViewProperty>() { vp1, vp2, vp3, vp4 }
+		Properties = new List<SdsViewProperty>() { vp1, vp2, vp3, vp4 }
 	};
 
-QiViewMap
+SdsViewMap
 ---------
 
-When a QiView is added, Qi defines a plan mapping. Plan details are retrieved as a QiViewMap. 
-The QiViewMap provides a detailed Property-by-Property definition of the mapping.
-The QiViewMap cannot be written, it can only be retrieved from Qi.
+When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
+The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: cs
 
