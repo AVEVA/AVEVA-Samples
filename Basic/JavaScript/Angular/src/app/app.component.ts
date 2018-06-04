@@ -27,8 +27,10 @@ export class AppComponent {
 
     this.router.events.subscribe((path: any) => {
       console.log('path = ', path);
-      if (!path) {
-          this.adalService.handleWindowCallbackUrl(path.url.substring(1));
+      if (path) {
+        if (path.url) {
+            this.adalService.handleWindowCallbackUrl(path.url.substring(1));
+        }
       }
     });
   }
