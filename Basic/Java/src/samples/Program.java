@@ -135,8 +135,8 @@ public class Program {
             dumpEvents(foundEvents);
             System.out.println();
             
-   		 	// Interpolation
-            System.out.println("Interpolation");
+   		 	// Property Overrides
+            System.out.println("Property Overrides");
             System.out.println("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
             System.out.println();
    		 	listType = new TypeToken<ArrayList<WaveData>>() {}.getType(); 
@@ -152,10 +152,12 @@ public class Program {
    		 	// Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
    		 	SdsStreamPropertyOverride propertyOverride = new SdsStreamPropertyOverride();
    		 	propertyOverride.setSdsTypePropertyId("Radians");
-   		 	propertyOverride.setInterpolationModeOverride(SdsInterpolationMode.Discrete);
+   		 	propertyOverride.setInterpolationMode(SdsInterpolationMode.Discrete);
    		 	List<SdsStreamPropertyOverride> propertyOverrides = new ArrayList<SdsStreamPropertyOverride>();
    		 	propertyOverrides.add(propertyOverride);
-   		 	sampleStream.setPropertyOverrides(propertyOverrides);
+   		 	
+			// update the stream
+			sampleStream.setPropertyOverrides(propertyOverrides);
    		 	sdsclient.updateStream(tenantId, namespaceId, sampleStreamId, sampleStream);
 
    		 	// repeat the retrieval

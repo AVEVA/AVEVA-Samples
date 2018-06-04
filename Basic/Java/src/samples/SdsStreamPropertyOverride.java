@@ -2,8 +2,8 @@ package samples;
 
 public class SdsStreamPropertyOverride {
     private String sdsTypePropertyId;
-    private SdsInterpolationMode interpolationModeOverride;
-    private String uomOverride;
+    private SdsInterpolationMode interpolationMode;
+    private String uom;
     
     public SdsStreamPropertyOverride() {
 
@@ -17,19 +17,19 @@ public class SdsStreamPropertyOverride {
         this.sdsTypePropertyId = sdsTypePropertyId;
     }
 
-    public SdsInterpolationMode getInterpolationModeOverride() {
-        return interpolationModeOverride;
+    public SdsInterpolationMode getInterpolationMode() {
+        return interpolationMode;
     }
 
-    public void setInterpolationModeOverride(SdsInterpolationMode interpolationModeOverride) {
-        this.interpolationModeOverride = interpolationModeOverride;
+    public void setInterpolationMode(SdsInterpolationMode interpolationMode) {
+        this.interpolationMode = interpolationMode;
     }
     
-    public String getUomOverride() {
-        return uomOverride;
+    public String getUom() {
+        return uom;
     }
 
-    public void setUomOverride(String uomOverride) {
-        this.uomOverride = uomOverride;
+    public void setUom(String uom) {
+        this.uom = uom;
     }
 }
