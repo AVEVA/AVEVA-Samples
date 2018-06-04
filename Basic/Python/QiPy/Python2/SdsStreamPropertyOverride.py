@@ -11,18 +11,18 @@ class SdsStreamPropertyOverride(object):
         self.__sdsTypePropertyId = sdsTypePropertyId
 
     @property
-    def InterpolationModeOverride(self):
-        return self.__interpolationModeOverride
-    @InterpolationModeOverride.setter
-    def InterpolationModeOverride(self, interpolationModeOverride):
-        self.__interpolationModeOverride = interpolationModeOverride
+    def InterpolationMode(self):
+        return self.__interpolationMode
+    @InterpolationMode.setter
+    def InterpolationMode(self, interpolationMode):
+        self.__interpolationMode = interpolationMode
 
     @property
-    def UomOverride(self):
-        return self.__uomOverride
-    @UomOverride.setter
-    def UomOverride(self, uomOverride):
-        self.__uomOverride = uomOverride
+    def Uom(self):
+        return self.__uom
+    @Uom.setter
+    def Uom(self, uom):
+        self.__uom = uom
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -32,11 +32,11 @@ class SdsStreamPropertyOverride(object):
         dictionary = { 'SdsTypePropertyId' : self.SdsTypePropertyId }
 
         # optional properties
-        if hasattr(self, 'UomOverride'):
-            dictionary['UomOverride'] = self.UomOverride
+        if hasattr(self, 'Uom'):
+            dictionary['Uom'] = self.Uom
 
-        if hasattr(self, 'InterpolationModeOverride'):
-            dictionary['InterpolationModeOverride'] = self.InterpolationModeOverride
+        if hasattr(self, 'InterpolationMode'):
+            dictionary['InterpolationMode'] = self.InterpolationMode
 
         return dictionary
 
@@ -50,10 +50,10 @@ class SdsStreamPropertyOverride(object):
         if 'SdsTypePropertyId' in content:
             propertyOverride.SdsTypePropertyId = content['SdsTypePropertyId']
 
-        if 'UomOverride' in content:
-            propertyOverride.UomOverride = content['UomOverride']
+        if 'Uom' in content:
+            propertyOverride.Uom = content['Uom']
 
-        if 'InterpolationModeOverride' in content:
-            propertyOverride.InterpolationModeOverride = content['InterpolationModeOverride']
+        if 'InterpolationMode' in content:
+            propertyOverride.InterpolationMode = content['InterpolationMode']
 
         return propertyOverride

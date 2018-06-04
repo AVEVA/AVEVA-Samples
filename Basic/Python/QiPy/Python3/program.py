@@ -57,7 +57,7 @@ def getWaveDataType(sampleTypeId):
     tanhProperty.Id = "Tanh"
     tanhProperty.SdsType = doubleType
 
-    #create a SdsType for WaveData Class
+    #create an SdsType for WaveData Class
     wave = SdsType()
     wave.Id = sampleTypeId
     wave.Name = "WaveDataSample"
@@ -118,7 +118,7 @@ def getWaveDataTargetType(sampleTypeId):
     tanhTargetProperty.Id = "TanhTarget"
     tanhTargetProperty.SdsType = doubleType
 
-    #create a SdsType for WaveData Class
+    #create an SdsType for WaveData Class
     wave = SdsType()
     wave.Id = sampleTargetTypeId
     wave.Name = "WaveDataTargetSample"
@@ -156,7 +156,7 @@ def getWaveDataIntegerType(sampleTypeId):
     tanIntProperty.Id = "TanInt"
     tanIntProperty.SdsType = intType
 
-    #create a SdsType for the WaveDataInteger Class
+    #create an SdsType for the WaveDataInteger Class
     wave = SdsType()
     wave.Id = sampleIntegerTypeId
     wave.Name = "WaveDataIntegerSample"
@@ -261,14 +261,14 @@ try:
     ######################################################################################################
     # SdsType get or creation
     ######################################################################################################
-    print("Creating a SdsType")
+    print("Creating an SdsType")
     waveType = getWaveDataType(sampleTypeId)
     waveType = client.getOrCreateType(namespaceId, waveType)
 
     ######################################################################################################
     # Sds Stream creation
     ######################################################################################################
-    print("Creating a SdsStream")
+    print("Creating an SdsStream")
     stream = SdsStream()
     stream.Id = sampleStreamId
     stream.Name = "WaveStreamPySample"
@@ -347,11 +347,11 @@ try:
     for wave in waves:
         print(toString(wave))
     print()
-######################################################################################################
-    # Interpolation
+    ######################################################################################################
+    # Property Overrides
     ######################################################################################################
     
-    print("Interpolation")
+    print("Property Overrides")
     print("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:")
     print()
     
@@ -365,8 +365,9 @@ try:
     # Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
     propertyOverride = SdsStreamPropertyOverride()
     propertyOverride.SdsTypePropertyId = 'Radians'
-    propertyOverride.InterpolationModeOverride = 3
+    propertyOverride.InterpolationMode = 3
 
+    # update the stream
     props = [propertyOverride]
     stream.PropertyOverrides = props
     client.createOrUpdateStream(namespaceId, stream)
@@ -389,7 +390,7 @@ try:
     waveIntegerType = getWaveDataIntegerType(sampleIntegerTypeId)
     waveIntegerType = client.getOrCreateType(namespaceId, waveIntegerType)
 
-    #Create a SdsViewProperty objects when we want to explicitly map one property to another
+    #Create an SdsViewProperty objects when we want to explicitly map one property to another
     vp1 = SdsViewProperty()
     vp1.SourceId = "Order"
     vp1.TargetId = "OrderTarget"
@@ -440,7 +441,7 @@ try:
     #view data when retrieved with a view
     rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticView.Id)
     print()
-    print("Specifying a view with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:")
+    print("Specifying a view with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:")
     for way in rangeWaves:
         print(("SinTarget: {sinTarget}, CosTarget: {cosTarget}, TanTarget: {tanTarget}".format(sinTarget = way.SinTarget, cosTarget = way.CosTarget, tanTarget = way.TanTarget)))
 
