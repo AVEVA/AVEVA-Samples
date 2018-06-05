@@ -4,15 +4,15 @@ Sds JavaScript Example using Angular
 Building a client to make REST API calls to the Sds Service
 ----------------------------------------------------------
 
-This example demonstrates how Sds REST APIs are invoked using Angular 4.0. Although this example uses Angular, other javascript frameworks should also work.
+This example demonstrates how Sds REST APIs are invoked using Angular 6. Although this example uses Angular, other javascript frameworks should also work.
 
 
 Prerequisites
 -------------
 
 You must have the following software installed on your computer:
- - Angular version 4 (available on GitHub) or greater
- - Angular CLI version 1.1.2 or greater
+ - Angular version 6 (available on GitHub)
+ - Angular CLI
  - A modern browser (OSIsoft recommends Google Chrome or Mozilla Firefox)
 
 
