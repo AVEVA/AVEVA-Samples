@@ -227,8 +227,18 @@ or the default value for the data type, is returned by the Sds Service.
 The following shows how this is done in the code:
 
 .. code:: cs
+                
+	// create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
+	var propertyOverride = new SdsStreamPropertyOverride()
+		{
+		SdsTypePropertyId = "Radians",
+		InterpolationMode = SdsInterpolationMode.Discrete
+		};
+	var propertyOverrides = new List<SdsStreamPropertyOverride>() {propertyOverride};
 
-
+	// update the stream
+	stream.PropertyOverrides = propertyOverrides;
+	await metadataService.CreateOrUpdateStreamAsync(stream);
 
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
