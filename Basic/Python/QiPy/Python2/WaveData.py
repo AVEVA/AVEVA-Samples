@@ -4,7 +4,7 @@ import json
 import inspect
 
 class WaveData:
-    """Represents a data point to be injected into Qi Service"""
+    """Represents a data point to be injected into Sds Service"""
     
     def __init__(self):
         self._order = None
@@ -119,7 +119,7 @@ class WaveData:
 
 
 class WaveDataInteger:
-    """Represents a data point to be injected into Qi Service"""
+    """Represents a data point to be injected into Sds Service"""
     
     def __init__(self):
         self._OrderTarget = None
@@ -193,7 +193,7 @@ class WaveDataInteger:
 
 
 class WaveDataTarget:
-    """Represents a data point to be injected into Qi Service"""
+    """Represents a data point to be injected into Sds Service"""
     
     def __init__(self):
         self._OrderTarget = None
