@@ -1,4 +1,4 @@
-from qipy import *
+from sdspy import *
 import configparser
 import datetime
 import time
@@ -11,58 +11,58 @@ def getWaveDataType(sampleTypeId):
     if sampleTypeId is None or not isinstance(sampleTypeId, str):
         raise TypeError("sampleTypeId is not an instantiated string")
 
-    intType = QiType()
+    intType = SdsType()
     intType.Id = "intType"
-    intType.QiTypeCode = QiTypeCode.Int32
+    intType.SdsTypeCode = SdsTypeCode.Int32
 
-    doubleType = QiType()
+    doubleType = SdsType()
     doubleType.Id = "doubleType"
-    doubleType.QiTypeCode = QiTypeCode.Double
+    doubleType.SdsTypeCode = SdsTypeCode.Double
 
     # note that the Order is the key (primary index)
-    orderProperty = QiTypeProperty()
+    orderProperty = SdsTypeProperty()
     orderProperty.Id = "Order"
-    orderProperty.QiType = intType
+    orderProperty.SdsType = intType
     orderProperty.IsKey = True
 
-    tauProperty = QiTypeProperty()
+    tauProperty = SdsTypeProperty()
     tauProperty.Id = "Tau"
-    tauProperty.QiType = doubleType
+    tauProperty.SdsType = doubleType
 
-    radiansProperty = QiTypeProperty()
+    radiansProperty = SdsTypeProperty()
     radiansProperty.Id = "Radians"
-    radiansProperty.QiType = doubleType
+    radiansProperty.SdsType = doubleType
 
-    sinProperty = QiTypeProperty()
+    sinProperty = SdsTypeProperty()
     sinProperty.Id = "Sin"
-    sinProperty.QiType = doubleType
+    sinProperty.SdsType = doubleType
 
-    cosProperty = QiTypeProperty()
+    cosProperty = SdsTypeProperty()
     cosProperty.Id = "Cos"
-    cosProperty.QiType = doubleType
+    cosProperty.SdsType = doubleType
 
-    tanProperty = QiTypeProperty()
+    tanProperty = SdsTypeProperty()
     tanProperty.Id = "Tan"
-    tanProperty.QiType = doubleType
+    tanProperty.SdsType = doubleType
 
-    sinhProperty = QiTypeProperty()
+    sinhProperty = SdsTypeProperty()
     sinhProperty.Id = "Sinh"
-    sinhProperty.QiType = doubleType
+    sinhProperty.SdsType = doubleType
 
-    coshProperty = QiTypeProperty()
+    coshProperty = SdsTypeProperty()
     coshProperty.Id = "Cosh"
-    coshProperty.QiType = doubleType
+    coshProperty.SdsType = doubleType
 
-    tanhProperty = QiTypeProperty()
+    tanhProperty = SdsTypeProperty()
     tanhProperty.Id = "Tanh"
-    tanhProperty.QiType = doubleType
+    tanhProperty.SdsType = doubleType
 
-    #create a QiType for WaveData Class
-    wave = QiType()
+    #create an SdsType for WaveData Class
+    wave = SdsType()
     wave.Id = sampleTypeId
     wave.Name = "WaveDataSample"
-    wave.Description = "This is a sample Qi type for storing WaveData type events"
-    wave.QiTypeCode = QiTypeCode.Object
+    wave.Description = "This is a sample Sds type for storing WaveData type events"
+    wave.SdsTypeCode = SdsTypeCode.Object
     wave.Properties = [orderProperty, tauProperty, radiansProperty, sinProperty, 
                        cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
 
@@ -72,58 +72,58 @@ def getWaveDataTargetType(sampleTypeId):
     if sampleTypeId is None or not isinstance(sampleTypeId, str):
         raise TypeError("sampleTypeId is not an instantiated string")
 
-    intType = QiType()
+    intType = SdsType()
     intType.Id = "intType"
-    intType.QiTypeCode = QiTypeCode.Int32
+    intType.SdsTypeCode = SdsTypeCode.Int32
 
-    doubleType = QiType()
+    doubleType = SdsType()
     doubleType.Id = "doubleType"
-    doubleType.QiTypeCode = QiTypeCode.Double
+    doubleType.SdsTypeCode = SdsTypeCode.Double
 
     # note that the Order is the key (primary index)
-    orderTargetProperty = QiTypeProperty()
+    orderTargetProperty = SdsTypeProperty()
     orderTargetProperty.Id = "OrderTarget"
-    orderTargetProperty.QiType = intType
+    orderTargetProperty.SdsType = intType
     orderTargetProperty.IsKey = True
 
-    tauTargetProperty = QiTypeProperty()
+    tauTargetProperty = SdsTypeProperty()
     tauTargetProperty.Id = "TauTarget"
-    tauTargetProperty.QiType = doubleType
+    tauTargetProperty.SdsType = doubleType
 
-    radiansTargetProperty = QiTypeProperty()
+    radiansTargetProperty = SdsTypeProperty()
     radiansTargetProperty.Id = "RadiansTarget"
-    radiansTargetProperty.QiType = doubleType
+    radiansTargetProperty.SdsType = doubleType
 
-    sinTargetProperty = QiTypeProperty()
+    sinTargetProperty = SdsTypeProperty()
     sinTargetProperty.Id = "SinTarget"
-    sinTargetProperty.QiType = doubleType
+    sinTargetProperty.SdsType = doubleType
 
-    cosTargetProperty = QiTypeProperty()
+    cosTargetProperty = SdsTypeProperty()
     cosTargetProperty.Id = "CosTarget"
-    cosTargetProperty.QiType = doubleType
+    cosTargetProperty.SdsType = doubleType
 
-    tanTargetProperty = QiTypeProperty()
+    tanTargetProperty = SdsTypeProperty()
     tanTargetProperty.Id = "TanTarget"
-    tanTargetProperty.QiType = doubleType
+    tanTargetProperty.SdsType = doubleType
 
-    sinhTargetProperty = QiTypeProperty()
+    sinhTargetProperty = SdsTypeProperty()
     sinhTargetProperty.Id = "SinhTarget"
-    sinhTargetProperty.QiType = doubleType
+    sinhTargetProperty.SdsType = doubleType
 
-    coshTargetProperty = QiTypeProperty()
+    coshTargetProperty = SdsTypeProperty()
     coshTargetProperty.Id = "CoshTarget"
-    coshTargetProperty.QiType = doubleType
+    coshTargetProperty.SdsType = doubleType
 
-    tanhTargetProperty = QiTypeProperty()
+    tanhTargetProperty = SdsTypeProperty()
     tanhTargetProperty.Id = "TanhTarget"
-    tanhTargetProperty.QiType = doubleType
+    tanhTargetProperty.SdsType = doubleType
 
-    #create a QiType for WaveData Class
-    wave = QiType()
+    #create an SdsType for WaveData Class
+    wave = SdsType()
     wave.Id = sampleTargetTypeId
     wave.Name = "WaveDataTargetSample"
-    wave.Description = "This is a sample Qi type for storing WaveDataTarget type events"
-    wave.QiTypeCode = QiTypeCode.Object
+    wave.Description = "This is a sample Sds type for storing WaveDataTarget type events"
+    wave.SdsTypeCode = SdsTypeCode.Object
     wave.Properties = [orderTargetProperty, tauTargetProperty, radiansTargetProperty, sinTargetProperty, 
                        cosTargetProperty, tanTargetProperty, sinhTargetProperty, coshTargetProperty, tanhTargetProperty]
 
@@ -134,34 +134,34 @@ def getWaveDataIntegerType(sampleTypeId):
     if sampleTypeId is None or not isinstance(sampleTypeId, str):
         raise TypeError("sampleTypeId is not an instantiated string")
 
-    intType = QiType()
+    intType = SdsType()
     intType.Id = "intType"
-    intType.QiTypeCode = QiTypeCode.Int32
+    intType.SdsTypeCode = SdsTypeCode.Int32
 
     # note that the Order is the key (primary index)
-    orderTargetProperty = QiTypeProperty()
+    orderTargetProperty = SdsTypeProperty()
     orderTargetProperty.Id = "OrderTarget"
-    orderTargetProperty.QiType = intType
+    orderTargetProperty.SdsType = intType
     orderTargetProperty.IsKey = True
 
-    sinIntProperty = QiTypeProperty()
+    sinIntProperty = SdsTypeProperty()
     sinIntProperty.Id = "SinInt"
-    sinIntProperty.QiType = intType
+    sinIntProperty.SdsType = intType
 
-    cosIntProperty = QiTypeProperty()
+    cosIntProperty = SdsTypeProperty()
     cosIntProperty.Id = "CosInt"
-    cosIntProperty.QiType = intType
+    cosIntProperty.SdsType = intType
 
-    tanIntProperty = QiTypeProperty()
+    tanIntProperty = SdsTypeProperty()
     tanIntProperty.Id = "TanInt"
-    tanIntProperty.QiType = intType
+    tanIntProperty.SdsType = intType
 
-    #create a QiType for the WaveDataInteger Class
-    wave = QiType()
+    #create an SdsType for the WaveDataInteger Class
+    wave = SdsType()
     wave.Id = sampleIntegerTypeId
     wave.Name = "WaveDataIntegerSample"
-    wave.Description = "This is a sample Qi type for storing WaveDataInteger type events"
-    wave.QiTypeCode = QiTypeCode.Object
+    wave.Description = "This is a sample Sds type for storing WaveDataInteger type events"
+    wave.SdsTypeCode = SdsTypeCode.Object
     wave.Properties = [orderTargetProperty, sinIntProperty, 
                        cosIntProperty, tanIntProperty]
 
@@ -187,9 +187,9 @@ def nextWave(now, interval, multiplier, order):
     return newWave
 
 # we'll use the following for cleanup, supressing errors
-def supressError(qiCall):
+def supressError(sdsCall):
     try:
-        qiCall()
+        sdsCall()
     except Exception as e:
         print(("Encountered Error: {error}".format(error = e)))
 
@@ -242,34 +242,34 @@ try:
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    client = QiClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
+    client = SdsClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
                       config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
 
     namespaceId = config.get('Configurations', 'Namespace')
 
-    print("----------------------------------")
-    print("  ___  _ ____")        
-    print(" / _ \(_)  _ \ _   _ ")
-    print("| | | | | |_) | | | |")
-    print("| |_| | |  __/| |_| |")
-    print(" \__\_\_|_|    \__, |")
-    print("               |___/ ")	
-    print("----------------------------------")
-    print("Qi endpoint at {url}".format(url = client.Uri))
+    print("------------------------------------------")
+    print("  _________    .___     __________        ")        
+    print(" /   _____/  __| _/_____\______   \___.__.")
+    print(" \_____  \  / __ |/  ___/|     ___<   |  |")
+    print(" /        \/ /_/ |\___ \ |    |    \___  |")
+    print("/_______  /\____ /____  >|____|    / ____|")
+    print("        \/      \/    \/           \/     ")	
+    print("------------------------------------------")
+    print("Sds endpoint at {url}".format(url = client.Uri))
     print()
 
     ######################################################################################################
-    # QiType get or creation
+    # SdsType get or creation
     ######################################################################################################
-    print("Creating a QiType")
+    print("Creating an SdsType")
     waveType = getWaveDataType(sampleTypeId)
     waveType = client.getOrCreateType(namespaceId, waveType)
 
     ######################################################################################################
-    # Qi Stream creation
+    # Sds Stream creation
     ######################################################################################################
-    print("Creating a QiStream")
-    stream = QiStream()
+    print("Creating an SdsStream")
+    stream = SdsStream()
     stream.Id = sampleStreamId
     stream.Name = "WaveStreamPySample"
     stream.Description = "A Stream to store the WaveData events"
@@ -348,32 +348,36 @@ try:
         print(toString(wave))
     print()
     ######################################################################################################
-    # Stream behavior
+    # Property Overrides
     ######################################################################################################
-
-    print("QiStreamBehaviors determine whether Qi interpolates or extrapolates data at the requested index location")
+    
+    print("Property Overrides")
+    print("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:")
     print()
-    # Stream behaviors modify retrieval.  We will retrieve three events using the default behavior, Continuous
-    waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
+    
+	# We will retrieve three events using the default behavior, Continuous
+    waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
 
-    print("Default (Continuous) stream behavior, requesting data starting at index location '1', Qi will interpolate this value:")
+    print("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:")
     for wave in waves:
-        print(("Order: {order}: Radians: {radians}".format(order = wave.Order, radians = wave.Radians)))
+        print(("Order: {order}: Radians: {radians} Cos: {cos}".format(order = wave.Order, radians = wave.Radians, cos = wave.Cos)))
 
-    # Create a Discrete stream behavior 
-    discreteBehavior = QiStreamBehavior()
-    discreteBehavior.Id = sampleBehaviorId
-    discreteBehavior.Mode = QiStreamMode.Discrete
-    discreteBehavior = client.getOrCreateBehavior(namespaceId, discreteBehavior)
+    # Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
+    propertyOverride = SdsStreamPropertyOverride()
+    propertyOverride.SdsTypePropertyId = 'Radians'
+    propertyOverride.InterpolationMode = 3
 
-    stream.BehaviorId = discreteBehavior.Id
+    # update the stream
+    props = [propertyOverride]
+    stream.PropertyOverrides = props
     client.createOrUpdateStream(namespaceId, stream)
 
-    waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
+    waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
     print()
-    print("Discrete stream behavior, Qi does not interpolate and returns the data starting at the next index location containing data:")
+    print("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.")
+    print("Sds will now return the default value for the data type:")
     for wave in waves:
-        print(("Order: {order}: Radians: {radians}".format(order = wave.Order, radians = wave.Radians)))
+        print(("Order: {order}: Radians: {radians} Cos: {cos}".format(order = wave.Order, radians = wave.Radians, cos = wave.Cos)))
 
     ######################################################################################################
     # Stream Views
@@ -386,32 +390,32 @@ try:
     waveIntegerType = getWaveDataIntegerType(sampleIntegerTypeId)
     waveIntegerType = client.getOrCreateType(namespaceId, waveIntegerType)
 
-    #Create a QiViewProperty objects when we want to explicitly map one property to another
-    vp1 = QiViewProperty()
+    #Create an SdsViewProperty objects when we want to explicitly map one property to another
+    vp1 = SdsViewProperty()
     vp1.SourceId = "Order"
     vp1.TargetId = "OrderTarget"
 
-    vp2 = QiViewProperty()
+    vp2 = SdsViewProperty()
     vp2.SourceId = "Sin"
     vp2.TargetId = "SinInt"
     
-    vp3 = QiViewProperty()
+    vp3 = SdsViewProperty()
     vp3.SourceId = "Cos"
     vp3.TargetId = "CosInt"
     
-    vp4 = QiViewProperty()
+    vp4 = SdsViewProperty()
     vp4.SourceId = "Tan"
     vp4.TargetId = "TanInt"
     
-    #Create a view mapping our original type to our target type, data shape is the same so let Qi handle the mapping
-    view = QiView()
+    #Create a view mapping our original type to our target type, data shape is the same so let Sds handle the mapping
+    view = SdsView()
     view.Id = sampleViewId
     view.Name = "SampleView"
     view.TargetTypeId = waveTargetType.Id
     view.SourceTypeId = waveType.Id
 
     #Data shape and data types are different so include explicit mappings between properties
-    manualView = QiView()
+    manualView = SdsView()
     manualView.Id = sampleViewIntId
     manualView.Name = "SampleIntView"
     manualView.TargetTypeId = waveIntegerType.Id
@@ -421,39 +425,39 @@ try:
     automaticView = client.getOrCreateView(namespaceId, view)
     manualView = client.getOrCreateView(namespaceId, manualView)
     
-    viewMap1 = QiViewMap()
+    viewMap1 = SdsViewMap()
     viewMap1 = client.getViewMap(namespaceId, automaticView.Id)
 
-    viewMap2 = QiViewMap()
+    viewMap2 = SdsViewMap()
     viewMap2 = client.getViewMap(namespaceId, manualView.Id)
 
-    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated)
+    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
     print()
-    print("QiViews")
+    print("SdsViews")
     print("Here is some of our data as it is stored on the server:")
     for way in rangeWaves:
         print(("Sin: {sin}, Cos: {cos}, Tan: {tan}".format(sin = way.Sin, cos = way.Cos, tan = way.Tan)))
 
     #view data when retrieved with a view
-    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated, automaticView.Id)
+    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticView.Id)
     print()
-    print("Specifying a view with a QiType of the same shape returns values that are automatically mapped to the target QiType's properties:")
+    print("Specifying a view with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:")
     for way in rangeWaves:
         print(("SinTarget: {sinTarget}, CosTarget: {cosTarget}, TanTarget: {tanTarget}".format(sinTarget = way.SinTarget, cosTarget = way.CosTarget, tanTarget = way.TanTarget)))
 
-    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataInteger, "1", 0, 3, False, QiBoundaryType.ExactOrCalculated, manualView.Id)
+    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataInteger, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, manualView.Id)
     print()
-    print("QiViews can also convert certain types of data, here we return integers where the original values were doubles:")
+    print("SdsViews can also convert certain types of data, here we return integers where the original values were doubles:")
     for way in rangeWaves:
         print(("SinInt: {sinInt}, CosInt: {cosInt}, TanInt: {tanInt}".format(sinInt = way.SinInt, cosInt = way.CosInt, tanInt = way.TanInt)))
 
     print ()
-    print ("We can query Qi to return the QiViewMap for our QiView, here is the one generated automatically:")
+    print ("We can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:")
     for prop in viewMap1.Properties:
         print(("{source} => {dest}".format(source = prop.SourceId, dest = prop.TargetId)))
 		
     print ()
-    print ("Here is our explicit mapping, note QiViewMap will return all properties of the Source Type, even those without a corresponding Target property:")
+    print ("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:")
     for prop in viewMap2.Properties:
         if hasattr(prop,'TargetId'):
             print(("{source} => {dest}".format(source = prop.SourceId, dest = prop.TargetId)))
@@ -502,7 +506,7 @@ try:
     # Delete events
     ######################################################################################################
     print()
-    print('Deleting values from the QiStream')
+    print('Deleting values from the SdsStream')
     # remove a single value from the stream
     client.removeValue(namespaceId, stream.Id, 0)
 
@@ -522,7 +526,7 @@ except Exception as i:
 
 finally:
     ######################################################################################################
-    # QiType, QiStream, QiView and QiBehavior deletion
+    # SdsType, SdsStream, SdsView and SdsBehavior deletion
     ######################################################################################################
 
     # Clean up the remaining artifacts
@@ -530,16 +534,13 @@ finally:
     print("Deleting the stream")
     supressError(lambda: client.deleteStream(namespaceId, sampleStreamId))
 
+    print("Deleting the views")
+    supressError(lambda: client.deleteView(namespaceId, sampleViewId))
+    supressError(lambda: client.deleteView(namespaceId, sampleViewIntId))
+
     print("Deleting the types")
     supressError(lambda: client.deleteType(namespaceId, sampleTypeId))
     supressError(lambda: client.deleteType(namespaceId, sampleTargetTypeId))
     supressError(lambda: client.deleteType(namespaceId, sampleIntegerTypeId))
-
-    print("Deleting the behavior")
-    supressError(lambda: client.deleteBehavior(namespaceId, sampleBehaviorId))
-
-    print("Deleting the views")
-    supressError(lambda: client.deleteView(namespaceId, sampleViewId))
-    supressError(lambda: client.deleteView(namespaceId, sampleViewIntId))
 
 print("done")
