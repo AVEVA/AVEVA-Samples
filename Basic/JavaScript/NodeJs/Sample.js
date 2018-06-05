@@ -3,7 +3,7 @@ var restCall = require("request-promise");
 var config = require("./config.js");
 
 // retrieve configuration
-var QiServerUrl = config.qiServerUrl;
+var SdsServerUrl = config.sdsServerUrl;
 var authItems = config.authItems;
 var tenantId = config.tenantId;
 
@@ -61,7 +61,7 @@ var dumpViewMap = function (obj) {
 
 var logError = function (err) {
     if  (typeof (err.statusCode) !== "undefined" && err.statusCode === 302) {
-        console.log("Qi Object already present in the Service\n");
+        console.log("Sds Object already present in the Service\n");
     }
     else {
         throw err;
@@ -74,67 +74,66 @@ http.createServer(function (request1, response) {
     }
     response.writeHead(200, { "Content-Type": "text/plain" });
 
-    response.write("---------------------------------------------------------------\n");
-    response.write("________  .__ _______             .___               __        \n");
-    response.write("\\_____  \\ |__|\\      \\   ____   __| _/____          |__| ______\n");
-    response.write(" /  / \\  \\|  |/   |   \\ /  _ \\ / __ |/ __ \\         |  |/  ___/\n");
-    response.write("/   \\_/.  \\  /    |    (  <_> ) /_/ \\  ___/         |  |\\___ \\ \n");
-    response.write("\\_____\\ \\_/__\\____|__  /\\____/\\____ |\\___  > /\\ /\\__|  /____  >\n");
-    response.write("       \\__>          \\/            \\/    \\/  \\/ \\______|    \\/ \n");
-    response.write("---------------------------------------------------------------\n");
-    response.write("Qi Service Operations Begun!\n");
+    response.write("------------------------------------------------------------------------------------\n");
+    response.write("  _________    .___      _______             .___               __        \n");
+    response.write(" /   _____/  __| _/______\\      \\   ____   __| _/____          |__| ______\n");
+    response.write(" \\_____  \\  / __ |/  ___//   |   \\ /  _ \\ / __ |/ __ \\         |  |/  ___/\n");
+    response.write(" /        \\/ /_/ |\\___ \\/    |    (  <_> ) /_/ \\  ___/         |  |\\___ \\ \n");
+    response.write("/_______  /\\____ /____  >____|__  /\\____/\\____ |\\___  > /\\ /\\__|  /____  >\n");
+    response.write("        \\/      \\/    \\/        \\/            \\/    \\/  \\/ \\______|    \\/ \n");
+    response.write("------------------------------------------------------------------------------------\n");
+    response.write("Sds Service Operations Begun!\n");
     response.write("Check the console for updates")
 
-    var qiObjs = require("./QiObjects.js");
-    var clientObj = require("./QiClient.js");
+    var sdsObjs = require("./SdsObjects.js");
+    var clientObj = require("./SdsClient.js");
     var waveDataObj = require("./WaveData.js");
 
     var sampleNamespaceId = config.namespaceId;
     var sampleTypeId = "WaveData_SampleType";
     var sampleStreamId = "WaveData_SampleStream";
-    var sampleBehaviorId = "WaveData_SampleBehavior";
     var sampleViewId = "WaveData_SampleView"
     var targetTypeId = "targetTypeId";
     var targetIntegerTypeId = "targetIntegerTypeId"
     var manualViewId = "WaveData_ManualView"
 
-    Object.freeze(qiObjs.qiTypeCode);
-    Object.freeze(qiObjs.qiBoundaryType);
-    Object.freeze(qiObjs.qiStreamMode);
+    Object.freeze(sdsObjs.sdsTypeCode);
+    Object.freeze(sdsObjs.sdsBoundaryType);
+    Object.freeze(sdsObjs.sdsStreamMode);
 
-    // define basic QiTypes
-    var doubleType = new qiObjs.QiType({ "Id": "doubleType", "QiTypeCode": qiObjs.qiTypeCode.Double });
-    var intType = new qiObjs.QiType({ "Id": "intType", "QiTypeCode": qiObjs.qiTypeCode.Int32 });
+    // define basic SdsTypes
+    var doubleType = new sdsObjs.SdsType({ "Id": "doubleType", "SdsTypeCode": sdsObjs.sdsTypeCode.Double });
+    var intType = new sdsObjs.SdsType({ "Id": "intType", "SdsTypeCode": sdsObjs.sdsTypeCode.Int32 });
 
     // define properties
-    var orderProperty = new qiObjs.QiTypeProperty({ "Id": "Order", "QiType": intType, "IsKey": true });
-    var radiansProperty = new qiObjs.QiTypeProperty({ "Id": "Radians", "QiType": doubleType });
-    var tauProperty = new qiObjs.QiTypeProperty({ "Id": "Tau", "QiType": doubleType });
-    var sinProperty = new qiObjs.QiTypeProperty({ "Id": "Sin", "QiType": doubleType });
-    var cosProperty = new qiObjs.QiTypeProperty({ "Id": "Cos", "QiType": doubleType });
-    var tanProperty = new qiObjs.QiTypeProperty({ "Id": "Tan", "QiType": doubleType });
-    var sinhProperty = new qiObjs.QiTypeProperty({ "Id": "Sinh", "QiType": doubleType });
-    var coshProperty = new qiObjs.QiTypeProperty({ "Id": "Cosh", "QiType": doubleType });
-    var tanhProperty = new qiObjs.QiTypeProperty({ "Id": "Tanh", "QiType": doubleType });
+    var orderProperty = new sdsObjs.SdsTypeProperty({ "Id": "Order", "SdsType": intType, "IsKey": true });
+    var radiansProperty = new sdsObjs.SdsTypeProperty({ "Id": "Radians", "SdsType": doubleType });
+    var tauProperty = new sdsObjs.SdsTypeProperty({ "Id": "Tau", "SdsType": doubleType });
+    var sinProperty = new sdsObjs.SdsTypeProperty({ "Id": "Sin", "SdsType": doubleType });
+    var cosProperty = new sdsObjs.SdsTypeProperty({ "Id": "Cos", "SdsType": doubleType });
+    var tanProperty = new sdsObjs.SdsTypeProperty({ "Id": "Tan", "SdsType": doubleType });
+    var sinhProperty = new sdsObjs.SdsTypeProperty({ "Id": "Sinh", "SdsType": doubleType });
+    var coshProperty = new sdsObjs.SdsTypeProperty({ "Id": "Cosh", "SdsType": doubleType });
+    var tanhProperty = new sdsObjs.SdsTypeProperty({ "Id": "Tanh", "SdsType": doubleType });
 
-    //create a QiType for WaveData Class
-    var sampleType = new qiObjs.QiType({
+    //create an SdsType for WaveData Class
+    var sampleType = new sdsObjs.SdsType({
         "Id": sampleTypeId, "Name": "WaveDataJs",
-        "Description": "This is a sample Qi type for storing WaveData type events",
-        "QiTypeCode" : qiObjs.qiTypeCode.Object,
+        "Description": "This is a sample Sds type for storing WaveData type events",
+        "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
         "Properties": [orderProperty, tauProperty, radiansProperty, sinProperty,
             cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
     });
 
-    var client = new clientObj.QiClient(QiServerUrl);
+    var client = new clientObj.SdsClient(SdsServerUrl);
 
     var getClientToken = client.getToken(authItems)
         .catch(function (err) { throw err });
 
     var nowSeconds = function () { return Date.now() / 1000; };
 
-    // create a QiType
-    console.log("\nCreating a QiType")
+    // create an SdsType
+    console.log("\nCreating an SdsType")
     var createType = getClientToken.then(
         function (res) {
             refreshToken(res, client);
@@ -150,17 +149,17 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err); });
 
-    //create a QiStream
-    console.log("Creating a QiStream")
-    var sampleStream = new qiObjs.QiStream({
+    //create an SdsStream
+    console.log("Creating an SdsStream")
+    var sampleStream = new sdsObjs.SdsStream({
         "Id": sampleStreamId, "Name": "WaveStreamJs",
-        "Description": "A Stream to store the WaveData Qi types events",
+        "Description": "A Stream to store the WaveDatan Sds types events",
         "TypeId": sampleTypeId
         });
 
     var createStream = createType.then(
         function (res) {
-            // create QiStream
+            // create SdsStream
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -426,57 +425,41 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err); });
 
-    // QiStreamBehaviors
+    // Property Overrides
     var getRangeEvents = printReplaceEvents.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
             }
         }
     ).catch(function (err) { logError(err); });
     
-    // create a QiBehavior    
-    var sampleBehavior = new qiObjs.QiBehavior({ "Mode": qiObjs.qiStreamMode.Discrete });
-    sampleBehavior.Id = sampleBehaviorId;
-    sampleBehavior.ExtrapolationMode = qiObjs.qiBoundaryType.Continuous;
+    // create a Property Override    
+    var propertyOverride = new sdsObjs.SdsPropertyOverride({ "SdsTypePropertyId": "Radians", "InterpolationMode": sdsObjs.sdsStreamMode.Discrete });
+    var propertyOverrides = [propertyOverride]
 
     var printDefaultBehavior = getRangeEvents.then(
         function (res){
             var obj = JSON.parse(res);
             foundEvents = obj;
-            console.log("\nQiStreamBehaviors determine whether Qi interpolates or extrapolates data at the requested index location");
-            console.log("\nDefault (Continuous) stream behavior, requesting data starting at index location '1', Qi will interpolate this value:");
+            console.log("\nSds can interpolate or extrapolate data at an index location where data does not explicitly exist.");
+            console.log("\nDefault (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:");
             obj.forEach(function (elem) {
                 console.log("Order: " + elem.Order +
-                            ", Radians: " + elem.Radians);
+                            ", Radians: " + elem.Radians + ", Cos : " + elem.Cos);
             });
     });
 
-    var createBehavior = printDefaultBehavior.then(
-        function (res) {
-            // create behavior
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.createBehavior(tenantId, sampleNamespaceId, sampleBehavior);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.createBehavior(tenantId, sampleNamespaceId, sampleBehavior);
-            }
-        }
-    ).catch(function (err) { logError(err); });
-
     // update stream
-    var updateStream = createBehavior.then(
+    var updateStream = printDefaultBehavior.then(
         function (res) {
-            sampleStream.BehaviorId = sampleBehaviorId;
+            sampleStream.PropertyOverrides = propertyOverrides;
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -495,10 +478,10 @@ http.createServer(function (request1, response) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated);
+                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -508,18 +491,19 @@ http.createServer(function (request1, response) {
         function (res) {
             var obj = JSON.parse(res);
             foundEvents = obj;
-            console.log("\nDiscrete stream behavior, Qi does not interpolate and returns the data starting at the next index location containing data:");
+            console.log("\nWe can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
+            console.log("\nSds will now return the default value for the data type:");
             obj.forEach(function (elem) {
                 console.log("Order: " + elem.Order +
-                            ", Radians: " + elem.Radians);
+                            ", Radians: " + elem.Radians + ", Cos: " + elem.Cos);
         });
         return obj;
     });
 
-    // QiViews
+    // SdsViews
     var viewMessage = printResultEvent.then(  
         function(res){ 
-            console.log("\nQiViews")
+            console.log("\nSdsViews")
             console.log("Here is some of our data as it is stored on the server:");
             res.forEach(function (elem) {
                 console.log("Sin: " + elem.Sin +
@@ -529,34 +513,34 @@ http.createServer(function (request1, response) {
     });
    
     // create properties for our target types
-    var orderTargetProperty = new qiObjs.QiTypeProperty({ "Id": "OrderTarget", "QiType": intType, "IsKey": true });
-    var radiansTargetProperty = new qiObjs.QiTypeProperty({ "Id": "RadiansTarget", "QiType": doubleType });
-    var tauTargetProperty = new qiObjs.QiTypeProperty({ "Id": "TauTarget", "QiType": doubleType });
-    var sinTargetProperty = new qiObjs.QiTypeProperty({ "Id": "SinTarget", "QiType": doubleType });
-    var cosTargetProperty = new qiObjs.QiTypeProperty({ "Id": "CosTarget", "QiType": doubleType });
-    var tanTargetProperty = new qiObjs.QiTypeProperty({ "Id": "TanTarget", "QiType": doubleType });
-    var sinhTargetProperty = new qiObjs.QiTypeProperty({ "Id": "SinhTarget", "QiType": doubleType });
-    var coshTargetProperty = new qiObjs.QiTypeProperty({ "Id": "CoshTarget", "QiType": doubleType });
-    var tanhTargetProperty = new qiObjs.QiTypeProperty({ "Id": "TanhTarget", "QiType": doubleType });
+    var orderTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "OrderTarget", "SdsType": intType, "IsKey": true });
+    var radiansTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "RadiansTarget", "SdsType": doubleType });
+    var tauTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "TauTarget", "SdsType": doubleType });
+    var sinTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "SinTarget", "SdsType": doubleType });
+    var cosTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "CosTarget", "SdsType": doubleType });
+    var tanTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "TanTarget", "SdsType": doubleType });
+    var sinhTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "SinhTarget", "SdsType": doubleType });
+    var coshTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "CoshTarget", "SdsType": doubleType });
+    var tanhTargetProperty = new sdsObjs.SdsTypeProperty({ "Id": "TanhTarget", "SdsType": doubleType });
 
-    var sinInt = new qiObjs.QiTypeProperty({ "Id": "SinInt", "QiType": intType });
-    var cosInt = new qiObjs.QiTypeProperty({ "Id": "CosInt", "QiType": intType });
-    var tanInt = new qiObjs.QiTypeProperty({ "Id": "TanInt", "QiType": intType });
+    var sinInt = new sdsObjs.SdsTypeProperty({ "Id": "SinInt", "SdsType": intType });
+    var cosInt = new sdsObjs.SdsTypeProperty({ "Id": "CosInt", "SdsType": intType });
+    var tanInt = new sdsObjs.SdsTypeProperty({ "Id": "TanInt", "SdsType": intType });
 
     // build additional types to define our targets
-    var integerType = new qiObjs.QiType({
+    var integerType = new sdsObjs.SdsType({
         "Id": targetIntegerTypeId, 
         "Name": "WaveDataTargetIntegersJs",
-        "Description": "This is a sample Qi type for storing a view of WaveData's sin, cos and tan properties as Integers",
-        "QiTypeCode" : qiObjs.qiTypeCode.Object,
+        "Description": "This is a sample Sds type for storing a view of WaveData's sin, cos and tan properties as Integers",
+        "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
         "Properties": [orderTargetProperty, tanInt, cosInt, sinInt]
     });
 
-    var targetType = new qiObjs.QiType({
+    var targetType = new sdsObjs.SdsType({
         "Id": targetTypeId, 
         "Name": "WaveDataTargetJs",
-        "Description": "This is a sample Qi type for storing a view of WaveData type events",
-        "QiTypeCode" : qiObjs.qiTypeCode.Object,
+        "Description": "This is a sample Sds type for storing a view of WaveData type events",
+        "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
         "Properties": [orderTargetProperty, tauTargetProperty, radiansTargetProperty, sinTargetProperty,
             cosTargetProperty, tanTargetProperty, sinhTargetProperty, coshTargetProperty, tanhTargetProperty],
     });
@@ -590,8 +574,8 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err); });
 
-    // build a view to map our sample type to our target type, as the properties are in the same order and of the same type Qi will do the mapping automatically
-    var autoView = new qiObjs.QiView({
+    // build a view to map our sample type to our target type, as the properties are in the same order and of the same type Sds will do the mapping automatically
+    var autoView = new sdsObjs.SdsView({
         "Id": sampleViewId, 
         "Name": "MapSampleTypeToATargetType",     
         "TargetTypeId" : targetTypeId,
@@ -613,13 +597,13 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err); });
  
-    // create QiViewProperties to explicitly map source property to target property 
-    var sinViewProperty = new qiObjs.QiViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
-    var cosViewProperty = new qiObjs.QiViewProperty({ "SourceId": "Cos", "TargetId": "CosInt" });
-    var tanViewProperty = new qiObjs.QiViewProperty({ "SourceId": "Tan", "TargetId": "TanInt" });
+    // create SdsViewProperties to explicitly map source property to target property 
+    var sinViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
+    var cosViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Cos", "TargetId": "CosInt" });
+    var tanViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Tan", "TargetId": "TanInt" });
     
-    // build a view using QiViewProperties
-    var manualView = new qiObjs.QiView({
+    // build a view using SdsViewProperties
+    var manualView = new sdsObjs.SdsView({
         "Id": manualViewId, 
         "Name": "MapSampleTypeToATargetType",     
         "TargetTypeId" : targetIntegerTypeId,
@@ -649,10 +633,10 @@ http.createServer(function (request1, response) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated, autoView.Id);
+                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoView.Id);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated, autoView.Id);
+                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoView.Id);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -661,7 +645,7 @@ http.createServer(function (request1, response) {
     var dumpViewEvent = getRangeViewEvents.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log("\nSpecifying a view with a QiType of the same shape returns values that are automatically mapped to the target QiType's properties:");
+            console.log("\nSpecifying a view with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
             obj.forEach(function (elem) {
                 console.log("SinTarget: " + elem.SinTarget +
                             ", CosTarget: " + elem.CosTarget  +
@@ -677,10 +661,10 @@ http.createServer(function (request1, response) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated, manualViewId);
+                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, manualViewId);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", qiObjs.qiBoundaryType.ExactOrCalculated, manualViewId);
+                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, manualViewId);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -689,7 +673,7 @@ http.createServer(function (request1, response) {
     var dumpIntegerViewEvent = getRangeIntegerViewEvents.then(
             function (res) {
                 var obj = JSON.parse(res);
-                console.log("\nQiViews can also convert certain types of data, here we return integers where the original values were doubles:");
+                console.log("\nSdsViews can also convert certain types of data, here we return integers where the original values were doubles:");
                 obj.forEach(function (elem) {
                     console.log("SinInt: " + elem.SinInt +
                                 ", CosInt: " + elem.CosInt  +
@@ -699,7 +683,7 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err);});
 
     // request maps
-    var getAutoQiViewMap = dumpIntegerViewEvent.then(
+    var getAutoSdsViewMap = dumpIntegerViewEvent.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -714,15 +698,15 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err); });
 
     // print map
-    var dumpMapResult = getAutoQiViewMap.then(
+    var dumpMapResult = getAutoSdsViewMap.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log("\nWe can query Qi to return the QiViewMap for our QiView, here is the one generated automatically:");
+            console.log("\nWe can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:");
             dumpViewMap(obj);
         }
     ).catch(function (err) { logError(err);});
 
-    var getManualQiViewMap = dumpMapResult.then(
+    var getManualSdsViewMap = dumpMapResult.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -737,10 +721,10 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err); });
 
     // print map
-    dumpMapResult = getManualQiViewMap.then(
+    dumpMapResult = getManualSdsViewMap.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log("\nHere is our explicit mapping, note QiViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
+            console.log("\nHere is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
             dumpViewMap(obj);
         }
     ).catch(function (err) { logError(err);});   
@@ -868,7 +852,7 @@ http.createServer(function (request1, response) {
     //delete an event
     var deleteOneEvent = printResult.then( 
         function(res) {
-           console.log("\nDeleting values from the QiStream");
+           console.log("\nDeleting values from the SdsStream");
            if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -919,6 +903,20 @@ http.createServer(function (request1, response) {
             } else {
                 return client.deleteStream(tenantId, sampleNamespaceId, sampleStreamId);
             }
+    }).finally( 
+        function () {
+            console.log("Deleting the views");
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        client.deleteView(tenantId, sampleNamespaceId, sampleViewId);
+                        return client.deleteView(tenantId, sampleNamespaceId, manualViewId);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                client.deleteView(tenantId, sampleNamespaceId, sampleViewId);
+                return client.deleteView(tenantId, sampleNamespaceId, manualViewId);
+            }
     }).finally(
         // delete the types
         function () {
@@ -936,33 +934,6 @@ http.createServer(function (request1, response) {
                 client.deleteType(tenantId, sampleNamespaceId, targetTypeId);
                 return client.deleteType(tenantId, sampleNamespaceId, sampleTypeId);
             }
-    }).finally(
-            // delete the behavior
-        function () {
-            console.log("Deleting the behavior");
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.deleteBehavior(tenantId, sampleNamespaceId, sampleBehaviorId);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.deleteBehavior(tenantId, sampleNamespaceId, sampleBehaviorId);
-            }
-    }).finally( 
-        function () {
-            console.log("Deleting the views");
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        client.deleteView(tenantId, sampleNamespaceId, sampleViewId);
-                        return client.deleteView(tenantId, sampleNamespaceId, manualViewId);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                client.deleteView(tenantId, sampleNamespaceId, sampleViewId);
-                return client.deleteView(tenantId, sampleNamespaceId, manualViewId);
-            }
     }).then(
         function () {
             console.log("done");
@@ -976,4 +947,4 @@ http.createServer(function (request1, response) {
 
 }).listen(8080);
 console.log("Server is listening at http://localhost:8080/");
-console.log("Qi endpoint at " + QiServerUrl);
+console.log("Sds endpoint at " + SdsServerUrl);
