@@ -4,11 +4,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigurationService } from './osiconfiguration.service';
 import { AdalService } from './adal/adal.service';
 import { AppComponent } from './app.component';
-import { QiRestService } from './qi.rest.service';
+import { SdsRestService } from './sds.rest.service';
 import { AuthHttp } from './adal/authHttp.service';
 import { DatasrcComponent } from './datasrc/datasrc.component';
 import { routing, appRoutingProviders  } from './app.routing';
-import { HttpModule } from '@angular/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
+import {AuthInterceptor} from "./adal/authInterceptor";
+import {OptionInterceptor} from "./adal/optionInterceptor";
 
 @NgModule({
   declarations: [
@@ -19,14 +21,25 @@ import { HttpModule } from '@angular/http';
     BrowserModule,
     NgbModule.forRoot(),
     routing,
-    HttpModule
+    HttpClientModule
   ],
   providers: [
     ConfigurationService,
     appRoutingProviders,
     AdalService,
-    QiRestService,
-    AuthHttp
+    SdsRestService,
+    AuthHttp,
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: OptionInterceptor,
+        multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+
   ],
   bootstrap: [AppComponent]
 })

@@ -1,29 +1,29 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 <div class="container-fluid text-center">
-  <h3>Creating a QiType</h3>
-  <p>To insert data into Qi, you must first create a QiType that will enforce what type of data is written to a stream.
+  <h3>Creating an SdsType</h3>
+  <p>To insert data into Sds, you must first create an SdsType that will enforce what type of data is written to a stream.
     For this sample, we will be writing events of the WaveData type discussed in the README.
-    Press the button below to create the WaveData QiType.</p>
+    Press the button below to create the WaveDatan SdsType.</p>
   <div>
     <button class="btn btn-primary" (click)="createType()">Create Type</button>
     <br>
     <span *ngIf="button1Message">Response: {{button1Message}}</span>
   </div>
-  <h3>Creating a QiStream</h3>
-  <p>Now that we have a QiType, we can create a QiStream. Once we create a stream and associate it with a type,
-  we can write data of that type to Qi. Press the button below to create a stream.</p>
+  <h3>Creating an SdsStream</h3>
+  <p>Now that we have an SdsType, we can create an SdsStream. Once we create a stream and associate it with a type,
+  we can write data of that type to Sds. Press the button below to create a stream.</p>
   <button class="btn btn-primary" (click)="createStream()">Create Stream</button>
   <br>
   <span *ngIf="button2Message">Response: {{button2Message}}</span>
-  <h3>Write data to Qi</h3>
-  <p>Press the button below to write 10 WaveData events to Qi using the InsertValues call.</p>
+  <h3>Write data to Sds</h3>
+  <p>Press the button below to write 10 WaveData events to Sds using the InsertValues call.</p>
   <button class="btn btn-primary" (click)="writeWaveDataEvents()">Insert Values</button>
   <br>
   <span *ngIf="button3Message">Response: {{button3Message}}</span>
-  <h3>Retrieving events from Qi</h3>
-  <p>There are several ways to read data back from Qi. Using GetRangeValues, we can start at index location "1" of our wave data
-  and get the remaining events. We didn't actually write a value with an index of 1, but since we use QiBoundaryType.ExactOrCalculated
+  <h3>Retrieving events from Sds</h3>
+  <p>There are several ways to read data back from Sds. Using GetRangeValues, we can start at index location "1" of our wave data
+  and get the remaining events. We didn't actually write a value with an index of 1, but since we use SdsBoundaryType.ExactOrCalculated
   in our request, we get an interpolated value at index location 1.</p>
   <button class="btn btn-primary" (click)="retrieveWaveDataEvents()">Retrieve Events</button>
   <br>
@@ -56,7 +56,7 @@
   </div>
   <h4>Update values</h4>
   <p>A call to update values will either create or replace an event at the associated index location.  We will send a collection of
-    twenty events to Qi, causing ten events to be updated and an additionaly ten to be created. Press Retrieve Events above to 
+    twenty events to Sds, causing ten events to be updated and an additionaly ten to be created. Press Retrieve Events above to 
     see the updated data.
   </p>
   <button class="btn btn-primary" (click)="updateWaveDataEvents()" >Update values</button>
@@ -69,26 +69,27 @@
   <button class="btn btn-primary" (click)="replaceWaveDataEvents()" >Replace values</button>
   <br>
   <span *ngIf="button15Message">Response: {{button15Message}}</span>
-  <h3>Using QiStreamBehaviors</h3>
-  <p>The default behavior for a QiStream is Continuous, which will allow interpolation when a requested index
-  isn't present. In order to change this to only give us exact values that were written, we can create a
-  behavior with Discrete mode and update the stream to use it. Once the stream is updated, we should no longer see a value at 1.</p>
-  <button class="btn btn-primary" (click)="createBehaviorAndUpdateStream()" >Create Behavior and Update Stream</button>
+  <h3>Property Overrides</h3>
+  <p>Sds can interpolate or extrapolate data at an index location where data does not explicitly exist. 
+    Using the default (Continuous) behavior and requesting data starting at index location '1', where we have not entered data, 
+    Sds will interpolate a value for each property.  We can override this behavior on a property by property basis, here we 
+    override the Radians property instructing Sds not to interpolate.  Sds will now return the default value for the data type.</p>
+  <button class="btn btn-primary" (click)="createPropertyOverrideAndUpdateStream()" >Create Property Override and Update Stream</button>
   <br>
   <span *ngIf="button5Message">Response: {{button5Message}}</span>
-  <h3>Using QiStreamViews</h3>
-  <p>QiStreamViews can return a view of the data stored on the server, we can use them to coerce QiStream data of 
+  <h3>Using SdsStreamViews</h3>
+  <p>SdsStreamViews can return a view of the data stored on the server, we can use them to coerce SdsStream data of 
     a certain type to be returned as another type. A simple example of this would be to provide a type with the same 
     data shape using different names for each property.</p>
-  <button class="btn btn-primary" (click)="createAutoviewTargetType()" >Create a target QiType</button>
+  <button class="btn btn-primary" (click)="createAutoviewTargetType()" >Create a target SdsType</button>
   <br>
   <span *ngIf="button6Message">Response: {{button6Message}}</span>
-  <p>Once we have created our target type we create a QiView specifying a SourceTypeId (our original QiType) and 
+  <p>Once we have created our target type we create an SdsView specifying a SourceTypeId (our original SdsType) and 
     a TargetTypeId.</p>
-  <button class="btn btn-primary" (click)="createAutoview()" >Create a QiView</button>
+  <button class="btn btn-primary" (click)="createAutoview()" >Create an SdsView</button>
   <br>
   <span *ngIf="button7Message">Response: {{button7Message}}</span>
-  <p>We can now use this QiView on any GET request and our data will be returned with the structure of the target QiType.</p>
+  <p>We can now use this SdsView on any GET request and our data will be returned with the structure of the target SdsType.</p>
     <button class="btn btn-primary" (click)="retrieveWaveDataEventsAutoview()" >Retrieve Events</button>
     <br>
     <span *ngIf="button8Message">Response: {{button8Message}}</span>
@@ -118,15 +119,15 @@
         </tr>
       </table>
     </div>
-  <p>We can also specify target types that have different shapes and data types, in the simple example above Qi 
+  <p>We can also specify target types that have different shapes and data types, in the simple example above Sds 
     was able to perform the mapping automatically.  To make more complex changes we will need to specify the mappings
-    explicitly.  For this we add a QiViewProperty mapping the source property to the target property.  We will create 
-    three QiViewProperties and return Sin, Cos and Tan as though they were integers.  
+    explicitly.  For this we add an SdsViewProperty mapping the source property to the target property.  We will create 
+    three SdsViewProperties and return Sin, Cos and Tan as though they were integers.  
   </p>
-    <button class="btn btn-primary" (click)="createQiViewPropertiesAndManualType()" >Create QiView with QiViewProperties</button>
+    <button class="btn btn-primary" (click)="createSdsViewPropertiesAndManualType()" >Create SdsView with SdsViewProperties</button>
     <br>
     <span *ngIf="button9Message">Response: {{button9Message}}</span>
-    <p>  Speficying this QiView on our GET request we see that Qi has only returned values for those Properties that have
+    <p>  Speficying this SdsView on our GET request we see that Sds has only returned values for those Properties that have
       an explicit mapping.
       </p>
         <button class="btn btn-primary" (click)="retrieveWaveDataEventsManualview()" >Retrieve Events</button>
@@ -148,10 +149,10 @@
               </tr>
             </table>
           </div>
-        <p>  Finally, if we are ever curious about the mapping for a specific view we can request its QiViewMap.  This will show the relationship 
+        <p>  Finally, if we are ever curious about the mapping for a specific view we can request its SdsViewMap.  This will show the relationship 
           between the SourceType and the TargetType.
             </p>
-              <button class="btn btn-primary" (click)="getQiViewMap()" >Request QiViewMap</button>
+              <button class="btn btn-primary" (click)="getSdsViewMap()" >Request SdsViewMap</button>
               <br>
               <span *ngIf="button11Message">Response: {{button11Message}}</span>
               <div *ngIf="hasMapProperties">
@@ -217,20 +218,20 @@
     </div>
   <p></p>
   <p>We can also use our tags to search for streams, let's search for streams tagged with 'periodic':</p>
-  <button class="btn btn-primary" (click)="searchForQiStream()">Search For Streams</button>
+  <button class="btn btn-primary" (click)="searchForSdsStream()">Search For Streams</button>
   <br>
   <span *ngIf="button19Message">{{button19Message}}</span>
 
   <h3>Delete Values</h3>
-  <p>Press the button below to delete all values from the QiStream, pressing Retrieve Events 
+  <p>Press the button below to delete all values from the SdsStream, pressing Retrieve Events 
     above should now return an empty array.
   </p>
   <button class="btn btn-primary" (click)="deleteAllValues()">Delete Values</button>
   <br>
   <span *ngIf="button13Message">Response: {{button13Message}}</span>
 
-  <h4>Deleting types, streams, views and behaviors</h4>
-  <p>Press the button below to delete the types, streams, views and behaviors that this sample has created. Failure to do
+  <h4>Deleting types, streams and views</h4>
+  <p>Press the button below to delete the types, streams and views that this sample has created. Failure to do
   so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
   written to that stream.</p>
   <button class="btn btn-primary" (click)="cleanup()">Clean up</button>

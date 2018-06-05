@@ -67,7 +67,7 @@ declare function escape(s: string): string;
          log: function (message) {
              console.log(message);
           }
-    }
+    };
 
 @Injectable()
 export class AuthenticationContext {
@@ -541,7 +541,7 @@ export class AuthenticationContext {
         self.info('LoadFrame: ' + frameName);
         const frameCheck = frameName;
         setTimeout(function () {
-            const frameHandle = self._addAdalFrame(frameCheck) as HTMLIFrameElement; ;
+            const frameHandle = self._addAdalFrame(frameCheck) as HTMLIFrameElement;
             if (frameHandle.src === '' || frameHandle.src === 'about:blank') {
                 frameHandle.src = urlNavigate;
                 self._loadFrame(urlNavigate, frameCheck);
@@ -1103,7 +1103,7 @@ export class AuthenticationContext {
                 decoded += String.fromCharCode(c1, c2);
                 break;
             } else if (i + 1 === length - 1) {
-                bits = h1 << 18 | h2 << 12
+                bits = h1 << 18 | h2 << 12;
                 c1 = bits >> 16 & 255;
                 decoded += String.fromCharCode(c1);
                 break;
@@ -1126,8 +1126,7 @@ export class AuthenticationContext {
     _decodeJwt(jwtToken) {
         if (this._isEmpty(jwtToken)) {
             return null;
-        };
-
+        }
         const idTokenPartsRegex = /^([^\.\s]*)\.([^\.\s]+)\.([^\.\s]*)$/;
 
         const matches = idTokenPartsRegex.exec(jwtToken);
@@ -1298,7 +1297,7 @@ export class AuthenticationContext {
 
                 adalFrame = document.getElementsByTagName('body')[0].appendChild(ifr) as HTMLElement;
             } else if (document.body && document.body.insertAdjacentHTML) {
-                document.body.insertAdjacentHTML('beforeEnd', '<iframe name="'
+                document.body.insertAdjacentHTML('beforeend', '<iframe name="'
                   + iframeId + '" id="' + iframeId + '" style="display:none" sandbox="allow-popups"></iframe>');
             }
             if (window.frames && window.frames[iframeId]) {

@@ -1,10 +1,10 @@
-import { Angular4samplePage } from './app.po';
+import { angular6samplePage } from './app.po';
 
-describe('angular4sample App', () => {
-  let page: Angular4samplePage;
+describe('angular6sample App', () => {
+  let page: angular6samplePage;
 
   beforeEach(() => {
-    page = new Angular4samplePage();
+    page = new angular6samplePage();
   });
 
   it('should display welcome message', () => {
