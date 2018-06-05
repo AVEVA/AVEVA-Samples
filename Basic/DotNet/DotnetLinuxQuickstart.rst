@@ -1,10 +1,10 @@
 Quick Start .NET Core on Linux
 ==============================
 
-Qi Client Libraries are Portable
+Sds Client Libraries are Portable
 --------------------------------
 
-The .NET Qi Client Libraries example was built using .NET Core.  This allows the application
+The .NET Sds Client Libraries example was built using .NET Core.  This allows the application
 to be built and run against a number of different platforms including Windows, macOS and Linux.  
 For those who are relatively new to working with Linux or .NET Core this quick start provides a 
 straight forward example of how to configure your environment and quickly get the sample code
@@ -27,13 +27,13 @@ Version Considerations
 
 .NET Core is currently split into two major versions, 1x and 2x.  This example targets .NET Core 2.x.  If you wish to 
 use the .NET Core 1.x version you will need to make changes to sudo apt-get install dotnet-sdk-2.1.3 command in the sequence
-as well as the QiClientLibrariesCore.csproj file within the project directory.   
+as well as the SdsClientLibrariesCore.csproj file within the project directory.   
 
 Command Sequence 
 -----------------
 
 The following command sequence demonstrates the minimum configuration and execution steps needed to run the 
-QiClientLibrariesCore project on a new installation of Ubuntu 16.04, users should make appropriate changes for
+SdsClientLibrariesCore project on a new installation of Ubuntu 16.04, users should make appropriate changes for
 other platforms.  Additionally, as with all of the sample code, the TenantId, NamespaceId and Access Key settings 
 will need to be specified, this step is shown here by opening the appsettings.json file with the Nano file editor. 
 
@@ -47,11 +47,11 @@ will need to be specified, this step is shown here by opening the appsettings.js
 	sudo apt-get update
 	sudo apt-get install dotnet-sdk-2.1.3
 	sudo apt-get install git
-	sudo git clone https://github.com/osisoft/Qi-Samples.git
-	cd Qi-Samples/Basic/DotNet/QiClientLibraries/QiClientLibraries/
+	sudo git clone https://github.com/osisoft/Sds-Samples.git
+	cd Sds-Samples/Basic/DotNet/SdsClientLibraries/SdsClientLibraries/
 	sudo nano appsettings.json
 	sudo dotnet publish
-	sudo dotnet run bin/Debug/netcoreapp2.0/publish/QiClientLibrariesCore.dll 
+	sudo dotnet run bin/Debug/netcoreapp2.0/publish/SdsClientLibrariesCore.dll 
 
 
 Further reading
@@ -65,4 +65,3 @@ https://docs.microsoft.com/en-us/dotnet/core/
 https://help.ubuntu.com/community/UsingTheTerminal
 
 https://www.nano-editor.org/dist/v2.9/nano.html
-
