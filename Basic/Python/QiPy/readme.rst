@@ -21,6 +21,9 @@ the following at the command line:
 
 	python -V
 
+The samples were built and tested against Python 3.6.4 and Python 2.7.14.  If you are using 
+a different version you might encounter errors or unexepected behavior.    
+	
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
