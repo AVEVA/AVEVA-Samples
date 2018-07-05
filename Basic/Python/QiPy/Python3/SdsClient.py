@@ -112,7 +112,7 @@ class SdsClient(object):
             raise SdsError(
                 "Failed to create type, {type_id}. {status}:{reason}".format(type_id=type.Id, status=response.status_code, reason=response.text))
         
-        type = SdsType.fromJson(json.loads(response.content))
+        type = SdsType.fromJson(json.loads(response.content.decode('utf-8')))
         response.close()
         return type
 
@@ -186,7 +186,7 @@ class SdsClient(object):
             raise SdsError("Failed to get SdsView, {view_id}. {status}:{reason}".
                           format(view_id=view_id, status=response.status_code, reason=response.text))
 
-        viewMap = SdsViewMap.fromJson(json.loads(response.content))
+        viewMap = SdsViewMap.fromJson(json.loads(response.content.decode('utf-8')))
         response.close()
         return viewMap
 
@@ -226,7 +226,7 @@ class SdsClient(object):
             raise SdsError("Failed to create SdsView, {view_id}. {status}:{reason}".
                           format(view_id=view.Id, status=response.status_code, reason=response.text))
 
-        view = SdsView.fromJson(json.loads(response.content))
+        view = SdsView.fromJson(json.loads(response.content.decode('utf-8')))
         response.close()
         return view
 
@@ -421,7 +421,7 @@ class SdsClient(object):
             raise SdsError("Failed to get tags for Stream: {stream_id}. {status}:{reason}".
                           format(stream_id=stream.Id, status=response.status_code, reason=response.text))
                 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         response.close()
         return content
 
@@ -439,7 +439,7 @@ class SdsClient(object):
             raise SdsError("Failed to get metadata for Stream: {stream_id} and Key {key}. {status}:{reason}".
                           format(stream_id=stream.Id, status=response.status_code, reason=response.text))        
 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         response.close()
         return content
 
@@ -506,7 +506,7 @@ class SdsClient(object):
             raise SdsError("Failed to get last value for SdsStream {stream_id}. {status}:{reason}".
                           format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         response.close()
         return value_class.fromJson(content)
 
@@ -532,7 +532,7 @@ class SdsClient(object):
             raise SdsError("Failed to get window values for SdsStream {stream_id}. {status}:{reason}".
                           format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         response.close()
 
         values = []
@@ -570,7 +570,7 @@ class SdsClient(object):
             raise SdsError("Failed to get range of values from SdsStream, {stream_id}. {status}:{reason}".
                           format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         response.close()
         values = []
         for c in content:
