@@ -1,22 +1,22 @@
 [
 {"Title":"Python",
-"Description":"Sample Qi client written in Python language",
+"Description":"Sample Sds client written in Python language",
 "Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/Python/QiPy"
 },
 {"Title":".NET",
-"Description":"Sample Qi client written in C#",
+"Description":"Sample Sds client written in C#",
 "Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/DotNet"
 },
 {"Title":"Java",
-"Description":"Sample Qi client written in Java",
+"Description":"Sample Sds client written in Java",
 "Url": "https://github.com/osisoft/Qi-Samples/tree/master/Basic/Java"
 },
 {"Title":"NodeJs",
-"Description":"Sample Qi client written in NodeJs",
+"Description":"SampleSds client written in NodeJs",
 "Url":"https://github.com/osisoft/Qi-Samples/tree/master/Basic/JavaScript/NodeJs"
 },
 {"Title":"Angular",
-"Description":"Sample Qi client written in Angular",
+"Description":"Sample Sds client written in Angular",
 "Url":"https://github.com/osisoft/Qi-Samples/tree/master/Basic/JavaScript/Angular"
 }
 ]
