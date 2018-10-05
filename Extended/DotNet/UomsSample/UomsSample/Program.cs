@@ -30,7 +30,6 @@ namespace UomsSample
 {
     class Program
     {
-
         private static readonly string ResourcePrefix = ConfigurationManager.AppSettings["ResourcePrefix"];
 
         private static readonly string TypeId = $"{ResourcePrefix} Uom";
@@ -48,7 +47,6 @@ namespace UomsSample
 
         public static async Task MainAsync()
         {
-         
             string tenantId = ConfigurationManager.AppSettings["Tenant"];
             string namespaceId = ConfigurationManager.AppSettings["Namespace"];
             string address = ConfigurationManager.AppSettings["Address"];
@@ -212,7 +210,6 @@ namespace UomsSample
             await MetadataService.DeleteTypeAsync(TypeId);
 
             #endregion Deletion of Streams and type
-
         }
     }
 }
