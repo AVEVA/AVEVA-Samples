@@ -73,8 +73,8 @@ public class Program {
             System.out.println("Creating a SdsStream");
             SdsStream sampleStream = new SdsStream(sampleStreamId, sampleTypeId);
             String jsonStream = sdsclient.createStream(tenantId, namespaceId, sampleStream);
-            sampleStream = sdsclient.mGson.fromJson(jsonStream, SdsStream.class);	
-            
+            sampleStream = sdsclient.mGson.fromJson(jsonStream, SdsStream.class);
+
             // insert data
             System.out.println("Inserting data");
             
@@ -97,7 +97,7 @@ public class Program {
             WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
             System.out.println(data.toString());
             System.out.println();
-            
+
             // get all values
             System.out.println("Getting all events");            
             String jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "20");
@@ -341,7 +341,7 @@ public class Program {
    		 	jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "200");
    		 	foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
    		 	if(foundEvents.isEmpty())
-   		 		System.out.println("All values deleted successfully!"); 	
+   		 		System.out.println("All values deleted successfully!");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -572,7 +572,7 @@ public class Program {
         sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
         System.out.println("Deleting the views");
         sdsclient.deleteView(tenantId, namespaceId, sampleViewId);
-        sdsclient.deleteView(tenantId, namespaceId, sampleManualViewId);        
+        sdsclient.deleteView(tenantId, namespaceId, sampleManualViewId);
         System.out.println("Deleting the types");
         sdsclient.deleteType(tenantId, namespaceId, sampleTypeId);
         sdsclient.deleteType(tenantId, namespaceId, targetTypeId);
