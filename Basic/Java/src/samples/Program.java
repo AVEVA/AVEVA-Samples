@@ -74,7 +74,6 @@ public class Program {
             SdsStream sampleStream = new SdsStream(sampleStreamId, sampleTypeId);
             String jsonStream = sdsclient.createStream(tenantId, namespaceId, sampleStream);
             sampleStream = sdsclient.mGson.fromJson(jsonStream, SdsStream.class);
-
             // insert data
             System.out.println("Inserting data");
             
@@ -97,7 +96,6 @@ public class Program {
             WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
             System.out.println(data.toString());
             System.out.println();
-
             // get all values
             System.out.println("Getting all events");            
             String jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "20");
@@ -342,7 +340,6 @@ public class Program {
    		 	foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
    		 	if(foundEvents.isEmpty())
    		 		System.out.println("All values deleted successfully!");
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
