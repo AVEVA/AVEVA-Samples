@@ -26,6 +26,7 @@ import com.microsoft.aad.adal4j.ClientCredential;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -37,6 +38,7 @@ public class SdsClient {
     private static AuthenticationContext authContext = null;
     private static ExecutorService service = null;
     private static AuthenticationResult result = null;
+    private static long FIVE_MINUTES_IN_MILLISECONDS = 300000;
     Gson mGson = null;
     private String baseUrl = null;
     // REST API url strings
@@ -65,6 +67,7 @@ public class SdsClient {
     private String insertMultiplePath = dataBase + "/InsertValues";
     private String getSingleQuery = dataBase + "/GetValue?index={index}";
     private String getLastValuePath = dataBase + "/GetLastValue?";
+    private String getFirstValuePath = dataBase + "/GetFirstValue?";
     private String getWindowQuery = dataBase + "/GetWindowValues?startIndex={startIndex}&endIndex={endIndex}";
     private String getRangeQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}";
     private String getRangeViewQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&viewId={viewId}";
@@ -80,12 +83,12 @@ public class SdsClient {
         this.mGson = new Gson();
     }
 
-    public static java.net.HttpURLConnection getConnection(URL url, String method) {
-        java.net.HttpURLConnection urlConnection = null;
+    public static HttpURLConnection getConnection(URL url, String method) {
+        HttpURLConnection urlConnection = null;
         AuthenticationResult token = AcquireAuthToken();
 
         try {
-            urlConnection = (java.net.HttpURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Accept", "*/*; q=1");
             urlConnection.setRequestMethod(method);
             urlConnection.setUseCaches(false);
@@ -113,6 +116,17 @@ public class SdsClient {
     }
 
     static protected AuthenticationResult AcquireAuthToken() {
+
+        if(result != null){
+            long tokenExpirationTime = result.getExpiresOnDate().getTime(); // returns time in milliseconds.
+            long currentTime = System.currentTimeMillis();
+            long timeDifference = tokenExpirationTime - currentTime;
+
+            if(timeDifference > FIVE_MINUTES_IN_MILLISECONDS){
+                return result;
+            }
+        }
+
         // get configuration
         String clientId = getConfiguration("clientId");
         String clientSecret = getConfiguration("clientSecret");
@@ -124,10 +138,6 @@ public class SdsClient {
             if (authContext == null) {
                 authContext = new AuthenticationContext(authority, true, service);
             }
-
-            // tokens expire after a certain period of time
-            // You can check this with the ExpiresOn property of AuthenticationResult, but it is not necessary.
-            // ADAL maintains an in-memory cache of tokens and transparently refreshes them as needed
 
             ClientCredential userCred = new ClientCredential(clientId, clientSecret);
             Future<AuthenticationResult> authResult = authContext.acquireToken(resource, userCred, null);
@@ -163,8 +173,8 @@ public class SdsClient {
     }
 
     public String createType(String tenantId, String namespaceId, SdsType typeDef) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
         String typeId = typeDef.getId();
@@ -211,8 +221,8 @@ public class SdsClient {
     }
     
     public String createView(String tenantId, String namespaceId, SdsView viewDef) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
         String viewId = viewDef.getId();
@@ -259,8 +269,8 @@ public class SdsClient {
     }
 
     public String getViewMap(String tenantId, String namespaceId, String viewId) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -299,8 +309,8 @@ public class SdsClient {
     }
     
     public String getType(String tenantId, String namespaceId, String typeId) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -339,8 +349,8 @@ public class SdsClient {
     }
 
     public String getTypes(String tenantId, String namespaceId, String skip, String count) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -379,8 +389,8 @@ public class SdsClient {
     }
 
     public void deleteType(String tenantId, String namespaceId, String typeId) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + typePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
@@ -407,8 +417,8 @@ public class SdsClient {
         }
     }
     public void deleteView(String tenantId, String namespaceId, String viewId) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + getViewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
@@ -435,8 +445,8 @@ public class SdsClient {
         }
     }
      public String createStream(String tenantId, String namespaceId, SdsStream streamDef) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
 		String streamId = streamDef.getId();
@@ -486,8 +496,8 @@ public class SdsClient {
     }
 
     public String getStream(String tenantId, String namespaceId, String streamId) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -525,8 +535,8 @@ public class SdsClient {
     }
 
     public ArrayList<SdsStream> getStreams(String tenantId, String namespaceId, String query, String skip, String count) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -568,8 +578,8 @@ public class SdsClient {
 
     public void updateStream(String tenantId, String namespaceId, String streamId, SdsStream streamDef) throws SdsError {
 
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
 
         try {
@@ -605,8 +615,8 @@ public class SdsClient {
     }
 
     public void deleteStream(String tenantId, String namespaceId, String streamId) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
@@ -635,8 +645,8 @@ public class SdsClient {
 
     public void updateTags(String tenantId, String namespaceId, String streamId, ArrayList<String> tags) throws SdsError {
 
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
 
         try {
@@ -672,8 +682,8 @@ public class SdsClient {
     }
 
     public ArrayList<String> getTags(String tenantId, String namespaceId, String streamId) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -714,8 +724,8 @@ public class SdsClient {
     
     public void updateMetadata(String tenantId, String namespaceId, String streamId, Map<String, String> metadata) throws SdsError {
 
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
 
         try {
@@ -751,8 +761,8 @@ public class SdsClient {
     }
     
     public String getMetadata(String tenantId, String namespaceId, String streamId, String key) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -790,8 +800,8 @@ public class SdsClient {
     }
 
     public void insertValue(String tenantId, String namespaceId, String streamId, String evt) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + insertSinglePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
@@ -825,8 +835,8 @@ public class SdsClient {
     }
 
     public void insertValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         try {
             url = new URL(baseUrl + insertMultiplePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "POST");
@@ -859,8 +869,8 @@ public class SdsClient {
     }
 
     public String getValue(String tenantId, String namespaceId, String streamId, String index) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -901,8 +911,8 @@ public class SdsClient {
     }
 
     public String getLastValue(String tenantId, String namespaceId, String streamId) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -940,9 +950,49 @@ public class SdsClient {
         return jsonResults.toString();
     }
 
+    public String getFirstValue(String tenantId, String namespaceId, String streamId) throws SdsError {
+
+        URL url;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer jsonResults = new StringBuffer();
+
+        try {
+
+            url = new URL(baseUrl + getFirstValuePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            urlConnection = getConnection(url, "GET");
+
+        }   catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult != HttpURLConnection.HTTP_OK) {
+                throw new SdsError(urlConnection, "get first value request failed");
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                jsonResults.append(inputLine);
+            }
+
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return jsonResults.toString();
+    }
+
     public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
@@ -984,8 +1034,8 @@ public class SdsClient {
     }
 
     public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
 
@@ -1027,8 +1077,8 @@ public class SdsClient {
     }
 
     public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType, String viewId) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
 
@@ -1072,8 +1122,8 @@ public class SdsClient {
 
     
     public void updateValue(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + updateSinglePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
@@ -1107,8 +1157,8 @@ public class SdsClient {
     }
 
     public void updateValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + updateMultiplePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
@@ -1141,8 +1191,8 @@ public class SdsClient {
     }
 
     public void replaceValue(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + replaceSinglePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
@@ -1175,8 +1225,8 @@ public class SdsClient {
     }
 
     public void replaceValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        java.net.URL url;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + replaceMultiplePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
@@ -1209,8 +1259,8 @@ public class SdsClient {
     }
 
     public void removeValue(String tenantId, String namespaceId, String streamId, String index) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + removeSingleQuery.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
@@ -1238,8 +1288,8 @@ public class SdsClient {
     }
 
     public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws SdsError {
-        java.net.URL url = null;
-        java.net.HttpURLConnection urlConnection = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
 
         try {
             url = new URL(baseUrl + removeMultipleQuery.replace("{tenantId}", tenantId)
