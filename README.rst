@@ -8,10 +8,10 @@ Sample Pattern
 
 All basic samples are console applications that follow the same sequence of events, allowing you to select the langauge with which you are most comfortable without missing any instructional features. The pattern followed is:
 
-1.  Instantiate a Sds client
+1.  Instantiate an Sds client
 2.  Obtain an authentication token
-3.  Create a SdsType to represent the data being stored
-4.  Create a SdsStream to store event data in
+3.  Create an SdsType to represent the data being stored
+4.  Create an SdsStream to store event data in
 5.  Create and insert events into the stream
 6.  Retrieve events for a specified range
 7.  Update events
