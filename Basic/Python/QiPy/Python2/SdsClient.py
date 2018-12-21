@@ -26,6 +26,8 @@ from SdsStream import SdsStream
 from SdsView import SdsView
 from SdsViewMap import SdsViewMap
 from SdsBoundaryType import SdsBoundaryType
+from SdsDataview import SdsDataview
+from SdsDatagroup import SdsDatagroup
 
 import requests
 import time
@@ -294,7 +296,7 @@ class SdsClient(object):
             response.close()
             raise SdsError("Failed to get SdsStream, {stream_id}. {status}:{reason}".
                           format(stream_id=stream_id, status=response.status_code, reason=response.text))
-
+        
         stream = SdsStream.fromJson(json.loads(response.content))
         response.close()
         return stream
@@ -483,6 +485,8 @@ class SdsClient(object):
 
         content = json.loads(response.content)
         response.close()
+        if value_class is None:
+            return content
         return value_class.fromJson(content)
 
     def getFirstValue(self, namespace_id, stream_id, value_class, view_id=""):
@@ -490,8 +494,6 @@ class SdsClient(object):
         if namespace_id is None:
             raise TypeError
         if stream_id is None:
-            raise TypeError
-        if value_class is None:
             raise TypeError
 
         response = requests.get(
@@ -504,6 +506,8 @@ class SdsClient(object):
 
         content = json.loads(response.content)
         response.close()
+        if value_class is None:
+            return content
         return value_class.fromJson(content)
 
     def getLastValue(self, namespace_id, stream_id, value_class, view_id=""):
@@ -511,8 +515,6 @@ class SdsClient(object):
         if namespace_id is None:
             raise TypeError
         if stream_id is None:
-            raise TypeError
-        if value_class is None:
             raise TypeError
 
         response = requests.get(
@@ -525,6 +527,8 @@ class SdsClient(object):
 
         content = json.loads(response.content)
         response.close()
+        if value_class is None:
+            return content
         return value_class.fromJson(content)
 
     def getWindowValues(self, namespace_id, stream_id, value_class, start, end, view_id=""):
@@ -532,8 +536,6 @@ class SdsClient(object):
         if namespace_id is None:
             raise TypeError
         if stream_id is None:
-            raise TypeError
-        if value_class is None:
             raise TypeError
         if start is None:
             raise TypeError
@@ -552,6 +554,9 @@ class SdsClient(object):
         content = json.loads(response.content)
         response.close()
 
+        if value_class is None:
+            return content
+
         values = []
         for c in content:
             values.append(value_class.fromDictionary(c))
@@ -562,8 +567,6 @@ class SdsClient(object):
         if namespace_id is None:
             raise TypeError
         if stream_id is None:
-            raise TypeError
-        if value_class is None:
             raise TypeError
         if start is None:
             raise TypeError
@@ -589,6 +592,10 @@ class SdsClient(object):
 
         content = json.loads(response.content)
         response.close()
+        
+        if value_class is None:
+            return content
+            
         values = []
         for c in content:
             values.append(value_class.fromJson(c))
@@ -786,7 +793,193 @@ class SdsClient(object):
             raise SdsError("Failed to remove all values for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
         response.close()
+			
 
+
+    def postDataview(self, namespace_id, dataview):
+        """Tells Sds Service to create a dataview based on local 'dataview' or get if existing dataview matches"""
+        if namespace_id is None:
+            raise TypeError
+        if dataview is None or not isinstance(dataview, SdsDataview):
+            raise TypeError		
+		
+        response = requests.post(
+            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            data=dataview.toJson(), 
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError(
+                "Failed to create dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview.Id, status=response.status_code, reason=response.text))
+		
+        dataview = SdsDataview.fromJson(json.loads(response.content))
+        response.close()
+        return dataview
+		
+    def patchDataview(self, namespace_id, dataview):
+        """Tells Sds Service to update a dataview based on local 'dataview'"""
+        if namespace_id is None:
+            raise TypeError
+        if dataview is None or not isinstance(dataview, SdsDataview):
+            raise TypeError
+
+        response = requests.patch(
+            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            data=dataview.toJson(), 
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError(
+                "Failed to update dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview.Id, status=response.status_code, reason=response.text))
+        
+        dataview = SdsDataview.fromJson(json.loads(response.content))
+        response.close()
+        return dataview
+		
+		
+		
+    def deleteDataview(self, namespace_id, dataview_id):
+        """Tells Sds Service to delete a dataview based on 'dataview_id'"""
+        if namespace_id is None:
+            raise TypeError
+        if dataview_id is None:
+            raise TypeError
+	
+        response = requests.delete(
+            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError(
+                "Failed to delete dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+        
+        response.close()
+        return
+		
+		
+    def getDataview(self, namespace_id, dataview_id):
+        """Retrieves the dataview specified by 'dataview_id' from Sds Service"""
+        if namespace_id is None:
+            raise TypeError
+        if dataview_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get dataview, {dataview_id}. {status}:{reason}".
+                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+        
+        dataview = SdsDataview.fromJson(json.loads(response.content))
+        response.close()
+        return dataview
+		
+    def getDataviews(self, namespace_id, skip = 0, count =100):
+        """Retrieves all of the dataviews from Sds Service"""
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__url + self.__getDataviews.format(tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get dataviews. {status}:{reason}".
+                          format( status=response.status_code, reason=response.text))
+        
+        dataviews = json.loads(response.content)
+        results = []
+        for t in dataviews:
+            results.append(SdsDataview.fromJson(t))
+        response.close()
+        return results
+		
+		
+    def getDatagroups(self, namespace_id,dataview_id, skip = 0, count = 100):
+        """Retrieves all of the datagroups from the specified dataview from Sds Service"""
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__url + self.__getDatagroups.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get datagroups for dataview, . {status}:{reason}".
+                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+        
+
+        datagroups = json.loads(response.content)
+        results = {}
+        for key, value in datagroups.iteritems():
+            innerobj = {}
+            for key2, value2 in value.iteritems():
+                innerobj[key2] = SdsDatagroup.fromJson(value2)
+            results[key] = innerobj
+        response.close()
+
+        return results
+		
+		
+    def getDatagroup(self, namespace_id,dataview_id, datagroup_id):
+        """Retrieves a datagroupby 'datagroup_id' from the specified dataview from Sds Service"""
+        if namespace_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__url + self.__getDatagroup.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get datagroup for dataview, . {status}:{reason}".
+                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+        
+
+        datagroup = SdsDatagroup.fromJson(json.loads(response.content))
+        return datagroup
+	
+#needs other parameters with smart 
+    def getDataviewPreview(self, namespace_id, dataview_id, startIndex = None, endIndex = None, interval = None, form = None, count = -1, value_class = None):
+        """Retrieves the dataviewpreview of the 'dataview_id' from Sds Service"""
+        if namespace_id is None:
+            raise TypeError
+        if dataview_id is None:
+            raise TypeError
+
+        urlAdd = []
+        urlAddStr = ""
+        
+        if startIndex is not None:
+            urlAdd.append("startIndex=" +startIndex)
+        if endIndex is not None:
+            urlAdd.append("endIndex=" +endIndex)
+        if interval is not None:
+            urlAdd.append("interval=" +interval)
+        if form is not None:
+            urlAdd.append("form=" +form)
+        if count != -1:
+            urlAdd.append("count=" + str(count))
+        if len(urlAdd) != 0:
+            urlAddStr = "?" + '&'.join(str(x) for x in urlAdd)
+        
+        
+        response = requests.get(
+            self.__url + self.__getDataviewPreview.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
+            headers=self.__sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get dataview preview for dataview {dataview_id}. {status}:{reason}".
+                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+
+        content = json.loads(response.content)
+        response.close()
+		
+        if value_class is None:
+			return (content)
+        return value_class.fromJson(content)
+		
     # private methods
 
     def __getToken(self):
@@ -839,3 +1032,12 @@ class SdsClient(object):
         self.__replaceValuesPath = self.__dataPath + "/ReplaceValues"
         self.__removeValue = self.__dataPath + "/RemoveValue?index={index}"
         self.__removeWindowValues = self.__dataPath + "/RemoveWindowValues?startIndex={start}&endIndex={end}"
+		
+		
+        self.__dataviewsPath = self.__basePath + "/Dataviews"
+        self.__getDataviews= self.__dataviewsPath + "?skip={skip}&count={count}"
+        self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
+        self.__datagroupPath= self.__dataviewPath + "/Datagroups"
+        self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
+        self.__getDatagroups = self.__datagroupPath + "?skip={skip}&count={count}"
+        self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"
