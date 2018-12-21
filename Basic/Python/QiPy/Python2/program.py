@@ -4,8 +4,6 @@
 #
 # THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 # OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-# THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
-#
 # RESTRICTED RIGHTS LEGEND
 # Use, duplication, or disclosure by the Government is subject to restrictions
 # as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
@@ -256,6 +254,7 @@ sampleStreamId = "WaveData_SampleStream"
 sampleBehaviorId = "WaveData_SampleBehavior"
 sampleViewId = "WaveData_SampleView"
 sampleViewIntId = "WaveData_SampleIntView"
+sampleDataviewId = "WaveData_Dataview"
 
 try:
     config = configparser.ConfigParser()
@@ -524,6 +523,53 @@ try:
     streams = client.getStreams(namespaceId, "periodic")
     for x in range(len(streams)):
         print(streams[x].Id)
+
+    #bulk comment because the above Type's primary key is currently not supported by Dataviews.  But example is kept to show how you could interact if the the key was of type Datetime.
+    '''	
+    ######################################################################################################
+    # Dataviews
+    ######################################################################################################	
+	
+    dataview = SdsDataview()
+    dataview.Id = sampleDataviewId
+    query  = SdsDataviewQuery()
+    query.Id = sampleDataviewId
+    queryQuery = SdsDataviewQueryQuery()
+    queryQuery.Type = 'streamid'
+    queryQuery.Value = stream.Id
+    queryQuery.Operator = 'Contains'
+    query.Query = queryQuery
+    dataview.Queries = []
+    dataview.Queries.append(query)
+    map = SdsDataviewMapping()
+    map.IsDefault = True
+    dataview.Mappings = map
+    dataview.IndexDataType = "datetime"	
+	
+    print
+    print("posting dataview")		
+    dataviews = client.postDataview(namespaceId, dataview)
+	
+	
+    print
+    print("Getting dataviews")		
+    dataviews = client.getDataviews(namespaceId)
+    for dataview1 in dataviews:
+        print(dataview1.Id)		
+		
+		
+    print
+    print("Retrieving data")		
+    dg = client.getDataviewPreview(namespaceId,dataview.Id)
+    print(dg[0])
+	
+	
+	
+    print
+    print("Deleting dataview")		
+    dataviews = client.deleteDataview(namespaceId, dataview.Id)
+	'''	
+	
     ######################################################################################################
     # Delete events
     ######################################################################################################
@@ -565,5 +611,8 @@ finally:
     supressError(lambda: client.deleteType(namespaceId, sampleTypeId))
     supressError(lambda: client.deleteType(namespaceId, sampleTargetTypeId))
     supressError(lambda: client.deleteType(namespaceId, sampleIntegerTypeId))
+	
+    print("Deleting dataview")
+    supressError(lambda: client.deleteDataview(namespaceId, sampleDataviewId))
 
 print("done")
