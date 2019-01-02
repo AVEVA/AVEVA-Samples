@@ -78,7 +78,33 @@ public class SdsClient {
     private String removeSingleQuery = dataBase + "/RemoveValue?index={index}";
     private String removeMultipleQuery = dataBase + "/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}";
 
+    //dataview path
+    private String dataviewBase = requestBase + "/Dataviews";
+    private String getDataviews = dataviewBase + "?skip={skip}&count={count}";
+    private String dataviewPath = dataviewBase + "/{dataview_id}";
+    private String getDataviewPreview = dataviewPath + "/preview/interpolated";
+
+    private String datagroupPath = dataviewPath + "/Datagroups";
+    private String getDatagroup  = datagroupPath + "/{datagroup_id}";
+    private String getDatagroups  = datagroupPath + "?skip={skip}&count={count}";
+
+    //config parameters
+    private static String gclientId = "";
+    private static String gclientSecret = "";
+    private static String gauthority = "";
+    private static String gresource = "";
+
     public SdsClient(String baseUrl) {
+        this.baseUrl = baseUrl;
+        this.mGson = new Gson();
+    }
+    
+    public SdsClient(String baseUrl, String clientID, String clientSecret, String authority, String resource ) {
+        gclientId = clientID;
+        gclientSecret = clientSecret;
+        gauthority = authority;
+        gresource = resource;
+        
         this.baseUrl = baseUrl;
         this.mGson = new Gson();
     }
@@ -154,6 +180,22 @@ public class SdsClient {
         String property = "";
         Properties props = new Properties();
         InputStream inputStream;
+
+         if(propertyId.equals("clientId") && !gclientId.isEmpty()){
+            return gclientId;
+        }
+
+        if(propertyId.equals("clientSecret") && !gclientSecret.isEmpty()){
+            return gclientSecret;
+        }
+
+        if(propertyId.equals("authority") && !gauthority.isEmpty()){
+            return gauthority;
+        }
+
+        if(propertyId.equals("resource") && ! gresource.isEmpty()){
+            return gresource;
+        }
 
         try {
             inputStream = new FileInputStream("config.properties");
@@ -1317,4 +1359,372 @@ public class SdsClient {
             e.printStackTrace();
         }
     }
+    
+
+    public SdsDataview postDataview(String tenantId, String namespaceId, SdsDataview dataviewDef) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        String dataviewId = dataviewDef.getId();
+        
+        try {
+            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            urlConnection = getConnection(url, "POST");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String body = mGson.toJson(dataviewDef);
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(out);
+            writer.write(body);
+            writer.close();
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "create dataview request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+     
+        SdsDataview results = mGson.fromJson(response.toString(), new TypeToken<SdsDataview>(){}.getType());
+        return results;
+       // return response.toString();
+    }    
+
+    public SdsDataview patchDataview(String tenantId, String namespaceId, SdsDataview dataviewDef) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        String dataviewId = dataviewDef.getId();
+        
+        try {
+            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            urlConnection = getConnection(url, "PATCH");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String body = mGson.toJson(dataviewDef);
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(out);
+            writer.write(body);
+            writer.close();
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "update dataview request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SdsDataview results = mGson.fromJson(response.toString(), new TypeToken<SdsDataview>(){}.getType());
+        return results;
+       // return response.toString();
+    }    
+
+    public String deleteDataview(String tenantId, String namespaceId, String dataviewId) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            urlConnection = getConnection(url, "DELETE");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED|| httpResult == HttpURLConnection.HTTP_NO_CONTENT) {
+            } else {
+                throw new SdsError(urlConnection, "delete dataview request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response.toString();
+    }
+
+    public SdsDataview getDataview(String tenantId, String namespaceId, String dataviewId) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get dataview request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SdsDataview results = mGson.fromJson(response.toString(), new TypeToken<SdsDataview>(){}.getType());
+        return results;
+       // return response.toString();
+    }
+
+    public ArrayList<SdsDataview> getDataviews(String tenantId, String namespaceId) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + dataviewBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId));
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get dataviews request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<SdsDataview> results = mGson.fromJson(response.toString(), new TypeToken<ArrayList<SdsDataview>>(){}.getType());
+        return results;
+       // return response.toString();
+    }
+
+    public SdsDatagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + getDatagroups.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{skip}", skip.toString()).replace("{count}", count.toString()));
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get dataview datagroups request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SdsDatagroups results = mGson.fromJson(response.toString(), new TypeToken<SdsDatagroups>(){}.getType());
+        return results;
+       // return response.toString();
+    }
+
+    public SdsDatagroup getDatagroup(String tenantId, String namespaceId, String dataviewId, String datagroupId) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + getDatagroups.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{datagroupId}", datagroupId.toString()));
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get dataview datagroup request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SdsDatagroup results = mGson.fromJson(response.toString(), new TypeToken<SdsDatagroup>(){}.getType());
+        return results;
+       // return response.toString();
+    }
+
+    public Map<String,Object>[]  getDataviewPreview(String tenantId, String namespaceId, String dataviewId, String startIndex, String endIndex, String interval, String form, Integer count, String value_class) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + getDataviewPreview.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{startIndex}", startIndex.toString()).replace("{endIndex}", endIndex.toString()).replace("{interval}", interval.toString()).replace("{form}", form.toString()).replace("{count}", count.toString()).replace("{value_class}", value_class.toString()));
+            urlConnection = getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get dataview preview request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            printSdsErrorMessage(sdsError);
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map<String,Object>[]  results = mGson.fromJson(response.toString(), new TypeToken<Map<String,Object>[]>(){}.getType());
+        return results;
+       // return response.toString();
+    }
+
+
+
+
 }
