@@ -1,4 +1,4 @@
-/** SdsDataviewMapping.java
+/** Datagroups.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -17,25 +17,19 @@
 
 package samples;
 
+import java.util.Map;
 
-public class SdsDataviewMapping {
+public class Datagroups {
+    
+    private Map<String,Datagroup> DataGroups;
 
-    private String IsDefault = "";
-    private SdsDataviewMappingColumn[] Columns;
 
-    public String getIsDefault() {
-        return IsDefault;
+
+    public Map<String,Datagroup>  getDataGroups() {
+        return DataGroups;
     }
 
-    public void setIsDefault(String isDefault) {
-        this.IsDefault = isDefault;
-    }
-
-    public SdsDataviewMappingColumn[] getColumns() {
-        return Columns;
-    }
-
-    public void setColumns(SdsDataviewMappingColumn[] columns) {
-        this.Columns = columns;
+    public void setDataGroups(Map<String,Datagroup> dataGroups) {
+        this.DataGroups = dataGroups;
     }
 }

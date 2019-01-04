@@ -530,18 +530,18 @@ try:
     # Dataviews
     ######################################################################################################	
 	
-    dataview = SdsDataview()
+    dataview = Dataview()
     dataview.Id = sampleDataviewId
-    query  = SdsDataviewQuery()
+    query  = DataviewQuery()
     query.Id = sampleDataviewId
-    queryQuery = SdsDataviewQueryQuery()
+    queryQuery = DataviewQueryQuery()
     queryQuery.Type = 'streamid'
     queryQuery.Value = stream.Id
     queryQuery.Operator = 'Contains'
     query.Query = queryQuery
     dataview.Queries = []
     dataview.Queries.append(query)
-    map = SdsDataviewMapping()
+    map = DataviewMapping()
     map.IsDefault = True
     dataview.Mappings = map
     dataview.IndexDataType = "datetime"	

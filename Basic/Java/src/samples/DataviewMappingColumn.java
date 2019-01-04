@@ -1,4 +1,4 @@
-/** SdsDataviewMappingColumn.java
+/** DataviewMappingColumn.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -19,12 +19,12 @@ package samples;
 
 import java.util.Map;
 
-public class SdsDataviewMappingColumn {
+public class DataviewMappingColumn {
 
     private String Name = "";
     private String IsKey = "";
     private String DataType = "";
-    private SdsDataviewMappingRule MappingRule;
+    private DataviewMappingRule MappingRule;
 
     public String getName() {
         return Name;
@@ -50,11 +50,11 @@ public class SdsDataviewMappingColumn {
         this.DataType = dataType;
     }
 
-    public SdsDataviewMappingRule  getMappingRule() {
+    public DataviewMappingRule  getMappingRule() {
         return MappingRule;
     }
 
-    public void setMappingRule(SdsDataviewMappingRule mappingRule) {
+    public void setMappingRule(DataviewMappingRule mappingRule) {
         this.MappingRule = mappingRule;
     }
 }

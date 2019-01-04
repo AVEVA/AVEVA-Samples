@@ -1,4 +1,4 @@
-/** SdsDataviewIndexConfig.java
+/** DataviewIndexConfig.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -18,7 +18,7 @@
 package samples;
 
 
-public class SdsDataviewIndexConfig {
+public class DataviewIndexConfig {
 
     private String IsDefault = "";
     private String StartIndex = "";

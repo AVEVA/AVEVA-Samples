@@ -1,4 +1,4 @@
-# SdsDatagroup.py
+# DataviewQuery.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -15,22 +15,23 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 import json
+from DataviewQueryQuery import DataviewQueryQuery
 
-class SdsDatagroup(object):
-    """Sds Datagroup definition"""
+class DataviewQuery(object):
+    """Sds dataview definition"""
     @property
-    def Tokens(self):
-        return self.__tokens
-    @Tokens.setter
-    def Tokens(self, tokens):
-        self.__tokens = tokens
+    def Id(self):
+        return self.__id
+    @Id.setter
+    def Id(self, id):
+        self.__id = id
     
     @property
-    def DataItems(self):
-        return self.__dataItems
-    @DataItems.setter
-    def DataItems(self, dataItems):
-        self.__dataItems = dataItems    
+    def Query(self):
+        return self.__query
+    @Query.setter
+    def Query(self, query):
+        self.__query = query    
 
 
     def toJson(self):
@@ -38,26 +39,28 @@ class SdsDatagroup(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'DataItems' : self.DataItems, 'Tokens' : self.Tokens}
+        dictionary = { 'Id' : self.Id}
+        dictionary['Query'] = self.Query.toDictionary()
 	
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDatagroup.fromDictionary(jsonObj)
+        return DataviewQuery.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataGroup = SdsDatagroup()
+        dataviewQuery = DataviewQuery()
 
         if len(content) == 0:
-            return dataGroup
+            return dataviewQuery
 
-        if 'DataItems' in content:
-            dataGroup.DataItems = content['DataItems']
+        if 'Id' in content:
+            dataviewQuery.Id = content['Id']
 			
-        if 'Tokens' in content:
-            dataGroup.Tokens = content['Tokens']
+        if 'Query' in content:
+            dataviewQuery.Query = DataviewQueryQuery.fromDictionary(content['Query'])
 
-        return dataGroup
+
+        return dataviewQuery
 

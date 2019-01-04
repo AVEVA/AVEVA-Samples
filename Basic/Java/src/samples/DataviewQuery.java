@@ -1,4 +1,4 @@
-/** SdsDataviewQueryQuery.java
+/** DataviewQuery.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -18,33 +18,24 @@
 package samples;
 
 
-public class SdsDataviewQueryQuery {
+public class DataviewQuery {
 
-    private String Type = "";
-    private String Value = "";
-    private String Operator = "";
+    private String Id = "";
+    private DataviewQueryQuery Query;
 
-    public String getType() {
-        return Type;
+    public String getId() {
+        return Id;
     }
 
-    public void setType(String type) {
-        this.Type = type;
+    public void setId(String id) {
+        this.Id = id;
     }
 
-    public String getValue() {
-        return Value;
+    public DataviewQueryQuery getQuery() {
+        return Query;
     }
 
-    public void setValue(String value) {
-        this.Value = value;
-    }
-
-    public String getOperator() {
-        return Operator;
-    }
-
-    public void setOperator(String operator) {
-        this.Operator = operator;
+    public void setQuery(DataviewQueryQuery query) {
+        this.Query = query;
     }
 }

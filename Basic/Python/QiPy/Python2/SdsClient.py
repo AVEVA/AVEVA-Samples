@@ -26,8 +26,8 @@ from SdsStream import SdsStream
 from SdsView import SdsView
 from SdsViewMap import SdsViewMap
 from SdsBoundaryType import SdsBoundaryType
-from SdsDataview import SdsDataview
-from SdsDatagroup import SdsDatagroup
+from Dataview import Dataview
+from Datagroup import Datagroup
 
 import requests
 import time
@@ -800,7 +800,7 @@ class SdsClient(object):
         """Tells Sds Service to create a dataview based on local 'dataview' or get if existing dataview matches"""
         if namespace_id is None:
             raise TypeError
-        if dataview is None or not isinstance(dataview, SdsDataview):
+        if dataview is None or not isinstance(dataview, Dataview):
             raise TypeError		
 		
         response = requests.post(
@@ -812,7 +812,7 @@ class SdsClient(object):
             raise SdsError(
                 "Failed to create dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview.Id, status=response.status_code, reason=response.text))
 		
-        dataview = SdsDataview.fromJson(json.loads(response.content))
+        dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
         return dataview
 		
@@ -820,7 +820,7 @@ class SdsClient(object):
         """Tells Sds Service to update a dataview based on local 'dataview'"""
         if namespace_id is None:
             raise TypeError
-        if dataview is None or not isinstance(dataview, SdsDataview):
+        if dataview is None or not isinstance(dataview, Dataview):
             raise TypeError
 
         response = requests.patch(
@@ -832,7 +832,7 @@ class SdsClient(object):
             raise SdsError(
                 "Failed to update dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview.Id, status=response.status_code, reason=response.text))
         
-        dataview = SdsDataview.fromJson(json.loads(response.content))
+        dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
         return dataview
 		
@@ -872,7 +872,7 @@ class SdsClient(object):
             raise SdsError("Failed to get dataview, {dataview_id}. {status}:{reason}".
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
         
-        dataview = SdsDataview.fromJson(json.loads(response.content))
+        dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
         return dataview
 		
@@ -892,7 +892,7 @@ class SdsClient(object):
         dataviews = json.loads(response.content)
         results = []
         for t in dataviews:
-            results.append(SdsDataview.fromJson(t))
+            results.append(Dataview.fromJson(t))
         response.close()
         return results
 		
@@ -916,7 +916,7 @@ class SdsClient(object):
         for key, value in datagroups.iteritems():
             innerobj = {}
             for key2, value2 in value.iteritems():
-                innerobj[key2] = SdsDatagroup.fromJson(value2)
+                innerobj[key2] = Datagroup.fromJson(value2)
             results[key] = innerobj
         response.close()
 
@@ -937,7 +937,7 @@ class SdsClient(object):
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
         
 
-        datagroup = SdsDatagroup.fromJson(json.loads(response.content))
+        datagroup = Datagroup.fromJson(json.loads(response.content))
         return datagroup
 	
 #needs other parameters with smart 

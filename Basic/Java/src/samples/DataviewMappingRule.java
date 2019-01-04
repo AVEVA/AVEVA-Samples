@@ -1,4 +1,4 @@
-/** SdsDataviewMappingRule.java
+/** DataviewMappingRule.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -19,7 +19,7 @@ package samples;
 
 import java.util.Map;
 
-public class SdsDataviewMappingRule {
+public class DataviewMappingRule {
 
     private String[] PropertyPaths;
     private String GroupRuleId = "";

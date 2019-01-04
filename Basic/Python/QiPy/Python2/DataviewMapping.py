@@ -1,4 +1,4 @@
-# SdsDataviewMapping.py
+# DataviewMapping.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -15,10 +15,10 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 import json
-from SdsDataviewMappingColumn import SdsDataviewMappingColumn
+from DataviewMappingColumn import DataviewMappingColumn
 
-class SdsDataviewMapping(object):
-    """Sds dataview definition"""
+class DataviewMapping(object):
+    """ dataview mapping definition"""
     @property
     def IsDefault(self):
         return self.__isDefault
@@ -42,19 +42,19 @@ class SdsDataviewMapping(object):
         dictionary = { 'IsDefault' : self.IsDefault}
 	
         if hasattr(self, 'Columns'):
-            dictionary['Columns'] = []
-            for value in self.Columns:
-                dictionary['Columns'].append(value.toDictionary())			
+			dictionary['Columns'] = []
+			for value in self.Columns:
+				dictionary['Columns'].append(value.toDictionary())			
 
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDataviewMapping.fromDictionary(jsonObj)
+        return DataviewMapping.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataviewMapping = SdsDataviewMapping()
+        dataviewMapping = DataviewMapping()
 
         if len(content) == 0:
             return dataviewMapping
@@ -67,7 +67,7 @@ class SdsDataviewMapping(object):
             if columns is not None and len(columns) > 0:
                 dataviewMapping.Columns = []
                 for value in columns:
-                    dataviewMapping.Columns.append(SdsDataviewMappingColumn.fromDictionary(value))
+                    dataviewMapping.Columns.append(DataviewMappingColumn.fromDictionary(value))
                     
         return dataviewMapping
 

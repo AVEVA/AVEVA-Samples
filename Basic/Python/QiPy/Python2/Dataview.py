@@ -1,4 +1,4 @@
-# SdsDataview.py
+# Dataview.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -15,11 +15,12 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 import json
-from SdsDataviewQuery import SdsDataviewQuery
-from SdsDataviewMapping import SdsDataviewMapping
-from SdsDataviewIndexConfig import SdsDataviewIndexConfig
+from DataviewQuery import DataviewQuery
+from DataviewMapping import DataviewMapping
+from DataviewIndexConfig import DataviewIndexConfig
+from DataviewGroupRule import DataviewGroupRule
 
-class SdsDataview(object):
+class Dataview(object):
     """Sds dataview definition"""
     @property
     def Id(self):
@@ -70,6 +71,13 @@ class SdsDataview(object):
     def IndexDataType(self, indexDataType):
         self.__indexDataType = indexDataType
 
+    @property
+    def GroupRules(self):
+        return self.__groupRules
+    @GroupRules.setter
+    def GroupRules(self, groupRules):
+        self.__groupRules = groupRules
+
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -80,7 +88,7 @@ class SdsDataview(object):
 	
         dictionary['Queries'] = []
         for value in self.Queries:
-			dictionary['Queries'].append(value.toDictionary())			
+            dictionary['Queries'].append(value.toDictionary())			
 
         # optional properties
         if hasattr(self, 'Name'):
@@ -98,15 +106,21 @@ class SdsDataview(object):
         if hasattr(self, 'IndexDataType'):
             dictionary['IndexDataType'] = self.IndexDataType
 
+
+        if hasattr(self, 'GroupRules'):
+            dictionary['GroupRules'] = []
+            for value in self.GroupRules:
+                dictionary['GroupRules'].append(value.toDictionary())
+
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDataview.fromDictionary(jsonObj)
+        return Dataview.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataview = SdsDataview()
+        dataview = Dataview()
 
         if len(content) == 0:
             return dataview
@@ -126,17 +140,25 @@ class SdsDataview(object):
             if queries is not None and len(queries) > 0:
                 dataview.Queries = []
                 for value in queries:
-                    dataview.Queries.append(SdsDataviewQuery.fromDictionary(value))
+                    dataview.Queries.append(DataviewQuery.fromDictionary(value))
 
         if 'Mappings' in content:
-            dataview.Mappings = SdsDataviewMapping.fromDictionary(content['Mappings'])
+            dataview.Mappings = DataviewMapping.fromDictionary(content['Mappings'])
 
         if 'IndexConfig' in content:
-            dataview.IndexConfig = SdsDataviewIndexConfig.fromDictionary(content['IndexConfig'])
+            dataview.IndexConfig = DataviewIndexConfig.fromDictionary(content['IndexConfig'])
 
         if 'IndexDataType' in content:
             dataview.IndexDataType = content['IndexDataType']
             
+        
+        if 'GroupRules' in content:
+            groupRules = content['GroupRules']
+            if groupRules is not None and len(groupRules) > 0:
+                dataview.GroupRules = []
+                for value in groupRules:
+                    dataview.GroupRules.append(DataviewGroupRule.fromDictionary(value))
+
 
         return dataview
 

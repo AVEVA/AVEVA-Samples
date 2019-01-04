@@ -1,4 +1,4 @@
-# SdsDataviewMappingColumn.py
+# DataviewMappingColumn.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -16,7 +16,7 @@
 
 import json
 
-class SdsDataviewMappingColumn(object):
+class DataviewMappingColumn(object):
     """Sds dataview definition"""
     @property
     def Name(self):
@@ -48,18 +48,19 @@ class SdsDataviewMappingColumn(object):
         # required properties
         dictionary = { 'Name' : self.Name}
         dictionary['IsKey'] = self.IsKey
-	
-        dictionary['PropertyMappingRule'] = self.PropertyMappingRule      
+        
+        if hasattr(self, 'PropertyMappingRule'):
+            dictionary['PropertyMappingRule'] = self.PropertyMappingRule      
 
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDataviewMappingColumn.fromDictionary(jsonObj)
+        return DataviewMappingColumn.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataviewMappingColumn = SdsDataviewMappingColumn()
+        dataviewMappingColumn = DataviewMappingColumn()
 
         if len(content) == 0:
             return dataviewMappingColumn

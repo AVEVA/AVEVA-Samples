@@ -1,4 +1,4 @@
-/** SdsDatagroup.java
+/** DataviewQueryQuery.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -16,27 +16,35 @@
  */
 
 package samples;
-import java.util.Map;
 
-public class SdsDatagroup {
-    
-    private Map<String,Map<String,String>> Tokens;
-    private Map<String,Map<String,Object>> DataItems;
 
-    public Map<String,Map<String,String>>  getTokens() {
-        return Tokens;
+public class DataviewQueryQuery {
+
+    private String Type = "";
+    private String Value = "";
+    private String Operator = "";
+
+    public String getType() {
+        return Type;
     }
 
-    public void setTokens(Map<String,Map<String,String>> tokens) {
-        this.Tokens = tokens;
-    }
-    
-
-    public Map<String,Map<String,Object>> getDataItems() {
-        return DataItems;
+    public void setType(String type) {
+        this.Type = type;
     }
 
-    public void setDataItems(Map<String,Map<String,Object>> dataItems) {
-        this.DataItems = dataItems;
+    public String getValue() {
+        return Value;
+    }
+
+    public void setValue(String value) {
+        this.Value = value;
+    }
+
+    public String getOperator() {
+        return Operator;
+    }
+
+    public void setOperator(String operator) {
+        this.Operator = operator;
     }
 }

@@ -1,4 +1,4 @@
-# SdsDataviewQuery.py
+# Datagroup.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -15,23 +15,22 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 import json
-from SdsDataviewQueryQuery import SdsDataviewQueryQuery
 
-class SdsDataviewQuery(object):
-    """Sds dataview definition"""
+class Datagroup(object):
+    """ Datagroup definition"""
     @property
-    def Id(self):
-        return self.__id
-    @Id.setter
-    def Id(self, id):
-        self.__id = id
+    def Tokens(self):
+        return self.__tokens
+    @Tokens.setter
+    def Tokens(self, tokens):
+        self.__tokens = tokens
     
     @property
-    def Query(self):
-        return self.__query
-    @Query.setter
-    def Query(self, query):
-        self.__query = query    
+    def DataItems(self):
+        return self.__dataItems
+    @DataItems.setter
+    def DataItems(self, dataItems):
+        self.__dataItems = dataItems    
 
 
     def toJson(self):
@@ -39,28 +38,26 @@ class SdsDataviewQuery(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Id' : self.Id}
-        dictionary['Query'] = self.Query.toDictionary()
+        dictionary = { 'DataItems' : self.DataItems, 'Tokens' : self.Tokens}
 	
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDataviewQuery.fromDictionary(jsonObj)
+        return Datagroup.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataviewQuery = SdsDataviewQuery()
+        dataGroup = Datagroup()
 
         if len(content) == 0:
-            return dataviewQuery
+            return dataGroup
 
-        if 'Id' in content:
-            dataviewQuery.Id = content['Id']
+        if 'DataItems' in content:
+            dataGroup.DataItems = content['DataItems']
 			
-        if 'Query' in content:
-            dataviewQuery.Query = SdsDataviewQueryQuery.fromDictionary(content['Query'])
+        if 'Tokens' in content:
+            dataGroup.Tokens = content['Tokens']
 
-
-        return dataviewQuery
+        return dataGroup
 

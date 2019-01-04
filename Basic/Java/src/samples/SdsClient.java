@@ -1361,7 +1361,7 @@ public class SdsClient {
     }
     
 
-    public SdsDataview postDataview(String tenantId, String namespaceId, SdsDataview dataviewDef) throws SdsError {
+    public Dataview postDataview(String tenantId, String namespaceId, Dataview dataviewDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -1407,12 +1407,12 @@ public class SdsClient {
         }
 
      
-        SdsDataview results = mGson.fromJson(response.toString(), new TypeToken<SdsDataview>(){}.getType());
+        Dataview results = mGson.fromJson(response.toString(), new TypeToken<Dataview>(){}.getType());
         return results;
        // return response.toString();
     }    
 
-    public SdsDataview patchDataview(String tenantId, String namespaceId, SdsDataview dataviewDef) throws SdsError {
+    public Dataview patchDataview(String tenantId, String namespaceId, Dataview dataviewDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -1457,7 +1457,7 @@ public class SdsClient {
             e.printStackTrace();
         }
 
-        SdsDataview results = mGson.fromJson(response.toString(), new TypeToken<SdsDataview>(){}.getType());
+        Dataview results = mGson.fromJson(response.toString(), new TypeToken<Dataview>(){}.getType());
         return results;
        // return response.toString();
     }    
@@ -1504,7 +1504,7 @@ public class SdsClient {
         return response.toString();
     }
 
-    public SdsDataview getDataview(String tenantId, String namespaceId, String dataviewId) throws SdsError {
+    public Dataview getDataview(String tenantId, String namespaceId, String dataviewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -1543,12 +1543,12 @@ public class SdsClient {
             e.printStackTrace();
         }
 
-        SdsDataview results = mGson.fromJson(response.toString(), new TypeToken<SdsDataview>(){}.getType());
+        Dataview results = mGson.fromJson(response.toString(), new TypeToken<Dataview>(){}.getType());
         return results;
        // return response.toString();
     }
 
-    public ArrayList<SdsDataview> getDataviews(String tenantId, String namespaceId) throws SdsError {
+    public ArrayList<Dataview> getDataviews(String tenantId, String namespaceId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -1587,12 +1587,12 @@ public class SdsClient {
             e.printStackTrace();
         }
 
-        ArrayList<SdsDataview> results = mGson.fromJson(response.toString(), new TypeToken<ArrayList<SdsDataview>>(){}.getType());
+        ArrayList<Dataview> results = mGson.fromJson(response.toString(), new TypeToken<ArrayList<Dataview>>(){}.getType());
         return results;
        // return response.toString();
     }
 
-    public SdsDatagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count) throws SdsError {
+    public Datagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -1631,12 +1631,12 @@ public class SdsClient {
             e.printStackTrace();
         }
 
-        SdsDatagroups results = mGson.fromJson(response.toString(), new TypeToken<SdsDatagroups>(){}.getType());
+        Datagroups results = mGson.fromJson(response.toString(), new TypeToken<Datagroups>(){}.getType());
         return results;
        // return response.toString();
     }
 
-    public SdsDatagroup getDatagroup(String tenantId, String namespaceId, String dataviewId, String datagroupId) throws SdsError {
+    public Datagroup getDatagroup(String tenantId, String namespaceId, String dataviewId, String datagroupId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -1675,7 +1675,7 @@ public class SdsClient {
             e.printStackTrace();
         }
 
-        SdsDatagroup results = mGson.fromJson(response.toString(), new TypeToken<SdsDatagroup>(){}.getType());
+        Datagroup results = mGson.fromJson(response.toString(), new TypeToken<Datagroup>(){}.getType());
         return results;
        // return response.toString();
     }

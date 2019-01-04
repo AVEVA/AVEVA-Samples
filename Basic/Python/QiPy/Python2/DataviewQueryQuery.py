@@ -1,4 +1,4 @@
-# SdsDataviewQueryQuery.py
+# DataviewQueryQuery.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -16,8 +16,8 @@
 
 import json
 
-class SdsDataviewQueryQuery(object):
-    """Sds dataview definition"""
+class DataviewQueryQuery(object):
+    """ dataview query definition """
     @property
     def Type(self):
         return self.__type
@@ -52,11 +52,11 @@ class SdsDataviewQueryQuery(object):
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDataviewQueryQuery.fromDictionary(jsonObj)
+        return DataviewQueryQuery.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataviewQueryQuery = SdsDataviewQueryQuery()
+        dataviewQueryQuery = DataviewQueryQuery()
 
         if len(content) == 0:
             return dataviewQueryQuery
