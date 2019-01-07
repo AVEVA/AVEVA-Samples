@@ -443,12 +443,11 @@ namespace SdsRestApiCore
 
                 PrintViewMapProperties(sdsViewMap);
 
-                // tags, metadata and search
+                // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
                 var tags = new List<string> { "waves", "periodic", "2018", "validated" };
                 var metadata = new Dictionary<string, string>() { { "Region", "North America" }, { "Country", "Canada" }, { "Province", "Quebec" } };
-
-
+                
                 response =
                     await httpClient.PutAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}/Tags",
                     new StringContent(JsonConvert.SerializeObject(tags)));
@@ -515,28 +514,7 @@ namespace SdsRestApiCore
                 Console.WriteLine("Metadata key Province: " + province);
 
                 Console.WriteLine();
-                Console.WriteLine("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
-
-                Console.WriteLine();
-                Console.WriteLine("Pausing to allow for search indexing...");
-                // allow time for search indexing
-                await Task.Delay(15000);
-
-                response = await httpClient.GetAsync(
-                $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams?query=periodic");
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new HttpRequestException(response.ToString());
-                }
-
-                var streams = JsonConvert.DeserializeObject<List<SdsStream>>(await response.Content.ReadAsStringAsync());
-
-                foreach (var strm in streams)
-                {
-                    Console.WriteLine(strm.Id);
-                }
-                Console.WriteLine();
-
+              
                 Console.WriteLine("Deleting values from the SdsStream");
 
                 // delete one event

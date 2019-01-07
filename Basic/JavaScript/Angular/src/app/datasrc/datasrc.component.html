@@ -198,7 +198,7 @@
                   </ng-container>
                   </table>
                 </div>
-  <h3>Tags, Metadata and Search</h3>
+  <h3>Tags and Metadata</h3>
   <p>Let's add some tags and metadata to our stream</p>
   <button class="btn btn-primary" (click)="createTagsAndMetadata()">Create Tags and Metadata</button>
   <br>
@@ -233,11 +233,7 @@
             </tr>
       </table>
     </div>
-  <p></p>
-  <p>We can also use our tags to search for streams, let's search for streams tagged with 'periodic':</p>
-  <button class="btn btn-primary" (click)="searchForSdsStream()">Search For Streams</button>
-  <br>
-  <span *ngIf="button19Message">{{button19Message}}</span>
+  <p></p>  
 
   <h3>Delete Values</h3>
   <p>Press the button below to delete all values from the SdsStream, pressing Retrieve Events 

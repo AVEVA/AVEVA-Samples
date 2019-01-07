@@ -297,12 +297,12 @@ namespace SdsClientLibraries
                 Console.WriteLine("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
                 var manualViewMap = await metadataService.GetViewMapAsync(manualViewId);
                 PrintViewMapProperties(manualViewMap);
-
-                // tags, metadata and search
+                
+                // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
                 var tags = new List<string> { "waves", "periodic", "2018", "validated" };
                 var metadata = new Dictionary<string, string>() { { "Region", "North America" }, { "Country", "Canada" }, { "Province", "Quebec" } };
-
+                                
                 await metadataService.UpdateStreamTagsAsync(streamId, tags);
                 await metadataService.UpdateStreamMetadataAsync(streamId, metadata);
 
@@ -320,19 +320,6 @@ namespace SdsClientLibraries
                 Console.WriteLine("Metadata key Country: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Country"));
                 Console.WriteLine("Metadata key Province: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Province"));
 
-                Console.WriteLine();
-                Console.WriteLine("Pausing to allow for search indexing...");
-                // allow time for search indexing
-                await Task.Delay(15000);
-
-                Console.WriteLine("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
-
-                var streams = await metadataService.GetStreamsAsync("periodic");
-
-                foreach (var strm in streams)
-                {
-                    Console.WriteLine(strm.Id);
-                }
                 Console.WriteLine();
 
                 // delete values

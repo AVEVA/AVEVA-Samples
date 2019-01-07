@@ -483,9 +483,9 @@ try:
             print(("{source} => {dest}".format(source = prop.SourceId, dest = prop.TargetId)))
         else:
             print(("{source} => {dest}".format(source = prop.SourceId, dest = 'Not mapped')))
-
-    ######################################################################################################
-    # Tags, Metadata and Search
+			
+	######################################################################################################
+    # Tags and Metadata
     ######################################################################################################
     print
     print("Let's add some Tags and Metadata to our stream:")
@@ -512,17 +512,6 @@ try:
     print("Metadata key Country: " + country)
     print("Metadata key Province: " + province)
     print
-
-    #pause to allow for search indexing
-    print("Pausing to allow for search indexing...")
-    time.sleep(15)
-
-    print
-    print("We can also use our tags to search for streams, let's search for streams tagged with 'periodic':")
-
-    streams = client.getStreams(namespaceId, "periodic")
-    for x in range(len(streams)):
-        print(streams[x].Id)
 
     #bulk comment because the above Type's primary key is currently not supported by Dataviews.  But example is kept to show how you could interact if the the key was of type Datetime.
     '''	
