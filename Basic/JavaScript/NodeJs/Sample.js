@@ -745,7 +745,7 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err);});   
                 
-    //tags, metadata and search
+    //tags and metadata
     var createTags = dumpMapResult.then( 
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
@@ -826,44 +826,7 @@ http.createServer(function (request1, response) {
             console.log("Metadata key Country: " + obj["Country"])
             console.log("Metadata key Province: " + obj["Province"])                           
         }
-    ).catch(function (err) { logError(err);});   
-
-    // allow time for search indexing
-    var pauseForSearchIndexing = printMetadata.then(
-        function (res) {
-            console.log("\nPausing to allow for search indexing...")
-            return new Promise(resolve => setTimeout(resolve, 15000));
-        }
-    ).catch(function (err) { logError(err);}); 
-    
-
-    var searchForStream = pauseForSearchIndexing.then( 
-        function(res) {
-           console.log("\nWe can also use our tags to search for streams, let's search for streams tagged with 'periodic':");
-           if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.getStreams(tenantId, sampleNamespaceId, "periodic");
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.getStreams(tenantId, sampleNamespaceId, "periodic");
-            }
-        }
-    ).catch(function (err) { logError(err); });
-
-    // print search result
-    var printResult = searchForStream.then(
-        function (res) {
-            var obj = JSON.parse(res);
-            if(obj)
-            {
-                obj.forEach(function (elem) {
-                    console.log(elem.Id)
-                })
-            }                           
-        }
-    ).catch(function (err) { logError(err);});
+    ).catch(function (err) { logError(err);});       
 
     //delete an event
     var deleteOneEvent = printResult.then( 
