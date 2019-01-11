@@ -1,6 +1,6 @@
 ﻿// <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2019 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
