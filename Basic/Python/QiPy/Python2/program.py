@@ -523,53 +523,7 @@ try:
     streams = client.getStreams(namespaceId, "periodic")
     for x in range(len(streams)):
         print(streams[x].Id)
-
-    #bulk comment because the above Type's primary key is currently not supported by Dataviews.  But example is kept to show how you could interact if the the key was of type Datetime.
-    '''	
-    ######################################################################################################
-    # Dataviews
-    ######################################################################################################	
-	
-    dataview = Dataview()
-    dataview.Id = sampleDataviewId
-    query  = DataviewQuery()
-    query.Id = sampleDataviewId
-    queryQuery = DataviewQueryQuery()
-    queryQuery.Type = 'streamid'
-    queryQuery.Value = stream.Id
-    queryQuery.Operator = 'Contains'
-    query.Query = queryQuery
-    dataview.Queries = []
-    dataview.Queries.append(query)
-    map = DataviewMapping()
-    map.IsDefault = True
-    dataview.Mappings = map
-    dataview.IndexDataType = "datetime"	
-	
-    print
-    print("posting dataview")		
-    dataviews = client.postDataview(namespaceId, dataview)
-	
-	
-    print
-    print("Getting dataviews")		
-    dataviews = client.getDataviews(namespaceId)
-    for dataview1 in dataviews:
-        print(dataview1.Id)		
-		
-		
-    print
-    print("Retrieving data")		
-    dg = client.getDataviewPreview(namespaceId,dataview.Id)
-    print(dg[0])
-	
-	
-	
-    print
-    print("Deleting dataview")		
-    dataviews = client.deleteDataview(namespaceId, dataview.Id)
-	'''	
-	
+    	
     ######################################################################################################
     # Delete events
     ######################################################################################################
