@@ -521,26 +521,7 @@ export class DatasrcComponent {
       err => {
         this.button18Message = this.unhealthyResponseMessage(err);
       });
-  }
-
-  searchForSdsStream() {
-    this.sdsService.getStreams('periodic')
-      .subscribe(res => {
-        let result = 'Streams associated with "periodic": ';
-        const streams = res.body as Array<SdsStream>;
-        if (streams.length > 0) {
-          for (let i = 0; i < streams.length; i++) {
-            result += (streams[i].Id.toString() + ' ')
-          }
-          this.button19Message = result;
-        } else {
-          this.button19Message = 'No results found, search indexing can take up to 15 seconds, please try your request again.';
-        }
-    },
-      err => {
-        this.button19Message = this.unhealthyResponseMessage(err);
-      });
-  }
+  }      
 
   deleteAllValues() {
     this.sdsService.deleteWindowValues(streamId, '0', '200')
