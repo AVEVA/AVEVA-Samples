@@ -39,13 +39,13 @@ The official OCS samples are divided in multiple categories depending on the sce
     Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="samples/basicSDS">Details</a>
   </td>
     <td>
-     <a href="samples/BasicSDS/DotNet/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
+     <a href="samples/BasicSDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
      <a href="samples/BasicSDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
      <a href="samples/BasicSDS/Java">JAVA</a>&nbsp; &nbsp;
      <a href="samples/BasicSDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/JavaScript/nodeJS">nodeJS</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/Python/Python2">Python2</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/Python/Python3">Python3</a>&nbsp; &nbsp;
+     <a href="samples/BasicSDS/JavaScript/NodeJS">nodeJS</a>&nbsp; &nbsp;
+     <a href="samples/BasicSDS/Python/QiPy/Python2">Python2</a>&nbsp; &nbsp;
+     <a href="samples/BasicSDS/Python/QiPy/Python3">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -67,7 +67,7 @@ The official OCS samples are divided in multiple categories depending on the sce
   Covers the basic functionality of the UOM system on OCS
   </td>
   <td>
-     <a href="UomsSample/Dotnet/UomsSample">.NET</a>&nbsp; &nbsp;
+     <a href="samples/UomsSample/Dotnet/UomsSample">.NET</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -105,7 +105,7 @@ The project is a complete (very simple) command line application that takes a PI
 This samples sends snapshot values from PI to OCS via OMF.
   </td>
   <td>
-     <a href="samples/PIToOCSviaAPISample/DotNet">.NET*'</a>&nbsp; &nbsp;
+     <a href="samples/PItoOCSviaAPISample/DotNet">.NET*'</a>&nbsp; &nbsp;
   </td>
  </tr>
  </table>
