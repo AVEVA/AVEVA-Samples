@@ -126,4 +126,4 @@ Please raise an issue if you would like to see a new task, a new example inside 
 
 ## License
 
-[OCS Samples](https://github.com/osisoft/ocs-samples) are licensed under the [Apache 2 license](LICENSE).
+[OCS Samples](https://github.com/osisoft/ocs-samples) are licensed under the [Apache 2 license](LICENSE.md).
