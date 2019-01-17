@@ -1,4 +1,4 @@
-/** SdsDatagroups.java
+/** Datagroup.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -16,20 +16,27 @@
  */
 
 package samples;
-
 import java.util.Map;
 
-public class SdsDatagroups {
+public class Datagroup {
     
-    private Map<String,SdsDatagroup> DataGroups;
+    private Map<String,Map<String,String>> Tokens;
+    private Map<String,Map<String,Object>> DataItems;
 
-
-
-    public Map<String,SdsDatagroup>  getDataGroups() {
-        return DataGroups;
+    public Map<String,Map<String,String>>  getTokens() {
+        return Tokens;
     }
 
-    public void setDataGroups(Map<String,SdsDatagroup> dataGroups) {
-        this.DataGroups = dataGroups;
+    public void setTokens(Map<String,Map<String,String>> tokens) {
+        this.Tokens = tokens;
+    }
+    
+
+    public Map<String,Map<String,Object>> getDataItems() {
+        return DataItems;
+    }
+
+    public void setDataItems(Map<String,Map<String,Object>> dataItems) {
+        this.DataItems = dataItems;
     }
 }

@@ -1,4 +1,4 @@
-/** SdsDataviewQuery.java
+/** DataviewMapping.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -18,24 +18,24 @@
 package samples;
 
 
-public class SdsDataviewQuery {
+public class DataviewMapping {
 
-    private String Id = "";
-    private SdsDataviewQueryQuery Query;
+    private String IsDefault = "";
+    private DataviewMappingColumn[] Columns;
 
-    public String getId() {
-        return Id;
+    public String getIsDefault() {
+        return IsDefault;
     }
 
-    public void setId(String id) {
-        this.Id = id;
+    public void setIsDefault(String isDefault) {
+        this.IsDefault = isDefault;
     }
 
-    public SdsDataviewQueryQuery getQuery() {
-        return Query;
+    public DataviewMappingColumn[] getColumns() {
+        return Columns;
     }
 
-    public void setQuery(SdsDataviewQueryQuery query) {
-        this.Query = query;
+    public void setColumns(DataviewMappingColumn[] columns) {
+        this.Columns = columns;
     }
 }

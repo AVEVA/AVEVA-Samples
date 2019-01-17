@@ -303,12 +303,3 @@ typings/
 /.vs
 /Basic/DotNet/SdsClientLibraries/SdsClientLibraries/.vs/config/applicationhost.config
 /Basic/DotNet/SdsRestApiCore/.vs/config/applicationhost.config
-
-Basic/Python/QiPy/Python2/config - Copy.ini
-Basic/Python/QiPy/Python2/program - Copy.py
-Basic/Python/QiPy/Python3/config - Copy.ini
-Basic/Python/QiPy/Python3/program - Copy.py
-Basic/Java/src/samples/Program.java
-Basic/Java/.vscode/launch.json
-Basic/Java/src/samples/.vscode/launch.json
-Basic/Java/src/samples/Program.java

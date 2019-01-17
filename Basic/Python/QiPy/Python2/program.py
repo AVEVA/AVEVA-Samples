@@ -513,52 +513,6 @@ try:
     print("Metadata key Province: " + province)
     print
 
-    #bulk comment because the above Type's primary key is currently not supported by Dataviews.  But example is kept to show how you could interact if the the key was of type Datetime.
-    '''	
-    ######################################################################################################
-    # Dataviews
-    ######################################################################################################	
-	
-    dataview = SdsDataview()
-    dataview.Id = sampleDataviewId
-    query  = SdsDataviewQuery()
-    query.Id = sampleDataviewId
-    queryQuery = SdsDataviewQueryQuery()
-    queryQuery.Type = 'streamid'
-    queryQuery.Value = stream.Id
-    queryQuery.Operator = 'Contains'
-    query.Query = queryQuery
-    dataview.Queries = []
-    dataview.Queries.append(query)
-    map = SdsDataviewMapping()
-    map.IsDefault = True
-    dataview.Mappings = map
-    dataview.IndexDataType = "datetime"	
-	
-    print
-    print("posting dataview")		
-    dataviews = client.postDataview(namespaceId, dataview)
-	
-	
-    print
-    print("Getting dataviews")		
-    dataviews = client.getDataviews(namespaceId)
-    for dataview1 in dataviews:
-        print(dataview1.Id)		
-		
-		
-    print
-    print("Retrieving data")		
-    dg = client.getDataviewPreview(namespaceId,dataview.Id)
-    print(dg[0])
-	
-	
-	
-    print
-    print("Deleting dataview")		
-    dataviews = client.deleteDataview(namespaceId, dataview.Id)
-	'''	
-	
     ######################################################################################################
     # Delete events
     ######################################################################################################

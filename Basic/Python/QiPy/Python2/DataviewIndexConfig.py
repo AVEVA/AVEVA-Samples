@@ -1,4 +1,4 @@
-# SdsDataviewIndexConfig.py
+# DataviewIndexConfig.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -16,8 +16,8 @@
 
 import json
 
-class SdsDataviewIndexConfig(object):
-    """Sds dataview definition"""
+class DataviewIndexConfig(object):
+    """ dataview index config definition"""
     @property
     def IsDefault(self):
         return self.__isDefault
@@ -77,11 +77,11 @@ class SdsDataviewIndexConfig(object):
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDataviewIndexConfig.fromDictionary(jsonObj)
+        return DataviewIndexConfig.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataviewIndexConfig = SdsDataviewIndexConfig()
+        dataviewIndexConfig = DataviewIndexConfig()
 
         if len(content) == 0:
             return dataviewIndexConfig

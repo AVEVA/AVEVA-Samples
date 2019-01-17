@@ -1,4 +1,4 @@
-# SdsDatagroup.py
+# Datagroup.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -16,7 +16,7 @@
 
 import json
 
-class SdsDatagroup(object):
+class Datagroup(object):
     """Sds Datagroup definition"""
     @property
     def Tokens(self):
@@ -44,11 +44,11 @@ class SdsDatagroup(object):
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsDatagroup.fromDictionary(jsonObj)
+        return Datagroup.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        dataGroup = SdsDatagroup()
+        dataGroup = Datagroup()
 
         if len(content) == 0:
             return dataGroup

@@ -31,10 +31,11 @@ from SdsError import SdsError
 from WaveData import WaveData, WaveDataInteger, WaveDataTarget
 from JsonEncoder import Encoder
 
-from SdsDataview import SdsDataview
-from SdsDataviewQuery import SdsDataviewQuery
-from SdsDataviewQueryQuery import SdsDataviewQueryQuery
-from SdsDataviewMapping import SdsDataviewMapping
-from SdsDataviewMappingColumn import SdsDataviewMappingColumn
-from SdsDataviewIndexConfig import SdsDataviewIndexConfig
-from SdsDatagroup import SdsDatagroup
+from Dataview import Dataview
+from DataviewQuery import DataviewQuery
+from DataviewQueryQuery import DataviewQueryQuery
+from DataviewMapping import DataviewMapping
+from DataviewMappingColumn import DataviewMappingColumn
+from DataviewIndexConfig import DataviewIndexConfig
+from Datagroup import Datagroup
+from DataviewGroupRule import DataviewGroupRule

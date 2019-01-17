@@ -1,4 +1,4 @@
-/** SdsDataview.java
+/** Dataview.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -18,14 +18,14 @@
 package samples;
 
 
-public class SdsDataview {
+public class Dataview {
 
     private String Id = "";
     private String Name = "";
     private String Description = "";
-    private SdsDataviewQuery[] Queries;
-    private SdsDataviewMapping Mappings;
-    private SdsDataviewIndexConfig IndexConfig;
+    private DataviewQuery[] Queries;
+    private DataviewMapping Mappings;
+    private DataviewIndexConfig IndexConfig;
     private String IndexDataType = "";
 
     public String getId() {
@@ -52,27 +52,27 @@ public class SdsDataview {
         this.Description = description;
     }
 
-    public SdsDataviewQuery[] getQueries() {
+    public DataviewQuery[] getQueries() {
         return Queries;
     }
 
-    public void setQueries(SdsDataviewQuery[] queries) {
+    public void setQueries(DataviewQuery[] queries) {
         this.Queries = queries;
     }
 
-    public SdsDataviewMapping getMappings() {
+    public DataviewMapping getMappings() {
         return Mappings;
     }
 
-    public void setMappings(SdsDataviewMapping mappings) {
+    public void setMappings(DataviewMapping mappings) {
         this.Mappings = mappings;
     }
 
-    public SdsDataviewIndexConfig getIndexConfig() {
+    public DataviewIndexConfig getIndexConfig() {
         return IndexConfig;
     }
 
-    public void setQueries(SdsDataviewIndexConfig indexConfig) {
+    public void setQueries(DataviewIndexConfig indexConfig) {
         this.IndexConfig = indexConfig;
     }
 
