@@ -36,16 +36,16 @@ The official OCS samples are divided in multiple categories depending on the sce
       <h3>SDS Application <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
   </td>
   <td width="35%">
-    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="samples/BasicSDS">Details</a>
+    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="basic_samples/SDS">Details</a>
   </td>
     <td>
-     <a href="samples/BasicSDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/Java">JAVA</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/JavaScript/NodeJS">nodeJS</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/Python/QiPy/Python2">Python2</a>&nbsp; &nbsp;
-     <a href="samples/BasicSDS/Python/QiPy/Python3">Python3</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Java">JAVA</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/JavaScript/NodeJS">nodeJS</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Python/QiPy/Python2">Python2</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Python/QiPy/Python3">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -56,7 +56,7 @@ The official OCS samples are divided in multiple categories depending on the sce
     Covers management operations for Ingress, including creating and deleting publishers, ingress tokens, topics, and subscriptions.  
   </td>
   <td>
-     <a href="samples/IngressClientLibraries/DotNet">.NET</a>&nbsp; &nbsp;
+     <a href="basic_samples/IngressClientLibraries/DotNet">.NET</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -67,7 +67,7 @@ The official OCS samples are divided in multiple categories depending on the sce
   Covers the basic functionality of the UOM system on OCS
   </td>
   <td>
-     <a href="samples/UomsSample/Dotnet/UomsSample">.NET</a>&nbsp; &nbsp;
+     <a href="advanced_samples/UomsSample/Dotnet/UomsSample">.NET</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -78,8 +78,8 @@ The official OCS samples are divided in multiple categories depending on the sce
   In this sample we show how to create, add and read data from a stream.  The data is obtained from the OS using Performance monitors.
   </td>
   <td>
-     <a href="samples/PerfmonSample/DotNet/PerfmonSample/">.NET</a>&nbsp; &nbsp;
-     <a href="samples/PerfmonSample/Python3/">Python3</a>&nbsp; &nbsp;
+     <a href="advanced_samples/PerfmonSample/DotNet/PerfmonSample/">.NET</a>&nbsp; &nbsp;
+     <a href="advanced_samples/PerfmonSample/Python3/">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  
@@ -93,7 +93,7 @@ The project is a complete (very simple) command line application that takes a PI
 
   </td>
   <td>
-     <a href="samples/PIToOcsOmfSample/Dotnet/">.NET'</a>&nbsp; &nbsp;
+     <a href="advanced_samples/PIToOcsOmfSample/Dotnet/">.NET'</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -105,7 +105,7 @@ The project is a complete (very simple) command line application that takes a PI
 This samples sends snapshot values from PI to OCS via OMF.
   </td>
   <td>
-     <a href="samples/PItoOCSviaAPISample/DotNet">.NET*'</a>&nbsp; &nbsp;
+     <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*'</a>&nbsp; &nbsp;
   </td>
  </tr>
  </table>
