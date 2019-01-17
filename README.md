@@ -36,7 +36,7 @@ The official OCS samples are divided in multiple categories depending on the sce
       <h3>SDS Application <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
   </td>
   <td width="35%">
-    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="samples/basicSDS">Details</a>
+    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="samples/BasicSDS">Details</a>
   </td>
     <td>
      <a href="samples/BasicSDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;

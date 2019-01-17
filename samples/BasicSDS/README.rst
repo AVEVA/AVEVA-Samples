@@ -1,12 +1,12 @@
 Welcome
 ========
 
-The Sds Client samples are introductory, language-specific examples of programming against the Sds Service. They are intended as instructional samples only.
+The Basic Sds Client samples are introductory, language-specific examples of programming against the Sds Service. They are intended as instructional samples only.
 
 Sample Pattern
 --------------
 
-All basic samples are console applications that follow the same sequence of events, allowing you to select the langauge with which you are most comfortable without missing any instructional features. The pattern followed is:
+All basic SDS samples are console applications that follow the same sequence of events, allowing you to select the langauge with which you are most comfortable without missing any instructional features. The pattern followed is:
 
 1.  Instantiate an Sds client
 2.  Obtain an authentication token
@@ -21,4 +21,4 @@ All basic samples are console applications that follow the same sequence of even
 11. Delete events
 12. Delete metadata objects
 
-These steps illustrate the fundamental programming steps of Sds. Over time, the samples may be extended to demonstrate more advanced tasks. Feel free to modify the samples and propose changes.
+These steps illustrate the fundamental programming steps of Sds.  Feel free to modify the samples and propose changes.
