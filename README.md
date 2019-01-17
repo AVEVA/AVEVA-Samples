@@ -112,7 +112,7 @@ This samples sends snapshot values from PI to OCS via OMF.
 
 ## Credentials 
 
-A credential config.ini or app.config file is used in the examples unless otherwise noted in the example otherwise.  
+A credential config.ini or app.config file is used in the examples unless otherwise noted in the example.  
    
 
      Note: This is not an endorsed, or even a remotely secure way to store credentials.  This is to be used at your own risk.  
