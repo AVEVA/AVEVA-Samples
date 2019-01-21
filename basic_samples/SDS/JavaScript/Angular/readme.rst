@@ -21,7 +21,7 @@ Preparation
 
 The Sds Service is secured by obtaining tokens from an Azure Active
 Directory instance. This example uses ADAL (Active Directory Authentication Library) 
-to authenticate clients against the QI server. Contact OSIsoft support
+to authenticate clients against the SDS server. Contact OSIsoft support
 to obtain a tenant for use with Sds. 
 
 The sample code includes several placeholder strings that must be modified 
@@ -33,7 +33,7 @@ Edit the following values in the src/app/app.component.ts file:
 
         const config: ISdsConfigSet = {
             ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
-            SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL',
+            SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL',
             SdsResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
             TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
             NamespaceId: 'REPLACE_WITH_NAMESPACE'
