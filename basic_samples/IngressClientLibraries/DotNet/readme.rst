@@ -5,8 +5,7 @@ Building a Client with the Ingress Client Libraries
 ---------------------------------------------------
 
 The sample described in this section makes use of the OSIsoft Ingress Client Libraries. When working in .NET, 
-it is recommended that you use these libraries. The libraries are available as NuGet packages 
-from https://osisoft.pkgs.visualstudio.com/_packaging/CloudServices/nuget/v3/index.json . The packages used are:
+it is recommended that you use these libraries. The libraries are available as NuGet packages. The packages used are:
 
 * OSIsoft.Contracts.Ingress
 * OSIsoft.Identity.AuthenticationHandler
