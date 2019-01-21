@@ -1,0 +1,254 @@
+<!-- datasrc.component.html
+
+   Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+
+   THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
+   OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
+   THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+
+   RESTRICTED RIGHTS LEGEND
+   Use, duplication, or disclosure by the Government is subject to restrictions
+   as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
+   Computer Software clause at DFARS 252.227.7013
+
+   OSIsoft, LLC
+   1600 Alvarado St, San Leandro, CA 94577
+-->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<div class="container-fluid text-center">
+  <h3>Creating an SdsType</h3>
+  <p>To insert data into Sds, you must first create an SdsType that will enforce what type of data is written to a stream.
+    For this sample, we will be writing events of the WaveData type discussed in the README.
+    Press the button below to create the WaveDatan SdsType.</p>
+  <div>
+    <button class="btn btn-primary" (click)="createType()">Create Type</button>
+    <br>
+    <span *ngIf="button1Message">Response: {{button1Message}}</span>
+  </div>
+  <h3>Creating an SdsStream</h3>
+  <p>Now that we have an SdsType, we can create an SdsStream. Once we create a stream and associate it with a type,
+  we can write data of that type to Sds. Press the button below to create a stream.</p>
+  <button class="btn btn-primary" (click)="createStream()">Create Stream</button>
+  <br>
+  <span *ngIf="button2Message">Response: {{button2Message}}</span>
+  <h3>Write data to Sds</h3>
+  <p>Press the button below to write 10 WaveData events to Sds using the InsertValues call.</p>
+  <button class="btn btn-primary" (click)="writeWaveDataEvents()">Insert Values</button>
+  <br>
+  <span *ngIf="button3Message">Response: {{button3Message}}</span>
+  <h3>Retrieving events from Sds</h3>
+  <p>There are several ways to read data back from Sds. Using GetRangeValues, we can start at index location "1" of our wave data
+  and get the remaining events. We didn't actually write a value with an index of 1, but since we use SdsBoundaryType.ExactOrCalculated
+  in our request, we get an interpolated value at index location 1.</p>
+  <button class="btn btn-primary" (click)="retrieveWaveDataEvents()">Retrieve Events</button>
+  <br>
+  <span *ngIf="button4Message">Response: {{button4Message}}</span>
+  <div *ngIf="hasEvents">
+    <table class="table table-striped table-responsive">
+      <tr>
+        <th>Order</th>
+        <th>Radians</th>
+        <th>Tau</th>
+        <th>Sin</th>
+        <th>Cos</th>
+        <th>Tan</th>
+        <th>Sinh</th>
+        <th>Cosh</th>
+        <th>Tanh</th>
+      </tr>
+      <tr *ngFor="let event of events">
+        <td>{{event.Order}}</td>
+        <td>{{event.Radians}}</td>
+        <td>{{event.Tau}}</td>
+        <td>{{event.Sin}}</td>
+        <td>{{event.Cos}}</td>
+        <td>{{event.Tan}}</td>
+        <td>{{event.Sinh}}</td>
+        <td>{{event.Cosh}}</td>
+        <td>{{event.Tanh}}</td>
+      </tr>
+    </table>
+  </div>
+  <h4>Update values</h4>
+  <p>A call to update values will either create or replace an event at the associated index location.  We will send a collection of
+    twenty events to Sds, causing ten events to be updated and an additionaly ten to be created. Press Retrieve Events above to 
+    see the updated data.
+  </p>
+  <button class="btn btn-primary" (click)="updateWaveDataEvents()" >Update values</button>
+  <br>
+  <span *ngIf="button14Message">Response: {{button14Message}}</span>
+
+  <h4>Replace values</h4>
+  <p>A call to replace values will either create or replace an event at the associated Index location. Press Retrieve Events above to 
+    see the replaced data.</p>
+  <button class="btn btn-primary" (click)="replaceWaveDataEvents()" >Replace values</button>
+  <br>
+  <span *ngIf="button15Message">Response: {{button15Message}}</span>
+  <h3>Property Overrides</h3>
+  <p>Sds can interpolate or extrapolate data at an index location where data does not explicitly exist. 
+    Using the default (Continuous) behavior and requesting data starting at index location '1', where we have not entered data, 
+    Sds will interpolate a value for each property.  We can override this behavior on a property by property basis, here we 
+    override the Radians property instructing Sds not to interpolate.  Sds will now return the default value for the data type.</p>
+  <button class="btn btn-primary" (click)="createPropertyOverrideAndUpdateStream()" >Create Property Override and Update Stream</button>
+  <br>
+  <span *ngIf="button5Message">Response: {{button5Message}}</span>
+  <h3>Using SdsStreamViews</h3>
+  <p>SdsStreamViews can return a view of the data stored on the server, we can use them to coerce SdsStream data of 
+    a certain type to be returned as another type. A simple example of this would be to provide a type with the same 
+    data shape using different names for each property.</p>
+  <button class="btn btn-primary" (click)="createAutoviewTargetType()" >Create a target SdsType</button>
+  <br>
+  <span *ngIf="button6Message">Response: {{button6Message}}</span>
+  <p>Once we have created our target type we create an SdsView specifying a SourceTypeId (our original SdsType) and 
+    a TargetTypeId.</p>
+  <button class="btn btn-primary" (click)="createAutoview()" >Create an SdsView</button>
+  <br>
+  <span *ngIf="button7Message">Response: {{button7Message}}</span>
+  <p>We can now use this SdsView on any GET request and our data will be returned with the structure of the target SdsType.</p>
+    <button class="btn btn-primary" (click)="retrieveWaveDataEventsAutoview()" >Retrieve Events</button>
+    <br>
+    <span *ngIf="button8Message">Response: {{button8Message}}</span>
+    <div *ngIf="hasView1Events">
+      <table class="table table-striped table-responsive">
+        <tr>
+          <th>OrderTarget</th>
+          <th>RadiansTarget</th>
+          <th>TauTarget</th>
+          <th>SinTarget</th>
+          <th>CosTarget</th>
+          <th>TanTarget</th>
+          <th>SinhTarget</th>
+          <th>CoshTarget</th>
+          <th>TanhTarget</th>
+        </tr>
+        <tr *ngFor="let event of targetEvents">
+          <td>{{event.OrderTarget}}</td>
+          <td>{{event.RadiansTarget}}</td>
+          <td>{{event.TauTarget}}</td>
+          <td>{{event.SinTarget}}</td>
+          <td>{{event.CosTarget}}</td>
+          <td>{{event.TanTarget}}</td>
+          <td>{{event.SinhTarget}}</td>
+          <td>{{event.CoshTarget}}</td>
+          <td>{{event.TanhTarget}}</td>
+        </tr>
+      </table>
+    </div>
+  <p>We can also specify target types that have different shapes and data types, in the simple example above Sds 
+    was able to perform the mapping automatically.  To make more complex changes we will need to specify the mappings
+    explicitly.  For this we add an SdsViewProperty mapping the source property to the target property.  We will create 
+    three SdsViewProperties and return Sin, Cos and Tan as though they were integers.  
+  </p>
+    <button class="btn btn-primary" (click)="createSdsViewPropertiesAndManualType()" >Create SdsView with SdsViewProperties</button>
+    <br>
+    <span *ngIf="button9Message">Response: {{button9Message}}</span>
+    <p>  Speficying this SdsView on our GET request we see that Sds has only returned values for those Properties that have
+      an explicit mapping.
+      </p>
+        <button class="btn btn-primary" (click)="retrieveWaveDataEventsManualview()" >Retrieve Events</button>
+        <br>
+        <span *ngIf="button10Message">Response: {{button10Message}}</span>
+        <div *ngIf="hasView2Events">
+            <table class="table table-striped table-condensed">
+              <tr>
+                <th>OrderTarget</th>
+                <th>SinInt</th>
+                <th>CosInt</th>
+                <th>TanInt</th>
+              </tr>
+              <tr *ngFor="let event of integerEvents">
+                <td>{{event.OrderTarget}}</td>
+                <td>{{event.SinhInt}}</td>
+                <td>{{event.CoshInt}}</td>
+                <td>{{event.TanhInt}}</td>
+              </tr>
+            </table>
+          </div>
+        <p>  Finally, if we are ever curious about the mapping for a specific view we can request its SdsViewMap.  This will show the relationship 
+          between the SourceType and the TargetType.
+            </p>
+              <button class="btn btn-primary" (click)="getSdsViewMap()" >Request SdsViewMap</button>
+              <br>
+              <span *ngIf="button11Message">Response: {{button11Message}}</span>
+              <div *ngIf="hasMapProperties">
+                  <table class="table table-striped table-bordered">
+                    <tr>
+                      <th>SourceTypeId</th>
+                      <th>TargetTypeId</th>
+                    </tr>
+                      <td width="50%">{{viewMap.SourceTypeId}}</td>
+                      <td width="50%">{{viewMap.TargetTypeId}}</td>
+                  </table>
+                </div>
+                <p></p>
+                <p></p>
+                <div *ngIf="hasMapProperties">
+                  <table class="table table-striped table-bordered">
+                      <tr>
+                        <th>SourcePropertyId</th>
+                        <th>TargetPropertyId</th>
+                      </tr>
+                      <ng-container *ngFor="let prop of viewMap.Properties">
+                         <tr *ngIf="prop.TargetId">
+                      <td>{{prop.SourceId}}</td>
+                      <td>{{prop.TargetId}}</td>
+                    </tr>
+                  </ng-container>
+                  </table>
+                </div>
+  <h3>Tags and Metadata</h3>
+  <p>Let's add some tags and metadata to our stream</p>
+  <button class="btn btn-primary" (click)="createTagsAndMetadata()">Create Tags and Metadata</button>
+  <br>
+  <span *ngIf="button16Message">Response: {{button16Message}}</span>
+  
+  <p></p>
+  <button class="btn btn-primary" (click)="getAndPrintTags()">Get Tags</button>
+  <br>
+  <span *ngIf="button17Message">{{button17Message}}</span>
+
+  <p></p>
+  <button class="btn btn-primary" (click)="getAndPrintMetadata()" >Get Metadata</button>
+  <br>
+  <span *ngIf="button18Message">Response: {{button18Message}}</span>
+  <div *ngIf="hasMetadata">
+      <table class="table table-striped table-bordered">
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+            <tr>
+          <td>Region</td>
+          <td>{{metadataMap["Region"]}}</td>
+        </tr>
+        <tr>
+            <td>Country</td>
+            <td>{{metadataMap["Country"]}}</td>
+          </tr>
+          <tr>
+              <td>Province</td>
+              <td>{{metadataMap["Province"]}}</td>
+            </tr>
+      </table>
+    </div>
+  <p></p>  
+
+  <h3>Delete Values</h3>
+  <p>Press the button below to delete all values from the SdsStream, pressing Retrieve Events 
+    above should now return an empty array.
+  </p>
+  <button class="btn btn-primary" (click)="deleteAllValues()">Delete Values</button>
+  <br>
+  <span *ngIf="button13Message">Response: {{button13Message}}</span>
+
+  <h4>Deleting types, streams and views</h4>
+  <p>Press the button below to delete the types, streams and views that this sample has created. Failure to do
+  so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
+  written to that stream.</p>
+  <button class="btn btn-primary" (click)="cleanup()">Clean up</button>
+  <br>
+  <span *ngIf="button12Message">Response: {{button12Message}}</span>
+</div>
+
