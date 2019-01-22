@@ -30,6 +30,8 @@ using OSIsoft.Data.Http.Security;
 using PIToOcsOmfSample.DataIngress;
 using PIToOcsOmfSample.DataIngress.OmfMessageContent;
 using PIToOcsOmfSample.IngressManagement;
+using OSIsoft.Data;
+
 namespace PIToOcsOmfSample
 {
     public class Program

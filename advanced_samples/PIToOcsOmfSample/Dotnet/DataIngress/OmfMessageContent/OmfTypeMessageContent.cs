@@ -23,7 +23,7 @@ namespace PIToOcsOmfSample.DataIngress.OmfMessageContent
 {
     /// <summary>
     /// This class is serialized into part of an OMF type message. It groups information to be sent 
-    /// in an OMF type message. The information translates to a QiType in OSIsoft cloud services.
+    /// in an OMF type message. The information translates to a SDSType in OSIsoft cloud services.
     /// </summary>
     public class OmfTypeMessageContent
     {

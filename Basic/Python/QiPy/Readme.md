@@ -1,1 +1,0 @@
-[Sample was moved](https://github.com/osisoft/OCS-Samples/tree/master/basic_samples/SDS/Python/SDSPy)
