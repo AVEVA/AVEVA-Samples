@@ -428,7 +428,7 @@ try:
     vp4.TargetId = "TanInt"
     
     #Create a streamView mapping our original type to our target type, data shape is the same so let Sds handle the mapping
-    streamView = SdsStreamStreamView()
+    streamView = SdsStreamView()
     streamView.Id = sampleStreamViewId
     streamView.Name = "SampleStreamView"
     streamView.TargetTypeId = waveTargetType.Id
