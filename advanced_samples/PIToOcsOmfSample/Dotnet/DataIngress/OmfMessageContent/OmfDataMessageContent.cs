@@ -24,7 +24,7 @@ namespace PIToOcsOmfSample.DataIngress.OmfMessageContent
     /// <summary>
     /// This class is serialized into part of an OMF data message. It groups information to be sent 
     /// in an OMF data message. The information translates to an event in an OSIsoft cloud services 
-    /// QiStream.
+    /// SDSStream.
     /// </summary>
     public class OmfDataMessageContent
     {

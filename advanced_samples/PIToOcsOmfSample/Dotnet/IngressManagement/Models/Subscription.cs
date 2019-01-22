@@ -21,8 +21,8 @@ namespace PIToOcsOmfSample.IngressManagement.Models
 {
     public enum SubscriptionType
     {
-        NonQi,
-        Qi
+        NonSDS,
+        SDS
     }
 
     class Subscription

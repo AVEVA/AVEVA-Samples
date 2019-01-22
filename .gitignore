@@ -42,6 +42,9 @@ local.properties
 *.sln.docstates
 *.pyc
 
+.vs/
+packages/
+
 # Build results
 
 [Dd]ebug/

@@ -6,7 +6,7 @@ Writing to OSIsoft Cloud Services (OCS) using OSIsoft Message Format (OMF)
 --------------------------------------------------------------------------
 
 OSIsoft Cloud Services is able to ingest OSIsoft Message Format messages. OCS includes services that 
-unpack OMF message content and write the contained information to the Qi (the OCS data store).
+unpack OMF message content and write the contained information to the SDS (the OCS data store).
 
 OSIsoft Cloud Services documentation can be found at https://cloud.osisoft.com/documentation
 OSIsoft Message Format documentation can be found at http://omf-docs.osisoft.com/en/v1.0/ 
@@ -20,10 +20,10 @@ PI Data Archive system digital states.
 * Limited error handling
 
 
-Building a Client with the Qi Client Libraries
+Building a Client with the SDS Client Libraries
 ----------------------------------------------
 
-The sample described in this section makes use of the OSIsoft Qi Client Libraries. When working in 
+This sample makes use of the OSIsoft SDS Client Libraries. When working in 
 .NET, it is recommended that you use these libraries. The libraries are available as NuGet packages 
 from https://api.nuget.org/v3/index.json . The packages used are:
 
@@ -44,65 +44,65 @@ file to hold configuration strings, including the authentication strings. You mu
 replace the placeholders with the authentication-related values you received from OSIsoft. 
 
 ::
-    &lt;appSettings&gt;	  
-        &lt;add key="address" value="https://dat-a.osisoft.com" /&gt;
-        &lt;add key="accountId" value="REPLACE_WITH_ACCOUNT_ID" /&gt;
-        &lt;add key="resource" value="https://qihomeprod.onmicrosoft.com/ocsapi" /&gt;
-        &lt;add key="clientId" value="REPLACE_WITH_CLIENT_IDENTIFIER" /&gt;
-        &lt;add key="clientSecret" value="REPLACE_WITH_CLIENT_SECRET" /&gt;
+    <appSettings>	  
+        <add key="address" value="https://dat-a.osisoft.com" />
+        <add key="accountId" value="REPLACE_WITH_ACCOUNT_ID" />
+        <add key="resource" value="https://qihomeprod.onmicrosoft.com/ocsapi" />
+        <add key="clientId" value="REPLACE_WITH_CLIENT_IDENTIFIER" />
+        <add key="clientSecret" value="REPLACE_WITH_CLIENT_SECRET" />
 	    ...
-    &lt;/appSettings&gt;
+    </appSettings>
 	
-The authentication values are provided to the ``OSIsoft.Http.Security.QiSecurityHandler``. 
-The QiSecurityHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
+The authentication values are provided to the ``OSIsoft.Http.Security.SdsSecurityHandler``. 
+The SdsSecurityHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
 
 
 Other Configuration
 -------------------
-   &lt;appSettings&gt;	  
+   <appSettings>	  
      ...
-	 &lt;add key="publisherName" value="REPLACE_WITH_PUBLISHER_NAME" /&gt;
-     &lt;add key="topicName" value="REPLACE_WITH_TOPIC_NAME" /&gt;
-     &lt;add key="subscriptionName" value="REPLACE_WITH_SUBSCRIPTION_NAME" /&gt;
-     &lt;add key="namespaceId" value="REPLACE_WITH_NAMESPACE_ID" /&gt;
-     &lt;add key="PIDataArchive" value="REPLACE_WITH_PI_SERVER_NAME" /&gt;
-   &lt;/appSettings&gt;
+	 <add key="publisherName" value="REPLACE_WITH_PUBLISHER_NAME" />
+     <add key="topicName" value="REPLACE_WITH_TOPIC_NAME" />
+     <add key="subscriptionName" value="REPLACE_WITH_SUBSCRIPTION_NAME" />
+     <add key="namespaceId" value="REPLACE_WITH_NAMESPACE_ID" />
+     <add key="PIDataArchive" value="REPLACE_WITH_PI_SERVER_NAME" />
+   </appSettings>
 
 Manage Data Ingress Resources for OCS
 -----------------
 
 Publishers, topics, and subscriptions facilitate ingress to OCS. More information is 
 available in the OSIsoft Cloud Services documentation. OCS exposes management APIs for 
-these ingress resources.
+these ingress resources and there is a nuget library.
 
 This sample sends HTTP REST requests to this management API to create the ingress 
 resources that accept PI point data.
 
 
-Create QiTypes
+Create SdsTypes
 ---------------
 
-To use Qi, you define QiTypes that describe the kinds of data you want to store in 
-QiStreams. QiTypes are the model that define QiStreams.
+To use SDS, you define SdsTypes that describe the kinds of data you want to store in 
+SdsStreams. SdsTypes are the model that define SdsStreams.
 
-PI point data can generally be represented as as a QiType with a DateTime index and some
+PI point data can generally be represented as as a SdsType with a DateTime index and some
 other value property. The PI to OCS via OMF sample defines five different possible values 
-property kinds in five different QiTypes. The value properties are integer, float, string,
+property kinds in five different SdsTypes. The value properties are integer, float, string,
 time and blobs.
 
-OSIsoft Clouds Services' ingress capabilities allow for the definition of QiTypes in OCS 
+OSIsoft Clouds Services' ingress capabilities allow for the definition of SdsTypes in OCS 
 through OMF type messages. The sample creates these OMF type messages and send them to 
 OCS.
 
-Create QiStreams
+Create SdsStreams
 ------------------
 
-In OSIsoft Cloud Services, an ordered series of events is stored in a QiStream. In this
-sample, a PI point maps directly to a QiStream. All the data written to a single QiStream 
+In OSIsoft Cloud Services, an ordered series of events is stored in a SdsStream. In this
+sample, a PI point maps directly to a SdsStream. All the data written to a single SdsStream 
 is read from a single PI point.
 
-As with the QiTypes, QiStreams can be created in OCS via OMF messages. This sample sends 
-OMF container messages to OCS to create a QiStream for each PI point. These QiStreams are 
+As with the SdsTypes, SdsStreams can be created in OCS via OMF messages. This sample sends 
+OMF container messages to OCS to create a SdsStream for each PI point. These SdsStreams are 
 indexed on time.
 
 	
@@ -115,7 +115,7 @@ PI point data is read from a configured PI server using the OSIsoft AFSDK client
 Write PI point data to OSIsoft Cloud Services
 ----------------------------------------
 
-A single PI point event translates to a single event in a QiStream. OSIsoft Message Format 
+A single PI point event translates to a single event in a SdsStream. OSIsoft Message Format 
 can be used to send data to OSIsoft Cloud Services. This sample creates and sends OMF data 
 messages to OCS.
  
