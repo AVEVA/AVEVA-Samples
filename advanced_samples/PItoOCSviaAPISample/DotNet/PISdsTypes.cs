@@ -1,4 +1,4 @@
-// <copyright file="PIQiTypes.cs" company="OSIsoft, LLC">
+// <copyright file="PISdsTypes.cs" company="OSIsoft, LLC">
 //
 // Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 //
@@ -34,117 +34,117 @@ namespace PItoOCSviaAPISample
     }
 
     /// <summary>
-    /// This is a static class that encapsulates the definition and creation of Qi Stream Types
+    /// This is a static class that encapsulates the definition and creation of Sds Stream Types
     /// that represent data from the various available PI Point types. The numerical types are
     /// reduced to integer (int64) and double (float64) in order to avoid having to distinguish
     /// between the storage sizes. 
     /// </summary>
-    static class PIQiTypes
+    static class PISdsTypes
     {
-        static PIQiTypes()
+        static PISdsTypes()
         {
-            DoubleQiType = QiTypeBuilder.CreateQiType<DoubleData>();
-            DoubleQiType.Id = "PIDoubleValueAndTimestamp";
-            DoubleQiType.Name = "PIDoubleValueAndTimestamp";
-            DoubleQiType.Description = "Represents simple time series data with a floating point value";
+            DoubleSdsType = SdsTypeBuilder.CreateSdsType<DoubleData>();
+            DoubleSdsType.Id = "PIDoubleValueAndTimestamp";
+            DoubleSdsType.Name = "PIDoubleValueAndTimestamp";
+            DoubleSdsType.Description = "Represents simple time series data with a floating point value";
 
-            IntegerQiType = QiTypeBuilder.CreateQiType<IntegerData>();
-            IntegerQiType.Id = "PIIntegerValueAndTimestamp";
-            IntegerQiType.Name = "PIIntegerValueAndTimestamp";
-            IntegerQiType.Description = "Represents simple time series data with an integer value";
+            IntegerSdsType = SdsTypeBuilder.CreateSdsType<IntegerData>();
+            IntegerSdsType.Id = "PIIntegerValueAndTimestamp";
+            IntegerSdsType.Name = "PIIntegerValueAndTimestamp";
+            IntegerSdsType.Description = "Represents simple time series data with an integer value";
 
-            StringQiType = QiTypeBuilder.CreateQiType<StringData>();
-            StringQiType.Id = "PIStringValueAndTimestamp";
-            StringQiType.Name = "PIStringValueAndTimestamp";
-            StringQiType.Description = "Represents simple time series data with a string value";
+            StringSdsType = SdsTypeBuilder.CreateSdsType<StringData>();
+            StringSdsType.Id = "PIStringValueAndTimestamp";
+            StringSdsType.Name = "PIStringValueAndTimestamp";
+            StringSdsType.Description = "Represents simple time series data with a string value";
 
-            BlobQiType = QiTypeBuilder.CreateQiType<BlobData>();
-            BlobQiType.Id = "PIBlobValueAndTimestamp";
-            BlobQiType.Name = "PIBlobValueAndTimestamp";
-            BlobQiType.Description = "Represents simple time series data with a blob(byte array) value";
+            BlobSdsType = SdsTypeBuilder.CreateSdsType<BlobData>();
+            BlobSdsType.Id = "PIBlobValueAndTimestamp";
+            BlobSdsType.Name = "PIBlobValueAndTimestamp";
+            BlobSdsType.Description = "Represents simple time series data with a blob(byte array) value";
 
-            TimestampQiType = QiTypeBuilder.CreateQiType<TimeData>();
-            TimestampQiType.Id = "PITimestampValueAndTimestamp";
-            TimestampQiType.Name = "PITimestampValueAndTimestamp";
-            TimestampQiType.Description = "Represents simple time series data with a Timestamp(DateTime) value";
+            TimestampSdsType = SdsTypeBuilder.CreateSdsType<TimeData>();
+            TimestampSdsType.Id = "PITimestampValueAndTimestamp";
+            TimestampSdsType.Name = "PITimestampValueAndTimestamp";
+            TimestampSdsType.Description = "Represents simple time series data with a Timestamp(DateTime) value";
         }
 
-        public static QiType DoubleQiType { get; }
-        public static QiType IntegerQiType { get; }
-        public static QiType StringQiType { get; }
-        public static QiType BlobQiType { get; }
-        public static QiType TimestampQiType { get; }
+        public static SdsType DoubleSdsType { get; }
+        public static SdsType IntegerSdsType { get; }
+        public static SdsType StringSdsType { get; }
+        public static SdsType BlobSdsType { get; }
+        public static SdsType TimestampSdsType { get; }
 
         public class DoubleData
         {
-            [QiMember(IsKey = true, Order = 0)]
+            [SdsMember(IsKey = true, Order = 0)]
             public DateTime Timestamp { get; set; }
             public double Value { get; set; }
         }
 
         public class IntegerData
         {
-            [QiMember(IsKey = true, Order = 0)]
+            [SdsMember(IsKey = true, Order = 0)]
             public DateTime Timestamp { get; set; }
             public Int64 Value { get; set; }
         }
 
         public class StringData
         {
-            [QiMember(IsKey = true, Order = 0)]
+            [SdsMember(IsKey = true, Order = 0)]
             public DateTime Timestamp { get; set; }
             public string Value { get; set; }
         }
 
         public class BlobData
         {
-            [QiMember(IsKey = true, Order = 0)]
+            [SdsMember(IsKey = true, Order = 0)]
             public DateTime Timestamp { get; set; }
             public byte[] Value { get; set; }
         }
 
         public class TimeData
         {
-            [QiMember(IsKey = true, Order = 0)]
+            [SdsMember(IsKey = true, Order = 0)]
             public DateTime Timestamp { get; set; }
             public DateTime Value { get; set; }
         }
 
-        public static Task CreateOrUpdateTypesInOcsAsync(IQiMetadataService metadataService)
+        public static Task CreateOrUpdateTypesInOcsAsync(ISdsMetadataService metadataService)
         {
             var taskList = new Task[]
             {
-                metadataService.CreateOrUpdateTypeAsync(DoubleQiType),
-                metadataService.CreateOrUpdateTypeAsync(IntegerQiType),
-                metadataService.CreateOrUpdateTypeAsync(StringQiType),
-                metadataService.CreateOrUpdateTypeAsync(BlobQiType),
-                metadataService.CreateOrUpdateTypeAsync(TimestampQiType)
+                metadataService.CreateOrUpdateTypeAsync(DoubleSdsType),
+                metadataService.CreateOrUpdateTypeAsync(IntegerSdsType),
+                metadataService.CreateOrUpdateTypeAsync(StringSdsType),
+                metadataService.CreateOrUpdateTypeAsync(BlobSdsType),
+                metadataService.CreateOrUpdateTypeAsync(TimestampSdsType)
             };
             return Task.WhenAll(taskList);
         }
 
-        public static string GetQiTypeId(StreamDataType desiredType)
+        public static string GetSdsTypeId(StreamDataType desiredType)
         {
             switch (desiredType)
             {
                 case StreamDataType.Integer:
-                    return IntegerQiType.Id;
+                    return IntegerSdsType.Id;
                 case StreamDataType.Float:
-                    return DoubleQiType.Id;
+                    return DoubleSdsType.Id;
                 case StreamDataType.String:
-                    return StringQiType.Id;
+                    return StringSdsType.Id;
                 case StreamDataType.Blob:
-                    return BlobQiType.Id;
+                    return BlobSdsType.Id;
                 case StreamDataType.Time:
-                    return TimestampQiType.Id;
+                    return TimestampSdsType.Id;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(desiredType), desiredType, null);
             }
         }
 
-        public static string GetQiTypeId(PIPointType pointType)
+        public static string GetSdsTypeId(PIPointType pointType)
         {
-            return GetQiTypeId(GetDataType(pointType));
+            return GetSdsTypeId(GetDataType(pointType));
         }
 
         public static StreamDataType GetDataType(PIPointType pointType)

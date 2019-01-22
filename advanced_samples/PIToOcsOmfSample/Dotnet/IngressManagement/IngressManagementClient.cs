@@ -42,11 +42,11 @@ namespace PIToOcsOmfSample.IngressManagement
 
         /// <param name="baseAddress">The OSIsoft Cloud Services HTTP endpoint.</param>
         /// <param name="accountId">The Guid account Id.</param>
-        public IngressManagementClient(string baseAddress, string accountId, QiSecurityHandler qiSecurityHandler)
+        public IngressManagementClient(string baseAddress, string accountId, SdsSecurityHandler sdsSecurityHandler)
         {
             _accountId = accountId;
-            qiSecurityHandler.InnerHandler = new HttpClientHandler();
-            _client = new HttpClient(qiSecurityHandler);
+            sdsSecurityHandler.InnerHandler = new HttpClientHandler();
+            _client = new HttpClient(sdsSecurityHandler);
             _client.BaseAddress = new Uri(baseAddress);
         }
 
@@ -175,7 +175,7 @@ namespace PIToOcsOmfSample.IngressManagement
                     TopicId = topicId,
                     TopicTenantId = _accountId,
                     OCSNamespace = namespaceId,
-                    Type = SubscriptionType.Qi
+                    Type = SubscriptionType.SDS
                 };
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"api/tenants/{_accountId}/subscription/{namespaceId}");
                 var serialized = JsonConvert.SerializeObject(subscription, _ignoreNullValues);
