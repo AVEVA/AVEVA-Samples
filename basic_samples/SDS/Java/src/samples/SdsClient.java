@@ -208,6 +208,10 @@ public class SdsClient {
         return property;
     }
 
+    private static boolean isSuccessResponseCode(int responseCode) {
+        return responseCode >= 200 && responseCode < 300;
+    }
+
     private static void printSdsErrorMessage(SdsError sdsError) {
         System.out.println("SdsError Msg: " + sdsError.getSdsErrorMessage());
         System.out.println("HttpStatusCode: " + sdsError.getHttpStatusCode());
@@ -447,7 +451,7 @@ public class SdsClient {
 
         try {
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "delete type request failed");
             }
@@ -475,7 +479,7 @@ public class SdsClient {
 
         try {
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "delete view request failed");
             }
@@ -644,7 +648,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "update stream request failed");
             }
@@ -673,7 +677,7 @@ public class SdsClient {
 
         try {
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "delete stream request failed");
             }
@@ -711,7 +715,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "update tags request failed");
             }
@@ -790,7 +794,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "update stream request failed");
             }
@@ -863,7 +867,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "insert single value request failed");
 
@@ -897,7 +901,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "insert single value request failed");
 
@@ -1185,7 +1189,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "update single value request failed");
             }
@@ -1220,7 +1224,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "update multiple values request failed");
             }
@@ -1254,7 +1258,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "replace single value request failed");
             }
@@ -1288,7 +1292,7 @@ public class SdsClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "replace multiple values request failed");
             }
@@ -1317,7 +1321,7 @@ public class SdsClient {
 
         try {
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "remove single value request failed");
             }
@@ -1348,7 +1352,7 @@ public class SdsClient {
 
         try {
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "remove window of values request failed");
             }
