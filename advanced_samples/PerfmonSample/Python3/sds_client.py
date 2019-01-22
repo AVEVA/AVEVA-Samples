@@ -372,7 +372,7 @@ class SdsClient(object):
     # The following section provides functionality to interact with Data
     #    We assume the value(s) passed follow the Sds object patterns supporting from_json and to_json method
 
-    def get_value(self, namespace_id, stream_id, index, value_class, view_id=""):
+    def get_value(self, namespace_id, stream_id, index, value_class, streamView_id=""):
         """Retrieves JSON object from Sds Service for value specified by 'index' from Sds Service """
         if namespace_id is None:
             raise TypeError
@@ -385,7 +385,7 @@ class SdsClient(object):
 
         response = requests.get(
             self.url + self.__getValueQuery.format(tenant_id=self.tenantId, namespace_id=namespace_id,
-                                                   stream_id=stream_id, index=index, view_id=view_id),
+                                                   stream_id=stream_id, index=index, streamView_id=streamView_id),
             headers=self.__sds_headers())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -398,7 +398,7 @@ class SdsClient(object):
         response.close()
         return value_class.from_json(content)
 
-    def get_first_value(self, namespace_id, stream_id, value_class, view_id=""):
+    def get_first_value(self, namespace_id, stream_id, value_class, streamView_id=""):
         """Retrieves JSON object from Sds Service the first value to be added to the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -409,7 +409,7 @@ class SdsClient(object):
 
         response = requests.get(
             self.url + self.__getFirstValue.format(tenant_id=self.tenantId, namespace_id=namespace_id,
-                                                   stream_id=stream_id, view_id=view_id),
+                                                   stream_id=stream_id, streamView_id=streamView_id),
             headers=self.__sds_headers())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -420,7 +420,7 @@ class SdsClient(object):
         response.close()
         return value_class.from_json(content)
 
-    def get_last_value(self, namespace_id, stream_id, value_class, view_id=""):
+    def get_last_value(self, namespace_id, stream_id, value_class, streamView_id=""):
         """Retrieves JSON object from Sds Service the last value to be added to the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -431,7 +431,7 @@ class SdsClient(object):
 
         response = requests.get(
             self.url + self.__getLastValue.format(tenant_id=self.tenantId, namespace_id=namespace_id,
-                                                  stream_id=stream_id, view_id=view_id),
+                                                  stream_id=stream_id, streamView_id=streamView_id),
             headers=self.__sds_headers())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -442,7 +442,7 @@ class SdsClient(object):
         response.close()
         return value_class.from_json(content)
 
-    def get_window_values(self, namespace_id, stream_id, value_class, start, end, view_id=""):
+    def get_window_values(self, namespace_id, stream_id, value_class, start, end, streamView_id=""):
         """Retrieves JSON object representing a window of values from the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -457,7 +457,7 @@ class SdsClient(object):
 
         response = requests.get(
             self.url + self.__getWindowValues.format(tenant_id=self.tenantId, namespace_id=namespace_id,
-                                                     stream_id=stream_id, start=start, end=end, view_id=view_id),
+                                                     stream_id=stream_id, start=start, end=end, streamView_id=streamView_id),
             headers=self.__sds_headers())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -718,22 +718,22 @@ class SdsClient(object):
         self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
         self.__behaviorsPath = self.__basePath + "/Behaviors/{behavior_id}"
         self.__getBehaviorsPath = self.__basePath + "/Behaviors?skip={skip}&count={count}"
-        self.__viewsPath = self.__basePath + "/Views/{view_id}"
-        self.__getViewsPath = self.__basePath + "/Views?skip={skip}&count={count}"
+        self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
+        self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
         self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
         self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
 
         self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
-        self.__getValueQuery = self.__dataPath + "/GetValue?index={index}&viewid={view_id}"
-        self.__getFirstValue = self.__dataPath + "/GetFirstValue?viewid={view_id}"
-        self.__getLastValue = self.__dataPath + "/GetLastValue?viewid={view_id}"
-        self.__getWindowValues = self.__dataPath + "/GetWindowValues?startIndex={start}&endIndex={end}&viewid={view_id}"
+        self.__getValueQuery = self.__dataPath + "/GetValue?index={index}&streamViewId={streamView_id}"
+        self.__getFirstValue = self.__dataPath + "/GetFirstValue?streamViewId={streamView_id}"
+        self.__getLastValue = self.__dataPath + "/GetLastValue?streamViewId={streamView_id}"
+        self.__getWindowValues = self.__dataPath + "/GetWindowValues?startIndex={start}&endIndex={end}&streamViewId={streamView_id}"
         self.__getRangeValuesQuery = self.__dataPath + "/GetRangeValues?startIndex={start}" \
                                                        "&skip={skip}" \
                                                        "&count={count}" \
                                                        "&reversed={reverse}" \
                                                        "&boundaryType={boundary_type}" \
-                                                       "&viewid={view_id}"
+                                                       "&streamViewId={streamView_id}"
 
         self.__insertValuePath = self.__dataPath + "/InsertValue"
         self.__insertValuesPath = self.__dataPath + "/InsertValues"
