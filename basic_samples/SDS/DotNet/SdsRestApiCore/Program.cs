@@ -54,8 +54,8 @@ namespace SdsRestApiCore
 			string TypeId = "WaveDataTypeId";
 			string TargetTypeId = "WaveDataTargetTypeId";
 			string TargetIntTypeId = "WaveDataTargetIntTypeId";
-			string AutoViewId = "WaveDataAutoViewId";
-			string ManualViewId = "WaveDataManualViewId";
+			string AutoStreamViewId = "WaveDataAutoStreamViewId";
+			string ManualStreamViewId = "WaveDataManualStreamViewId";
 
             SdsSecurityHandler securityHandler =
                 new SdsSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
@@ -309,7 +309,7 @@ namespace SdsRestApiCore
                 Console.WriteLine();
 
                 // Stream views
-                Console.WriteLine("SdsViews");
+                Console.WriteLine("SdsStreamViews");
 
                 // create target types
                 var targetType = BuildWaveDataTargetType(TargetTypeId);
@@ -331,39 +331,39 @@ namespace SdsRestApiCore
                     throw new HttpRequestException(response.ToString());
                 }
 
-                // create views
-                var autoView = new SdsView()
+                // create StreamViews
+                var autoStreamView = new SdsStreamView()
                 {
-                    Id = AutoViewId,
+                    Id = AutoStreamViewId,
                     SourceTypeId = TypeId,
                     TargetTypeId = TargetTypeId
                 };
 
                 // create explicit mappings 
-                var vp1 = new SdsViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-                var vp2 = new SdsViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-                var vp3 = new SdsViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-                var vp4 = new SdsViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+                var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+                var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+                var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+                var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-                var manualView = new SdsView()
+                var manualStreamView = new SdsStreamView()
                 {
-                    Id = ManualViewId,
+                    Id = ManualStreamViewId,
                     SourceTypeId = TypeId,
                     TargetTypeId = TargetIntTypeId,
-                    Properties = new List<SdsViewProperty>() { vp1, vp2, vp3, vp4 }
+                    Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
                 };
 
                 response =
-                    await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}",
-                    new StringContent(JsonConvert.SerializeObject(autoView)));
+                    await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}",
+                    new StringContent(JsonConvert.SerializeObject(autoStreamView)));
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
                 }
 
                 response =
-                     await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{ManualViewId}",
-                     new StringContent(JsonConvert.SerializeObject(manualView)));
+                     await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{ManualStreamViewId}",
+                     new StringContent(JsonConvert.SerializeObject(manualStreamView)));
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
@@ -376,72 +376,72 @@ namespace SdsRestApiCore
                 }
                 Console.WriteLine();
 
-                // get data with autoview
+                // get data with autoStreamView
                 response = await httpClient.GetAsync(
-                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetRangeValues?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}&viewId={AutoViewId}");
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetRangeValues?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}&streamViewId={AutoStreamViewId}");
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
                 }
 
-                List<WaveDataTarget> autoViewData =
+                List<WaveDataTarget> autoStreamViewData =
                     JsonConvert.DeserializeObject<List<WaveDataTarget>>(await response.Content.ReadAsStringAsync());
 
-                Console.WriteLine("Specifying a view with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
+                Console.WriteLine("Specifying a StreamView with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
 
-                foreach (var value in autoViewData)
+                foreach (var value in autoStreamViewData)
                 {
                     Console.WriteLine($"SinTarget: {value.SinTarget} CosTarget: {value.CosTarget} TanTarget: {value.TanTarget}");
                 }
                 Console.WriteLine();
 
-                Console.WriteLine("SdsViews can also convert certain types of data, here we return integers where the original values were doubles:");
+                Console.WriteLine("SdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
 
-                // get data with manualview
+                // get data with manualStreamView
                 response = await httpClient.GetAsync(
-                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetRangeValues?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}&viewId={ManualViewId}");
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetRangeValues?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}&streamViewId={ManualStreamViewId}");
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
                 }
 
-                List<WaveDataInteger> manualViewData =
+                List<WaveDataInteger> manualStreamViewData =
                     JsonConvert.DeserializeObject<List<WaveDataInteger>>(await response.Content.ReadAsStringAsync());
 
-                foreach (var value in manualViewData)
+                foreach (var value in manualStreamViewData)
                 {
                     Console.WriteLine($"SinInt: {value.SinInt} CosInt: {value.CosInt} TanInt: {value.TanInt}");
                 }
                 Console.WriteLine();
 
-                // get SdsViewMap
-                Console.WriteLine("We can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:");
+                // get SdsStreamViewMap
+                Console.WriteLine("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
 
                 response = await httpClient.GetAsync(
-                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}/Map");
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}/Map");
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
                 }
 
-                SdsViewMap sdsViewMap =
-                    JsonConvert.DeserializeObject<SdsViewMap>(await response.Content.ReadAsStringAsync());
+                SdsStreamViewMap sdsStreamViewMap =
+                    JsonConvert.DeserializeObject<SdsStreamViewMap>(await response.Content.ReadAsStringAsync());
 
-                PrintViewMapProperties(sdsViewMap);
+                PrintStreamViewMapProperties(sdsStreamViewMap);
 
-                Console.WriteLine("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
+                Console.WriteLine("Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
                 response = await httpClient.GetAsync(
-                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{ManualViewId}/Map");
+                    $"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{ManualStreamViewId}/Map");
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
                 }
 
-                sdsViewMap = JsonConvert.DeserializeObject<SdsViewMap>(await response.Content.ReadAsStringAsync());
+                sdsStreamViewMap = JsonConvert.DeserializeObject<SdsStreamViewMap>(await response.Content.ReadAsStringAsync());
 
-                PrintViewMapProperties(sdsViewMap);
+                PrintStreamViewMapProperties(sdsStreamViewMap);
 
                 // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
@@ -548,12 +548,12 @@ namespace SdsRestApiCore
             finally
             {
                 Console.WriteLine("Cleaning up");
-                // Delete the stream, types and views
+                // Delete the stream, types and streamViews
                 Console.WriteLine("Deleteing stream");
                 await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}");
-                Console.WriteLine("Deleteing views");
-                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}");
-                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{ManualViewId}");
+                Console.WriteLine("Deleteing streamViews");
+                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}");
+                await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{ManualStreamViewId}");
                 Console.WriteLine("Deleteing types");
                 await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TypeId}");
                 await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetTypeId}");
@@ -565,9 +565,9 @@ namespace SdsRestApiCore
             Console.ReadKey();
         }
 
-        private static void PrintViewMapProperties(SdsViewMap sdsViewMap)
+        private static void PrintStreamViewMapProperties(SdsStreamViewMap sdsStreamViewMap)
         {
-            foreach (var prop in sdsViewMap.Properties)
+            foreach (var prop in sdsStreamViewMap.Properties)
             {
                 if (prop.TargetId != null)
                 {

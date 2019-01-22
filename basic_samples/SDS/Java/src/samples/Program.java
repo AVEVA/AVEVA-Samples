@@ -41,8 +41,8 @@ public class Program {
     static String targetTypeId = "WaveData_SampleTargetType";
     static String integerTargetTypeId = "WaveData_SampleIntegerTargetType";
     static String sampleStreamId = "WaveData_SampleStream";
-    static String sampleViewId = "WaveData_SampleView";
-    static String sampleManualViewId = "WaveData_SampleManualView";
+    static String sampleStreamViewId = "WaveData_SampleStreamView";
+    static String sampleManualStreamViewId = "WaveData_SampleManualStreamView";
     
     
     public static void main(String[] args) throws InterruptedException {
@@ -185,8 +185,8 @@ public class Program {
    		 	}
    		 	System.out.println();
          
-   		 	// SdsViews 
-   		 	System.out.println("SdsViews"); 
+   		 	// SdsStreamViews 
+   		 	System.out.println("SdsStreamViews"); 
    		 	System.out.println("Here is some of our data as it is stored on the server:");
    		 	for (WaveData evnt : foundEvents) {
    		 		System.out.println("Sin: " + evnt.getSin() + ", Cos: " + evnt.getCos() + ", Tan" + evnt.getTan());            
@@ -201,79 +201,79 @@ public class Program {
    		 	String jsonTargetIntegerType = sdsclient.createType(tenantId, namespaceId, targetIntegerType);
    		 	targetIntegerType = sdsclient.mGson.fromJson(jsonTargetIntegerType, SdsType.class);
          
-   		 	// create a SdsView
-   		 	SdsView autoView = new SdsView();
-   		 	autoView.setId(sampleViewId);
-   		 	autoView.setName("SampleAutoView");
-   		 	autoView.setDescription("This is a view mapping SampleType to SampleTargetType");
-   		 	autoView.setSourceTypeId(sampleTypeId);
-   		 	autoView.setTargetTypeId(targetTypeId);
-   		 	String jsonAutoView = sdsclient.createView(tenantId, namespaceId, autoView);
-   		 	autoView = sdsclient.mGson.fromJson(jsonAutoView, SdsView.class);
+   		 	// create a SdsStreamView
+   		 	SdsStreamView autoStreamView = new SdsStreamView();
+   		 	autoStreamView.setId(sampleStreamViewId);
+   		 	autoStreamView.setName("SampleAutoStreamView");
+   		 	autoStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
+   		 	autoStreamView.setSourceTypeId(sampleTypeId);
+   		 	autoStreamView.setTargetTypeId(targetTypeId);
+   		 	String jsonAutoStreamView = sdsclient.createStreamView(tenantId, namespaceId, autoStreamView);
+   		 	autoStreamView = sdsclient.mGson.fromJson(jsonAutoStreamView, SdsStreamView.class);
                   
-   		 	// create SdsViewProperties
-   		 	SdsViewProperty vp1 = new SdsViewProperty();
+   		 	// create SdsStreamViewProperties
+   		 	SdsStreamViewProperty vp1 = new SdsStreamViewProperty();
    		 	vp1.setSourceId("Order");
    		 	vp1.setTargetId("OrderTarget");
          
-   		 	SdsViewProperty vp2 = new SdsViewProperty();
+   		 	SdsStreamViewProperty vp2 = new SdsStreamViewProperty();
    		 	vp2.setSourceId("Sin");
    		 	vp2.setTargetId("SinInt");
          
-   		 	SdsViewProperty vp3 = new SdsViewProperty();
+   		 	SdsStreamViewProperty vp3 = new SdsStreamViewProperty();
    		 	vp3.setSourceId("Cos");
    		 	vp3.setTargetId("CosInt");
          
-   		 	SdsViewProperty vp4 = new SdsViewProperty();
+   		 	SdsStreamViewProperty vp4 = new SdsStreamViewProperty();
    		 	vp4.setSourceId("Tan");
    		 	vp4.setTargetId("TanInt");
          
-   		 	SdsViewProperty[] props = {vp1,vp2,vp3,vp4};
+   		 	SdsStreamViewProperty[] props = {vp1,vp2,vp3,vp4};
          
-   		 	// create a SdsView with explicit SdsViewProperties         
-   		 	SdsView manualView = new SdsView();
-   		 	manualView.setId(sampleManualViewId);
-   		 	manualView.setName("SampleManualView");
-   		 	manualView.setDescription("This is a view mapping SampleType to SampleTargetType");
-   		 	manualView.setSourceTypeId(sampleTypeId);
-   		 	manualView.setTargetTypeId(integerTargetTypeId);
-   		 	manualView.setProperties(props);
-   		 	String jsonManualView = sdsclient.createView(tenantId, namespaceId, manualView);
-   		 	manualView = sdsclient.mGson.fromJson(jsonManualView, SdsView.class);
+   		 	// create a SdsStreamView with explicit SdsStreamViewProperties         
+   		 	SdsStreamView manualStreamView = new SdsStreamView();
+   		 	manualStreamView.setId(sampleManualStreamViewId);
+   		 	manualStreamView.setName("SampleManualStreamView");
+   		 	manualStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
+   		 	manualStreamView.setSourceTypeId(sampleTypeId);
+   		 	manualStreamView.setTargetTypeId(integerTargetTypeId);
+   		 	manualStreamView.setProperties(props);
+   		 	String jsonManualStreamView = sdsclient.createStreamView(tenantId, namespaceId, manualStreamView);
+   		 	manualStreamView = sdsclient.mGson.fromJson(jsonManualStreamView, SdsStreamView.class);
          
-   		 	// range values with automatically mapped SdsView
-   		 	System.out.println("Specifying a view with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
+   		 	// range values with automatically mapped SdsStreamView
+   		 	System.out.println("Specifying a StreamView with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
    		 	Type targetListType = new TypeToken<ArrayList<WaveDataTarget>>() {}.getType(); 
-   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleViewId);
+   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleStreamViewId);
    		 	ArrayList<WaveDataTarget> foundTargetEvents = sdsclient.mGson.fromJson(jsonMultipleValues, targetListType);
    		 	for (WaveDataTarget evnt : foundTargetEvents) {
    		 		System.out.println("SinTarget: " + evnt.getSinTarget() + ", CosTarget: " + evnt.getCosTarget() + ", TanTarget: " + evnt.getTanTarget());            
    		 	}
    		 	System.out.println();
 
-   		 	// range values with manually mapped SdsView
-   		 	System.out.println("SdsViews can also convert certain types of data, here we return integers where the original values were doubles:");
+   		 	// range values with manually mapped SdsStreamView
+   		 	System.out.println("SdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
    		 	Type integerListType = new TypeToken<ArrayList<WaveDataInteger>>() {}.getType(); 
-   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleManualViewId);
+   		 	jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleManualStreamViewId);
    		 	ArrayList<WaveDataInteger> foundIntegerEvents = sdsclient.mGson.fromJson(jsonMultipleValues, integerListType);
    		 	for (WaveDataInteger evnt : foundIntegerEvents) {
    		 		System.out.println("SinInt: " + evnt.getSinInt() + ", CosInt: " + evnt.getCosInt() + ", TanInt: " + evnt.getTanInt());            
    		 	}
    		 	System.out.println();
          
-   		 	// SdsViewMaps
-   		 	System.out.println("We can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:");
-   		 	Type sdsViewType = new TypeToken<SdsViewMap>() {}.getType(); 
-   		 	String jsonViewMap = sdsclient.getViewMap(tenantId, namespaceId, sampleViewId);
-   		 	SdsViewMap viewMap = sdsclient.mGson.fromJson(jsonViewMap, sdsViewType);
-   		 	dumpSdsViewMap(viewMap);
+   		 	// SdsStreamViewMaps
+   		 	System.out.println("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+   		 	Type sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {}.getType(); 
+   		 	String jsonStreamViewMap = sdsclient.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
+   		 	SdsStreamViewMap streamViewMap = sdsclient.mGson.fromJson(jsonStreamViewMap, sdsStreamViewType);
+   		 	dumpSdsStreamViewMap(streamViewMap);
    		 	System.out.println();
          
-   		 	System.out.println("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
-   		 	sdsViewType = new TypeToken<SdsViewMap>() {}.getType(); 
-   		 	jsonViewMap = sdsclient.getViewMap(tenantId, namespaceId, sampleManualViewId);
-   		 	viewMap = sdsclient.mGson.fromJson(jsonViewMap, sdsViewType);
-   		 	dumpSdsViewMap(viewMap);
+   		 	System.out.println("Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
+   		 	sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {}.getType(); 
+   		 	jsonStreamViewMap = sdsclient.getStreamViewMap(tenantId, namespaceId, sampleManualStreamViewId);
+   		 	streamViewMap = sdsclient.mGson.fromJson(jsonStreamViewMap, sdsStreamViewType);
+   		 	dumpSdsStreamViewMap(streamViewMap);
    		 	System.out.println();
             		
 			// tags and metadata
@@ -524,8 +524,8 @@ public class Program {
         }
     }
     
-    private static void dumpSdsViewMap(SdsViewMap sdsViewMap) { 
-        for (SdsViewProperty prop : sdsViewMap.getProperties()) {
+    private static void dumpSdsStreamViewMap(SdsStreamViewMap sdsStreamViewMap) { 
+        for (SdsStreamViewProperty prop : sdsStreamViewMap.getProperties()) {
             if(prop.getTargetId() != null)
            	 System.out.println(prop.getSourceId() + " => " + prop.getTargetId());
             else
@@ -554,9 +554,9 @@ public class Program {
 	{
 		System.out.println("Deleting the stream");
         sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
-        System.out.println("Deleting the views");
-        sdsclient.deleteView(tenantId, namespaceId, sampleViewId);
-        sdsclient.deleteView(tenantId, namespaceId, sampleManualViewId);
+        System.out.println("Deleting the streamViews");
+        sdsclient.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
+        sdsclient.deleteStreamView(tenantId, namespaceId, sampleManualStreamViewId);
         System.out.println("Deleting the types");
         sdsclient.deleteType(tenantId, namespaceId, sampleTypeId);
         sdsclient.deleteType(tenantId, namespaceId, targetTypeId);

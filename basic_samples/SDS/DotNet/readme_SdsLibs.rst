@@ -45,7 +45,7 @@ Set up Sds clients
 
 The client example works through two client interfaces: 
 
-* ISdsMetadataService for SdsStream, SdsType, SdsView and SdsStreamBehavior metadata operations
+* ISdsMetadataService for SdsStream, SdsType, SdsStreamView and SdsStreamBehavior metadata operations
 * ISdsDataService for reading and writing data
 
 The following code block illustrates how to configure clients to use throughout the sample:
@@ -246,11 +246,11 @@ before and after updating the stream to show that it has changed. See
 the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
-SdsViews
+SdsStreamViews
 -------
 
-An SdsView provides a way to map Stream data requests from one data type 
-to another. You can apply a View to any read or GET operation. SdsView 
+An SdsStreamView provides a way to map Stream data requests from one data type 
+to another. You can apply a StreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map Properties from the source to the 
@@ -260,39 +260,39 @@ or when the properties have the same name, Sds will map the properties automatic
 
 .. code:: cs
 
-      var autoViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, autoViewId);
+      var autoStreamViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, autoStreamViewId);
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsView's Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
 
 .. code:: cs
 
 	// create explicit mappings 
-	var vp1 = new SdsViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-	var vp2 = new SdsViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-	var vp3 = new SdsViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-	var vp4 = new SdsViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+	var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+	var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+	var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+	var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-	var manualView = new SdsView()
+	var manualStreamView = new SdsStreamView()
 	{
-		Id = manualViewId,
+		Id = manualStreamViewId,
 		SourceTypeId = typeId,
 		TargetTypeId = targetIntTypeId,
-		Properties = new List<SdsViewProperty>() { vp1, vp2, vp3, vp4 }
+		Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
 	};
 
-	await metadataService.CreateOrUpdateViewAsync(manualView);
+	await metadataService.CreateOrUpdateStreamViewAsync(manualStreamView);
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsViewMap cannot be written, it can only be retrieved from Sds.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: cs
 
-	var manualViewMap = await metadataService.GetViewMapAsync(manualViewId);
+	var manualStreamViewMap = await metadataService.GetStreamViewMapAsync(manualStreamViewId);
 
 Delete Values from a Stream
 ---------------------------
@@ -315,12 +315,12 @@ As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to '1' and '40'
 are removed from the stream.
 
-Cleanup: Deleting Types, Behaviors, Views and Streams
+Cleanup: Deleting Types, Behaviors, StreamViews and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
 performs some cleanup before exiting. Deleting streams, stream
-behaviors, views and types can be achieved using the metadata 
+behaviors, streamViews and types can be achieved using the metadata 
 client and passing the corresponding object Id:
 
 .. code:: cs

@@ -307,11 +307,11 @@ the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
 
-SdsViews
+SdsStreamViews
 -------
 
-An SdsView provides a way to map Stream data requests from one data type 
-to another. You can apply a View to any read or GET operation. SdsView 
+An SdsStreamView provides a way to map Stream data requests from one data type 
+to another. You can apply a StreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map Properties from the source to the 
@@ -322,39 +322,39 @@ or when the properties have the same name, Sds will map the properties automatic
 .. code:: cs
 
 	response =
-		await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}",
-			new StringContent(JsonConvert.SerializeObject(autoView)));
+		await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}",
+			new StringContent(JsonConvert.SerializeObject(autoStreamView)));
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsView's Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
 
 .. code:: cs
 
 	// create explicit mappings 
-	var vp1 = new SdsViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-	var vp2 = new SdsViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-	var vp3 = new SdsViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-	var vp4 = new SdsViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+	var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+	var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+	var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+	var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-	var manualView = new SdsView()
+	var manualStreamView = new SdsStreamView()
 	{
-		Id = ManualViewId,
+		Id = ManualStreamViewId,
 		SourceTypeId = TypeId,
 		TargetTypeId = TargetIntTypeId,
-		Properties = new List<SdsViewProperty>() { vp1, vp2, vp3, vp4 }
+		Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
 	};
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsViewMap cannot be written, it can only be retrieved from Sds.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: cs
 
 	response = await httpClient.GetAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}/Map");     
+		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}/Map");     
 
 
 Delete Values from a Stream
@@ -379,12 +379,12 @@ As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to '0' and '40'
 are removed from the stream.
 
-Cleanup: Deleting Types, Behaviors, Views and Streams
+Cleanup: Deleting Types, Behaviors, StreamViews and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
 performs some cleanup before exiting. Deleting streams, stream
-behaviors, views and types can be achieved by a DELETE REST call and passing
+behaviors, streamViews and types can be achieved by a DELETE REST call and passing
 the corresponding Id.
 
 .. code:: cs

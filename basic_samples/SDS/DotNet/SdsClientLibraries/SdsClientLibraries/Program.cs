@@ -55,8 +55,8 @@ namespace SdsClientLibraries
             string typeId = "SampleType";
             string targetTypeId = "SampleType_Target";
             string targetIntTypeId = "SampleType_TargetInt";
-            string autoViewId = "SampleAutoView";
-            string manualViewId = "SampleManualView";
+            string autoStreamViewId = "SampleAutoStreamView";
+            string manualStreamViewId = "SampleManualStreamView";
 
             // Get Sds Services to communicate with server
             SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, tenantId, clientId, clientKey);
@@ -223,8 +223,8 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
-                // Stream views
-                Console.WriteLine("SdsViews");
+                // StreamViews
+                Console.WriteLine("SdsStreamViews");
                 
                 // create target types
                 var targetType = SdsTypeBuilder.CreateSdsType<WaveDataTarget>();
@@ -236,30 +236,30 @@ namespace SdsClientLibraries
                 await metadataService.CreateOrUpdateTypeAsync(targetType);
                 await metadataService.CreateOrUpdateTypeAsync(targetIntType);
 
-                // create views
-                var autoView = new SdsView()
+                // create StreamViews
+                var autoStreamView = new SdsStreamView()
                 {
-                    Id = autoViewId,
+                    Id = autoStreamViewId,
                     SourceTypeId = typeId,
                     TargetTypeId = targetTypeId
                 };
 
                 // create explicit mappings 
-                var vp1 = new SdsViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-                var vp2 = new SdsViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-                var vp3 = new SdsViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-                var vp4 = new SdsViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+                var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+                var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+                var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+                var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-                var manualView = new SdsView()
+                var manualStreamView = new SdsStreamView()
                 {
-                    Id = manualViewId,
+                    Id = manualStreamViewId,
                     SourceTypeId = typeId,
                     TargetTypeId = targetIntTypeId,
-                    Properties = new List<SdsViewProperty>() { vp1, vp2, vp3, vp4 }
+                    Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
                 };
 
-                await metadataService.CreateOrUpdateViewAsync(autoView);
-                await metadataService.CreateOrUpdateViewAsync(manualView);
+                await metadataService.CreateOrUpdateStreamViewAsync(autoStreamView);
+                await metadataService.CreateOrUpdateStreamViewAsync(manualStreamView);
 
                 Console.WriteLine("Here is some of our data as it is stored on the server:");
                 foreach (var evnt in retrieved)
@@ -268,35 +268,35 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
-                // get autoview data
-                var autoViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, autoViewId);
+                // get autoStreamView data
+                var autoStreamViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, autoStreamViewId);
 
-                Console.WriteLine("Specifying a view with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
+                Console.WriteLine("Specifying a StreamView with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
 
-                foreach (var value in autoViewData)
+                foreach (var value in autoStreamViewData)
                 {
                     Console.WriteLine($"SinTarget: {value.SinTarget} CosTarget: {value.CosTarget} TanTarget: {value.TanTarget}");
                 }
                 Console.WriteLine();
 
-                // get manaulview data
-                Console.WriteLine("SdsViews can also convert certain types of data, here we return integers where the original values were doubles:");
-                var manualViewData = await dataService.GetRangeValuesAsync<WaveDataInteger>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, manualViewId);
+                // get manaulStreamView data
+                Console.WriteLine("SdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
+                var manualStreamViewData = await dataService.GetRangeValuesAsync<WaveDataInteger>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, manualStreamViewId);
 
-                foreach (var value in manualViewData)
+                foreach (var value in manualStreamViewData)
                 {
                     Console.WriteLine($"SinInt: {value.SinInt} CosInt: {value.CosInt} TanInt: {value.TanInt}");
                 }
                 Console.WriteLine();
 
-                // get SdsViewMap
-                Console.WriteLine("We can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:");
-                var autoViewMap = await metadataService.GetViewMapAsync(autoViewId);
-                PrintViewMapProperties(autoViewMap);
+                // get SdsStreamViewMap
+                Console.WriteLine("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+                var autoStreamViewMap = await metadataService.GetStreamViewMapAsync(autoStreamViewId);
+                PrintStreamViewMapProperties(autoStreamViewMap);
 
-                Console.WriteLine("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
-                var manualViewMap = await metadataService.GetViewMapAsync(manualViewId);
-                PrintViewMapProperties(manualViewMap);
+                Console.WriteLine("Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
+                var manualStreamViewMap = await metadataService.GetStreamViewMapAsync(manualStreamViewId);
+                PrintStreamViewMapProperties(manualStreamViewMap);
                 
                 // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
@@ -346,12 +346,12 @@ namespace SdsClientLibraries
             finally
             {
                 Console.WriteLine("Cleaning up");
-                // Delete the stream, types and views
+                // Delete the stream, types and streamViews
                 Console.WriteLine("Deleteing stream");
                 await metadataService.DeleteStreamAsync(streamId);
-                Console.WriteLine("Deleteing views");
-                await metadataService.DeleteViewAsync(autoViewId);
-                await metadataService.DeleteViewAsync(manualViewId);
+                Console.WriteLine("Deleteing streamViews");
+                await metadataService.DeleteStreamViewAsync(autoStreamViewId);
+                await metadataService.DeleteStreamViewAsync(manualStreamViewId);
                 Console.WriteLine("Deleteing types");
                 await metadataService.DeleteTypeAsync(typeId);
                 await metadataService.DeleteTypeAsync(targetTypeId);
@@ -363,9 +363,9 @@ namespace SdsClientLibraries
             }
         }
 
-        private static void PrintViewMapProperties(SdsViewMap sdsViewMap)
+        private static void PrintStreamViewMapProperties(SdsStreamViewMap sdsStreamViewMap)
         {
-            foreach (var prop in sdsViewMap.Properties)
+            foreach (var prop in sdsStreamViewMap.Properties)
             {
                 if (prop.TargetId != null)
                 {
