@@ -258,7 +258,7 @@ try:
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    client = SdsClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
+    client = SdsClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
                       config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
 
     namespaceId = config.get('Configurations', 'Namespace')
