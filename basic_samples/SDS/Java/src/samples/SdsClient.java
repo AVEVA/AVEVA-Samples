@@ -41,9 +41,10 @@ public class SdsClient {
     private static long FIVE_MINUTES_IN_MILLISECONDS = 300000;
     Gson mGson = null;
     private String baseUrl = null;
+    private String apiVersion = null;
     // REST API url strings
     // base of all requests
-    private String requestBase = "api/Tenants/{tenantId}/Namespaces/{namespaceId}";
+    private String requestBase = "api/v{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}";
     // type paths
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";
@@ -94,18 +95,20 @@ public class SdsClient {
     private static String gauthority = "";
     private static String gresource = "";
 
-    public SdsClient(String baseUrl) {
+    public SdsClient(String baseUrl, String apiVersion) {
         this.baseUrl = baseUrl;
+        this.apiVersion = apiVersion;
         this.mGson = new Gson();
     }
     
-    public SdsClient(String baseUrl, String clientID, String clientSecret, String authority, String resource ) {
+    public SdsClient(String baseUrl, String apiVersion, String clientID, String clientSecret, String authority, String resource) {
         gclientId = clientID;
         gclientSecret = clientSecret;
         gauthority = authority;
         gresource = resource;
         
         this.baseUrl = baseUrl;
+        this.apiVersion = apiVersion;
         this.mGson = new Gson();
     }
 
@@ -141,52 +144,52 @@ public class SdsClient {
         return urlConnection;
     }
 
-    static protected AuthenticationResult AcquireAuthToken() {
+   static protected AuthenticationResult AcquireAuthToken() {
 
-        if(result != null){
-            long tokenExpirationTime = result.getExpiresOnDate().getTime(); // returns time in milliseconds.
-            long currentTime = System.currentTimeMillis();
-            long timeDifference = tokenExpirationTime - currentTime;
+       if(result != null){
+           long tokenExpirationTime = result.getExpiresOnDate().getTime(); // returns time in milliseconds.
+           long currentTime = System.currentTimeMillis();
+           long timeDifference = tokenExpirationTime - currentTime;
 
-            if(timeDifference > FIVE_MINUTES_IN_MILLISECONDS){
-                return result;
-            }
-        }
+           if(timeDifference > FIVE_MINUTES_IN_MILLISECONDS){
+               return result;
+           }
+       }
 
-        // get configuration
-        String clientId = getConfiguration("clientId");
-        String clientSecret = getConfiguration("clientSecret");
-        String authority = getConfiguration("authority");
-        String resource = getConfiguration("resource");
+       // get configuration
+       String clientId = getConfiguration("clientId");
+       String clientSecret = getConfiguration("clientSecret");
+       String authority = getConfiguration("authority");
+       String resource = getConfiguration("resource");
 
-        service = Executors.newFixedThreadPool(1);
-        try {
-            if (authContext == null) {
-                authContext = new AuthenticationContext(authority, true, service);
-            }
+       service = Executors.newFixedThreadPool(1);
+       try {
+           if (authContext == null) {
+               authContext = new AuthenticationContext(authority, true, service);
+           }
 
-            ClientCredential userCred = new ClientCredential(clientId, clientSecret);
-            Future<AuthenticationResult> authResult = authContext.acquireToken(resource, userCred, null);
-            result = authResult.get();
-        } catch (Exception e) {
-            // Do nothing
-        } finally {
-            service.shutdown();
-        }
-        return result;
-    }
+           ClientCredential userCred = new ClientCredential(clientId, clientSecret);
+           Future<AuthenticationResult> authResult = authContext.acquireToken(resource, userCred, null);
+           result = authResult.get();
+       } catch (Exception e) {
+           // Do nothing
+       } finally {
+           service.shutdown();
+       }
+       return result;
+   }
 
-    private static String getConfiguration(String propertyId) {
-        String property = "";
-        Properties props = new Properties();
-        InputStream inputStream;
+            private static String getConfiguration(String propertyId) {
+                String property = "";
+                Properties props = new Properties();
+                InputStream inputStream;
 
-         if(propertyId.equals("clientId") && !gclientId.isEmpty()){
-            return gclientId;
-        }
+                if(propertyId.equals("clientId") && !gclientId.isEmpty()){
+                    return gclientId;
+                }
 
-        if(propertyId.equals("clientSecret") && !gclientSecret.isEmpty()){
-            return gclientSecret;
+                if(propertyId.equals("clientSecret") && !gclientSecret.isEmpty()){
+                    return gclientSecret;
         }
 
         if(propertyId.equals("authority") && !gauthority.isEmpty()){
@@ -226,7 +229,7 @@ public class SdsClient {
         String typeId = typeDef.getId();
         
         try {
-            url = new URL(baseUrl + typePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
+            url = new URL(baseUrl + typePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -274,7 +277,7 @@ public class SdsClient {
         String viewId = viewDef.getId();
         
         try {
-            url = new URL(baseUrl + getViewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
+            url = new URL(baseUrl + getViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -321,7 +324,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getViewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId) + "/Map");
+            url = new URL(baseUrl + getViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId) + "/Map");
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -361,7 +364,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + typePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
+            url = new URL(baseUrl + typePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -401,7 +404,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getTypesPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
                     .replace("{skip}", skip).replace("{count}", count));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
@@ -439,7 +442,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + typePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
+            url = new URL(baseUrl + typePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
             urlConnection = getConnection(url, "DELETE");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -467,7 +470,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + getViewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
+            url = new URL(baseUrl + getViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
             urlConnection = getConnection(url, "DELETE");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -498,7 +501,7 @@ public class SdsClient {
 		String streamId = streamDef.getId();
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -548,7 +551,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -587,7 +590,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getStreamsPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{query}", query)
+            url = new URL(baseUrl + getStreamsPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{query}", query)
                     .replace("{skip}", skip).replace("{count}", count));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
@@ -629,7 +632,7 @@ public class SdsClient {
 
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -665,7 +668,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "DELETE");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -696,7 +699,7 @@ public class SdsClient {
 
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -734,7 +737,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -775,7 +778,7 @@ public class SdsClient {
 
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata");
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata");
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -813,7 +816,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getStreamPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata/" + key);
+            url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata/" + key);
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -850,7 +853,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + insertSinglePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + insertSinglePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -884,7 +887,7 @@ public class SdsClient {
         URL url = null;
         HttpURLConnection urlConnection = null;
         try {
-            url = new URL(baseUrl + insertMultiplePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + insertMultiplePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -921,7 +924,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getSingleQuery.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
+            url = new URL(baseUrl + getSingleQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -963,7 +966,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getLastValuePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + getLastValuePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1005,7 +1008,7 @@ public class SdsClient {
 
         try {
 
-            url = new URL(baseUrl + getFirstValuePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + getFirstValuePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "GET");
 
         }   catch (Exception e) {
@@ -1043,7 +1046,7 @@ public class SdsClient {
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getWindowQuery.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endIndex}", endIndex));
+            url = new URL(baseUrl + getWindowQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endIndex}", endIndex));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1086,7 +1089,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getRangeQuery.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            url = new URL(baseUrl + getRangeQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
                     .replace("{streamId}", streamId).replace("{startIndex}", startIndex)
                     .replace("{skip}", "" + skip).replace("{count}", "" + count)
                     .replace("{reverse}", "" + reverse).replace("{boundaryType}", "" + boundaryType));
@@ -1129,7 +1132,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getRangeViewQuery.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            url = new URL(baseUrl + getRangeViewQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
                     .replace("{streamId}", streamId).replace("{startIndex}", startIndex)
                     .replace("{skip}", "" + skip).replace("{count}", "" + count)
                     .replace("{reverse}", "" + reverse).replace("{boundaryType}", "" + boundaryType)
@@ -1172,7 +1175,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + updateSinglePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + updateSinglePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1207,7 +1210,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + updateMultiplePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + updateMultiplePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1241,7 +1244,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + replaceSinglePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + replaceSinglePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1275,7 +1278,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + replaceMultiplePath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
+            url = new URL(baseUrl + replaceMultiplePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1309,7 +1312,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + removeSingleQuery.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
+            url = new URL(baseUrl + removeSingleQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
             urlConnection = getConnection(url, "DELETE");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1338,7 +1341,7 @@ public class SdsClient {
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + removeMultipleQuery.replace("{tenantId}", tenantId)
+            url = new URL(baseUrl + removeMultipleQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId)
                     .replace("{namespaceId}", namespaceId).replace("{streamId}", streamId)
                     .replace("{startIndex}", startIndex).replace("{endIndex}", endIndex));
             urlConnection = getConnection(url, "DELETE");
@@ -1373,7 +1376,7 @@ public class SdsClient {
         String dataviewId = dataviewDef.getId();
         
         try {
-            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            url = new URL(baseUrl + dataviewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1424,7 +1427,7 @@ public class SdsClient {
         String dataviewId = dataviewDef.getId();
         
         try {
-            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            url = new URL(baseUrl + dataviewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
             urlConnection = getConnection(url, "PATCH");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1473,7 +1476,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
         
         try {
-            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            url = new URL(baseUrl + dataviewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
             urlConnection = getConnection(url, "DELETE");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1515,7 +1518,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
         
         try {
-            url = new URL(baseUrl + dataviewPath.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
+            url = new URL(baseUrl + dataviewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1559,7 +1562,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
         
         try {
-            url = new URL(baseUrl + dataviewBase.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId));
+            url = new URL(baseUrl + dataviewBase.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1603,7 +1606,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
         
         try {
-            url = new URL(baseUrl + getDatagroups.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{skip}", skip.toString()).replace("{count}", count.toString()));
+            url = new URL(baseUrl + getDatagroups.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{skip}", skip.toString()).replace("{count}", count.toString()));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1647,7 +1650,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
         
         try {
-            url = new URL(baseUrl + getDatagroups.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{datagroupId}", datagroupId.toString()));
+            url = new URL(baseUrl + getDatagroups.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{datagroupId}", datagroupId.toString()));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -1691,7 +1694,7 @@ public class SdsClient {
         StringBuffer response = new StringBuffer();
         
         try {
-            url = new URL(baseUrl + getDataviewPreview.replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{startIndex}", startIndex.toString()).replace("{endIndex}", endIndex.toString()).replace("{interval}", interval.toString()).replace("{form}", form.toString()).replace("{count}", count.toString()).replace("{value_class}", value_class.toString()));
+            url = new URL(baseUrl + getDataviewPreview.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{startIndex}", startIndex.toString()).replace("{endIndex}", endIndex.toString()).replace("{interval}", interval.toString()).replace("{form}", form.toString()).replace("{count}", count.toString()).replace("{value_class}", value_class.toString()));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
