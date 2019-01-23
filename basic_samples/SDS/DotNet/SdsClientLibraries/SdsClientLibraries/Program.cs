@@ -31,17 +31,14 @@ namespace SdsClientLibraries
 {
     internal class Program
     {
-        public static void Main()
-        {
-            MainAsync().GetAwaiter().GetResult();
-        }
+        public static void Main() => MainAsync().GetAwaiter().GetResult();
 
         private static async Task MainAsync()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.production.json", optional:true, reloadOnChange:true);
+                .AddJsonFile("appsettings.test.json", optional: true);
             IConfiguration configuration = builder.Build();
 
             // ==== Client constants ====
