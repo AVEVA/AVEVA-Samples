@@ -1,6 +1,6 @@
 // <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using OSIsoft.Data;
 using OSIsoft.Data.Http.Security;
 using OSIsoft.Data.Reflection;
+using OSIsoft.Identity; 
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SdsClientLibraries
@@ -39,14 +40,14 @@ namespace SdsClientLibraries
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.production.json", optional:true, reloadOnChange:true);
             IConfiguration configuration = builder.Build();
 
             // ==== Client constants ====
             var tenantId = configuration["TenantId"];
             var namespaceId = configuration["NamespaceId"];
             var address = configuration["Address"];
-            var resource = configuration["Resource"];
             var clientId = configuration["ClientId"];
             var clientKey = configuration["ClientKey"];
 
@@ -59,9 +60,9 @@ namespace SdsClientLibraries
             string manualViewId = "SampleManualView";
 
             // Get Sds Services to communicate with server
-            SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, tenantId, clientId, clientKey);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientKey);
 
-            SdsService sdsService = new SdsService(new Uri(address), securityHandler);
+            SdsService sdsService = new SdsService(new Uri(address), authenticationHandler);
             var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
             var dataService = sdsService.GetDataService(tenantId, namespaceId);
 
