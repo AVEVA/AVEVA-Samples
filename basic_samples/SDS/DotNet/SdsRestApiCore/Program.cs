@@ -1,6 +1,6 @@
 // <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -23,10 +23,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using OSIsoft.Data;
-using OSIsoft.Data.Http.Security;
-using OSIsoft.Data.Reflection;
-using OSIsoft.Identity;
 
 namespace SdsRestApiCore
 {
@@ -49,8 +45,10 @@ namespace SdsRestApiCore
             string tenantId = configuration["TenantId"];
             string namespaceId = configuration["NamespaceId"];
             string address = configuration["Address"];
+            string resource = configuration["Resource"];
             string clientId = configuration["ClientId"];
             string clientKey = configuration["ClientKey"];
+            string aadInstanceFormat = configuration["AADInstanceFormat"];
 			
 			// ==== Metadata IDs ====
 			string StreamId = "WaveStreamId";
@@ -60,10 +58,9 @@ namespace SdsRestApiCore
 			string AutoViewId = "WaveDataAutoViewId";
 			string ManualViewId = "WaveDataManualViewId";
 
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientKey);
-
-            SdsService sdsService = new SdsService(new Uri(address), authenticationHandler);
-            HttpClient httpClient = new HttpClient(authenticationHandler)
+            SdsSecurityHandler securityHandler =
+                new SdsSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
+            HttpClient httpClient = new HttpClient(securityHandler)
             {
                 BaseAddress = new Uri(address)
             };
