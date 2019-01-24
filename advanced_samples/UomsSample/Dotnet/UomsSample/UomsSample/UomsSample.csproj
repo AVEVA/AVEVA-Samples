@@ -41,12 +41,6 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Net.Http.Headers, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.Headers.2.1.1\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
     </Reference>
@@ -64,9 +58,6 @@
     </Reference>
     <Reference Include="OSIsoft.Http.Client, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OSIsoft.Http.Client.1.0.35\lib\netstandard2.0\OSIsoft.Http.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="OSIsoft.Http.Security, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Http.Security.1.0.35\lib\netstandard2.0\OSIsoft.Http.Security.dll</HintPath>
     </Reference>
     <Reference Include="OSIsoft.Identity.AuthenticationHandler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OSIsoft.Identity.AuthenticationHandler.1.0.0\lib\netstandard2.0\OSIsoft.Identity.AuthenticationHandler.dll</HintPath>
