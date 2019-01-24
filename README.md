@@ -43,7 +43,7 @@ The official OCS samples are divided in multiple categories depending on the sce
      <a href="basic_samples/SDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/Java">JAVA</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/JavaScript/NodeJS">nodeJS</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a>&nbsp; &nbsp;
   </td>
@@ -72,7 +72,7 @@ The official OCS samples are divided in multiple categories depending on the sce
  </tr>
  <tr>
    <td width="25%">
-      <h3>Perfmance Monitoring <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
+      <h3>Local OS Performance monitoring <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
   </td>
   <td width="35%">
   In this sample we show how to create, add and read data from a stream.  The data is obtained from the OS using Performance monitors.

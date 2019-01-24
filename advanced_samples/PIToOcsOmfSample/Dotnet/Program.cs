@@ -30,6 +30,8 @@ using OSIsoft.Data.Http.Security;
 using PIToOcsOmfSample.DataIngress;
 using PIToOcsOmfSample.DataIngress.OmfMessageContent;
 using PIToOcsOmfSample.IngressManagement;
+using OSIsoft.Data;
+
 namespace PIToOcsOmfSample
 {
     public class Program
@@ -101,7 +103,7 @@ namespace PIToOcsOmfSample
             string resource = appSettings["resource"];
             string clientId = appSettings["clientId"];
             string clientSecret = appSettings["clientSecret"];
-            var securityHandler = new QiSecurityHandler(resource, accountId, clientId, clientSecret);
+            var securityHandler = new SdsSecurityHandler(resource, accountId, clientId, clientSecret);
 
             // Create a client to manage OSIsoft Cloud Services Ingress resources.
             using (var managementClient = new IngressManagementClient(clusterAddress, accountId, securityHandler))
@@ -126,12 +128,12 @@ namespace PIToOcsOmfSample
                 string topicId = managementClient.GetOrCreateTopic(topicName, publisherId).GetAwaiter().GetResult();
                 string subscriptionId = managementClient.GetOrCreateSubscription(subscriptionName, topicId, namespaceId).GetAwaiter().GetResult();
 
-                // Each PI point type will be written to an OSIsoft Cloud Services(OCS) QiStream.
-                // The structure of each stream is defined by an OCS QiType. We create this QiType 
+                // Each PI point type will be written to an OSIsoft Cloud Services(OCS) SDSStream.
+                // The structure of each stream is defined by an OCS SDSType. We create this SDSType 
                 // by posting an OSIsoft Message Format(OMF) type message to OCS.
-                // PI point value types need to translate to OCS QiTypes. We create a limited number
-                // of QiTypes in OCS and then map PI point value types to those QiTypes. 
-                // A mapping between PI point value types and the Ids of the QiType that represents
+                // PI point value types need to translate to OCS SDSTypes. We create a limited number
+                // of SDSTypes in OCS and then map PI point value types to those SDSTypes. 
+                // A mapping between PI point value types and the Ids of the SDSType that represents
                 // them in OCS is shown below.
                 Dictionary<OmfTypeCode, string> typeIdsByOmfType = new Dictionary<OmfTypeCode, string>();
                 typeIdsByOmfType.Add(OmfTypeCode.Number, "numberValueAndTimestamp");
@@ -152,7 +154,7 @@ namespace PIToOcsOmfSample
                     List<OmfContainer> containers = GetOmfContainers(points, typeIdsByOmfType);
                     if (options.WriteMode == Options.DataWriteMode.clearExistingData)
                     {
-                        // Deleting the OMF container deletes the underlying QiStream and its data.
+                        // Deleting the OMF container deletes the underlying SDSStream and its data.
                         Console.WriteLine("Deleting OMF containers corresponding to the selected PI points that existed before the sample was run.");
                         var omfContainerMessageContent = new OmfContainerMessageContent() { Containers = containers };
                         client.SendMessageAsync(omfContainerMessageContent.ToByteArray(), MessageType.Container, MessageAction.Delete).GetAwaiter().GetResult();
@@ -170,7 +172,7 @@ namespace PIToOcsOmfSample
                         client.SendMessageAsync(omfContainerMessageContent.ToByteArray(), MessageType.Container, MessageAction.Create).GetAwaiter().GetResult();
                     }
 
-                    // Write data from each PI point to a QiStream.
+                    // Write data from each PI point to a SDSStream.
                     foreach (PIPoint point in points)
                     {
                         Console.WriteLine($"Writing PI point data for point {point.Name} to OCS.");
@@ -257,7 +259,7 @@ namespace PIToOcsOmfSample
         /// <summary>
         /// Creates the content of OMF container messages that will be sent to OSIsoft Cloud Services.
         /// </summary>
-        /// <param name="points">Each PI point will correspond to a single QiStream in OCS.</param>
+        /// <param name="points">Each PI point will correspond to a single SDSStream in OCS.</param>
         /// <param name="typeIdsByOmfType">The container that is generated for each PI point will be associated with the type indicated by a typeId defined in this dictionary.</param>
         /// <returns></returns>
         private static List<OmfContainer> GetOmfContainers(IEnumerable<PIPoint> points, Dictionary<OmfTypeCode, string> typeIdsByOmfType)

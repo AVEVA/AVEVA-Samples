@@ -66,11 +66,11 @@ namespace PItoOCSviaAPISample
             string clientSecret = ConfigurationManager.AppSettings["clientSecret"];
             string piServerName = ConfigurationManager.AppSettings["PIDataArchive"];
 
-            var qiService = new QiService(new Uri(address),
-                new QiSecurityHandler(resource, accountId, clientId, clientSecret));
+            var sdsService = new SdsService(new Uri(address),
+                new SdsSecurityHandler(resource, accountId, clientId, clientSecret));
 
-            var metadataService = qiService.GetMetadataService(accountId, namespaceId);
-            var dataService = qiService.GetDataService(accountId, namespaceId);
+            var metadataService = sdsService.GetMetadataService(accountId, namespaceId);
+            var dataService = sdsService.GetDataService(accountId, namespaceId);
 
             var piServer = new PIServers()[piServerName];
             piServer.Connect();
@@ -100,7 +100,7 @@ namespace PItoOCSviaAPISample
             Console.WriteLine($"Found {piPoints.Count} points matching mask: {_options.TagMask}");
 
             //create types
-            await PIQiTypes.CreateOrUpdateTypesInOcsAsync(metadataService);
+            await PISdsTypes.CreateOrUpdateTypesInOcsAsync(metadataService);
 
             //delete existing streams if requested
             if (_options.Mode == CommandLineOptions.DataWriteModes.clearExistingData)
@@ -166,14 +166,14 @@ namespace PItoOCSviaAPISample
             return result;
         }
         
-        private static async Task DeleteStreamBasedOnPIPointAsync(PIPoint piPoint, IQiMetadataService metadata)
+        private static async Task DeleteStreamBasedOnPIPointAsync(PIPoint piPoint, ISdsMetadataService metadata)
         {
             var id = GetStreamId(piPoint);
             try
             {
                 await metadata.GetStreamAsync(id);
             }
-            catch (QiHttpClientException ex)
+            catch (SdsHttpClientException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -189,19 +189,19 @@ namespace PItoOCSviaAPISample
         }
         
         private static async Task CreateStreamBasedOnPIPointAsync(PIPoint piPoint,
-            IEnumerable<string> pointAttributes, IQiMetadataService metadata)
+            IEnumerable<string> pointAttributes, ISdsMetadataService metadata)
         {
             var otherAttributes = pointAttributes.Where(s => s != PICommonPointAttributes.Descriptor)
                 .ToDictionary(s => s, s => piPoint.GetAttribute(s).ToString());
 
             var id = GetStreamId(piPoint);
-            var dataType = PIQiTypes.GetDataType(piPoint.PointType);
+            var dataType = PISdsTypes.GetDataType(piPoint.PointType);
 
-            await metadata.CreateOrUpdateStreamAsync(new QiStream()
+            await metadata.CreateOrUpdateStreamAsync(new SdsStream()
             {
                 Id = id,
                 Name = piPoint.Name,
-                TypeId = PIQiTypes.GetQiTypeId(dataType),
+                TypeId = PISdsTypes.GetSdsTypeId(dataType),
                 Description = piPoint.GetAttribute(PICommonPointAttributes.Descriptor).ToString()
             });
 
@@ -209,11 +209,11 @@ namespace PItoOCSviaAPISample
             await metadata.UpdateStreamMetadataAsync(id, otherAttributes);
         }
 
-        private static async Task WriteDataToOcsAsync(PIPoint piPoint, List<AFValue> afValues, IQiDataService data)
+        private static async Task WriteDataToOcsAsync(PIPoint piPoint, List<AFValue> afValues, ISdsDataService data)
         {
             var streamId = GetStreamId(piPoint);
 
-            switch (PIQiTypes.GetDataType(piPoint.PointType))
+            switch (PISdsTypes.GetDataType(piPoint.PointType))
             {
                 case StreamDataType.Integer:
                     await WriteDataForIntegerStreamAsync(data, afValues, streamId);
@@ -238,10 +238,10 @@ namespace PItoOCSviaAPISample
                 $"Writing data for point: {piPoint.Name} to stream {streamId} ({afValues.Count} values written.)");
         }
 
-        private static async Task WriteDataForIntegerStreamAsync(IQiDataService data, List<AFValue> afValues, string streamId)
+        private static async Task WriteDataForIntegerStreamAsync(ISdsDataService data, List<AFValue> afValues, string streamId)
         {
-            var dataList = new List<PIQiTypes.IntegerData>();
-            dataList.AddRange(afValues.Select(val => new PIQiTypes.IntegerData()
+            var dataList = new List<PISdsTypes.IntegerData>();
+            dataList.AddRange(afValues.Select(val => new PISdsTypes.IntegerData()
             {
                 Timestamp = val.Timestamp,
                 Value = val.ValueAsInt32()
@@ -249,9 +249,9 @@ namespace PItoOCSviaAPISample
             await data.UpdateValuesAsync(streamId, dataList);
         }
 
-        private static async Task WriteDataForFloatStreamAsync(IQiDataService data, List<AFValue> afValues, string streamId)
+        private static async Task WriteDataForFloatStreamAsync(ISdsDataService data, List<AFValue> afValues, string streamId)
         {
-            var dataList = afValues.Select(val => new PIQiTypes.DoubleData()
+            var dataList = afValues.Select(val => new PISdsTypes.DoubleData()
             {
                 Timestamp = val.Timestamp,
                 Value = val.ValueAsDouble()
@@ -259,9 +259,9 @@ namespace PItoOCSviaAPISample
             await data.UpdateValuesAsync(streamId, dataList);
         }
 
-        private static async Task WriteDataForStringStreamAsync(IQiDataService data, List<AFValue> afValues, string streamId)
+        private static async Task WriteDataForStringStreamAsync(ISdsDataService data, List<AFValue> afValues, string streamId)
         {
-            var dataList = afValues.Select(val => new PIQiTypes.StringData()
+            var dataList = afValues.Select(val => new PISdsTypes.StringData()
             {
                 Timestamp = val.Timestamp,
                 Value = val.Value.ToString()
@@ -269,9 +269,9 @@ namespace PItoOCSviaAPISample
             await data.UpdateValuesAsync(streamId, dataList);
         }
 
-        private static async Task WriteDataForBlobStreamAsync(IQiDataService data, List<AFValue> afValues, string streamId)
+        private static async Task WriteDataForBlobStreamAsync(ISdsDataService data, List<AFValue> afValues, string streamId)
         {
-            var dataList = afValues.Select(val => new PIQiTypes.BlobData()
+            var dataList = afValues.Select(val => new PISdsTypes.BlobData()
             {
                 Timestamp = val.Timestamp,
                 Value = (byte[]) val.Value
@@ -279,9 +279,9 @@ namespace PItoOCSviaAPISample
             await data.UpdateValuesAsync(streamId, dataList);
         }
 
-        private static async Task WriteDataForTimeStreamAsync(IQiDataService data, List<AFValue> afValues, string streamId)
+        private static async Task WriteDataForTimeStreamAsync(ISdsDataService data, List<AFValue> afValues, string streamId)
         {
-            var dataList = afValues.Select(val => new PIQiTypes.TimeData()
+            var dataList = afValues.Select(val => new PISdsTypes.TimeData()
             {
                 Timestamp = val.Timestamp,
                 Value = (DateTime) val.Value
