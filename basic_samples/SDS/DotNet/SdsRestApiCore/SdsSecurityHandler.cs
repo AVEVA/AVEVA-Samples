@@ -68,7 +68,8 @@ namespace SdsRestApiCore
                     Policy = new DiscoveryPolicy
                     {
                         Authority = "https://identity.osisoft.com",
-                        ValidateEndpoints = false
+                        ValidateEndpoints = false,
+                        ValidateIssuerName = false
                     }
                 };
 
