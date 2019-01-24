@@ -44,7 +44,7 @@ public class SdsClient {
     private String apiVersion = null;
     // REST API url strings
     // base of all requests
-    private String requestBase = "api/v{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}";
+    private String requestBase = "api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}";
     // type paths
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";

@@ -38,7 +38,7 @@ the sample in the appsettings.json configuration file as follows:
 		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
 		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
 		"ClientKey": "REPLACE_WITH_CLIENT_SECRET",
-		"ApiVersion": "REPLACE_WITH_API_VERSION",
+		"ApiVersion": "v1-preview",
 		"AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>/oauth2/token"
 	}
 

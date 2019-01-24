@@ -111,7 +111,7 @@ The values to be replaced are in ``config.ini``:
 	[Access]
 	Address = https://dat-a.osisoft.com
 	Tenant = REPLACE_WITH_TENANT_ID
-    ApiVersion = REPLACE_WITH_API_VERSION
+    ApiVersion = v1-preview
 
 	[Credentials]
 	Resource = https://sdshomeprod.onmicrosoft.com/ocsapi

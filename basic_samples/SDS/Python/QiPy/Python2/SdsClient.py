@@ -1008,7 +1008,7 @@ class SdsClient(object):
         return splitUri.netloc + splitUri.path
 
     def __setPathAndQueryTemplates(self):
-        self.__basePath = "/api/v{api_version}/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__basePath = "/api/{api_version}/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
         self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
         self.__behaviorsPath = self.__basePath + "/Behaviors/{behavior_id}"

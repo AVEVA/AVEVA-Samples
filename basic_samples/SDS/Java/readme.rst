@@ -134,7 +134,7 @@ The values to be replaced are in ``config.properties``:
     sdsServerUrl = PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL
     tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
     namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
-    apiVersion = PLACEHOLDER_REPLACE_WITH_API_VERSION
+    apiVersion = v1-preview
 
 Obtain an Authentication Token
 ------------------------------
