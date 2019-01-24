@@ -131,7 +131,7 @@ The values to be replaced are in ``config.properties``:
     authority = https://login.windows.net/<PLACEHOLDER_REPLACE_WITH_TENANT_NAME>.onmicrosoft.com
     clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
     clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
-    sdsServerUrl = PLACEHOLDER_REPLACE_WITH_QI_SERVER_URL
+    sdsServerUrl = PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL
     tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
     namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
     apiVersion = v1-preview

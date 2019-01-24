@@ -1,6 +1,6 @@
 // <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -28,27 +28,22 @@ namespace SdsRestApiCore
 {
     class Program
     {
-        public static void Main()
-        {
-            MainAsync().GetAwaiter().GetResult();
-        }
-
+        public static void Main() => MainAsync().GetAwaiter().GetResult();
         private static async Task MainAsync()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.test.json", optional: true);
             IConfiguration configuration = builder.Build();
 
 			// ==== Client constants ====
             string tenantId = configuration["TenantId"];
             string namespaceId = configuration["NamespaceId"];
             string address = configuration["Address"];
-            string resource = configuration["Resource"];
             string clientId = configuration["ClientId"];
             string clientKey = configuration["ClientKey"];
             string apiVersion = configuration["ApiVersion"];
-            string aadInstanceFormat = configuration["AADInstanceFormat"];
 			
 			// ==== Metadata IDs ====
 			string StreamId = "WaveStreamId";
@@ -58,8 +53,7 @@ namespace SdsRestApiCore
 			string AutoViewId = "WaveDataAutoViewId";
 			string ManualViewId = "WaveDataManualViewId";
 
-            SdsSecurityHandler securityHandler =
-              new SdsSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
+            SdsSecurityHandler securityHandler = new SdsSecurityHandler(address, clientId, clientKey);
             HttpClient httpClient = new HttpClient(securityHandler)
             {
                 BaseAddress = new Uri(address)
