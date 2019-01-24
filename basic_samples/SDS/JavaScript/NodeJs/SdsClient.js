@@ -45,7 +45,7 @@ module.exports = {
         this.version = 0.1;
         this.typesBase = "/api/Tenants/{0}/Namespaces/{1}/Types";
         this.streamsBase = "/api/Tenants/{0}/Namespaces/{1}/Streams";
-        this.streamViewsBase = "/api/Tenants/{0}/Namespaces/{1}/StreamViews";
+        this.viewsBase = "/api/Tenants/{0}/Namespaces/{1}/Views";
         this.insertSingleValueBase = "/Data/InsertValue";
         this.insertMultipleValuesBase = "/Data/InsertValues";
         this.getLastValueBase = "/{0}/Data/GetLastValue";
@@ -107,19 +107,19 @@ module.exports = {
         };
 
         // create a streamView
-        this.createStreamView = function (tenantId, namespaceId, streamView) {
+        this.createView = function (tenantId, namespaceId, view) {
             return restCall({
-                url: this.url + this.streamViewsBase.format([tenantId, namespaceId]) + "/" + streamView.Id,
+                url: this.url + this.viewsBase.format([tenantId, namespaceId]) + "/" + view.Id,
                 method: 'POST',
                 headers: this.getHeaders(),
-                body: JSON.stringify(streamView).toString()
+                body: JSON.stringify(view).toString()
             });
         };
 
-        // get an SdsStreamViewMap
-        this.getStreamViewMap = function (tenantId, namespaceId, streamViewId) {
+        // get an SdsViewMap
+        this.getViewMap = function (tenantId, namespaceId, viewId) {
             return restCall({
-                url: this.url + this.streamViewsBase.format([tenantId, namespaceId]) + "/" + streamViewId + "/Map",
+                url: this.url + this.viewsBase.format([tenantId, namespaceId]) + "/" + viewId + "/Map",
                 method: 'GET',
                 headers: this.getHeaders()
             });
@@ -204,9 +204,9 @@ module.exports = {
         };
 
         // retrieve a range of value based on boundary type
-        this.getRangeValues = function (tenantId, namespaceId, streamId, start, skip, count, reverse, boundaryType, streamView ="") {            
+        this.getRangeValues = function (tenantId, namespaceId, streamId, start, skip, count, reverse, boundaryType, view ="") {            
             return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesBase.format([streamId, start, skip, count, reverse, boundaryType, streamView]),
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesBase.format([streamId, start, skip, count, reverse, boundaryType, view]),
                 method: 'GET',
                 headers: this.getHeaders()
             });
@@ -302,10 +302,10 @@ module.exports = {
             });
         };
 
-        // delete a StreamView
-        this.deleteStreamView = function (tenantId, namespaceId, streamViewId) {
+        // delete a view
+        this.deleteView = function (tenantId, namespaceId, viewId) {
             return restCall({
-                url: this.url + this.streamViewsBase.format([tenantId, namespaceId]) + "/" + streamViewId,
+                url: this.url + this.viewsBase.format([tenantId, namespaceId]) + "/" + viewId,
                 method: 'DELETE',
                 headers: this.getHeaders()
             });

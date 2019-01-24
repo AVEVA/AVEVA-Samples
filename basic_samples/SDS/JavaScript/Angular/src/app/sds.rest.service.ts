@@ -93,25 +93,25 @@ export enum SdsBoundaryType {
   ExactOrCalculated = 3
 }
 
-export class SdsStreamView {
+export class SdsView {
   Id: string;
   Name: string;
   Description: string;
   SourceTypeId: string;
   TargetTypeId: string;
-  Properties: SdsStreamViewProperty[];
+  Properties: SdsViewProperty[];
 }
 
-export class SdsStreamViewProperty {
+export class SdsViewProperty {
   SourceId: string;
   TargetId: string;
-  SdsStreamView: SdsStreamView;
+  SdsView: SdsView;
 }
 
-export class SdsStreamViewMap {
+export class SdsViewMap {
   SourceTypeId: string;
   TargetTypeId: string;
-  Properties: SdsStreamViewProperty[];
+  Properties: SdsViewProperty[];
 }
 
 @Injectable()
@@ -180,10 +180,10 @@ export class SdsRestService {
     return this.authHttp.get(url);
   }
 
-  getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
+  getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, viewId: string = ''): Observable<any> {
     const url = this.sdsUrl +
       `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-      `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
+      `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&viewId=${viewId}`;
     return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control','no-cache')});
   }
 
@@ -227,18 +227,18 @@ export class SdsRestService {
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
-  createStreamView(sdsStreamView: SdsStreamView): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${sdsStreamView.Id}`;
-    return this.authHttp.post(url, JSON.stringify(sdsStreamView).toString());
+  createView(sdsView: SdsView): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${sdsView.Id}`;
+    return this.authHttp.post(url, JSON.stringify(sdsView).toString());
   }
 
-  deleteStreamView(streamViewId: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}`;
+  deleteView(viewId: string): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}`;
     return this.authHttp.delete(url);
   }
 
-  getStreamViewMap(streamViewId: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}/Map`;
+  getViewMap(viewId: string): Observable<any> {
+    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}/Map`;
     return this.authHttp.get(url);
   }
 

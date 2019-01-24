@@ -95,22 +95,22 @@
   <br>
   <span *ngIf="button5Message">Response: {{button5Message}}</span>
   <h3>Using SdsStreamViews</h3>
-  <p>SdsStreamViews can return a StreamView of the data stored on the server, we can use them to coerce SdsStream data of 
+  <p>SdsStreamViews can return a view of the data stored on the server, we can use them to coerce SdsStream data of 
     a certain type to be returned as another type. A simple example of this would be to provide a type with the same 
     data shape using different names for each property.</p>
-  <button class="btn btn-primary" (click)="createAutoStreamViewTargetType()" >Create a target SdsType</button>
+  <button class="btn btn-primary" (click)="createAutoviewTargetType()" >Create a target SdsType</button>
   <br>
   <span *ngIf="button6Message">Response: {{button6Message}}</span>
-  <p>Once we have created our target type we create an SdsStreamView specifying a SourceTypeId (our original SdsType) and 
+  <p>Once we have created our target type we create an SdsView specifying a SourceTypeId (our original SdsType) and 
     a TargetTypeId.</p>
-  <button class="btn btn-primary" (click)="createAutoStreamView()" >Create an SdsStreamView</button>
+  <button class="btn btn-primary" (click)="createAutoview()" >Create an SdsView</button>
   <br>
   <span *ngIf="button7Message">Response: {{button7Message}}</span>
-  <p>We can now use this SdsStreamView on any GET request and our data will be returned with the structure of the target SdsType.</p>
-    <button class="btn btn-primary" (click)="retrieveWaveDataEventsAutoStreamView()" >Retrieve Events</button>
+  <p>We can now use this SdsView on any GET request and our data will be returned with the structure of the target SdsType.</p>
+    <button class="btn btn-primary" (click)="retrieveWaveDataEventsAutoview()" >Retrieve Events</button>
     <br>
     <span *ngIf="button8Message">Response: {{button8Message}}</span>
-    <div *ngIf="hasStreamView1Events">
+    <div *ngIf="hasView1Events">
       <table class="table table-striped table-responsive">
         <tr>
           <th>OrderTarget</th>
@@ -138,19 +138,19 @@
     </div>
   <p>We can also specify target types that have different shapes and data types, in the simple example above Sds 
     was able to perform the mapping automatically.  To make more complex changes we will need to specify the mappings
-    explicitly.  For this we add an SdsStreamViewProperty mapping the source property to the target property.  We will create 
-    three SdsStreamViewProperties and return Sin, Cos and Tan as though they were integers.  
+    explicitly.  For this we add an SdsViewProperty mapping the source property to the target property.  We will create 
+    three SdsViewProperties and return Sin, Cos and Tan as though they were integers.  
   </p>
-    <button class="btn btn-primary" (click)="createSdsStreamViewPropertiesAndManualType()" >Create SdsStreamView with SdsStreamViewProperties</button>
+    <button class="btn btn-primary" (click)="createSdsViewPropertiesAndManualType()" >Create SdsView with SdsViewProperties</button>
     <br>
     <span *ngIf="button9Message">Response: {{button9Message}}</span>
-    <p>  Speficying this SdsStreamView on our GET request we see that Sds has only returned values for those Properties that have
+    <p>  Speficying this SdsView on our GET request we see that Sds has only returned values for those Properties that have
       an explicit mapping.
       </p>
-        <button class="btn btn-primary" (click)="retrieveWaveDataEventsManualStreamView()" >Retrieve Events</button>
+        <button class="btn btn-primary" (click)="retrieveWaveDataEventsManualview()" >Retrieve Events</button>
         <br>
         <span *ngIf="button10Message">Response: {{button10Message}}</span>
-        <div *ngIf="hasStreamView2Events">
+        <div *ngIf="hasView2Events">
             <table class="table table-striped table-condensed">
               <tr>
                 <th>OrderTarget</th>
@@ -166,10 +166,10 @@
               </tr>
             </table>
           </div>
-        <p>  Finally, if we are ever curious about the mapping for a specific StreamView we can request its SdsStreamViewMap.  This will show the relationship 
+        <p>  Finally, if we are ever curious about the mapping for a specific view we can request its SdsViewMap.  This will show the relationship 
           between the SourceType and the TargetType.
             </p>
-              <button class="btn btn-primary" (click)="getSdsStreamViewMap()" >Request SdsStreamViewMap</button>
+              <button class="btn btn-primary" (click)="getSdsViewMap()" >Request SdsViewMap</button>
               <br>
               <span *ngIf="button11Message">Response: {{button11Message}}</span>
               <div *ngIf="hasMapProperties">
@@ -178,8 +178,8 @@
                       <th>SourceTypeId</th>
                       <th>TargetTypeId</th>
                     </tr>
-                      <td width="50%">{{streamViewMap.SourceTypeId}}</td>
-                      <td width="50%">{{streamViewMap.TargetTypeId}}</td>
+                      <td width="50%">{{viewMap.SourceTypeId}}</td>
+                      <td width="50%">{{viewMap.TargetTypeId}}</td>
                   </table>
                 </div>
                 <p></p>
@@ -190,7 +190,7 @@
                         <th>SourcePropertyId</th>
                         <th>TargetPropertyId</th>
                       </tr>
-                      <ng-container *ngFor="let prop of streamViewMap.Properties">
+                      <ng-container *ngFor="let prop of viewMap.Properties">
                          <tr *ngIf="prop.TargetId">
                       <td>{{prop.SourceId}}</td>
                       <td>{{prop.TargetId}}</td>
@@ -243,8 +243,8 @@
   <br>
   <span *ngIf="button13Message">Response: {{button13Message}}</span>
 
-  <h4>Deleting types, streams and streamViews</h4>
-  <p>Press the button below to delete the types, streams and streamViews that this sample has created. Failure to do
+  <h4>Deleting types, streams and views</h4>
+  <p>Press the button below to delete the types, streams and views that this sample has created. Failure to do
   so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
   written to that stream.</p>
   <button class="btn btn-primary" (click)="cleanup()">Clean up</button>

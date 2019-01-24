@@ -64,7 +64,7 @@ var dumpEvents = function (obj) {
     });
 };
 
-var dumpStreamViewMap = function (obj) {     
+var dumpViewMap = function (obj) {     
     obj.Properties.forEach(function (elem, index) {
         if(elem.TargetId){
             console.log(elem.SourceId + " => " + elem.TargetId)
@@ -108,10 +108,10 @@ http.createServer(function (request1, response) {
     var sampleNamespaceId = config.namespaceId;
     var sampleTypeId = "WaveData_SampleType";
     var sampleStreamId = "WaveData_SampleStream";
-    var sampleStreamViewId = "WaveData_SampleStreamView"
+    var sampleViewId = "WaveData_SampleView"
     var targetTypeId = "targetTypeId";
     var targetIntegerTypeId = "targetIntegerTypeId"
-    var manualStreamViewId = "WaveData_ManualStreamView"
+    var manualViewId = "WaveData_ManualView"
 
     Object.freeze(sdsObjs.sdsTypeCode);
     Object.freeze(sdsObjs.sdsBoundaryType);
@@ -516,10 +516,10 @@ http.createServer(function (request1, response) {
         return obj;
     });
 
-    // SdsStreamViews
-    var streamViewMessage = printResultEvent.then(  
+    // SdsViews
+    var viewMessage = printResultEvent.then(  
         function(res){ 
-            console.log("\nSdsStreamViews")
+            console.log("\nSdsViews")
             console.log("Here is some of our data as it is stored on the server:");
             res.forEach(function (elem) {
                 console.log("Sin: " + elem.Sin +
@@ -547,7 +547,7 @@ http.createServer(function (request1, response) {
     var integerType = new sdsObjs.SdsType({
         "Id": targetIntegerTypeId, 
         "Name": "WaveDataTargetIntegersJs",
-        "Description": "This is a sample Sds type for storing a StreamView of WaveData's sin, cos and tan properties as Integers",
+        "Description": "This is a sample Sds type for storing a view of WaveData's sin, cos and tan properties as Integers",
         "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
         "Properties": [orderTargetProperty, tanInt, cosInt, sinInt]
     });
@@ -555,14 +555,14 @@ http.createServer(function (request1, response) {
     var targetType = new sdsObjs.SdsType({
         "Id": targetTypeId, 
         "Name": "WaveDataTargetJs",
-        "Description": "This is a sample Sds type for storing a StreamView of WaveData type events",
+        "Description": "This is a sample Sds type for storing a view of WaveData type events",
         "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
         "Properties": [orderTargetProperty, tauTargetProperty, radiansTargetProperty, sinTargetProperty,
             cosTargetProperty, tanTargetProperty, sinhTargetProperty, coshTargetProperty, tanhTargetProperty],
     });
 
     // create target types on server
-    var createTargetType = streamViewMessage.then(
+    var createTargetType = viewMessage.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -590,78 +590,78 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err); });
 
-    // build a StreamView to map our sample type to our target type, as the properties are in the same order and of the same type Sds will do the mapping automatically
-    var autoStreamView = new sdsObjs.SdsStreamView({
-        "Id": sampleStreamViewId, 
+    // build a view to map our sample type to our target type, as the properties are in the same order and of the same type Sds will do the mapping automatically
+    var autoView = new sdsObjs.SdsView({
+        "Id": sampleViewId, 
         "Name": "MapSampleTypeToATargetType",     
         "TargetTypeId" : targetTypeId,
         "SourceTypeId" : sampleTypeId
         });
     
-    // create StreamView on the server    
-    var createAutoStreamView = createTargetIntegerType.then(
+    // create view on the server    
+    var createAutoView = createTargetIntegerType.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.createStreamView(tenantId, sampleNamespaceId, autoStreamView);
+                        return client.createView(tenantId, sampleNamespaceId, autoView);
                         }).catch(function (err) { logError(err); });
             } else {
-                return client.createStreamView(tenantId, sampleNamespaceId, autoStreamView);
+                return client.createView(tenantId, sampleNamespaceId, autoView);
             }
         }
     ).catch(function (err) { logError(err); });
  
-    // create SdsStreamViewProperties to explicitly map source property to target property 
-    var sinStreamViewProperty = new sdsObjs.SdsStreamViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
-    var cosStreamViewProperty = new sdsObjs.SdsStreamViewProperty({ "SourceId": "Cos", "TargetId": "CosInt" });
-    var tanStreamViewProperty = new sdsObjs.SdsStreamViewProperty({ "SourceId": "Tan", "TargetId": "TanInt" });
+    // create SdsViewProperties to explicitly map source property to target property 
+    var sinViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
+    var cosViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Cos", "TargetId": "CosInt" });
+    var tanViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Tan", "TargetId": "TanInt" });
     
-    // build a StreamView using SdsStreamViewProperties
-    var manualStreamView = new sdsObjs.SdsStreamView({
-        "Id": manualStreamViewId, 
+    // build a view using SdsViewProperties
+    var manualView = new sdsObjs.SdsView({
+        "Id": manualViewId, 
         "Name": "MapSampleTypeToATargetType",     
         "TargetTypeId" : targetIntegerTypeId,
         "SourceTypeId" : sampleTypeId,
-        "Properties" : [sinStreamViewProperty, cosStreamViewProperty, tanStreamViewProperty]
+        "Properties" : [sinViewProperty, cosViewProperty, tanViewProperty]
     });
     
-    // create the StreamView on the server
-    var createManualStreamView = createAutoStreamView.then(
+    // create the view on the server
+    var createManualView = createAutoView.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.createStreamView(tenantId, sampleNamespaceId, manualStreamView);
+                        return client.createView(tenantId, sampleNamespaceId, manualView);
                     }).catch(function (err) { logError(err); });
             } else {
-                    return client.createStreamView(tenantId, sampleNamespaceId, manualStreamView);
+                    return client.createView(tenantId, sampleNamespaceId, manualView);
             }
         }
     ).catch(function (err) { logError(err); });
 
-    // get range of values specifying our StreamView
-    var getRangeStreamViewEvents = createManualStreamView.then(
+    // get range of values specifying our view
+    var getRangeViewEvents = createManualView.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id);
+                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoView.Id);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id);
+                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoView.Id);
             }
         }
     ).catch(function (err) { logError(err); });
     
     // print results
-    var dumpStreamViewEvent = getRangeStreamViewEvents.then(
+    var dumpViewEvent = getRangeViewEvents.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log("\nSpecifying a StreamView with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
+            console.log("\nSpecifying a view with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
             obj.forEach(function (elem) {
                 console.log("SinTarget: " + elem.SinTarget +
                             ", CosTarget: " + elem.CosTarget  +
@@ -670,26 +670,26 @@ http.createServer(function (request1, response) {
         }
     ).catch(function (err) { logError(err);});
 
-    // get range of values specifying our integer StreamView
-    var getRangeIntegerStreamViewEvents = getRangeStreamViewEvents.then(
+    // get range of values specifying our integer view
+    var getRangeIntegerViewEvents = getRangeViewEvents.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, manualStreamViewId);
+                        return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, manualViewId);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, manualStreamViewId);
+                return client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, manualViewId);
             }
         }
     ).catch(function (err) { logError(err); });
     
     // print results
-    var dumpIntegerStreamViewEvent = getRangeIntegerStreamViewEvents.then(
+    var dumpIntegerViewEvent = getRangeIntegerViewEvents.then(
             function (res) {
                 var obj = JSON.parse(res);
-                console.log("\nSdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
+                console.log("\nSdsViews can also convert certain types of data, here we return integers where the original values were doubles:");
                 obj.forEach(function (elem) {
                     console.log("SinInt: " + elem.SinInt +
                                 ", CosInt: " + elem.CosInt  +
@@ -699,49 +699,49 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err);});
 
     // request maps
-    var getAutoSdsStreamViewMap = dumpIntegerStreamViewEvent.then(
+    var getAutoSdsViewMap = dumpIntegerViewEvent.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getStreamViewMap(tenantId, sampleNamespaceId, sampleStreamViewId);
+                        return client.getViewMap(tenantId, sampleNamespaceId, sampleViewId);
                     }).catch(function (err) { logError(err); });
             } else {
-                    return client.getStreamViewMap(tenantId, sampleNamespaceId, sampleStreamViewId);
+                    return client.getViewMap(tenantId, sampleNamespaceId, sampleViewId);
             }
         }
     ).catch(function (err) { logError(err); });
 
     // print map
-    var dumpMapResult = getAutoSdsStreamViewMap.then(
+    var dumpMapResult = getAutoSdsViewMap.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log("\nWe can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
-            dumpStreamViewMap(obj);
+            console.log("\nWe can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:");
+            dumpViewMap(obj);
         }
     ).catch(function (err) { logError(err);});
 
-    var getManualSdsStreamViewMap = dumpMapResult.then(
+    var getManualSdsViewMap = dumpMapResult.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getStreamViewMap(tenantId, sampleNamespaceId, manualStreamViewId);
+                        return client.getViewMap(tenantId, sampleNamespaceId, manualViewId);
                     }).catch(function (err) { logError(err); });
             } else {
-                    return client.getStreamViewMap(tenantId, sampleNamespaceId, manualStreamViewId);
+                    return client.getViewMap(tenantId, sampleNamespaceId, manualViewId);
             }
         }
     ).catch(function (err) { logError(err); });
 
     // print map
-    dumpMapResult = getManualSdsStreamViewMap.then(
+    dumpMapResult = getManualSdsViewMap.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log("\nHere is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
-            dumpStreamViewMap(obj);
+            console.log("\nHere is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
+            dumpViewMap(obj);
         }
     ).catch(function (err) { logError(err);});   
                 
@@ -884,17 +884,17 @@ http.createServer(function (request1, response) {
             }
     }).finally( 
         function () {
-            console.log("Deleting the StreamViews");
+            console.log("Deleting the views");
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        client.deleteStreamView(tenantId, sampleNamespaceId, sampleStreamViewId);
-                        return client.deleteStreamView(tenantId, sampleNamespaceId, manualStreamViewId);
+                        client.deleteView(tenantId, sampleNamespaceId, sampleViewId);
+                        return client.deleteView(tenantId, sampleNamespaceId, manualViewId);
                     }).catch(function (err) { logError(err); });
             } else {
-                client.deleteStreamView(tenantId, sampleNamespaceId, sampleStreamViewId);
-                return client.deleteStreamView(tenantId, sampleNamespaceId, manualStreamViewId);
+                client.deleteView(tenantId, sampleNamespaceId, sampleViewId);
+                return client.deleteView(tenantId, sampleNamespaceId, manualViewId);
             }
     }).finally(
         // delete the types
