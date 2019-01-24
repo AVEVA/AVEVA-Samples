@@ -86,10 +86,10 @@ module.exports = {
 
         SdsType: 501,
         SdsTypeProperty: 502,
-        SdsView: 503,
-        SdsViewProperty: 504,
-        SdsViewMap: 505,
-        SdsViewMapProperty: 506,
+        SdsStreamView: 503,
+        SdsStreamViewProperty: 504,
+        SdsStreamViewMap: 505,
+        SdsStreamViewMapProperty: 506,
         SdsStream: 507,
         SdsStreamIndex: 508,
         SdsTable: 509,
@@ -195,24 +195,24 @@ module.exports = {
         }
     },
 
-    //Sds View object
-    SdsView: function(sdsView) {
-        this.Id = sdsView.Id;
-        this.Name = sdsView.Name;
-        this.SourceTypeId = sdsView.SourceTypeId;
-        this.TargetTypeId = sdsView.TargetTypeId;
-        if (sdsView.Properties) {
-            this.Properties = sdsView.Properties;
+    //Sds StreamView object
+    SdsStreamView: function(sdsStreamView) {
+        this.Id = sdsStreamView.Id;
+        this.Name = sdsStreamView.Name;
+        this.SourceTypeId = sdsStreamView.SourceTypeId;
+        this.TargetTypeId = sdsStreamView.TargetTypeId;
+        if (sdsStreamView.Properties) {
+            this.Properties = sdsStreamView.Properties;
         }
     },
 
-    // Sds View Property
-    SdsViewProperty: function (sdsViewProperty) {
-        if (sdsViewProperty.SourceId) {
-            this.SourceId = sdsViewProperty.SourceId;
+    // Sds StreamView Property
+    SdsStreamViewProperty: function (sdsStreamViewProperty) {
+        if (sdsStreamViewProperty.SourceId) {
+            this.SourceId = sdsStreamViewProperty.SourceId;
         }
-        if (sdsViewProperty.TargetId) {
-            this.TargetId = sdsViewProperty.TargetId;
+        if (sdsStreamViewProperty.TargetId) {
+            this.TargetId = sdsStreamViewProperty.TargetId;
         }
     }
 }
