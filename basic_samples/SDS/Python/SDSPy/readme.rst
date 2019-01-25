@@ -27,9 +27,10 @@ a different version you might encounter errors or unexepected behavior.
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
-2. Open the folder with your favorite IDE
-3. Update ``config.ini`` with the credentials provided by OSIsoft
-4. Run ``program.py``
+2. Install required modules: ``pip install -r requirements.txt``
+3. Open the folder with your favorite IDE
+4. Update ``config.ini`` with the credentials provided by OSIsoft
+5. Run ``program.py``
 
 Establish a Connection
 ----------------------
