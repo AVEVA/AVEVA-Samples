@@ -142,7 +142,7 @@ The values to be replaced are in ``config.js``:
         sdsServerUrl : "PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL",
 		tenantId: "PLACEHOLDER_REPLACE_WITH_TENANT_ID",
 		namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
-        apiVersion: "v1-preview"
+        	apiVersion: "v1-preview"
 
 Obtain an Authentication Token
 ------------------------------
