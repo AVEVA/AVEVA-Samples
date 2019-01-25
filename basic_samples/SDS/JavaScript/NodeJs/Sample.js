@@ -829,7 +829,7 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err);});       
 
     //delete an event
-    var deleteOneEvent = printResult.then( 
+    var deleteOneEvent = printMetadata.then( 
         function(res) {
            console.log("\nDeleting values from the SdsStream");
            if (client.tokenExpires < nowSeconds) {
