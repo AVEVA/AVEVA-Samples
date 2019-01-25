@@ -13,7 +13,7 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 from sdspy import *
-import configparser
+import ConfigParser
 import datetime
 import time
 import math
@@ -257,7 +257,7 @@ sampleViewIntId = "WaveData_SampleIntView"
 sampleDataviewId = "WaveData_Dataview"
 
 try:
-    config = configparser.ConfigParser()
+    config = ConfigParser.ConfigParser()
     config.read('config.ini')
 
 
@@ -270,7 +270,7 @@ try:
     print("        \/      \/    \/           \/     ")	
     print("------------------------------------------")
 
-    client = SdsClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'),
+    client = SdsClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'),
                       config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
 
     namespaceId = config.get('Configurations', 'Namespace')

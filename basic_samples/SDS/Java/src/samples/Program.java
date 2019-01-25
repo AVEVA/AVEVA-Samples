@@ -34,7 +34,8 @@ public class Program {
     // get configuration
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
-    static String sdsServerUrl = getConfiguration("sdsServerUrl");	
+    static String sdsServerUrl = getConfiguration("sdsServerUrl");
+    static String apiVersion = getConfiguration("apiVersion");
 	
     // id strings
     static String sampleTypeId = "WaveData_SampleType";
@@ -58,7 +59,7 @@ public class Program {
         System.out.println("---------------------------------------------------");
         
         String server = sdsServerUrl + "/";
-        SdsClient sdsclient = new SdsClient(server);
+        SdsClient sdsclient = new SdsClient(server, apiVersion);
         System.out.println("Sds endpoint at " + server);
         System.out.println();
 
@@ -546,7 +547,7 @@ public class Program {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         return property;
     }
 	
