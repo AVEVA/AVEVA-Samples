@@ -34,7 +34,6 @@ public class Program {
     // get configuration
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
-    static String sdsServerUrl = getConfiguration("sdsServerUrl");	
 	
     // id strings
     static String sampleTypeId = "WaveData_SampleType";
@@ -57,10 +56,7 @@ public class Program {
         System.out.println("        \\/      \\/    \\/              \\/           \\/ ");
         System.out.println("---------------------------------------------------");
         
-        String server = sdsServerUrl + "/";
-        SdsClient sdsclient = new SdsClient(server);
-        System.out.println("Sds endpoint at " + server);
-        System.out.println();
+        SdsClient sdsclient = new SdsClient();
 
         try { 	          	
             // create a SdsType
