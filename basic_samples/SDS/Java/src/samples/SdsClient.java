@@ -57,9 +57,9 @@ public class SdsClient {
     private String streamsBase = requestBase + "/Streams";
     private String getStreamPath = streamsBase + "/{streamId}";
     private String getStreamsPath = streamsBase + "?query={query}&skip={skip}&count={count}";
-    // view paths
-    private String viewBase = requestBase + "/Views";
-    private String getViewPath = viewBase + "/{viewId}";
+    // StreamView paths
+    private String streamViewBase = requestBase + "/StreamViews";
+    private String getStreamViewPath = streamViewBase + "/{streamViewId}";
         
     
     // data paths
@@ -71,7 +71,7 @@ public class SdsClient {
     private String getFirstValuePath = dataBase + "/GetFirstValue?";
     private String getWindowQuery = dataBase + "/GetWindowValues?startIndex={startIndex}&endIndex={endIndex}";
     private String getRangeQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}";
-    private String getRangeViewQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&viewId={viewId}";
+    private String getRangeStreamViewQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&streamViewId={streamViewId}";
     private String updateSinglePath = dataBase + "/UpdateValue";
     private String updateMultiplePath = dataBase + "/UpdateValues";
     private String replaceSinglePath = dataBase + "/ReplaceValue";
@@ -269,15 +269,16 @@ public class SdsClient {
         return response.toString();
     }
     
-    public String createView(String tenantId, String namespaceId, SdsView viewDef) throws SdsError {
+    public String createStreamView(String tenantId, String namespaceId, SdsStreamView streamViewDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
-        String viewId = viewDef.getId();
+        String streamViewId = streamViewDef.getId();
         
         try {
-            url = new URL(baseUrl + getViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
+            url = new URL(baseUrl + getStreamViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamViewId}", streamViewId));
+
             urlConnection = getConnection(url, "POST");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -288,7 +289,7 @@ public class SdsClient {
         }
 
         try {
-            String body = mGson.toJson(viewDef);
+            String body = mGson.toJson(streamViewDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             OutputStreamWriter writer = new OutputStreamWriter(out);
             writer.write(body);
@@ -297,7 +298,7 @@ public class SdsClient {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
             } else {
-                throw new SdsError(urlConnection, "create view request failed");
+                throw new SdsError(urlConnection, "create streamView request failed");
             }
 
             BufferedReader in = new BufferedReader(
@@ -317,14 +318,15 @@ public class SdsClient {
         return response.toString();
     }
 
-    public String getViewMap(String tenantId, String namespaceId, String viewId) throws SdsError {
+    public String getStreamViewMap(String tenantId, String namespaceId, String streamViewId) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId) + "/Map");
+            url = new URL(baseUrl + getStreamViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamViewId}", streamViewId) + "/Map");
+
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -338,7 +340,7 @@ public class SdsClient {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
             } else {
-                throw new SdsError(urlConnection, "get view map request failed");
+                throw new SdsError(urlConnection, "get streamView map request failed");
             }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -465,12 +467,13 @@ public class SdsClient {
             e.printStackTrace();
         }
     }
-    public void deleteView(String tenantId, String namespaceId, String viewId) throws SdsError {
+    public void deleteStreamView(String tenantId, String namespaceId, String streamViewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
 
         try {
-            url = new URL(baseUrl + getViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{viewId}", viewId));
+            url = new URL(baseUrl + getStreamViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamViewId}", streamViewId));
+
             urlConnection = getConnection(url, "DELETE");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -484,7 +487,7 @@ public class SdsClient {
             int httpResult = urlConnection.getResponseCode();
             if (isSuccessResponseCode(httpResult)) {
             } else {
-                throw new SdsError(urlConnection, "delete view request failed");
+                throw new SdsError(urlConnection, "delete streamView request failed");
             }
         } catch (SdsError sdsError) {
             printSdsErrorMessage(sdsError);
@@ -1125,18 +1128,18 @@ public class SdsClient {
         return response.toString();
     }
 
-    public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType, String viewId) throws SdsError {
+    public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType, String streamViewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getRangeViewQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            url = new URL(baseUrl + getRangeStreamViewQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
                     .replace("{streamId}", streamId).replace("{startIndex}", startIndex)
                     .replace("{skip}", "" + skip).replace("{count}", "" + count)
                     .replace("{reverse}", "" + reverse).replace("{boundaryType}", "" + boundaryType)
-                    .replace("{viewId}", "" + viewId));
+                    .replace("{streamViewId}", "" + streamViewId));
             urlConnection = getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");

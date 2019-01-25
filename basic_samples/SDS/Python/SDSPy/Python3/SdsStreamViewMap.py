@@ -1,4 +1,4 @@
-# SdsView.py
+# SdsStreamViewMap.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -17,30 +17,10 @@
 from JsonEncoder import Encoder
 import json
 import inspect
-from SdsViewProperty import SdsViewProperty
+from SdsStreamViewProperty import SdsStreamViewProperty
 
-class SdsView(object):
-    """Sds view definitions"""
-    @property
-    def Id(self):
-        return self.__id
-    @Id.setter
-    def Id(self, id):
-        self.__id = id
-    
-    @property
-    def Name(self):
-        return self.__name
-    @Name.setter
-    def Name(self, name):
-        self.__name = name
-    
-    @property
-    def Description(self):
-        return self.__description
-    @Description.setter
-    def Description(self, description):
-        self.__description = description
+class SdsStreamViewMap(object):
+    """SdsStreamViewMap definitions"""
 
     @property
     def SourceTypeId(self):
@@ -68,7 +48,7 @@ class SdsView(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Id' : self.Id, 'SourceTypeId' : self.SourceTypeId, 'TargetTypeId' : self.TargetTypeId }
+        dictionary = { 'SourceTypeId' : self.SourceTypeId, 'TargetTypeId' : self.TargetTypeId }
 
         # optional properties
         if hasattr(self, 'Properties'):
@@ -76,45 +56,30 @@ class SdsView(object):
             for value in self.Properties:
                 dictionary['Properties'].append(value.toDictionary())
 
-        if hasattr(self, 'Name'):
-            dictionary['Name'] = self.Name
-
-        if hasattr(self, 'Description'):
-            dictionary['Description'] = self.Description
-
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsView.fromDictionary(jsonObj)
+        return SdsStreamViewMap.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        view = SdsView()
+        streamViewMap = SdsStreamViewMap()
 
         if len(content) == 0:
-            return view
-
-        if 'Id' in content:
-            view.Id = content['Id']
-
-        if 'Name' in content:
-            view.Name = content['Name']
-
-        if 'Description' in content:
-            view.Description = content['Description']
+            return streamViewMap
 
         if 'TargetTypeId' in content:
-            view.TargetTypeId = content['TargetTypeId']
+            streamViewMap.TargetTypeId = content['TargetTypeId']
 
         if 'SourceTypeId' in content:
-            view.SourceTypeId = content['SourceTypeId']
+            streamViewMap.SourceTypeId = content['SourceTypeId']
        
         if 'Properties' in content:
             properties = content['Properties']
             if properties is not None and len(properties) > 0:
-                view.Properties = []
+                streamViewMap.Properties = []
                 for value in properties:
-                    view.Properties.append(SdsViewProperty.fromDictionary(value))
+                    streamViewMap.Properties.append(SdsStreamViewProperty.fromDictionary(value))
 
-        return view
+        return streamViewMap

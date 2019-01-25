@@ -1,4 +1,4 @@
-# SdsViewProperty.py
+# SdsStreamViewProperty.py
 #
 # Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
@@ -15,10 +15,10 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 import json
-import SdsView
+import SdsStreamView
 
-class SdsViewProperty(object):
-    """Sds View Property definition"""
+class SdsStreamViewProperty(object):
+    """Sds StreamView Property definition"""
     @property
     def SourceId(self):
         return self.__sourceId
@@ -34,11 +34,11 @@ class SdsViewProperty(object):
         self.__targetId = name
     
     @property
-    def SdsView(self):
-        return self.__sdsView
-    @SdsView.setter
-    def SdsView(self, description):
-        self.__sdsView = description
+    def SdsStreamView(self):
+        return self.__sdsStreamView
+    @SdsStreamView.setter
+    def SdsStreamView(self, description):
+        self.__sdsStreamView = description
         
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -47,30 +47,30 @@ class SdsViewProperty(object):
         # required properties
         dictionary = { 'SourceId' : self.SourceId, 'TargetId' : self.TargetId }
 
-        if hasattr(self, 'SdsView'):
-            dictionary['SdsView'] = self.SdsView.toDictionary()
+        if hasattr(self, 'SdsStreamView'):
+            dictionary['SdsStreamView'] = self.SdsStreamView.toDictionary()
 
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsViewProperty.fromDictionary(jsonObj)
+        return SdsStreamViewProperty.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        viewProperty = SdsViewProperty()
+        streamViewProperty = SdsStreamViewProperty()
 
         if len(content) == 0:
-            return viewProperty
+            return streamViewProperty
 
         if 'SourceId' in content:
-            viewProperty.SourceId = content['SourceId']
+            streamViewProperty.SourceId = content['SourceId']
 
         if 'TargetId' in content:
-            viewProperty.TargetId = content['TargetId']
+            streamViewProperty.TargetId = content['TargetId']
 		
-        if 'SdsView' in content:
-            viewProperty.SdsView = SdsView.fromDictionary(content['SdsView'])
+        if 'SdsStreamView' in content:
+            streamViewProperty.SdsStreamView = SdsStreamView.fromDictionary(content['SdsStreamView'])
 
-        return viewProperty
+        return streamViewProperty
 

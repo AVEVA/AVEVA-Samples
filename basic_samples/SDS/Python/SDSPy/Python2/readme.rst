@@ -1,4 +1,4 @@
-Building a Python client to make REST API calls to the Sds Service
+﻿Building a Python client to make REST API calls to the Sds Service
 ==================================================================
 
 The sample code in this topic demonstrates how to invoke Sds REST APIs
@@ -380,11 +380,11 @@ before and after updating the stream to show that it has changed. See
 the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
-SdsViews
+SdsStreamViews
 -------
 
-A SdsView provides a way to map stream data requests from one data type 
-to another. You can apply an SdsView to any read or GET operation. SdsView 
+A SdsStreamView provides a way to map stream data requests from one data type 
+to another. You can apply an SdsStreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map Properties from the source to the 
@@ -394,34 +394,34 @@ or when the properties have the same name, Sds will map the properties automatic
 
 .. code:: python
 
-        rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticView.Id)
+        rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsVeiw’s Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsVeiw’s Properties collection.
 
 .. code:: python
 
-        vp2 = SdsViewProperty()
+        vp2 = SdsStreamViewProperty()
         vp2.SourceId = "Sin"
         vp2.TargetId = "SinInt"
         ...
-        manualView = SdsView()
-        manualView.Id = sampleViewIntId
-        manualView.Name = "SampleIntView"
-        manualView.TargetTypeId = waveIntegerType.Id
-        manualView.SourceTypeId = waveType.Id
-        manualView.Properties = [vp1, vp2, vp3, vp4]
+        manualStreamView = SdsStreamView()
+        manualStreamView.Id = sampleStreamViewIntId
+        manualStreamView.Name = "SampleIntStreamView"
+        manualStreamView.TargetTypeId = waveIntegerType.Id
+        manualStreamView.SourceTypeId = waveType.Id
+        manualStreamView.Properties = [vp1, vp2, vp3, vp4]
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
 The SdsVeiwMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: python
 
-        viewMap2 = client.getViewMap(namespaceId, manualView.Id)
+        streamViewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
 
 
 Deleting Values from a Stream
@@ -471,19 +471,19 @@ reflect the data retrieval methods covered above. Below are the function declara
 For a complete list of HTTP request URLs refer to the `Sds
 documentation <https://cloud.osisoft.com/documentation>`__.
 
-Cleanup: Deleting Types, Behaviors, Views and Streams
+Cleanup: Deleting Types, Behaviors, StreamViews and Streams
 -----------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
-performs some cleanup before exiting. Deleting streams, views and types can be achieved by a DELETE REST call and passing
+performs some cleanup before exiting. Deleting streams, streamViews and types can be achieved by a DELETE REST call and passing
 the corresponding Id. The following calls are made in the sample code.
 
 .. code:: python
 
     client.deleteStream(namespaceId, sampleStreamId)
     client.deleteType(namespaceId, sampleTypeId)
-    client.deleteView(namespaceId, sampleViewId)
+    client.deleteStreamView(namespaceId, sampleStreamViewId)
 
-*Note: Types and Views cannot be deleted until any streams
+*Note: Types and StreamViews cannot be deleted until any streams
 referencing them are deleted first. Their references are counted so
 deletion will fail if any streams still reference them.*

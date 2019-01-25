@@ -1,4 +1,4 @@
-/** SdsViewProperty.java
+/** SdsStreamViewProperty.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -18,10 +18,10 @@
 package samples;
 
 
-public class SdsViewProperty {
+public class SdsStreamViewProperty {
     private String SourceId;
     private String TargetId;
-    private SdsView SdsView;
+    private SdsStreamView SdsStreamView;
 
     public String getSourceId() {
         return SourceId;
@@ -39,11 +39,11 @@ public class SdsViewProperty {
         this.TargetId = targetId;
     }
 
-    public SdsView getSdsView() {
-        return SdsView;
+    public SdsStreamView getSdsStreamView() {
+        return SdsStreamView;
     }
 
-    public void setSdsView(SdsView sdsView) {
-        this.SdsView = sdsView;
+    public void setSdsStreamView(SdsStreamView sdsStreamView) {
+        this.SdsStreamView = sdsStreamView;
     }
 }

@@ -1,4 +1,4 @@
-// <copyright file="SdsViewMap.cs" company="OSIsoft, LLC">
+// <copyright file="SdsStreamViewMap.cs" company="OSIsoft, LLC">
 //
 // Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 //
@@ -21,7 +21,7 @@ using System.Text;
 
 namespace SdsRestApiCore
 {
-    public class SdsViewMap
+    public class SdsStreamViewMap
     {
         public string SourceTypeId
         {
@@ -35,7 +35,7 @@ namespace SdsRestApiCore
             set;
         }
 
-        public IList<SdsViewProperty> Properties
+        public IList<SdsStreamViewProperty> Properties
         {
             get;
             set;
