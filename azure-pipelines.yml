@@ -3,22 +3,6 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-# Download Secure File
-# Download a secure file to a temporary location on the build or release agent
-- task: DownloadSecureFile@1
-  inputs:
-    secureFile: python_config.ini
-
-# Copy Files
-# Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-- task: CopyFiles@2
-  inputs:
-    #sourceFolder: # Optional
-    #contents: '**' 
-    targetFolder: 
-    #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
-    #flattenFolders: false # Optional
 
 
 trigger:
@@ -31,7 +15,42 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
+- script: python -m pip install --upgrade pip setuptools wheel
+  displayName: 'Install tools'
+
+- script: pip install -r requirements.txt
+  displayName: 'Install requirements'
+
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+  
+# Download Secure File
+# Download a secure file to a temporary location on the build or release agent
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: python_config.ini
+
+# Copy Files
+# Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+- task: CopyFiles@2
+  inputs:
+    #sourceFolder: # Optional
+    contents: $(Agent.TempDirectory)/python_config.ini
+    targetFolder: '$(Build.SourcesDirectory)/OCS-Samples/basic_samples/SDS/Python/SDSPy/Python2/config.ini'
+    #cleanTargetFolder: false # Optional
+    #overWrite: false # Optional
+    #flattenFolders: false # Optional
+
+
+- script: cat config.ini 
+  workingDirectory: $(Build.SourcesDirectory)/OCS-Samples/basic_samples/SDS/Python/SDSPy/Python2/
+  displayName: display config file
+
+- script: |
+    pip install pytest
+    pip install pytest-cov
+    pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+  displayName: 'Test with pytest'
+    
