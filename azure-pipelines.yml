@@ -22,6 +22,17 @@ steps:
   inputs:
     secureFile: python_config.ini
 
+
+
+
+- script: dir
+  workingDirectory: $(Agent.TempDirectory)
+  displayName: List contents of a secure download folder
+  
+- script: dir
+  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
+  displayName: List contents of a secure download folder
+
 # Copy Files
 # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
 - task: CopyFiles@2
@@ -41,7 +52,7 @@ steps:
 
 - script: python -m pip install --upgrade pip setuptools wheel
   displayName: 'Install tools'
-  
+
 - script: |
     pip install pytest
     pip install pytest-cov
