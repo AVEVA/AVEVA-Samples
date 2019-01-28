@@ -29,6 +29,9 @@ steps:
   workingDirectory: $(Agent.TempDirectory)
   displayName: List contents of a secure download folder
 
+- script: cat python_config.ini
+  workingDirectory: $(Agent.TempDirectory)
+  displayName: List contents of config
   
 - script: dir
   
