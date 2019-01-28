@@ -45,7 +45,7 @@ steps:
   inputs:
     #sourceFolder: # Optional
     contents: $(Agent.TempDirectory)/python_config.ini
-    targetFolder: '$(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/'
+    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
     #flattenFolders: false # Optional
@@ -62,7 +62,7 @@ steps:
   inputs:
     #sourceFolder: # Optional
     contents: $(Agent.TempDirectory)/*
-    targetFolder: '$(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/'
+    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
     #flattenFolders: false # Optional
