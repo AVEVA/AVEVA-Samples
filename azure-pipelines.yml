@@ -30,7 +30,7 @@ steps:
   displayName: List contents of a secure download folder
   
 - script: dir
-  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
+  workingDirectory: $(projectRoot)
   displayName: List contents of a secure download folder
 
 # Copy Files
