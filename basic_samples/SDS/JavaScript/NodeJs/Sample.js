@@ -22,6 +22,7 @@ var config = require("./config.js");
 var SdsServerUrl = config.sdsServerUrl;
 var authItems = config.authItems;
 var tenantId = config.tenantId;
+var apiVersion = config.apiVersion;
 
 var checkTokenExpired = function (client) {
     return client.getToken(authItems)
@@ -141,7 +142,7 @@ http.createServer(function (request1, response) {
             cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
     });
 
-    var client = new clientObj.SdsClient(SdsServerUrl);
+    var client = new clientObj.SdsClient(SdsServerUrl, apiVersion);
 
     var getClientToken = client.getToken(authItems)
         .catch(function (err) { throw err });
@@ -829,7 +830,7 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err);});       
 
     //delete an event
-    var deleteOneEvent = printResult.then( 
+    var deleteOneEvent = printMetadata.then( 
         function(res) {
            console.log("\nDeleting values from the SdsStream");
            if (client.tokenExpires < nowSeconds) {
