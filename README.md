@@ -44,8 +44,7 @@ The official OCS samples are divided in multiple categories depending on the sce
      <a href="basic_samples/SDS/Java">JAVA</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Python/SDSPy/Python">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
