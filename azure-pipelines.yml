@@ -28,9 +28,12 @@ steps:
 - script: dir
   workingDirectory: $(Agent.TempDirectory)
   displayName: List contents of a secure download folder
+
   
 - script: dir
-  workingDirectory: '$(projectRoot)'
+  
+- script: dir
+  workingDirectory: '$(Build.SourcesDirectory)'
   displayName: List contents of a secure download folder
 
 # Copy Files
