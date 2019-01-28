@@ -28,24 +28,27 @@ steps:
   inputs:
     #sourceFolder: # Optional
     contents: $(Agent.TempDirectory)/python_config.ini
-    targetFolder: '$(Build.SourcesDirectory)/OCS-Samples/basic_samples/SDS/Python/SDSPy/Python2/config.ini'
+    targetFolder: '$(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/config.ini'
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
     #flattenFolders: false # Optional
+  displayName: copy file
 
 
 - script: cat config.ini 
-  workingDirectory: $(Build.SourcesDirectory)/OCS-Samples/basic_samples/SDS/Python/SDSPy/Python2/
+  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
   displayName: display config file
 
+- script: python -m pip install --upgrade pip setuptools wheel
+  displayName: 'Install tools'
+  
 - script: |
     pip install pytest
     pip install pytest-cov
     pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
   displayName: 'Test with pytest'
     
-- script: python -m pip install --upgrade pip setuptools wheel
-  displayName: 'Install tools'
 
 - script: pip install -r requirements.txt
   displayName: 'Install requirements'
+  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
