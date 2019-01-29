@@ -43,6 +43,10 @@ steps:
 - script: |
     python -m pip install --upgrade pip 
   displayName: 'Install tools'
+  
+- script: |
+    pip install --upgrade pip
+  displayName: 'upgrade pip tools'
 
 - script: |
     pip install unittest-xml-reporting    
