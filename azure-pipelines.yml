@@ -12,9 +12,6 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: pwd
-  displayName: 'Run a one-line script'
-
 
 # Download Secure File
 # Download a secure file to a temporary location on the build or release agent
@@ -47,9 +44,12 @@ steps:
     pip install unittest-xml-reporting    
     pip install pytest
     pip install pytest-cov
-    pip install -r requirements.txt
-  displayName: 'Install tool2s'
+  displayName: 'Install tools'
   
+- script: |
+    pip install -r requirements.txt
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
+  displayName: 'Install requirements'
 
 - script: |
     pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
