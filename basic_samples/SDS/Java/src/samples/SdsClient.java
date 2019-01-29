@@ -1,6 +1,6 @@
 /** SdsClient.java
  * 
- *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+ *  Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
  * 
  *  THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
  *  OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -106,15 +106,14 @@ public class SdsClient {
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("Accept", "*/*; q=1");
             urlConnection.setRequestMethod(method);
+            urlConnection.setRequestProperty("Accept", "*/*; q=1");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Authorization", "Bearer " + token);
             urlConnection.setUseCaches(false);
             urlConnection.setConnectTimeout(50000);
             urlConnection.setReadTimeout(50000);
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-
-            urlConnection.setRequestProperty("Bearer", token);
-            if (method == "POST" || method == "PUT" || method == "DELETE") {
+            if ("POST".equals(method) || "PUT".equals(method) ||"DELETE".equals(method)) {
                 urlConnection.setDoOutput(true);
             } else if (method == "GET") {
                 //Do nothing
@@ -209,7 +208,7 @@ public class SdsClient {
             e.printStackTrace();
         }
 
-        return property;
+        return property.trim();
     }
 
     private static boolean isSuccessResponseCode(int responseCode) {
@@ -250,7 +249,7 @@ public class SdsClient {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
             } else {
-                throw new SdsError(urlConnection, "create type request failed");
+                throw new SdsError(urlConnection, "create type request failed ");
             }
 
             BufferedReader in = new BufferedReader(
