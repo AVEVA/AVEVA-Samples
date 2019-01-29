@@ -45,8 +45,8 @@ steps:
 - task: CopyFiles@2
   inputs:
     sourceFolder: $(Agent.TempDirectory)
-    contents: python_config.ini
-    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/config.ini'
+    contents: config.ini
+    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
     #cleanTargetFolder: false # Optional
     overWrite: true # Optional
     #flattenFolders: false # Optional
