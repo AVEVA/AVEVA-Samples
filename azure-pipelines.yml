@@ -52,6 +52,7 @@ steps:
   displayName: 'Install requirements'
 
 - script: |
-    pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+    pytest 
   displayName: 'Test with pytest'
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
     
