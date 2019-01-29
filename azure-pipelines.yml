@@ -44,6 +44,7 @@ steps:
     pip install unittest-xml-reporting    
     pip install pytest
     pip install pytest-cov
+    pytest --version
   displayName: 'Install tools'
   
 - script: |
