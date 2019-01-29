@@ -33,12 +33,6 @@ steps:
   displayName: copy file
 
   
-- script: cat config.ini 
-  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
-  displayName: display config file
-
-
-
 - script: |
     pip install setuptools wheel
     pip install unittest-xml-reporting    
