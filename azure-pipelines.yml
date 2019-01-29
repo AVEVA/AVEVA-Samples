@@ -46,7 +46,7 @@ steps:
   inputs:
     sourceFolder: $(Agent.TempDirectory)
     contents: python_config.ini
-    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
+    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/config.ini'
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
     #flattenFolders: false # Optional
@@ -77,7 +77,7 @@ steps:
 
   
 - script: cat config.ini 
-  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
   displayName: display config file
 
 - script: python -m pip install --upgrade pip setuptools wheel
