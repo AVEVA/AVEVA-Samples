@@ -74,13 +74,14 @@ HTTP methods to CRUD operations as shown in the following table:
 +---------------+------------------+--------------------+
 
 The constructor for the SdsClient class takes the base URL (that is, the
-protocol, server address and port number). It also creates a new Gson
+protocol, server address and port number) and the api version. It also creates a new Gson
 serializer/deserializer to convert between Java Objects and JSON.
 
 .. code:: java
 
-    public SdsClient(String baseUrl) {
+    public SdsClient(String baseUrl, String apiVersion) {
         this.baseUrl =  baseUrl;
+        this.apiVersion = apiVersion;
         this.mGson = new Gson();
     }   
 
@@ -131,6 +132,7 @@ The values to be replaced are in ``config.properties``:
     clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
     tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
     namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
+    apiVersion = v1-preview
 
 Obtain an Authentication Token
 ------------------------------

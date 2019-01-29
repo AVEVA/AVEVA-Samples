@@ -1,4 +1,4 @@
-/** SdsViewMap.java
+/** SdsStreamView.java
  * 
  *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
  * 
@@ -18,11 +18,38 @@
 package samples;
 
 
-public class SdsViewMap {
+public class SdsStreamView {
 
+    private String Id = "";
+    private String Name = "";
+    private String Description = "";
     private String SourceTypeId = "";
     private String TargetTypeId = "";
-    private SdsViewProperty[] Properties = new SdsViewProperty[0];
+    private SdsStreamViewProperty[] Properties = new SdsStreamViewProperty[0];
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        this.Id = id;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        this.Name = name;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        this.Description = description;
+    }
 
     public String getSourceTypeId() {
         return this.SourceTypeId;
@@ -40,27 +67,11 @@ public class SdsViewMap {
         this.TargetTypeId = targetTypeId;
     }
 
-    public SdsViewProperty[] getProperties() {
+    public SdsStreamViewProperty[] getProperties() {
         return Properties;
     }
 
-    public void setProperties(SdsViewProperty[] properties) {
+    public void setProperties(SdsStreamViewProperty[] properties) {
         this.Properties = properties;
-    }
-    
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("  SourceId = " + SourceTypeId);
-        builder.append(", TargetId = " + TargetTypeId);        
-        for(SdsViewProperty prop: Properties)
-        {
-        	if(prop.getTargetId() != null)
-        	{
-        	 builder.append(", SdsViewProperty: " + prop.getSourceId() + " => " + prop.getTargetId());
-        	}
-        }
-       
-        return builder.toString();
     }
 }

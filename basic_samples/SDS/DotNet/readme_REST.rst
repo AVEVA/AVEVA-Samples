@@ -38,6 +38,7 @@ the sample in the appsettings.json configuration file as follows:
 		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
 		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
 		"ClientKey": "REPLACE_WITH_CLIENT_SECRET",
+		"ApiVersion": "v1-preview",
 		"AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>/oauth2/token"
 	}
 
@@ -130,7 +131,7 @@ Finally, the new SdsType object is submitted to the Sds Service:
 .. code:: cs
 
 	HttpResponseMessage response =
-	await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{waveType.Id}",
+	await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{waveType.Id}",
 		new StringContent(JsonConvert.SerializeObject(waveType)));
 
 
@@ -158,7 +159,7 @@ follows:
 
 .. code:: cs
 	
-	response = await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}",
+	response = await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}",
 		new StringContent(JsonConvert.SerializeObject(waveStream)));
 
 
@@ -174,7 +175,7 @@ An event can be created using the following POST request:
 .. code:: cs
 
 	response = await httpClient.PostAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValue",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValue",
 			new StringContent(JsonConvert.SerializeObject(wave)));
 
 
@@ -190,7 +191,7 @@ and the url for POST call varies:
 		waves.Add(newEvent);
 	}
 	response = await httpClient.PostAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValues",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValues",
 			new StringContent(JsonConvert.SerializeObject(waves)));
 
 The Sds REST API provides many more types of data insertion calls beyond
@@ -210,7 +211,7 @@ conversion to the type of the index assigned in the SdsType.
 .. code:: cs
 
 	response = await httpClient.GetAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetWindowValues?startIndex=0&endIndex={waves[waves.Count - 1].Order}");
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetWindowValues?startIndex=0&endIndex={waves[waves.Count - 1].Order}");
 
 -  parameters are the SdsStream Id and the starting and ending index
    values for the desired window Ex: For a time index, request url
@@ -230,7 +231,7 @@ Updating events is handled by PUT REST call as follows:
 .. code:: cs
 
 	response = await httpClient.PutAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValue",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValue",
 			new StringContent(JsonConvert.SerializeObject(updateEvent)));
 
 -  the request body has the new event that will update an existing event
@@ -249,7 +250,7 @@ event objects and url for PUT is slightly different:
 	}
 
 	response = await httpClient.PutAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValues",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValues",
 			new StringContent(JsonConvert.SerializeObject(updateWaves)));
 
 If you attempt to update values that do not exist they will be created. The sample updates
@@ -264,11 +265,11 @@ identical to ``updateValue`` and ``updateValues``:
 .. code:: cs
 
 	response = await httpClient.PutAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValue",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValue",
 			new StringContent(JsonConvert.SerializeObject(replaceEvent)));
 
 	response = await httpClient.PutAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValues",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValues",
 			new StringContent(JsonConvert.SerializeObject(replaceEvents)));
 
 Property Overrides
@@ -297,7 +298,7 @@ The following shows how this is done in the code:
 	// update the stream
 	waveStream.PropertyOverrides = propertyOverrides;
 	response = await httpClient.PutAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}",
 			new StringContent(JsonConvert.SerializeObject(waveStream)));
 
 The process consists of two steps. First, the Property Override must be created, then the
@@ -307,11 +308,11 @@ the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
 
-SdsViews
+SdsStreamViews
 -------
 
-An SdsView provides a way to map Stream data requests from one data type 
-to another. You can apply a View to any read or GET operation. SdsView 
+An SdsStreamView provides a way to map Stream data requests from one data type 
+to another. You can apply a StreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map Properties from the source to the 
@@ -322,40 +323,39 @@ or when the properties have the same name, Sds will map the properties automatic
 .. code:: cs
 
 	response =
-		await httpClient.PostAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}",
-			new StringContent(JsonConvert.SerializeObject(autoView)));
+		await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}",
+			new StringContent(JsonConvert.SerializeObject(autoStreamView)));
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsView's Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
 
 .. code:: cs
 
 	// create explicit mappings 
-	var vp1 = new SdsViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-	var vp2 = new SdsViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-	var vp3 = new SdsViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-	var vp4 = new SdsViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+	var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+	var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+	var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+	var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-	var manualView = new SdsView()
+	var manualStreamView = new SdsStreamView()
 	{
-		Id = ManualViewId,
+		Id = ManualStreamViewId,
 		SourceTypeId = TypeId,
 		TargetTypeId = TargetIntTypeId,
-		Properties = new List<SdsViewProperty>() { vp1, vp2, vp3, vp4 }
+		Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
 	};
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsViewMap cannot be written, it can only be retrieved from Sds.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: cs
 
 	response = await httpClient.GetAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Views/{AutoViewId}/Map");     
-
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}/Map");     
 
 Delete Values from a Stream
 ---------------------------
@@ -370,27 +370,27 @@ is shown below:
 .. code:: cs
 
 	response = await httpClient.DeleteAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveValue?index=0");
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveValue?index=0");
 
 	response = await httpClient.DeleteAsync(
-		$"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveWindowValues?startIndex=0&endIndex=40");
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveWindowValues?startIndex=0&endIndex=40");
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to '0' and '40'
 are removed from the stream.
 
-Cleanup: Deleting Types, Behaviors, Views and Streams
+Cleanup: Deleting Types, Behaviors, StreamViews and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
 performs some cleanup before exiting. Deleting streams, stream
-behaviors, views and types can be achieved by a DELETE REST call and passing
+behaviors, streamViews and types can be achieved by a DELETE REST call and passing
 the corresponding Id.
 
 .. code:: cs
 
-	await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}");
+	await httpClient.DeleteAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}");
 
 .. code:: cs
 
-	await httpClient.DeleteAsync($"api/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TypeId}");
+	await httpClient.DeleteAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TypeId}");

@@ -251,14 +251,14 @@ sampleTargetTypeId = "WaveDataTarget_SampleType"
 sampleIntegerTypeId = "WaveData_IntegerType"
 sampleStreamId = "WaveData_SampleStream"
 sampleBehaviorId = "WaveData_SampleBehavior"
-sampleViewId = "WaveData_SampleView"
-sampleViewIntId = "WaveData_SampleIntView"
+sampleStreamViewId = "WaveData_SampleStreamView"
+sampleStreamViewIntId = "WaveData_SampleIntStreamView"
 
 try:
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    client = SdsClient(config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
+    client = SdsClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'), 
                       config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
 
     namespaceId = config.get('Configurations', 'Namespace')
@@ -396,7 +396,7 @@ try:
         print(("Order: {order}: Radians: {radians} Cos: {cos}".format(order = wave.Order, radians = wave.Radians, cos = wave.Cos)))
 
     ######################################################################################################
-    # Stream Views
+    # Stream StreamViews
     ######################################################################################################
 
     #Create additional types to define our targets
@@ -406,75 +406,75 @@ try:
     waveIntegerType = getWaveDataIntegerType(sampleIntegerTypeId)
     waveIntegerType = client.getOrCreateType(namespaceId, waveIntegerType)
 
-    #Create an SdsViewProperty objects when we want to explicitly map one property to another
-    vp1 = SdsViewProperty()
+    #Create an SdsStreamViewProperty objects when we want to explicitly map one property to another
+    vp1 = SdsStreamViewProperty()
     vp1.SourceId = "Order"
     vp1.TargetId = "OrderTarget"
 
-    vp2 = SdsViewProperty()
+    vp2 = SdsStreamViewProperty()
     vp2.SourceId = "Sin"
     vp2.TargetId = "SinInt"
     
-    vp3 = SdsViewProperty()
+    vp3 = SdsStreamViewProperty()
     vp3.SourceId = "Cos"
     vp3.TargetId = "CosInt"
     
-    vp4 = SdsViewProperty()
+    vp4 = SdsStreamViewProperty()
     vp4.SourceId = "Tan"
     vp4.TargetId = "TanInt"
     
-    #Create a view mapping our original type to our target type, data shape is the same so let Sds handle the mapping
-    view = SdsView()
-    view.Id = sampleViewId
-    view.Name = "SampleView"
-    view.TargetTypeId = waveTargetType.Id
-    view.SourceTypeId = waveType.Id
+    #Create a streamView mapping our original type to our target type, data shape is the same so let Sds handle the mapping
+    streamView = SdsStreamView()
+    streamView.Id = sampleStreamViewId
+    streamView.Name = "SampleStreamView"
+    streamView.TargetTypeId = waveTargetType.Id
+    streamView.SourceTypeId = waveType.Id
 
     #Data shape and data types are different so include explicit mappings between properties
-    manualView = SdsView()
-    manualView.Id = sampleViewIntId
-    manualView.Name = "SampleIntView"
-    manualView.TargetTypeId = waveIntegerType.Id
-    manualView.SourceTypeId = waveType.Id
-    manualView.Properties = [vp1, vp2, vp3, vp4]
+    manualStreamView = SdsStreamView()
+    manualStreamView.Id = sampleStreamViewIntId
+    manualStreamView.Name = "SampleIntStreamView"
+    manualStreamView.TargetTypeId = waveIntegerType.Id
+    manualStreamView.SourceTypeId = waveType.Id
+    manualStreamView.Properties = [vp1, vp2, vp3, vp4]
     
-    automaticView = client.getOrCreateView(namespaceId, view)
-    manualView = client.getOrCreateView(namespaceId, manualView)
+    automaticStreamView = client.getOrCreateStreamView(namespaceId, streamView)
+    manualStreamView = client.getOrCreateStreamView(namespaceId, manualStreamView)
     
-    viewMap1 = SdsViewMap()
-    viewMap1 = client.getViewMap(namespaceId, automaticView.Id)
+    streamViewMap1 = SdsStreamViewMap()
+    streamViewMap1 = client.getStreamViewMap(namespaceId, automaticStreamView.Id)
 
-    viewMap2 = SdsViewMap()
-    viewMap2 = client.getViewMap(namespaceId, manualView.Id)
+    streamViewMap2 = SdsStreamViewMap()
+    streamViewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
 
     rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
     print()
-    print("SdsViews")
+    print("SdsStreamViews")
     print("Here is some of our data as it is stored on the server:")
     for way in rangeWaves:
         print(("Sin: {sin}, Cos: {cos}, Tan: {tan}".format(sin = way.Sin, cos = way.Cos, tan = way.Tan)))
 
-    #view data when retrieved with a view
-    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticView.Id)
+    #StreamView data when retrieved with a streamView
+    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
     print()
-    print("Specifying a view with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:")
+    print("Specifying a streamView with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:")
     for way in rangeWaves:
         print(("SinTarget: {sinTarget}, CosTarget: {cosTarget}, TanTarget: {tanTarget}".format(sinTarget = way.SinTarget, cosTarget = way.CosTarget, tanTarget = way.TanTarget)))
 
-    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataInteger, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, manualView.Id)
+    rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataInteger, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, manualStreamView.Id)
     print()
-    print("SdsViews can also convert certain types of data, here we return integers where the original values were doubles:")
+    print("SdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:")
     for way in rangeWaves:
         print(("SinInt: {sinInt}, CosInt: {cosInt}, TanInt: {tanInt}".format(sinInt = way.SinInt, cosInt = way.CosInt, tanInt = way.TanInt)))
 
     print ()
-    print ("We can query Sds to return the SdsViewMap for our SdsView, here is the one generated automatically:")
-    for prop in viewMap1.Properties:
+    print ("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:")
+    for prop in streamViewMap1.Properties:
         print(("{source} => {dest}".format(source = prop.SourceId, dest = prop.TargetId)))
 		
     print ()
-    print ("Here is our explicit mapping, note SdsViewMap will return all properties of the Source Type, even those without a corresponding Target property:")
-    for prop in viewMap2.Properties:
+    print ("Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:")
+    for prop in streamViewMap2.Properties:
         if hasattr(prop,'TargetId'):
             print(("{source} => {dest}".format(source = prop.SourceId, dest = prop.TargetId)))
         else:
@@ -531,7 +531,7 @@ except Exception as i:
 
 finally:
     ######################################################################################################
-    # SdsType, SdsStream, SdsView and SdsBehavior deletion
+    # SdsType, SdsStream, SdsStreamView and SdsBehavior deletion
     ######################################################################################################
 
     # Clean up the remaining artifacts
@@ -539,9 +539,9 @@ finally:
     print("Deleting the stream")
     supressError(lambda: client.deleteStream(namespaceId, sampleStreamId))
 
-    print("Deleting the views")
-    supressError(lambda: client.deleteView(namespaceId, sampleViewId))
-    supressError(lambda: client.deleteView(namespaceId, sampleViewIntId))
+    print("Deleting the streamViews")
+    supressError(lambda: client.deleteStreamView(namespaceId, sampleStreamViewId))
+    supressError(lambda: client.deleteStreamView(namespaceId, sampleStreamViewIntId))
 
     print("Deleting the types")
     supressError(lambda: client.deleteType(namespaceId, sampleTypeId))

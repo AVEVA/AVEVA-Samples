@@ -1,4 +1,4 @@
-// <copyright file="SdsViewProperty.cs" company="OSIsoft, LLC">
+// <copyright file="SdsStreamView.cs" company="OSIsoft, LLC">
 //
 // Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 //
@@ -21,21 +21,39 @@ using System.Text;
 
 namespace SdsRestApiCore
 {
-    public class SdsViewProperty
+    public class SdsStreamView
     {
-        public string SourceId
+        public string Id
         {
             get;
             set;
         }
 
-        public string TargetId
+        public string Name
         {
             get;
             set;
         }
 
-        public SdsView SdsView
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        public string SourceTypeId
+        {
+            get;
+            set;
+        }
+
+        public string TargetTypeId
+        {
+            get;
+            set;
+        }
+
+        public IList<SdsStreamViewProperty> Properties
         {
             get;
             set;

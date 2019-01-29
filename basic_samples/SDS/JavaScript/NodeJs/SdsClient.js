@@ -40,12 +40,13 @@ String.prototype.format = function (args) {
 String.prototype.format.regex = new RegExp("{-?[0-9]+}", "g");
 
 module.exports = {
-    SdsClient: function (url) {
+    SdsClient: function (url, apiVersion) {
         this.url = url;
         this.version = 0.1;
-        this.typesBase = "/api/Tenants/{0}/Namespaces/{1}/Types";
-        this.streamsBase = "/api/Tenants/{0}/Namespaces/{1}/Streams";
-        this.viewsBase = "/api/Tenants/{0}/Namespaces/{1}/Views";
+        this.apiBase = "/api/" + apiVersion;
+        this.typesBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Types";
+        this.streamsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Streams";
+        this.viewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Views";
         this.insertSingleValueBase = "/Data/InsertValue";
         this.insertMultipleValuesBase = "/Data/InsertValues";
         this.getLastValueBase = "/{0}/Data/GetLastValue";

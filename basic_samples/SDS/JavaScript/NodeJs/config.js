@@ -25,5 +25,6 @@ module.exports = {
     },
     sdsServerUrl: "https://dat-a.osisoft.com",
     tenantId: "REPLACE_WITH_TENANT_ID",
-    namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID"
+    namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
+    apiVersion: "v1-preview"
 }
