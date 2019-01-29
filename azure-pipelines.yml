@@ -43,9 +43,11 @@ steps:
 
 
 - script: |
+    pip install setuptools wheel
     pip install unittest-xml-reporting    
     pip install pytest
     pip install pytest-cov
+    pip install -r requirements.txt
   displayName: 'Install tool2s'
   
 
