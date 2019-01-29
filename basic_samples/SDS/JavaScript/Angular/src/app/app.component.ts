@@ -25,7 +25,8 @@ const config: ISdsConfigSet = {
     SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL',
     SdsResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
     TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
-    NamespaceId: 'REPLACE_WITH_NAMESPACE'
+    NamespaceId: 'REPLACE_WITH_NAMESPACE',
+    ApiVersion: 'v1-preview'
 };
 
 @Component({
