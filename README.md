@@ -2,6 +2,8 @@
 OSIsoft Cloud Services ([OCS](https://www.osisoft.com/Solutions/OSIsoft-Cloud-Services/)) is a highly flexible cloud-based platform that provides scalable, elastic,
 centralized environment to aggregate data for reporting, advanced analytics, and third-party applications.  OCS is powered by OSIsoft's Sequential Data Store (SDS). In this GitHub repo, we provide samples which will help you get started with the [OCS API](https://ocs-docs.osisoft.com/) against your [OCS instance](https://cloud.osisoft.com/welcome).
 
+[![Build Status](https://dev.azure.com/dendres/CAD/_apis/build/status/derekendres.OCS-Samples?branchName=master)](https://dev.azure.com/dendres/CAD/_build/latest?definitionId=1&branchName=master)
+
 There are three types of samples/apps in the repo:
 
 * <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon">  Getting Started - OCS focused samples for a task, usually implemented as a simple console app.  This also includes base libraries that may be used in other apps.
