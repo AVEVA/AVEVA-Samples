@@ -32,8 +32,9 @@ steps:
 - script: cat python_config.ini
   workingDirectory: $(Agent.TempDirectory)
   displayName: List contents of config
-  
-- script: dir
+
+- script: cat $(Agent.TempDirectory)/python_config.ini
+  displayName: List contents of config2
   
 - script: dir
   workingDirectory: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
@@ -53,7 +54,7 @@ steps:
 
 - script: dir
   workingDirectory: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
-  displayName: List contents of python 3
+  displayName: List contents of python2 after copy
   
 
 # Copy Files
@@ -61,7 +62,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     #sourceFolder: # Optional
-    contents: $(Agent.TempDirectory)/*
+    contents: $(Agent.TempDirectory)/**
     targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
@@ -72,7 +73,7 @@ steps:
 
 - script: dir
   workingDirectory: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
-  displayName: List contents of python 4
+  displayName: List contents of python after copy 2
 
   
 - script: cat config.ini 
