@@ -23,23 +23,6 @@ steps:
     secureFile: config.ini
 
 
-
-
-- script: dir
-  workingDirectory: $(Agent.TempDirectory)
-  displayName: List contents of a secure download folder
-
-- script: cat config.ini
-  workingDirectory: $(Agent.TempDirectory)
-  displayName: List contents of config
-
-- script: cat $(Agent.TempDirectory)/config.ini
-  displayName: List contents of config2
-  
-- script: dir
-  workingDirectory: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
-  displayName: List contents of python 2r
-
 # Copy Files
 # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
 - task: CopyFiles@2
@@ -52,29 +35,6 @@ steps:
     #flattenFolders: false # Optional
   displayName: copy file
 
-- script: dir
-  workingDirectory: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
-  displayName: List contents of python2 after copy
-  
-
-# Copy Files
-# Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-- task: CopyFiles@2
-  inputs:
-    #sourceFolder: # Optional
-    contents: $(Agent.TempDirectory)/**
-    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
-    #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
-    #flattenFolders: false # Optional
-  displayName: copy file
-
-
-
-- script: dir
-  workingDirectory: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
-  displayName: List contents of python after copy 2
-
   
 - script: cat config.ini 
   workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
@@ -83,13 +43,14 @@ steps:
 - script: python -m pip install --upgrade pip setuptools wheel
   displayName: 'Install tools'
 
+  
+- script: pip install -r requirements.txt
+  displayName: 'Install requirements'
+  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
+
 - script: |
     pip install pytest
     pip install pytest-cov
     pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
   displayName: 'Test with pytest'
     
-
-- script: pip install -r requirements.txt
-  displayName: 'Install requirements'
-  workingDirectory: $(projectRoot)/basic_samples/SDS/Python/SDSPy/Python2/
