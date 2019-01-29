@@ -46,7 +46,6 @@ steps:
   workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
 
 - script: |
-    pip install -r requirements.txt
     pip install unittest-xml-reporting    
     pip install pytest
     pip install pytest-cov
