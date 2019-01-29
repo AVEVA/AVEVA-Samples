@@ -110,6 +110,8 @@ This samples sends snapshot values from PI to OCS via OMF.
  </tr>
  </table>
 
+ [![Build Status](https://dev.azure.com/dendres/CAD/_apis/build/status/derekendres.OCS-Samples?branchName=azure-pipelines)](https://dev.azure.com/dendres/CAD/_build/latest?definitionId=1&branchName=azure-pipelines)
+ 
 ## Credentials 
 
 A credential config.ini or app.config file is used in the examples unless otherwise noted in the example.  
