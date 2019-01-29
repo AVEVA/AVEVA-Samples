@@ -44,7 +44,7 @@ namespace SdsClientLibraries
             // ==== Client constants ====
             var tenantId = configuration["TenantId"];
             var namespaceId = configuration["NamespaceId"];
-            var address = configuration["Address"];
+            var resource = configuration["Resource"];
             var clientId = configuration["ClientId"];
             var clientKey = configuration["ClientKey"];
 
@@ -57,9 +57,9 @@ namespace SdsClientLibraries
             string manualStreamViewId = "SampleManualStreamView";
 
             // Get Sds Services to communicate with server
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientKey);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
 
-            SdsService sdsService = new SdsService(new Uri(address), authenticationHandler);
+            SdsService sdsService = new SdsService(new Uri(resource), authenticationHandler);
             var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
             var dataService = sdsService.GetDataService(tenantId, namespaceId);
 
@@ -75,7 +75,7 @@ namespace SdsClientLibraries
             Console.WriteLine(@"        \/      \/    \/  \/         \/        \/            ");
             Console.WriteLine(@"-------------------------------------------------------------");
             Console.WriteLine();
-            Console.WriteLine($"Sds endpoint at {address}");
+            Console.WriteLine($"Sds endpoint at {resource}");
             Console.WriteLine();
 
             try

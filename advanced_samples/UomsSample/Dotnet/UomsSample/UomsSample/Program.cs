@@ -1,6 +1,6 @@
 ﻿// <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -20,11 +20,9 @@ using System.Configuration;
 using System.Threading.Tasks;
 
 using OSIsoft.Data;
-using OSIsoft.Data.Server.Uom;
-using OSIsoft.Data.Http.Security;
-using OSIsoft.Data.Http;
 using OSIsoft.Data.Reflection;
 using System.Collections.Generic;
+using OSIsoft.Identity;
 
 namespace UomsSample
 {
@@ -49,13 +47,12 @@ namespace UomsSample
         {
             string tenantId = ConfigurationManager.AppSettings["Tenant"];
             string namespaceId = ConfigurationManager.AppSettings["Namespace"];
-            string address = ConfigurationManager.AppSettings["Address"];
             string resource = ConfigurationManager.AppSettings["Resource"];
             string clientId = ConfigurationManager.AppSettings["ClientId"];
             string clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
 
-            SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, tenantId, clientId, clientSecret);
-            SdsService service = new SdsService(new Uri(address), securityHandler);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientSecret);
+            SdsService service = new SdsService(new Uri(resource), authenticationHandler);
 
             ISdsMetadataService MetadataService = service.GetMetadataService(tenantId, namespaceId);
             ISdsDataService DataService = service.GetDataService(tenantId, namespaceId);

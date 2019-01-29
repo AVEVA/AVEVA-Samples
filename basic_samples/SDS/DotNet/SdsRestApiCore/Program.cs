@@ -40,7 +40,7 @@ namespace SdsRestApiCore
 			// ==== Client constants ====
             string tenantId = configuration["TenantId"];
             string namespaceId = configuration["NamespaceId"];
-            string address = configuration["Address"];
+            string resource = configuration["Resource"];
             string clientId = configuration["ClientId"];
             string clientKey = configuration["ClientKey"];
             string apiVersion = configuration["ApiVersion"];
@@ -53,10 +53,10 @@ namespace SdsRestApiCore
 			string AutoStreamViewId = "WaveDataAutoStreamViewId";
 			string ManualStreamViewId = "WaveDataManualStreamViewId";
 
-            SdsSecurityHandler securityHandler = new SdsSecurityHandler(address, clientId, clientKey);
+            SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, clientId, clientKey);
             HttpClient httpClient = new HttpClient(securityHandler)
             {
-                BaseAddress = new Uri(address)
+                BaseAddress = new Uri(resource)
             };
 
             Console.WriteLine(@"-------------------------------------------------------");
@@ -68,7 +68,7 @@ namespace SdsRestApiCore
             Console.WriteLine(@"        \/      \/    \/        \/        \/        \/            ");
             Console.WriteLine(@"-------------------------------------------------------");
             Console.WriteLine();
-            Console.WriteLine($"Sds endpoint at {address}");
+            Console.WriteLine($"Sds endpoint at {resource}");
             Console.WriteLine();
 
             try
