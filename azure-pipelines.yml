@@ -41,7 +41,8 @@ steps:
   displayName: display config file
 
 - script: |
-    python -m pip install --upgrade pip setuptools wheel 
+    python -m pip install --upgrade pip
+    pip install --upgrade pip
     pip install -r requirements.txt
     pip install unittest-xml-reporting    
     pip install pytest
