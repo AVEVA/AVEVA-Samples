@@ -44,16 +44,16 @@ steps:
     pip install unittest-xml-reporting    
     pip install pytest
     pip install pytest-cov
-    pytest --version
   displayName: 'Install tools'
+  
+- script: |
+    python -m pytest
+  displayName: 'Test with pytest'
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
   
 - script: |
     pip install -r requirements.txt
   workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
   displayName: 'Install requirements'
 
-- script: |
-    pytest 
-  displayName: 'Test with pytest'
-  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
     
