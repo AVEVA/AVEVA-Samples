@@ -40,14 +40,15 @@ steps:
     pip install pytest-cov
   displayName: 'Install tools'
   
-- script: |
-    python -m pytest
-  displayName: 'Test with pytest'
-  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
   
 - script: |
     pip install -r requirements.txt
   workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
   displayName: 'Install requirements'
+  
+- script: |
+    python -m pytest
+  displayName: 'Test with pytest'
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
 
     
