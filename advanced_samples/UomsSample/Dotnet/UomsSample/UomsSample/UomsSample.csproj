@@ -32,17 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IdentityModel, Version=3.10.4.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
+      <HintPath>..\packages\IdentityModel.3.10.4\lib\net452\IdentityModel.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.ObjectPool, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.ObjectPool.2.1.1\lib\netstandard2.0\Microsoft.Extensions.ObjectPool.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Net.Http.Headers, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.Headers.2.1.1\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
@@ -51,22 +48,22 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OSIsoft.Contracts, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Contracts.1.0.31\lib\netstandard2.0\OSIsoft.Contracts.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Contracts.1.0.35\lib\netstandard2.0\OSIsoft.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="OSIsoft.Contracts.Admin, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Contracts.Admin.1.0.31\lib\netstandard2.0\OSIsoft.Contracts.Admin.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Contracts.Admin.1.0.35\lib\netstandard2.0\OSIsoft.Contracts.Admin.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Data.Server.Uom, Version=1.0.31.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Data.Server.Uom.1.0.31\lib\netstandard2.0\OSIsoft.Data.Server.Uom.dll</HintPath>
+    <Reference Include="OSIsoft.Data.Server.Uom, Version=1.0.35.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OSIsoft.Data.Server.Uom.1.0.35\lib\netstandard2.0\OSIsoft.Data.Server.Uom.dll</HintPath>
     </Reference>
     <Reference Include="OSIsoft.Http.Client, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Http.Client.1.0.31\lib\netstandard2.0\OSIsoft.Http.Client.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Http.Client.1.0.35\lib\netstandard2.0\OSIsoft.Http.Client.dll</HintPath>
     </Reference>
-    <Reference Include="OSIsoft.Http.Security, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Http.Security.1.0.31\lib\netstandard2.0\OSIsoft.Http.Security.dll</HintPath>
+    <Reference Include="OSIsoft.Identity.AuthenticationHandler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OSIsoft.Identity.AuthenticationHandler.1.0.0\lib\netstandard2.0\OSIsoft.Identity.AuthenticationHandler.dll</HintPath>
     </Reference>
     <Reference Include="OSIsoft.Models, Version=1.0.0.1000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OSIsoft.Models.1.0.31\lib\netstandard2.0\OSIsoft.Models.dll</HintPath>
+      <HintPath>..\packages\OSIsoft.Models.1.0.35\lib\netstandard2.0\OSIsoft.Models.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -112,6 +109,9 @@
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

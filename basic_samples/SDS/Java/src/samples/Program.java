@@ -1,6 +1,6 @@
 /** Program.java
  * 
- *  Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+ *  Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
  * 
  *  THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
  *  OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -34,8 +34,6 @@ public class Program {
     // get configuration
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
-    static String sdsServerUrl = getConfiguration("sdsServerUrl");
-    static String apiVersion = getConfiguration("apiVersion");
 	
     // id strings
     static String sampleTypeId = "WaveData_SampleType";
@@ -58,10 +56,7 @@ public class Program {
         System.out.println("        \\/      \\/    \\/              \\/           \\/ ");
         System.out.println("---------------------------------------------------");
         
-        String server = sdsServerUrl + "/";
-        SdsClient sdsclient = new SdsClient(server, apiVersion);
-        System.out.println("Sds endpoint at " + server);
-        System.out.println();
+        SdsClient sdsclient = new SdsClient();
 
         try { 	          	
             // create a SdsType

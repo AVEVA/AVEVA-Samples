@@ -1,6 +1,6 @@
 // <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -17,7 +17,7 @@
 
 using Newtonsoft.Json;
 using OSIsoft.Data;
-using OSIsoft.Data.Http.Security;
+using OSIsoft.Identity;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -43,14 +43,14 @@ namespace PerfmonSample
             string resourcePrefix = ConfigurationManager.AppSettings["ResourcePrefix"];
             string tenantId = ConfigurationManager.AppSettings["Tenant"];
             string namespaceId = ConfigurationManager.AppSettings["Namespace"];
-            string address = ConfigurationManager.AppSettings["Address"];
             string resource = ConfigurationManager.AppSettings["Resource"];
-            string appId = ConfigurationManager.AppSettings["ClientId"];
-            string appKey = ConfigurationManager.AppSettings["ClientSecret"];
+            string clientId = ConfigurationManager.AppSettings["ClientId"];
+            string clientKey = ConfigurationManager.AppSettings["ClientSecret"];
 
             // Acquire OSIsoft provided SDS clients w/ appropriate security delegating handler
-            SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, tenantId, appId, appKey);
-            SdsService service = new SdsService(new Uri(address), securityHandler);
+            AuthenticationHandler ocsAuthenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
+            SdsService service = new SdsService(new Uri(resource), ocsAuthenticationHandler);
+            
 
             ISdsMetadataService config = service.GetMetadataService(tenantId, namespaceId);
 
@@ -58,30 +58,20 @@ namespace PerfmonSample
             // and associated pipeline.
             //
             // The authentication Handler performs the same function as the SDS Security Handler above.  It acquires 
-            // a token from Azure Active Directory and attaches it as a header to every request sent out of the client.
+            // a token from the token service and attaches it as a header to every request sent out of the client.
             //
             // An HttpClient pipeline has to end with a handler that can send requests to appropriate endpoints.  
             // HttpClientHandler is that appropriate handler; it is the end of the client pipeline.  Note that we 
-            // do not allow auto - reidrects.We do so because the HttpClientHandler, like man clients, strips security 
+            // do not allow auto - reidrects.We do so because the HttpClientHandler, like many clients, strips security 
             // related headers on redirect.  This results in 401 - unauthorized status indicating that the request 
             // failed to authenticate.  We will manage redirects manually.
             //
             // We take some shortcuts with disposable objects.  Because the program ends quickly, we don't bother 
             // cleaning up disposables.
-            ApplicationAuthenticationHandler authenticationHandler = new ApplicationAuthenticationHandler(resource, tenantId,
-              "https://login.windows.net/{0}/oauth2/token", appId, appKey)
-            {
-                InnerHandler = new HttpClientHandler
-                {
-                    AllowAutoRedirect = false,
-                    UseCookies = false
-
-                }
-            };
-
+            ApplicationAuthenticationHandler authenticationHandler = new ApplicationAuthenticationHandler(resource, clientId, clientKey);
             HttpClient httpClient = new HttpClient(authenticationHandler)
             {
-                BaseAddress = new Uri($"{address}/api/Tenants/{tenantId}/Namespaces/{namespaceId}/")
+                BaseAddress = new Uri(resource)
             };
 
             try

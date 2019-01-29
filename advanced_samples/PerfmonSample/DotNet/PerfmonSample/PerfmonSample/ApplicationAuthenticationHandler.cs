@@ -1,6 +1,6 @@
 // <copyright file="ApplicationAuthenticationHandler.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 //
 // THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 // OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -15,7 +15,7 @@
 // 1600 Alvarado St, San Leandro, CA 94577
 // </copyright>
 
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using IdentityModel.Client;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -25,100 +25,89 @@ using System.Threading.Tasks;
 namespace PerfmonSample
 {
     /// <summary>
-    /// The ApplicationAuthenticationHandler is a delegating handler, like the <see cref="OSIsoft.Data.Http.Security.SdsSecurityHandler"/>, 
-    /// that retrieves authentication tokens from the Azure Active Directory and ADFS services and adds the token to the outbound request's 
-    /// Authorization header.
+    /// The ApplicationAuthenticationHandler is a delegating handler, like the <see cref="OSIsoft.Identity.AuthenticationHandler"/>, 
+    /// that retrieves authentication tokens the token service and adds the token to the outbound request's header.
     /// 
-    /// This handler is provided as sample.  One might save the client secret as a SecureString in a formal handler.
+    /// This handler is provided as sample.
     /// </summary>
-    public sealed class ApplicationAuthenticationHandler : DelegatingHandler
+    public sealed class ApplicationAuthenticationHandler: DelegatingHandler
     {
-        #region Declarations
-
         private readonly string _resource;
-        private readonly string _authority;
-        private readonly ClientCredential _clientCredential;
-        private readonly AuthenticationContext _authenticationContext;
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+        private string _accessToken;
+        private DateTime _accessTokenExpiry = DateTime.MinValue;
 
-        #endregion
-
-        #region Constructors
-
-        static ApplicationAuthenticationHandler()
+        public ApplicationAuthenticationHandler(string resource, string clientId, string clientSecret)
         {
-            // suppress annoying ADAL logging
-            LoggerCallbackHandler.UseDefaultLogging = false;
-        }
-
-        /// <summary>
-        /// Constructor to create the handler for acquiring security tokens from the Azure Active Directory authority 
-        /// and adding those tokens to the header of the request.
-        /// </summary>
-        /// <param name="resource">Identifier of the target resource that is the recipient of the requested token.</param>
-        /// <param name="tenantDomainId">Identifier of the tenant domain.</param>
-        /// <param name="aadInstanceFormat">String format that when applied to the <paramref name="tenantDomainId"/> 
-        /// specifies the address of the authority to issue token.</param>
-        /// <param name="clientId">Identifier of the client requesting the token.</param>
-        /// <param name="clientSecret">Secret of the client requesting the token.</param>
-        public ApplicationAuthenticationHandler(string resource, string tenantDomainId, string aadInstanceFormat,
-            string clientId, string clientSecret)
-        {
-            // Sanity check...
-            if (string.IsNullOrEmpty(tenantDomainId))
-                throw new ArgumentNullException("tenantDomainName");
-            if (string.IsNullOrEmpty(resource))
-                throw new ArgumentNullException("resource");
-            if (aadInstanceFormat == null)
-                throw new ArgumentNullException("aadInstanceFormat");
-            if (string.IsNullOrEmpty(clientId))
-                throw new ArgumentNullException("clientId");
-            if (string.IsNullOrEmpty(clientSecret))
-                throw new ArgumentNullException("clientSecret");
-
             _resource = resource;
-            _authority = string.Format(aadInstanceFormat, tenantDomainId);
-            _clientCredential = new ClientCredential(clientId, clientSecret);
-            _authenticationContext = new AuthenticationContext(_authority);
+            _clientId = clientId;
+            _clientSecret = clientSecret;
+
+            InnerHandler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false
+            };
         }
-
-        #endregion
-
-        #region Overrides
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request != null)
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync());
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync(cancellationToken));
 
             return await base.SendAsync(request, cancellationToken);
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private async Task<string> GetAccessTokenAsync()
+        private async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken)
         {
-            AuthenticationResult authenticationResult = null;
-            int retry = 0;
-            do
+            if (_accessToken != null && DateTime.UtcNow < _accessTokenExpiry)
             {
-                try
-                {
-                    authenticationResult = await _authenticationContext.AcquireTokenAsync(_resource, _clientCredential);
-                }
-                catch
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                }
-            } while (authenticationResult == null && ++retry < 5);
+                return _accessToken;
+            }
 
-            if (authenticationResult == null)
-                throw new InvalidOperationException("Failed to authenticate");
+            using (HttpClient client = new HttpClient())
+            {
+                var discoveryRequest = new DiscoveryDocumentRequest
+                {
+                    Address = _resource + "/identity",
+                    Policy = new DiscoveryPolicy
+                    {
+                        Authority = "https://identity.osisoft.com",
+                        ValidateEndpoints = false,
+                        ValidateIssuerName = false
+                    }
+                };
 
-            return authenticationResult.AccessToken;
+                var discoveryResponse = await client.GetDiscoveryDocumentAsync(discoveryRequest, cancellationToken);
+
+                if (discoveryResponse.IsError)
+                    throw new InvalidOperationException(discoveryResponse.Error);
+
+                var clientCredentialsTokenRequest = new ClientCredentialsTokenRequest
+                {
+                    Address = discoveryResponse.TokenEndpoint,
+                    ClientId = _clientId,
+                    ClientSecret = _clientSecret,
+                    Scope = "ocsapi"
+                };
+
+                DateTime now = DateTime.UtcNow;
+
+                var tokenResponse = await client.RequestClientCredentialsTokenAsync(clientCredentialsTokenRequest, cancellationToken);
+
+                if (discoveryResponse.IsError)
+                    throw new InvalidOperationException(tokenResponse.Error);
+
+                if (string.IsNullOrEmpty(tokenResponse.AccessToken))
+                    throw new InvalidOperationException("Failed to acquire Access Token");
+
+                _accessToken = tokenResponse.AccessToken;
+
+                // Add a buffer of 30 seconds to the expiration delta.
+                _accessTokenExpiry = now.AddSeconds(tokenResponse.ExpiresIn - 30);
+
+                return _accessToken;
+            }
         }
-
-        #endregion
     }
 }
