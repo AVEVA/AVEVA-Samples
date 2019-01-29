@@ -40,13 +40,7 @@ steps:
   workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
   displayName: display config file
 
-- script: |
-    python -m pip install --upgrade pip 
-  displayName: 'Install tools'
-  
-- script: |
-    pip install --upgrade pip
-  displayName: 'upgrade pip tools'
+
 
 - script: |
     pip install unittest-xml-reporting    
