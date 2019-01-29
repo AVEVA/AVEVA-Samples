@@ -44,8 +44,8 @@ steps:
 # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
 - task: CopyFiles@2
   inputs:
-    #sourceFolder: # Optional
-    contents: $(Agent.TempDirectory)/python_config.ini
+    sourceFolder: $(Agent.TempDirectory)
+    contents: python_config.ini
     targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
