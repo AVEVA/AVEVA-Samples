@@ -48,7 +48,7 @@ steps:
     contents: python_config.ini
     targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/config.ini'
     #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
+    overWrite: true # Optional
     #flattenFolders: false # Optional
   displayName: copy file
 
