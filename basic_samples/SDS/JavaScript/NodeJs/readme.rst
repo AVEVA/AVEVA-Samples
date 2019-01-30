@@ -1,4 +1,4 @@
-JavaScript Samples: Building a Client to make REST API Calls to the Sds Service.
+﻿JavaScript Samples: Building a Client to make REST API Calls to the Sds Service.
 ===============================================================================
 
 This sample demonstrates how Sds REST APIs are invoked using JavaScript.
@@ -434,11 +434,11 @@ the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
 
-SdsViews
+SdsStreamViews
 -------
 
-An SdsView provides a way to map Stream data requests from one data type 
-to another. You can apply a View to any read or GET operation. SdsView 
+An SdsStreamView provides a way to map Stream data requests from one data type 
+to another. You can apply a StreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map Properties from the source to the 
@@ -448,33 +448,33 @@ or when the properties have the same name, Sds will map the properties automatic
 
 .. code:: javascript
 
-      client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoView.Id)
+      client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id)
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsView’s Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
 .. code:: javascript
 
-        var sinViewProperty = new sdsObjs.SdsViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
+        var sinStreamViewProperty = new sdsObjs.SdsStreamViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
         ...
-        var manualView = new sdsObjs.SdsView({
-            "Id": manualViewId, 
+        var manualStreamView = new sdsObjs.SdsStreamView({
+            "Id": manualStreamViewId, 
             "Name": "MapSampleTypeToATargetType",     
             "TargetTypeId" : targetIntegerTypeId,
             "SourceTypeId" : sampleTypeId,
-            "Properties" : [sinViewProperty, cosViewProperty, tanViewProperty]
+            "Properties" : [sinStreamViewProperty, cosStreamViewProperty, tanStreamViewProperty]
         });
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsViewMap cannot be written, it can only be retrieved from Sds.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: javascript
 
-        var sdsViewMap = client.getViewMap(tenantId, sampleNamespaceId, manualViewId);
+        var sdsStreamViewMap = client.getStreamViewMap(tenantId, sampleNamespaceId, manualStreamViewId);
 
 Delete Values from a Stream
 ---------------------------
@@ -504,11 +504,11 @@ As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to start and end
 are removed from the stream.
 
-Cleanup: Deleting Types, Views and Streams
+Cleanup: Deleting Types, StreamViews and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
-performs some cleanup before exiting. Deleting streams, views and types can 
+performs some cleanup before exiting. Deleting streams, streamViews and types can 
 be achieved by a DELETE REST call and passing the corresponding Id.
 
 .. code:: javascript

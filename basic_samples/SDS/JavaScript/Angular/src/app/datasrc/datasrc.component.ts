@@ -18,15 +18,15 @@ import { Component } from '@angular/core';
 
 import { SdsBoundaryType, SdsRestService, SdsStreamPropertyOverride } from '../sds.rest.service'
 import { SdsType, SdsStream, SdsTypeProperty, SdsTypeCode,
-  SdsStreamMode, SdsView, SdsViewProperty, SdsViewMap} from '../sds.rest.service'
+  SdsStreamMode, SdsStreamView, SdsStreamViewProperty, SdsStreamViewMap} from '../sds.rest.service'
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 
 const streamId = 'WaveDataStream';
 const typeId = 'WaveDataType';
 const targetTypeId = 'WaveDataTargetType';
 const targetIntTypeId = 'WaveDataTargetIntType';
-const autoViewId = 'WaveDataAutoView';
-const manualViewId = 'WaveDataManualView';
+const autoStreamViewId = 'WaveDataAutoStreamView';
+const manualStreamViewId = 'WaveDataManualStreamView';
 
 class  WaveData {
   Order: number;
@@ -69,11 +69,11 @@ export class DatasrcComponent {
   events: WaveData[];
   targetEvents: WaveDataTarget[];
   integerEvents: WaveDataInteger[];
-  viewMap: SdsViewMap;
+  streamViewMap: SdsStreamViewMap;
   metadataMap: Map<string, string>;
   hasEvents: boolean;
-  hasView1Events: boolean;
-  hasView2Events: boolean;
+  hasStreamView1Events: boolean;
+  hasStreamView2Events: boolean;
   hasMapProperties: boolean;
   hasMetadata: boolean;
 
@@ -249,42 +249,42 @@ export class DatasrcComponent {
     return waveDataIntType;
   }
 
-  buildAutoView() {
-        const autoView = new SdsView();
-        autoView.Id = autoViewId;
-        autoView.Name = 'WaveData_AutoView';
-        autoView.Description = 'This view uses Sds Types of the same shape and will map automatically.';
-        autoView.SourceTypeId = typeId;
-        autoView.TargetTypeId = targetTypeId;
-        return autoView;
+  buildAutoStreamView() {
+        const autoStreamView = new SdsStreamView();
+        autoStreamView.Id = autoStreamViewId;
+        autoStreamView.Name = 'WaveData_AutoStreamView';
+        autoStreamView.Description = 'This StreamView uses Sds Types of the same shape and will map automatically.';
+        autoStreamView.SourceTypeId = typeId;
+        autoStreamView.TargetTypeId = targetTypeId;
+        return autoStreamView;
       }
 
-  buildManualView() {
-        const manualView = new SdsView();
-        manualView.Id = manualViewId;
-        manualView.Name = 'WaveData_AutoView';
-        manualView.Description = 'This view uses Sds Types of different shapes, mappings are made explicitly with SdsViewProperties.';
-        manualView.SourceTypeId = typeId;
-        manualView.TargetTypeId = targetIntTypeId;
+  buildManualStreamView() {
+        const manualStreamView = new SdsStreamView();
+        manualStreamView.Id = manualStreamViewId;
+        manualStreamView.Name = 'WaveData_AutoStreamView';
+        manualStreamView.Description = 'This StreamView uses Sds Types of different shapes, mappings are made explicitly with SdsStreamViewProperties.';
+        manualStreamView.SourceTypeId = typeId;
+        manualStreamView.TargetTypeId = targetIntTypeId;
 
-        const viewProperty0 = new SdsViewProperty();
-        viewProperty0.SourceId = 'Order';
-        viewProperty0.TargetId = 'OrderTarget';
+        const streamViewProperty0 = new SdsStreamViewProperty();
+        streamViewProperty0.SourceId = 'Order';
+        streamViewProperty0.TargetId = 'OrderTarget';
 
-        const viewProperty1 = new SdsViewProperty();
-        viewProperty1.SourceId = 'Sinh';
-        viewProperty1.TargetId = 'SinhInt';
+        const streamViewProperty1 = new SdsStreamViewProperty();
+        streamViewProperty1.SourceId = 'Sinh';
+        streamViewProperty1.TargetId = 'SinhInt';
 
-        const viewProperty2 = new SdsViewProperty();
-        viewProperty2.SourceId = 'Cosh';
-        viewProperty2.TargetId = 'CoshInt';
+        const streamViewProperty2 = new SdsStreamViewProperty();
+        streamViewProperty2.SourceId = 'Cosh';
+        streamViewProperty2.TargetId = 'CoshInt';
 
-        const viewProperty3 = new SdsViewProperty();
-        viewProperty3.SourceId = 'Tanh';
-        viewProperty3.TargetId = 'TanhInt';
+        const streamViewProperty3 = new SdsStreamViewProperty();
+        streamViewProperty3.SourceId = 'Tanh';
+        streamViewProperty3.TargetId = 'TanhInt';
 
-        manualView.Properties = [viewProperty0, viewProperty1, viewProperty2, viewProperty3];
-        return manualView;
+        manualStreamView.Properties = [streamViewProperty0, streamViewProperty1, streamViewProperty2, streamViewProperty3];
+        return manualStreamView;
   }
 
   newWaveDataEvent(order: number, range: number, multiplier: number) {
@@ -402,7 +402,7 @@ export class DatasrcComponent {
       });
   }
 
-  createAutoviewTargetType() {
+  createAutoStreamViewTargetType() {
     const type = this.buildWaveDataTargetType();
     this.sdsService.createType(type).subscribe(res => {
       this.button6Message = this.healthyResponseMessage(res);
@@ -412,9 +412,9 @@ export class DatasrcComponent {
     });
   }
 
-  createAutoview() {
-    const view = this.buildAutoView();
-    this.sdsService.createView(view).subscribe(res => {
+  createAutoStreamView() {
+    const streamView = this.buildAutoStreamView();
+    this.sdsService.createStreamView(streamView).subscribe(res => {
       this.button7Message = this.healthyResponseMessage(res);
     },
     err => {
@@ -422,12 +422,12 @@ export class DatasrcComponent {
     });
   }
 
-  retrieveWaveDataEventsAutoview() {
-    this.hasView1Events = false;
-    this.sdsService.getRangeValues(streamId, '1', 5, SdsBoundaryType.ExactOrCalculated, autoViewId)
+  retrieveWaveDataEventsAutoStreamView() {
+    this.hasStreamView1Events = false;
+    this.sdsService.getRangeValues(streamId, '1', 5, SdsBoundaryType.ExactOrCalculated, autoStreamViewId)
       .subscribe(res => {
         this.targetEvents = res.body as WaveDataTarget[];
-        this.hasView1Events = true;
+        this.hasStreamView1Events = true;
         this.button8Message = `Found ${this.targetEvents.length} events`
       },
       err => {
@@ -435,7 +435,7 @@ export class DatasrcComponent {
       });
   }
 
-  createSdsViewPropertiesAndManualType() {
+  createSdsStreamViewPropertiesAndManualType() {
     const type = this.buildWaveDataIntegerType();
     this.sdsService.createType(type).subscribe(res => {
       this.button9Message = this.healthyResponseMessage(res);
@@ -443,8 +443,8 @@ export class DatasrcComponent {
     err => {
       this.button9Message = this.unhealthyResponseMessage(err);
     });
-    const view = this.buildManualView();
-    this.sdsService.createView(view).subscribe(res => {
+    const streamView = this.buildManualStreamView();
+    this.sdsService.createStreamView(streamView).subscribe(res => {
       this.button9Message = this.healthyResponseMessage(res);
     },
     err => {
@@ -452,12 +452,12 @@ export class DatasrcComponent {
     });
   }
 
-  retrieveWaveDataEventsManualview() {
-    this.hasView2Events = false;
-    this.sdsService.getRangeValues(streamId, '3', 5, SdsBoundaryType.ExactOrCalculated, manualViewId)
+  retrieveWaveDataEventsManualStreamView() {
+    this.hasStreamView2Events = false;
+    this.sdsService.getRangeValues(streamId, '3', 5, SdsBoundaryType.ExactOrCalculated, manualStreamViewId)
       .subscribe(res => {
         this.integerEvents = res.body as WaveDataInteger[];
-        this.hasView2Events = true;
+        this.hasStreamView2Events = true;
         this.button10Message = `Found ${this.integerEvents.length} events`
       },
       err => {
@@ -465,12 +465,12 @@ export class DatasrcComponent {
       });
   }
 
-  getSdsViewMap() {
-    this.sdsService.getViewMap(manualViewId)
+  getSdsStreamViewMap() {
+    this.sdsService.getStreamViewMap(manualStreamViewId)
       .subscribe(res => {
-        this.viewMap = res.body as SdsViewMap;
+        this.streamViewMap = res.body as SdsStreamViewMap;
         this.hasMapProperties = true;
-      this.button11Message = `SdsViewMap`
+      this.button11Message = `SdsStreamViewMap`
     },
       err => {
         this.button11Message = this.unhealthyResponseMessage(err);
@@ -535,10 +535,10 @@ export class DatasrcComponent {
 
   cleanup() {
     this.sdsService.deleteStream(streamId).subscribe(() => {
-      // you can't delete a type if there are existing streams or views
+      // you can't delete a type if there are existing streams or streamViews
       // that depend on it, so we must make sure the stream is deleted first.
-      this.sdsService.deleteView(autoViewId).subscribe();
-      this.sdsService.deleteView(manualViewId).subscribe();
+      this.sdsService.deleteStreamView(autoStreamViewId).subscribe();
+      this.sdsService.deleteStreamView(manualStreamViewId).subscribe();
       this.sdsService.deleteType(typeId).subscribe();
       this.sdsService.deleteType(targetTypeId).subscribe();
       this.sdsService.deleteType(targetIntTypeId).subscribe();
