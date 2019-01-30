@@ -597,31 +597,6 @@ class SdsClient(object):
             values.append(value_class.fromJson(c))
         return values
 
-    def insertValue(self, namespace_id, stream_id, value):
-        """Tells Sds Service to insert a value, described by the local object 'value', into
-        the stream specified by 'stream_id'"""
-        if namespace_id is None:
-            raise TypeError
-        if stream_id is None:
-            raise TypeError
-        if value is None:
-            raise TypeError
-
-        if callable(getattr(value, "toJson", None)):
-            payload = value.toJson()
-        else:
-            payload = value
-
-        response = requests.post(
-            self.__url + self.__insertValuePath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
-            data=payload, 
-            headers=self.__sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to insert value for SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
-        response.close()
-
     def insertValues(self, namespace_id, stream_id, values):
         """Tells Sds Service to insert the values, defined by the list 'values', into 
         the stream specified by 'stream_id'"""
@@ -648,29 +623,6 @@ class SdsClient(object):
             raise SdsError("Failed to insert multiple values for SdsStream, {stream_id}. {status}:{reason}".
                           format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
-    def updateValue(self, namespace_id, stream_id, value):
-        """Tells Sds Service to update the value described by 'value', a local SdsValue object"""
-        if namespace_id is None:
-            raise TypeError
-        if stream_id is None:
-            raise TypeError
-        if value is None:
-            raise TypeError
-
-        if callable(getattr(value, "toJson", None)):
-            payload = value.toJson()
-        else:
-            payload = value
-
-        response = requests.put(self.__url + self.__updateValuePath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
-                                data=payload, 
-                                headers=self.__sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to update value for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
-
-        response.close()
-
     def updateValues(self, namespace_id, stream_id, values):
         """Tells Sds Service to update values defined by the SdsValue list, 'values'"""
         if namespace_id is None:
@@ -694,31 +646,6 @@ class SdsClient(object):
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to update all values for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
-
-        response.close()
-
-    def replaceValue(self, namespace_id, stream_id, value):
-        """Tells Sds Service to replace the value specified by 'value'"""
-        if namespace_id is None:
-            raise TypeError
-        if stream_id is None:
-            raise TypeError
-        if value is None:
-            raise TypeError
-
-        if callable(getattr(value, "toJson", None)):
-            payload = value.toJson()
-        else:
-            payload = value
-
-        response = requests.put(
-            self.__url + self.__replaceValuePath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
-            data=payload, 
-            headers=self.__sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to replace value for SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
         response.close()
 
@@ -1014,21 +941,17 @@ class SdsClient(object):
         self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
 
         self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
-        self.__getValueQuery = self.__dataPath + "/GetValue?index={index}&streamViewId={streamView_id}"
-        self.__getFirstValue = self.__dataPath + "/GetFirstValue?streamViewId={streamView_id}"
-        self.__getLastValue = self.__dataPath + "/GetLastValue?streamViewId={streamView_id}"
-        self.__getWindowValues = self.__dataPath + "/GetWindowValues?startIndex={start}&endIndex={end}&streamViewId={streamView_id}"
-        self.__getRangeValuesQuery = self.__dataPath + "/GetRangeValues?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
+        self.__getValueQuery = self.__dataPath + "?index={index}&streamViewId={streamView_id}"
+        self.__getFirstValue = self.__dataPath + "/First?streamViewId={streamView_id}"
+        self.__getLastValue = self.__dataPath + "/Last?streamViewId={streamView_id}"
+        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}&streamViewId={streamView_id}"
+        self.__getRangeValuesQuery = self.__dataPath + "?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
 
-        self.__insertValuePath = self.__dataPath + "/InsertValue"
-        self.__insertValuesPath = self.__dataPath + "/InsertValues"
-        self.__updateValuePath = self.__dataPath + "/UpdateValue"
-        self.__updateValuesPath = self.__dataPath + "/UpdateValues"
-        self.__replaceValuePath = self.__dataPath + "/ReplaceValue"
-        self.__replaceValuesPath = self.__dataPath + "/ReplaceValues"
-        self.__removeValue = self.__dataPath + "/RemoveValue?index={index}"
-        self.__removeWindowValues = self.__dataPath + "/RemoveWindowValues?startIndex={start}&endIndex={end}"
-		
+        self.__insertValuesPath = self.__dataPath
+        self.__updateValuesPath = self.__dataPath
+        self.__replaceValuesPath = self.__dataPath + "?allowCreate=false"
+        self.__removeValue = self.__dataPath + "?index={index}"
+        self.__removeWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"	
 		
         self.__dataviewsPath = self.__basePath + "/Dataviews"
         self.__getDataviews= self.__dataviewsPath + "?skip={skip}&count={count}"
