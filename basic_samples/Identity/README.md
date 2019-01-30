@@ -105,7 +105,8 @@ location, and uses cryptographically secure channels -read https- to communicate
 with OCS. OCS only support communication over https. No Refresh Token is
 awarded.
 
-The sample for this authentication flow can be found [here](/ClientCredentialFlow).
+The sample for this authentication flow can be found
+[here](./ClientCredentialFlow/ ).
 
 ### Implicit Flow
 
@@ -117,7 +118,7 @@ In this case the user will have to authenticate against the identity provider
 and an Access Token will be provided to the client. A certain level of trust on
 the client/browser is expected. No Refresh Token provided.
 
-The sample for this authentication flow can be found [here](/ImplicitFlow).
+The sample for this authentication flow can be found [here](./ImplicitFlow/).
 
 ### Hybrid Flow
 
@@ -130,4 +131,4 @@ Once this is completed the server-side client will authenticate against the
 authorization server and be awarded an Access Token and a Refresh Token, which
 should never be displayed to the user or the browser.
 
-The sample for this authentication flow can be found [here](/HybridFlow).
+The sample for this authentication flow can be found [here](./HybridFlow/).
