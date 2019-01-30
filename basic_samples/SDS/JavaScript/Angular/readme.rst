@@ -1,4 +1,4 @@
-Sds JavaScript Example using Angular
+﻿Sds JavaScript Example using Angular
 ===================================
 
 Building a client to make REST API calls to the Sds Service
@@ -36,7 +36,8 @@ Edit the following values in the src/app/app.component.ts file:
             SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL',
             SdsResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
             TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
-            NamespaceId: 'REPLACE_WITH_NAMESPACE'
+            NamespaceId: 'REPLACE_WITH_NAMESPACE',
+            ApiVersion: 'v1-preview'
         };
 
 
@@ -56,8 +57,8 @@ The Sds Services page contains several buttons that demonstrate the main functio
     Create and Insert: Create the type, then the stream, then inserts WaveData events into the stream.
     Retrieve Events: Get the latest event and then get all events from the SdsStream.
     Update and Replace: Updates events, adds an additional ten events, then replace all.
-    SdsViews: Create and demonstrate SdsViews and SdsViewMaps
-    Cleanup: Deletes the events, stream, views and types.
+    SdsStreamViews: Create and demonstrate SdsStreamViews and SdsStreamViewMaps
+    Cleanup: Deletes the events, stream, streamViews and types.
 
 
 To run the example, click each of the buttons in turn from top to bottom. In most modern browsers, you can view the API calls and results as they occur by pressing **F12**. 
@@ -177,7 +178,7 @@ An event can be created using the following POST request:
 .. code:: javascript
 
     insertValue(streamId: string, event: any) {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
         return this.authHttp.post(url, JSON.stringify(event).toString());
     }
 
@@ -187,7 +188,7 @@ and the url for POST call varies:
 .. code:: javascript
 
     insertValues(streamId: string, events: Array<any>) {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
         return this.authHttp.post(url, JSON.stringify(events).toString());
         }
 
@@ -210,10 +211,10 @@ getRangeValues and getLastValue.
 
 .. code:: javascript
 
-    getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, viewId: string = ''): Observable<any> {
+    getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
         const url = this.sdsUrl +
-            `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-            `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&viewId=${viewId}`;
+            `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+            `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
         return this.authHttp.get(url);
     }
 
@@ -226,7 +227,7 @@ Updating events is handled by PUT REST call as follows:
 .. code:: javascript
 
     updateValue(streamId: string, event: any) {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
         return this.authHttp.put(url, JSON.stringify(event).toString());
     }
 
@@ -239,7 +240,7 @@ event objects and url for PUT is slightly different:
 .. code:: javascript
 
     updateValues(streamId: string, events: Array<any>) {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
         return this.authHttp.put(url, JSON.stringify(events).toString());
     }
 
@@ -255,12 +256,12 @@ identical to ``updateValue`` and ``updateValues``:
 .. code:: javascript
 
     replaceValue(streamId: string, event: any) {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
         return this.authHttp.put(url, JSON.stringify(event).toString());
     }
 
     replaceValues(streamId: string, events: Array<any>) {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
         return this.authHttp.put(url, JSON.stringify(events).toString());
     }
 
@@ -291,11 +292,11 @@ before and after updating the stream to show that it has changed. See
 the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
-SdsViews
+SdsStreamViews
 -------
 
-An SdsView provides a way to map Stream data requests from one data type 
-to another. You can apply a View to any read or GET operation. SdsView 
+An SdsStreamView provides a way to map Stream data requests from one data type 
+to another. You can apply a StreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map Properties from the source to the 
@@ -305,39 +306,39 @@ or when the properties have the same name, Sds will map the properties automatic
 
 .. code:: javascript
 
-    this.sdsService.getRangeValues(streamId, '3', 5, SdsBoundaryType.ExactOrCalculated, autoViewId)
+    this.sdsService.getRangeValues(streamId, '3', 5, SdsBoundaryType.ExactOrCalculated, autoStreamViewId)
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsView’s Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
 .. code:: javascript
 
-    const manualView = new SdsView();
-    manualView.Id = manualViewId;
-    manualView.Name = "WaveData_AutoView";
-    manualView.Description = "This view uses Sds Types of different shapes, mappings are made explicitly with SdsViewProperties."
-    manualView.SourceTypeId = typeId;
-    manualView.TargetTypeId = targetIntTypeId;
+    const manualStreamView = new SdsStreamView();
+    manualStreamView.Id = manualStreamViewId;
+    manualStreamView.Name = "WaveData_AutoStreamView";
+    manualStreamView.Description = "This StreamView uses Sds Types of different shapes, mappings are made explicitly with SdsStreamViewProperties."
+    manualStreamView.SourceTypeId = typeId;
+    manualStreamView.TargetTypeId = targetIntTypeId;
 
-    const viewProperty0 = new SdsViewProperty();
-    viewProperty0.SourceId = 'Order';
-    viewProperty0.TargetId = 'OrderTarget';
+    const streamViewProperty0 = new SdsStreamViewProperty();
+    streamViewProperty0.SourceId = 'Order';
+    streamViewProperty0.TargetId = 'OrderTarget';
 
-    const viewProperty1 = new SdsViewProperty();
-    viewProperty1.SourceId = 'Sinh';
-    viewProperty1.TargetId = 'SinhInt';
+    const streamViewProperty1 = new SdsStreamViewProperty();
+    streamViewProperty1.SourceId = 'Sinh';
+    streamViewProperty1.TargetId = 'SinhInt';
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsViewMap cannot be written, it can only be retrieved from Sds.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: javascript
 
-    getViewMap(viewId: string): Observable<any> {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}/Map`;
+    getStreamViewMap(streamViewId: string): Observable<any> {
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}/Map`;
         return this.authHttp.get(url);
     }
 
@@ -354,13 +355,13 @@ is shown below:
 .. code:: javascript
 
     deleteValue(streamId: string, index): Observable<any> {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
         return this.authHttp.delete(url);
     }
 
     deleteWindowValues(streamId: string, start, end): Observable<any> {
         const url = this.sdsUrl +
-        `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+        `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
         `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
         return this.authHttp.delete(url);
     }
@@ -369,17 +370,17 @@ As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to start and end
 are removed from the stream.
 
-Cleanup: Deleting Types, Views and Streams
+Cleanup: Deleting Types, StreamViews and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
-performs some cleanup before exiting. Deleting streams, views and types can be 
+performs some cleanup before exiting. Deleting streams, streamViews and types can be 
 achieved by a DELETE REST call and passing the corresponding Id.
 
 .. code:: javascript
 
     deleteValue(streamId: string, index): Observable<any> {
-        const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
         return this.authHttp.delete(url);
     }
 
@@ -387,7 +388,7 @@ achieved by a DELETE REST call and passing the corresponding Id.
 
     deleteWindowValues(streamId: string, start, end): Observable<any> {
         const url = this.sdsUrl +
-        `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+        `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
         `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
         return this.authHttp.delete(url);
     }

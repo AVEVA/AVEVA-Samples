@@ -127,11 +127,9 @@ and may be used in the sample.
 The values to be replaced are in ``config.properties``:
 
 .. code:: java
-    resource = https://pihomemain.onmicrosoft.com/ocsapi
-    authority = https://login.windows.net/<PLACEHOLDER_REPLACE_WITH_TENANT_NAME>.onmicrosoft.com
+    resource = https://dat-b.osisoft.com
     clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
     clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
-    sdsServerUrl = PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL
     tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
     namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
     apiVersion = v1-preview
@@ -141,31 +139,15 @@ Obtain an Authentication Token
 
 Near the end of the ``SdsClient.Java`` file is a method called
 ``AcquireAuthToken``. The first step in obtaining an authorization token
-is to create an authentication context that is related to the Azure
-Active Directory instance. The authority is designated by the URI in
-``_authority``.
+is to connect to the Open ID discovery endpoint and get a URI for obtaining the token.
+Thereafter, the token based on ``clientId`` and ``clientSecret`` is retrieved.
 
-.. code:: java
-
-    if (authContext == null) {
-        authContext = new AuthenticationContext(authority);
-    }
-
-``AuthenticationContext`` instances are responsible for communicating
-with the authority and also for maintaining a local cache of tokens.
-Tokens have a fixed lifetime, typically one hour, but can be refreshed
+The token is cached, but as tokens have a fixed lifetime, typically one hour, but can be refreshed
 by the authenticating authority for a longer period. If the refresh
 period has expired, the credentials must be presented to the authority
 again. To streamline development, the ``AcquireToken`` method hides
 these details from client programmers. As long as you call
-``AcquireToken`` before each HTTP call, you will have a valid token. The
-following code shows how this is done:
-
-.. code:: java
-
-    ClientCredential userCred = new ClientCredential(appId, appKey);
-    Future<AuthenticationResult> authResult = authContext.acquireToken(resource, userCred, null);
-    result = authResult.get();
+``AcquireToken`` before each HTTP call, you will have a valid token. 
 
 Create an SdsType
 ----------------

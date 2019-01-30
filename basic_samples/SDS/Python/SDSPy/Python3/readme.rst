@@ -122,18 +122,18 @@ The values to be replaced are in ``config.ini``:
 Obtain an Authentication Token
 ------------------------------
 
-The Azure Active Directory python library ``adal`` provides a simple way
-to authenticate and obtain bearer tokens. Within each
-request to Sds, the headers are provided by a function that is also
-responsible for refreshing the token. An authentication context is created 
-and a token is acquired from that context.
+Within each request to Sds, the headers are provided by a function that is also
+responsible for refreshing the token. An authentication token is acquired from the authority endpoint based on the resource URL.
 
 .. code:: python
 
-    context = adal.AuthenticationContext(self.__authority,
-       validate_authority=True)
-    token = context.acquire_token_with_client_credentials(self.__resource, 
-       self.__clientId, self.__clientSecret)
+        tokenInformation = requests.post(
+            tokenEndpoint,
+            data = {"client_id" : self.clientId,
+                    "client_secret" : self.clientSecret,
+                    "grant_type" : "client_credentials"})
+
+        token = json.loads(tokenInformation.content)
 
 Acquire an SdsNamespace
 ---------------------

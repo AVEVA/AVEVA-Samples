@@ -25,10 +25,10 @@ def main():
     ###########################################################
     # The following define the identifiers we'll use throughout
     ###########################################################
-    client = SdsClient(config.get('Access', 'TenantId'), config.get('Access', 'Address'),
-                       config.get('Credentials', 'Resource'), config.get('Credentials', 'Authority'),
-                       config.get('Credentials', 'Clientid'), config.get('Credentials', 'ClientSecret'))
+    client = SdsClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Resource'), 
+                      config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
     namespace_id = config.get('Configurations', 'Namespace')
+
     type_names = json.loads(config.get('Configurations', 'TypeNames'))
     prog = Program(client, namespace_id, type_names)
     prog.run()

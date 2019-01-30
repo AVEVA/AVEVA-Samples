@@ -93,25 +93,25 @@ export enum SdsBoundaryType {
   ExactOrCalculated = 3
 }
 
-export class SdsView {
+export class SdsStreamView {
   Id: string;
   Name: string;
   Description: string;
   SourceTypeId: string;
   TargetTypeId: string;
-  Properties: SdsViewProperty[];
+  Properties: SdsStreamViewProperty[];
 }
 
-export class SdsViewProperty {
+export class SdsStreamViewProperty {
   SourceId: string;
   TargetId: string;
-  SdsView: SdsView;
+  SdsStreamView: SdsStreamView;
 }
 
-export class SdsViewMap {
+export class SdsStreamViewMap {
   SourceTypeId: string;
   TargetTypeId: string;
-  Properties: SdsViewProperty[];
+  Properties: SdsStreamViewProperty[];
 }
 
 @Injectable()
@@ -120,6 +120,7 @@ export class SdsRestService {
   sdsResource: string;
   tenantId: string;
   namespaceId: string;
+  apiVersion: string;
 
   constructor(private authHttp: AuthHttp,
               private configService: ConfigurationService
@@ -128,128 +129,129 @@ export class SdsRestService {
     this.sdsResource = configService.AmbientConfiguration.SdsResourceURI;
     this.tenantId = configService.AmbientConfiguration.TenantId;
     this.namespaceId = configService.AmbientConfiguration.NamespaceId;
+    this.apiVersion = configService.AmbientConfiguration.ApiVersion;
   }
 
   createStream(sdsStream: SdsStream): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
     return this.authHttp.post(url, JSON.stringify(sdsStream).toString());
   }
 
   updateStream(sdsStream: SdsStream): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
     return this.authHttp.put(url, JSON.stringify(sdsStream).toString());
   }
 
   getStreams(query: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
     return this.authHttp.get(url);
   }
 
 
   deleteStream(streamId: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
     return this.authHttp.delete(url);
   }
 
   createTags(streamId: string, tags: string[]): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Tags`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Tags`;
     return this.authHttp.put(url, JSON.stringify(tags).toString());
   }
 
   createMetadata(streamId: string, metadata: object): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
     return this.authHttp.put(url, JSON.stringify(metadata).toString());
   }
 
   getTags(streamId: string): Observable<any> {
     const url = this.sdsUrl +
-      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Tags`;
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Tags`;
     return this.authHttp.get(url);
   }
 
   getMetadata(streamId: string): Observable<any> {
     const url = this.sdsUrl +
-      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Metadata`;
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Metadata`;
     return this.authHttp.get(url);
   }
 
   getLastValue(streamId: string): Observable<any> {
     const url = this.sdsUrl +
-      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/GetlastValue`;
     return this.authHttp.get(url);
   }
 
-  getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, viewId: string = ''): Observable<any> {
+  getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
     const url = this.sdsUrl +
-      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-      `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&viewId=${viewId}`;
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
     return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control','no-cache')});
   }
 
   createType(sdsType: SdsType): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${sdsType.Id}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${sdsType.Id}`;
     return this.authHttp.post(url, JSON.stringify(sdsType).toString());
   }
 
   deleteType(typeId: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${typeId}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${typeId}`;
     return this.authHttp.delete(url);
   }
 
   insertValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
     return this.authHttp.post(url, JSON.stringify(event).toString());
   }
 
   insertValues(streamId: string, events: Array<any>) {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
     return this.authHttp.post(url, JSON.stringify(events).toString());
   }
 
   updateValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
     return this.authHttp.put(url, JSON.stringify(event).toString());
   }
 
   updateValues(streamId: string, events: Array<any>) {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
   replaceValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
     return this.authHttp.put(url, JSON.stringify(event).toString());
   }
 
   replaceValues(streamId: string, events: Array<any>) {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
-  createView(sdsView: SdsView): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${sdsView.Id}`;
-    return this.authHttp.post(url, JSON.stringify(sdsView).toString());
+  createStreamView(sdsStreamView: SdsStreamView): Observable<any> {
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${sdsStreamView.Id}`;
+    return this.authHttp.post(url, JSON.stringify(sdsStreamView).toString());
   }
 
-  deleteView(viewId: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}`;
+  deleteStreamView(streamViewId: string): Observable<any> {
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}`;
     return this.authHttp.delete(url);
   }
 
-  getViewMap(viewId: string): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Views/${viewId}/Map`;
+  getStreamViewMap(streamViewId: string): Observable<any> {
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}/Map`;
     return this.authHttp.get(url);
   }
 
   deleteValue(streamId: string, index): Observable<any> {
-    const url = this.sdsUrl + `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
     return this.authHttp.delete(url);
   }
 
   deleteWindowValues(streamId: string, start, end):Observable<any> {
     const url = this.sdsUrl +
-      `/api/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
     return this.authHttp.delete(url);
   }

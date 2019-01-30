@@ -24,6 +24,7 @@ export interface ISdsConfigSet {
   SdsResourceURI: string;
   TenantId: string;
   NamespaceId: string;
+  ApiVersion: string;
 }
 
 
