@@ -1,0 +1,32 @@
+# Setup
+
+Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID.
+
+## Running the sample
+
+### Requirements
+
+- .net core 2.2.1 or later
+- Reliable internet connection
+- A web browser
+
+### Using Visual Studio
+
+- Load the solution from the directory above this in Visual Studio
+- Select ImplicitFlow project
+- Run it
+- Pres the *login* button in the browser
+- Follow the prompts in the web browser to log in
+  - Keep in mind that if you are already logged in with the same account in the browser, you will not have to log in again.
+
+### Command Line
+
+- Make sure you have the install location of dotnet added to your path
+- Run the following command from the location of this project:
+
+```shell
+dotnet run
+```
+- Follow the prompts in the web browser to log in
+- Return to the application after having been authenticated in the browser
+

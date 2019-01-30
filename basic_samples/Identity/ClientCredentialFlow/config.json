@@ -1,0 +1,8 @@
+{
+  "ClientCredentialFlow": {
+    "ClientId": "Client Id Placeholder",
+    "ClientSecret": "Client Secret Placeholder"
+  },
+  "TenantId": "Tenant Id Placeholder",
+  "OCSUrl": "https://dat-b.osisoft.com"
+}
