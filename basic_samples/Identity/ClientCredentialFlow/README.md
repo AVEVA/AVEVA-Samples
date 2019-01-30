@@ -12,6 +12,7 @@ Replace the placeholders in the [config](./config.json) file with your TenantID,
 ### Using Visual Studio
 
 - Load the solution from the directory above this in Visual Studio
+- Rebuild solution
 - Select ClientCredentialFlow project
 - Run it
   - If you want to see the token and other outputs from the program, put a breakpoint at the end of the main method and run in debug mode

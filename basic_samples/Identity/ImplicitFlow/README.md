@@ -13,6 +13,7 @@ Replace the placeholders in the [config](./wwwroot/config.js) file with your Ten
 ### Using Visual Studio
 
 - Load the solution from the directory above this in Visual Studio
+- Rebuild solution
 - Select ImplicitFlow project
 - Run it
 - Pres the *login* button in the browser
@@ -27,6 +28,6 @@ Replace the placeholders in the [config](./wwwroot/config.js) file with your Ten
 ```shell
 dotnet run
 ```
+
 - Follow the prompts in the web browser to log in
 - Return to the application after having been authenticated in the browser
-
