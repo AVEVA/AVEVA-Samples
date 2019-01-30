@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientCredentialFlow", "Cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HybridFlow", "HybridFlow\HybridFlow.csproj", "{E0349EBA-914B-44DA-8B02-CA4E74D32415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImplicitFlow", "ImplictFlow\ImplicitFlow.csproj", "{900D74F4-34F9-413E-B6FE-A1AC44E76FE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImplicitFlow", "ImplicitFlow\ImplicitFlow.csproj", "{900D74F4-34F9-413E-B6FE-A1AC44E76FE2}"
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
