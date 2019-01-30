@@ -27,16 +27,17 @@ import time
 
 class SdsClient(object):
     """Handles communication with Sds Service"""
-    def __init__(self, tenant, url, resource, authority, client_id, client_secret):
+    def __init__(self, api_version, tenant, resource, clientId, clientSecret):
+        self.apiVersion = api_version
         self.tenantId = tenant
-        self.url = url
-        self.resource = resource
-        self.clientId = client_id
-        self.clientSecret = client_secret
-        self.authority = authority
+        self.clientId = clientId
+        self.clientSecret = clientSecret
+        self.url = resource
+
         self.__token = ""
         self.__expiration = 0
         self.__get_token()
+
         self.__set_path_and_query_templates()
         self.type_names = None
 
@@ -691,14 +692,33 @@ class SdsClient(object):
         if (self.__expiration - time.time()) > 5 * 60:
             return self.__token
 
-        context = adal.AuthenticationContext(self.authority, validate_authority=True)
-        token = context.acquire_token_with_client_credentials(self.resource, self.clientId, self.clientSecret)
+        discoveryUrl = requests.get(
+            self.url + "/identity/.well-known/openid-configuration",
+            headers= {"Accept" : "application/json"})
 
+        if discoveryUrl.status_code < 200 or discoveryUrl.status_code >= 300:
+            discoveryUrl.close()
+            raise SdsError("Failed to get access token endpoint from discovery URL: {status}:{reason}".
+                            format(status=discoveryUrl.status_code, reason=discoveryUrl.text))
+
+        tokenEndpoint = json.loads(discoveryUrl.content)["token_endpoint"]
+
+        tokenInformation = requests.post(
+            tokenEndpoint,
+            data = {"client_id" : self.clientId,
+                    "client_secret" : self.clientSecret,
+                    "grant_type" : "client_credentials"})
+
+        token = json.loads(tokenInformation.content)
+
+        if token is None:
+            raise Exception("Failed to retrieve Token")
+            
         if token is None:
             raise Exception("Failed to retrieve AAD Token")
 
-        self.__expiration = float(token['expiresIn']) + time.time()
-        self.__token = token['accessToken']
+        self.__expiration = float(token['expires_in']) + time.time()
+        self.__token = token['access_token']
         return self.__token
 
     def __sds_headers(self):
