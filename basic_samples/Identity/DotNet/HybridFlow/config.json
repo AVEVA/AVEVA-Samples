@@ -1,6 +1,6 @@
 {
   "HybridFlow": {
-    "ClientId": "Client Id Placeholder",
+    "ClientId": "Client ID Placeholder",
     "ClientSecret": "Client Secret Placeholder",
     "scope": "openid ocsapi offline_access",
     "RedirectHost": "http://127.0.0.1",
