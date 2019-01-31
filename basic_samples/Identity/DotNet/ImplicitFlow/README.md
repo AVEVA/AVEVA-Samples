@@ -1,6 +1,7 @@
 # Setup
 
-Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID.
+1. Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID.
+2. Ensure that the client contains `http://localhost:5003/callback.html` in the list of RedirectUris
 
 ## Running the sample
 

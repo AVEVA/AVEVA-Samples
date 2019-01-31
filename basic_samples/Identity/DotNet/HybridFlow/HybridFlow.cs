@@ -12,6 +12,7 @@ namespace HybridFlow
         private static string _ocsIdentityUrl;
         private static string _redirectHost;
         private static int _redirectPort;
+        private static string _redirectPath;
         private const string Authority = "https://identity.osisoft.com";
 
         public static string OcsUrl
@@ -27,6 +28,11 @@ namespace HybridFlow
         public static int RedirectPort
         {
             set => _redirectPort = value;
+        }
+
+        public static string RedirectPath
+        {
+            set => _redirectPath = value;
         }
 
         /// <summary>
@@ -97,7 +103,7 @@ namespace HybridFlow
             // create a redirect URI using an available port on the loopback address.
             // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
             var browser = new SystemBrowser(_redirectPort);
-            var redirectUri = string.Format($"{_redirectHost}:{browser.Port}/signin-oidc");
+            var redirectUri = string.Format($"{_redirectHost}:{browser.Port}/{_redirectPath}");
             try
             {
                 // Create the OICD client Options

@@ -3,7 +3,6 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using static System.Int32;
 
 namespace HybridFlow
@@ -24,6 +23,7 @@ namespace HybridFlow
             HybridFlow.OcsUrl = GetConfigValue("OCSUrl");
             HybridFlow.RedirectHost = GetConfigValue("HybridFlow:RedirectHost");
             HybridFlow.RedirectPort = Parse(GetConfigValue("HybridFlow:RedirectPort"));
+            HybridFlow.RedirectPath = GetConfigValue("HybridFlow:RedirectPath");
 
             var tenantId = GetConfigValue("TenantId");
             var clientId = GetConfigValue("HybridFlow:ClientId");
