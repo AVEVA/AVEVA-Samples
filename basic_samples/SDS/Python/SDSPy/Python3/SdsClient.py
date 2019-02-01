@@ -470,7 +470,7 @@ class SdsClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getValueQuery.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=index, streamView_id=streamView_id), 
+            self.__url + self.__getValueQuery.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=index), 
             headers=self.__sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -483,7 +483,7 @@ class SdsClient(object):
             return content
         return value_class.fromJson(content)
 
-    def getFirstValue(self, namespace_id, stream_id, value_class, streamView_id=""):
+    def getFirstValue(self, namespace_id, stream_id, value_class):
         """Retrieves JSON object from Sds Service the first value to be added to the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -491,7 +491,7 @@ class SdsClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getFirstValue.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, streamView_id=streamView_id), 
+            self.__url + self.__getFirstValue.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -502,9 +502,13 @@ class SdsClient(object):
         response.close()
         if value_class is None:
             return content
-        return value_class.fromJson(content)
 
-    def getLastValue(self, namespace_id, stream_id, value_class, streamView_id=""):
+        values = []
+        for c in content:
+            values.append(value_class.fromDictionary(c))
+        return values
+
+    def getLastValue(self, namespace_id, stream_id, value_class):
         """Retrieves JSON object from Sds Service the last value to be added to the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -512,7 +516,7 @@ class SdsClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getLastValue.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, streamView_id=streamView_id), 
+            self.__url + self.__getLastValue.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
            headers=self.__sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -523,9 +527,13 @@ class SdsClient(object):
         response.close()
         if value_class is None:
             return content
-        return value_class.fromJson(content)
 
-    def getWindowValues(self, namespace_id, stream_id, value_class, start, end, streamView_id=""):
+        values = []
+        for c in content:
+            values.append(value_class.fromDictionary(c))
+        return values
+
+    def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
         """Retrieves JSON object representing a window of values from the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -538,7 +546,7 @@ class SdsClient(object):
 
         response = requests.get(
             self.__url + self.__getWindowValues.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end, streamView_id=streamView_id),
+                                                       stream_id=stream_id, start=start, end=end),
             headers=self.__sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -952,11 +960,11 @@ class SdsClient(object):
         self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
 
         self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
-        self.__getValueQuery = self.__dataPath + "?index={index}&streamViewId={streamView_id}"
-        self.__getFirstValue = self.__dataPath + "/First?streamViewId={streamView_id}"
-        self.__getLastValue = self.__dataPath + "/Last?streamViewId={streamView_id}"
-        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}&streamViewId={streamView_id}"
-        self.__getRangeValuesQuery = self.__dataPath + "?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
+        self.__getValueQuery = self.__dataPath + "?index={index}"
+        self.__getFirstValue = self.__dataPath + "/First?"
+        self.__getLastValue = self.__dataPath + "/Last?"
+        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"
+        self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
 
         self.__insertValuesPath = self.__dataPath
         self.__updateValuesPath = self.__dataPath

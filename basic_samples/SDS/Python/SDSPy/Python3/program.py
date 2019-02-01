@@ -312,8 +312,8 @@ try:
 
     # Get the last inserted event in a stream
     print("Getting latest event")
-    wave = client.getLastValue(namespaceId, stream.Id, WaveData)
-    print(toString(wave))
+    waves = client.getLastValue(namespaceId, stream.Id, WaveData)
+    print(toString(waves[0]))
     print()
 
     # Get all the events
