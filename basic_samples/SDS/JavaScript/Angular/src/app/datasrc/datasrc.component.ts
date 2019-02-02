@@ -328,7 +328,9 @@ export class DatasrcComponent {
   }
 
   writeSingleWaveDataEvent() {
-    this.sdsService.insertValue(streamId, this.newWaveDataEvent(0, 2.5, 2)).subscribe(res => {
+    const list: Array<WaveData> = [];
+    list.push(this.newWaveDataEvent(0, 2.5, 2));
+    this.sdsService.insertValue(streamId, list).subscribe(res => {
       this.button3Message = this.healthyResponseMessage(res);
     },
     err => {
