@@ -1,10 +1,10 @@
-﻿JavaScript Samples: Building a Client to make REST API Calls to the Sds Service.
+﻿JavaScript Samples: Building a Client to make REST API Calls to the SDS Service.
 ===============================================================================
 
-This sample demonstrates how Sds REST APIs are invoked using JavaScript.
-By examining the code, you will see how to establish a connection to Sds, 
+This sample demonstrates how SDS REST APIs are invoked using JavaScript.
+By examining the code, you will see how to establish a connection to SDS, 
 obtain an authorization token, obtain an SdsNamespace, create an SdsType 
-and SdsStream, and how to create, read, update, and delete values in Sds.
+and SdsStream, and how to create, read, update, and delete values in SDS.
 It has following dependencies: \* node.js, installation instructions are
 available at `node.js <https://nodejs.org/en/>`__ \* Request-Promise,
 HTTP client Request with Promises/A+ compliance.
@@ -32,7 +32,7 @@ Sample Setup
        node Sample.js
 
 7. Now open a browser client and enter the following URL to trigger the
-   Sds operations ``http://localhost:8080/``
+   SDS operations ``http://localhost:8080/``
 8. Check the console for the updates
 
 Establish a Connection
@@ -41,7 +41,7 @@ Establish a Connection
 The sample uses ``request-promise`` module to connect a service
 endpoint. Each REST API call consists of an HTTP request along with a specific URL and
 HTTP method. The URL contains the server name plus the extension
-that is specific to the call. Like all REST APIs, the Sds REST API maps
+that is specific to the call. Like all REST APIs, the SDS REST API maps
 HTTP methods to CRUD operations as shown in the following table:
 
 +---------------+------------------+--------------------+
@@ -99,9 +99,9 @@ Configure the Sample:
 
 Included in the sample there is a configuration file with placeholders 
 that need to be replaced with the proper values. They include information 
-for authentication, connecting to the Sds Service, and pointing to a namespace.
+for authentication, connecting to the SDS Service, and pointing to a namespace.
 
-The Sds Service is secured using Azure Active Directory. The sample application 
+The SDS Service is secured using Azure Active Directory. The sample application 
 is an example of a *confidential client*. Confidential clients provide a 
 application ID and secret that are authenticated against the directory. These 
 are referred to as client IDs and a client secrets, which are associated with 
@@ -122,7 +122,7 @@ ID and client secret. These must replace the corresponding  values in the sample
 configuration file. 
 
 Along with client ID and secret values, add the tenant name to the authority value 
-so authentication occurs against the correct tenant. The URL for the Sds Service 
+so authentication occurs against the correct tenant. The URL for the SDS Service 
 connection must also be changed to reflect the destination address of the requests. 
 
 Finally, a valid namespace ID for the tenant must be given as well. To create a 
@@ -160,7 +160,7 @@ first step is to get an authentication token by calling,
     this.getToken(authItems)
 
 The token received from ``getToken`` is included in the headers of each
-Sds REST API request:
+SDS REST API request:
 
 .. code:: javascript
 
@@ -203,23 +203,23 @@ calls):
 
     var getTokenSuccess = client.getToken(authItems)
                                         .catch(function(err){logError(err)});
-    var createTypeSuccess = getTokenSuccess.then(...<Sds REST call to create a type>...)
+    var createTypeSuccess = getTokenSuccess.then(...<SDS REST call to create a type>...)
 
 In the above snippet, the type creation method is called only if token
 acquisition was successful. This is not mandatory for interaction with
-the Sds service - the type creation call could be attempted regardless of
-token acquisition. A call to the Sds service with a missing or incorrect
+the SDS service - the type creation call could be attempted regardless of
+token acquisition. A call to the SDS service with a missing or incorrect
 token will return with an Unauthorized status code.
 
 Create an SdsType
 ---------------
 
-To use Sds, you define SdsTypes that describe the kinds of data you want
+To use SDS, you define SdsTypes that describe the kinds of data you want
 to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `Sds
-documentation <https://cloud.osisoft.com/documentation>`__.
+more information about SdsTypes, refer to the `SDS
+documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 In the sample code, the SdsType representing WaveData is defined in the 
 Sample.js. WaveData contains properties of integer and double atomic types. 
@@ -247,7 +247,7 @@ An SdsType can be created by a POST request as follows:
                 });
 
 -  Returns the SdsType object in a json format
--  If a type with the same Id exists, url path of the existing Sds type
+-  If a type with the same Id exists, url path of the existing SDS type
    is returned
 -  SdsType object is passed in json format
 
@@ -256,7 +256,7 @@ Create an SdsStream
 
 An ordered series of events is stored in an SdsStream. All you have to do
 is create a local SdsStream instance, give it an Id, assign it a type,
-and submit it to the Sds service. The value of the ``TypeId`` property is
+and submit it to the SDS service. The value of the ``TypeId`` property is
 the value of the SdsType ``Id`` property.
 
 .. code:: javascript
@@ -268,7 +268,7 @@ the value of the SdsType ``Id`` property.
             this.TypeId = sdsStream.TypeId;
         }
 
-The local SdsStream can be created in the Sds service by a POST request as
+The local SdsStream can be created in the SDS service by a POST request as
 follows:
 
 .. code:: javascript
@@ -286,7 +286,7 @@ Create and Insert Values into the Stream
 ----------------------------------------
 
 A single event is a data point in the stream. An event object cannot be
-empty and should have at least the key value of the Sds type for the
+empty and should have at least the key value of the SDS type for the
 event. Events are passed in json format.
 
 An event can be created using the following POST request:
@@ -317,15 +317,15 @@ and the url for POST call varies:
                 body : JSON.stringify(events)
             });
 
-The Sds REST API provides many more types of data insertion calls beyond
+The SDS REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
-`Sds documentation<https://cloud.osisoft.com/documentation>`_ for more information
+`SDS documentation<https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`_ for more information
 on available REST API calls.
 
 Retrieve Values from a Stream
 -----------------------------
 
-There are many methods in the Sds REST API allowing for the retrieval of
+There are many methods in the SDS REST API allowing for the retrieval of
 events from a stream. The retrieval methods take string type start and
 end values; in our case, these are the start and end ordinal indices
 expressed as strings. The index values must
@@ -408,13 +408,13 @@ identical to ``updateValue`` and ``updateValues``:
 Property Overrides
 ------------------
 
-Sds has the ability to override certain aspects of an Sds Type at the Sds Stream level.  
-Meaning we apply a change to a specific Sds Stream without changing the Sds Type or the
-behavior of any other Sds Streams based on that type.  
+SDS has the ability to override certain aspects of an SDS Type at the SDS Stream level.  
+Meaning we apply a change to a specific SDS Stream without changing the SDS Type or the
+read behavior of any other SDS Streams based on that type.  
 
 In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
 Now if a requested index does not correspond to a real value in the stream then ``null``, 
-or the default value for the data type, is returned by the Sds Service. 
+or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
 .. code:: javascript
@@ -430,8 +430,8 @@ The following shows how this is done in the code:
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
 before and after updating the stream to show that it has changed. See
-the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
-more information about Sds Property Overrides.
+the `SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for
+more information about SDS Property Overrides.
 
 
 SdsStreamViews
@@ -441,16 +441,16 @@ An SdsStreamView provides a way to map Stream data requests from one data type
 to another. You can apply a StreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
-Sds attempts to determine how to map Properties from the source to the 
+SDS attempts to determine how to map Properties from the source to the 
 destination. When the mapping is straightforward, such as when 
 the properties are in the same position and of the same data type, 
-or when the properties have the same name, Sds will map the properties automatically.
+or when the properties have the same name, SDS will map the properties automatically.
 
 .. code:: javascript
 
       client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id)
 
-To map a property that is beyond the ability of Sds to map on its own, 
+To map a property that is beyond the ability of SDS to map on its own, 
 you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
 .. code:: javascript
@@ -468,9 +468,9 @@ you should define an SdsStreamViewProperty and add it to the SdsStreamView’s P
 SdsStreamViewMap
 ---------
 
-When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+When an SdsStreamView is added, SDS defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
 The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
+The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 .. code:: javascript
 
@@ -504,11 +504,11 @@ As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to start and end
 are removed from the stream.
 
-Cleanup: Deleting Types, StreamViews and Streams
+Cleanup: Deleting Types, Stream Views and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
-performs some cleanup before exiting. Deleting streams, streamViews and types can 
+performs some cleanup before exiting. Deleting streams, stream views and types can 
 be achieved by a DELETE REST call and passing the corresponding Id.
 
 .. code:: javascript
