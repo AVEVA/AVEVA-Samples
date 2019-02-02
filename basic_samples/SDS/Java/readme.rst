@@ -369,11 +369,11 @@ before and after updating the stream to show that it has changed. See
 the `Sds documentation <https://cloud.osisoft.com/documentation>`__ for
 more information about Sds Property Overrides.
 
-SdsViews
+SdsStreamViews
 -------
 
-A SdsView provides a way to map stream data requests from one data type 
-to another. You can apply a view to any read or GET operation. SdsView 
+A SdsStreamView provides a way to map stream data requests from one data type 
+to another. You can apply a stream view to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 
 Sds attempts to determine how to map properties from the source to the 
@@ -386,15 +386,15 @@ or when the properties have the same name, Sds will map the properties automatic
         jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStream.getId(), "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleViewId);
 
 To map a property that is beyond the ability of Sds to map on its own, 
-you should define an SdsViewProperty and add it to the SdsView's Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
 
 .. code:: java
 
-         SdsViewProperty vp2 = new SdsViewProperty();
+         SdsStreamViewProperty vp2 = new SdsStreamViewProperty();
          vp2.setSourceId("Sin");
          vp2.setTargetId("SinInt");
         ...
-         SdsView manualView = new SdsView();
+         SdsStreamView manualView = new SdsStreamView();
          manualView.setId(sampleManualViewId);
          manualView.setName("SampleManualView");
          manualView.setDescription("This is a view mapping SampleType to SampleTargetType");
@@ -402,12 +402,12 @@ you should define an SdsViewProperty and add it to the SdsView's Properties coll
          manualView.setTargetTypeId(integerTargetTypeId);
          manualView.setProperties(props);
 
-SdsViewMap
+SdsStreamViewMap
 ---------
 
-When an SdsView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsViewMap. 
-The SdsViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsViewMap cannot be written, it can only be retrieved from Sds.
+When an SdsStreamView is added, Sds defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
+The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
+The SdsStreamViewMap cannot be written, it can only be retrieved from Sds.
 
 .. code:: java
 
@@ -455,18 +455,18 @@ and getStreams:
 For a complete list of HTTP request URLs refer to the `Sds
 documentation <https://cloud.osisoft.com/documentation>`__.
 
-Cleanup: Deleting Types, Views and Streams
+Cleanup: Deleting Types, Stream Views and Streams
 -----------------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
-performs some cleanup before exiting. Deleting streams, stream, views and 
+performs some cleanup before exiting. Deleting streams, stream, stream views and 
 types can be achieved by a DELETE REST call and passing
 the corresponding Id.
 
 .. code:: java
 
     sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
-	sdsclient.deleteView(tenantId, namespaceId, sampleViewId);
+	sdsclient.deleteStreamView(tenantId, namespaceId, sampleViewId);
 
 Note that the IDs of the objects are passed, not the object themselves.
 Similarly, the following code deletes the type from the Sds Service:
