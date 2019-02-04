@@ -59,14 +59,6 @@ class SdsStream(object):
         self.__type_id = typeId
 
     @property
-    def BehaviorId(self):
-        return self.__behavior_id
-
-    @BehaviorId.setter
-    def BehaviorId(self, behavior_id):
-        self.__behavior_id = behavior_id
-
-    @property
     def Indexes(self):
         return self.__indexes
 
@@ -87,10 +79,7 @@ class SdsStream(object):
 
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
-
-        if hasattr(self, 'BehaviorId'):
-            dictionary['BehaviorId'] = self.BehaviorId
-
+			
         if hasattr(self, 'Indexes'):
             dictionary['Indexes'] = []
             for value in self.Indexes:
@@ -120,10 +109,7 @@ class SdsStream(object):
 
         if 'TypeId' in content:
             stream.TypeId = content['TypeId']
-
-        if 'BehaviorId' in content:
-            stream.BehaviorId = content['BehaviorId']
-
+			
         if 'Indexes' in content:
             indexes = content['Indexes']
             if indexes is not None and len(indexes) > 0:

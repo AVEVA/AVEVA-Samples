@@ -88,8 +88,8 @@
   <span *ngIf="button15Message">Response: {{button15Message}}</span>
   <h3>Property Overrides</h3>
   <p>Sds can interpolate or extrapolate data at an index location where data does not explicitly exist. 
-    Using the default (Continuous) behavior and requesting data starting at index location '1', where we have not entered data, 
-    Sds will interpolate a value for each property.  We can override this behavior on a property by property basis, here we 
+    Using the default (Continuous) read behavior and requesting data starting at index location '1', where we have not entered data, 
+    Sds will interpolate a value for each property.  We can override this read behavior on a property by property basis, here we 
     override the Radians property instructing Sds not to interpolate.  Sds will now return the default value for the data type.</p>
   <button class="btn btn-primary" (click)="createPropertyOverrideAndUpdateStream()" >Create Property Override and Update Stream</button>
   <br>
