@@ -35,7 +35,7 @@ public class SdsStream {
         this.TypeId = typeid;
     }
 
-    public SdsStream(String name, String typeid, String description, String behavior) {
+    public SdsStream(String name, String typeid, String description) {
         this.Id = name;
         this.Name = name;
         this.TypeId = typeid;

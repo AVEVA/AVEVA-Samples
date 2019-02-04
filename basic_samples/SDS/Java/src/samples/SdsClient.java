@@ -44,10 +44,6 @@ public class SdsClient {
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";
     private String getTypesPath = typesBase + "?skip={skip}&count={count}";
-    // behavior paths
-    private String behaviorsBase = requestBase + "/Behaviors";
-    private String getBehaviorPath = behaviorsBase + "/{behaviorId}";
-    private String getBehaviorsPath = behaviorsBase + "?skip={skip}&count={count}";
     // stream paths
     private String streamsBase = requestBase + "/Streams";
     private String getStreamPath = streamsBase + "/{streamId}";
