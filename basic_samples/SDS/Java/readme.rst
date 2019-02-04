@@ -157,7 +157,7 @@ to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
 more information about SdsTypes, refer to the `Sds
-documentation <https://cloud.osisoft.com/documentation>`__.
+documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 In the sample code, the SdsType representing WaveData is defined in the
 ``getWaveDataType`` method of Program.java. WaveData contains properties
@@ -366,7 +366,7 @@ The following shows how this is done in the code:
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
 before and after updating the stream to show that it has changed. See
-the `SDS documentation <https://cloud.osisoft.com/documentation>`__ for
+the `SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for
 more information about SDS Property Overrides.
 
 SdsStreamViews
@@ -453,7 +453,7 @@ and getStreams:
     ArrayList<SdsStream> streams = sdsclient.mGson.fromJson(returnedStreams, streamListType);
 
 For a complete list of HTTP request URLs refer to the `Sds
-documentation <https://cloud.osisoft.com/documentation>`__.
+documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 Cleanup: Deleting Types, Stream Views and Streams
 -----------------------------------------------------
