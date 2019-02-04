@@ -502,11 +502,7 @@ class SdsClient(object):
         response.close()
         if value_class is None:
             return content
-
-        values = []
-        for c in content:
-            values.append(value_class.fromDictionary(c))
-        return values
+        return value_class.fromJson(content)
 
     def getLastValue(self, namespace_id, stream_id, value_class):
         """Retrieves JSON object from Sds Service the last value to be added to the stream specified by 'stream_id'"""
@@ -527,11 +523,7 @@ class SdsClient(object):
         response.close()
         if value_class is None:
             return content
-
-        values = []
-        for c in content:
-            values.append(value_class.fromDictionary(c))
-        return values
+        return value_class.fromJson(content)
 
     def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
         """Retrieves JSON object representing a window of values from the stream specified by 'stream_id'"""
