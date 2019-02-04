@@ -472,7 +472,7 @@ reflect the data retrieval methods covered above. Below are the function declara
 For a complete list of HTTP request URLs refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
-Cleanup: Deleting Types, Views and Streams
+Cleanup: Deleting Types, Stream Views, and Streams
 -----------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
