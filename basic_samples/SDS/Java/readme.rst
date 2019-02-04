@@ -402,7 +402,7 @@ you should define an SdsStreamViewProperty and add it to the SdsStreamView's Pro
          manualStreamView.setTargetTypeId(integerTargetTypeId);
          manualStreamView.setProperties(props);
 
-SdsStreammanualStreamView = sdsclient.mGson.fromJson(jsonManualStreamView, SdsStreamView.class);ViewMap
+SdsStreamViewMap
 ---------
 
 When an SdsStreamView is added, SDS defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
