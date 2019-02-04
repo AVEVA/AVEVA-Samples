@@ -136,9 +136,9 @@ namespace SdsRestApiCore
                 {
                     throw new HttpRequestException(response.ToString());
                 }
-                List<WaveData> retrieved =
-                    JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine(retrieved[0].ToString());
+                WaveData retrieved =
+                    JsonConvert.DeserializeObject<WaveData>(await response.Content.ReadAsStringAsync());
+                Console.WriteLine(retrieved.ToString());
                 Console.WriteLine();
 
                 // get all events
@@ -162,15 +162,16 @@ namespace SdsRestApiCore
                 Console.WriteLine("Updating events");
 
                 // update one event
-                var updateEvent = retrieved[0];
+                var updateEvent = retrieved;
                 updateEvent.Sin = 1/2.0;
                 updateEvent.Cos = Math.Sqrt(3)/2;
                 updateEvent.Tan = 1;
-                retrieved[0] = updateEvent;
+                List<WaveData> updateWave = new List<WaveData>();
+                updateWave.Add(updateEvent);
 
                 response = await httpClient.PutAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data",
-                    new StringContent(JsonConvert.SerializeObject(retrieved)));
+                    new StringContent(JsonConvert.SerializeObject(updateWave)));
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
