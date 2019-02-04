@@ -319,7 +319,7 @@ and the url for POST call varies:
 
 The SDS REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
-`SDS documentation<https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`_ for more information
+`SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for more information
 on available REST API calls.
 
 Retrieve Values from a Stream

@@ -219,7 +219,7 @@ conversion to the type of the index assigned in the SdsType.
 
 As with data insertion, the SDS REST API provides many more types of data retrieval calls beyond
 those demonstrated in this application. Go to the 
-SDS documentation<https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html> for more information
+`SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for more information
 on available REST API calls.
 
 Update Events and Replacing Values
