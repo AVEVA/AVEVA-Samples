@@ -476,7 +476,7 @@ Cleanup: Deleting Types, Views and Streams
 -----------------------------------------------
 
 In order for the program to run repeatedly without collisions, the sample
-performs some cleanup before exiting. Deleting streams, strem views and types can be achieved by a DELETE REST call and passing
+performs some cleanup before exiting. Deleting streams, stream views and types can be achieved by a DELETE REST call and passing
 the corresponding Id. The following calls are made in the sample code.
 
 .. code:: python
