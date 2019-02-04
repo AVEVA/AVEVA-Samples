@@ -396,7 +396,7 @@ or when the properties have the same name, SDS will map the properties automatic
         rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
 
 To map a property that is beyond the ability of SDS to map on its own, 
-you should define an SdsStreamViewProperty and add it to the SdsVeiw’s Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
 .. code:: python
 
@@ -416,7 +416,7 @@ SdsStreamViewMap
 
 When an SdsStreamView is added, SDS defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
 The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsVeiwMap cannot be written, it can only be retrieved from SDS.
+The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 .. code:: python
 

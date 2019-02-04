@@ -141,7 +141,7 @@ Acquire an SdsNamespace
 ---------------------
 
 In SDS, a namespace provides isolation within a Tenant. Each namespace
-has its own collection of Streams, Types, and Behaviors. It is not
+has its own collection of Streams, Types, and Stream Views. It is not
 possible to programmatically create or delete a namespace. If you are a
 new user, be sure to go to the `Cloud
 Portal <http://cloud.osisoft.com>`__ and create a namespace using your
@@ -395,10 +395,10 @@ or when the properties have the same name, SDS will map the properties automatic
 
 .. code:: python
 
-        rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticView.Id)
+        rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
 
 To map a property that is beyond the ability of SDS to map on its own, 
-you should define an SdsStreamViewProperty and add it to the SdsVeiw’s Properties collection.
+you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
 .. code:: python
 
@@ -406,23 +406,23 @@ you should define an SdsStreamViewProperty and add it to the SdsVeiw’s Propert
         vp2.SourceId = "Sin"
         vp2.TargetId = "SinInt"
         ...
-        manualView = SdsStreamView()
-        manualView.Id = sampleViewIntId
-        manualView.Name = "SampleIntView"
-        manualView.TargetTypeId = waveIntegerType.Id
-        manualView.SourceTypeId = waveType.Id
-        manualView.Properties = [vp1, vp2, vp3, vp4]
+        manualStreamView = SdsStreamView()
+        manualStreamView.Id = sampleStreamViewIntId
+        manualStreamView.Name = "SampleIntStreamView"
+        manualStreamView.TargetTypeId = waveIntegerType.Id
+        manualStreamView.SourceTypeId = waveType.Id
+        manualStreamView.Properties = [vp1, vp2, vp3, vp4]
 
 SdsStreamViewMap
 ---------
 
 When an SdsStreamView is added, SDS defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
 The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
-The SdsVeiwMap cannot be written, it can only be retrieved from SDS.
+The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 .. code:: python
 
-        viewMap2 = client.getStreamViewMap(namespaceId, manualView.Id)
+        viewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
 
 
 Deleting Values from a Stream
@@ -483,7 +483,7 @@ the corresponding Id. The following calls are made in the sample code.
 
     client.deleteStream(namespaceId, sampleStreamId)
     client.deleteType(namespaceId, sampleTypeId)
-    client.deleteStreamView(namespaceId, sampleViewId)
+    client.deleteStreamView(namespaceId, sampleStreamViewId)
 
 *Note: Types and Stream Views cannot be deleted until any streams
 referencing them are deleted first. Their references are counted so

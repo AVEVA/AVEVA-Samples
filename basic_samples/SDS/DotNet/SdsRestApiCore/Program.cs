@@ -265,7 +265,7 @@ namespace SdsRestApiCore
                 }
                 List<WaveData> rangeValuesContinuous =
                     JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine("Default (Continuous) stream behavior, requesting data starting at index location '1', Sds will interpolate this value:");
+                Console.WriteLine("Default (Continuous) stream read behavior, requesting data starting at index location '1', Sds will interpolate this value:");
                 foreach (var waveData in rangeValuesContinuous)
                 {
                     Console.WriteLine($"Order: {waveData.Order}, Radians: {waveData.Radians}, Cos: {waveData.Cos}");
@@ -291,7 +291,7 @@ namespace SdsRestApiCore
                     throw new HttpRequestException(response.ToString());
                 }
 
-                Console.WriteLine("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
+                Console.WriteLine("We can override this read behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
                 Console.WriteLine("Sds will now return the default value for the data type:");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/Transform?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}");

@@ -383,7 +383,7 @@ or when the properties have the same name, SDS will map the properties automatic
 
 .. code:: java
 
-        jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStream.getId(), "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleViewId);
+        jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStream.getId(), "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleStreamViewId);
 
 To map a property that is beyond the ability of SDS to map on its own, 
 you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
@@ -394,15 +394,15 @@ you should define an SdsStreamViewProperty and add it to the SdsStreamView's Pro
          vp2.setSourceId("Sin");
          vp2.setTargetId("SinInt");
         ...
-         SdsStreamView manualView = new SdsStreamView();
-         manualView.setId(sampleManualViewId);
-         manualView.setName("SampleManualView");
-         manualView.setDescription("This is a view mapping SampleType to SampleTargetType");
-         manualView.setSourceTypeId(sampleTypeId);
-         manualView.setTargetTypeId(integerTargetTypeId);
-         manualView.setProperties(props);
+         SdsStreamView manualStreamView = new SdsStreamView();
+         manualStreamView.setId(sampleManualStreamViewId);
+         manualStreamView.setName("SampleManualStreamView");
+         manualStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
+         manualStreamView.setSourceTypeId(sampleTypeId);
+         manualStreamView.setTargetTypeId(integerTargetTypeId);
+         manualStreamView.setProperties(props);
 
-SdsStreamViewMap
+SdsStreammanualStreamView = sdsclient.mGson.fromJson(jsonManualStreamView, SdsStreamView.class);ViewMap
 ---------
 
 When an SdsStreamView is added, SDS defines a plan mapping. Plan details are retrieved as an SdsStreamViewMap. 
@@ -411,7 +411,7 @@ The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 .. code:: java
 
-         String jsonViewMap = sdsclient.getViewMap(tenantId, namespaceId, sampleManualViewId);
+         String jsonStreamViewMap = sdsclient.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
 
 
 Deleting Values from a Stream
@@ -466,7 +466,7 @@ the corresponding Id.
 .. code:: java
 
     sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
-	sdsclient.deleteStreamView(tenantId, namespaceId, sampleViewId);
+	sdsclient.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
 
 Note that the IDs of the objects are passed, not the object themselves.
 Similarly, the following code deletes the type from the SDS Service:
