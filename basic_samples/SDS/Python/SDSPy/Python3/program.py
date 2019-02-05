@@ -396,7 +396,7 @@ def main():
             print(("Order: {order}: Radians: {radians} Cos: {cos}".format(order = wave.Order, radians = wave.Radians, cos = wave.Cos)))
 
         ######################################################################################################
-        # Stream StreamViews
+        # Stream Views
         ######################################################################################################
 
         #Create additional types to define our targets
