@@ -122,8 +122,6 @@ This samples sends snapshot values from PI to OCS via OMF.
  </tr>
  </table>
  
-[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
- 
 ## Credentials 
 
 A credential config.ini or app.config file is used in the examples unless otherwise noted in the example.  
