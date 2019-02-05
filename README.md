@@ -51,6 +51,18 @@ The official OCS samples are divided in multiple categories depending on the sce
   </td>
  </tr>
  <tr>
+ <tr>
+   <td width="25%">
+      <h3>Identity <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
+  </td>
+  <td width="35%">
+    Covers different flows of authentication against OCS.  <a href="basic_samples/Identity/">Details</a>
+  </td>
+    <td>
+     <a href="basic_samples/Identity/DotNet/">.NET</a>
+  </td>
+ </tr>
+ <tr>
    <td width="25%">
       <h3>Ingress Management <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
   </td>

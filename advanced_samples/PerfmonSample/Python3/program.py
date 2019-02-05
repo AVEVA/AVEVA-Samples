@@ -128,7 +128,7 @@ class Program:
             print("Time remaining: {} seconds".format(i))
             for type_name in self.type_names:
                 event = self.next_event(type_name)
-                client.insert_value(namespace_id, "{}".format(type_name), event)
+                client.insert_values(namespace_id, "{}".format(type_name), [event])
                 print("Writing '{}' data to {}".format(type_name, "{}".format(type_name)))
             print()
             time.sleep(frequency)

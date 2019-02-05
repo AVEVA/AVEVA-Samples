@@ -70,12 +70,15 @@ public class Program {
             SdsStream sampleStream = new SdsStream(sampleStreamId, sampleTypeId);
             String jsonStream = sdsclient.createStream(tenantId, namespaceId, sampleStream);
             sampleStream = sdsclient.mGson.fromJson(jsonStream, SdsStream.class);
+            
             // insert data
             System.out.println("Inserting data");
             
             // insert a single event
+            List<WaveData> event = new ArrayList<WaveData>();
             WaveData evt = WaveData.next(1, 2.0, 0);
-            sdsclient.insertValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
+            event.add(evt);
+            sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(event));
 
             // insert a list of events
             List<WaveData> events = new ArrayList<WaveData>();
@@ -92,6 +95,7 @@ public class Program {
             WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
             System.out.println(data.toString());
             System.out.println();
+            
             // get all values
             System.out.println("Getting all events");            
             String jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "20");
@@ -103,8 +107,10 @@ public class Program {
             
             // update the first value
             System.out.println("Updating events");
+            List<WaveData> newEvent = new ArrayList<WaveData>();
             evt = WaveData.next(1, 1.0, 0);
-            sdsclient.updateValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
+            newEvent.add(evt);
+            sdsclient.updateValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvent));
 
             // update existing values and add 10 new values using update
             List<WaveData> newEvents = new ArrayList<WaveData>();
@@ -126,8 +132,10 @@ public class Program {
             
             // replace the first value
             System.out.println("Replacing events");
+            newEvent = new ArrayList<WaveData>();
             evt = WaveData.next(1, 0.5, 0);
-            sdsclient.replaceValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
+            newEvent.add(evt);
+            sdsclient.replaceValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvent));
 
             // replace the remaining values
             newEvents = new ArrayList<WaveData>();

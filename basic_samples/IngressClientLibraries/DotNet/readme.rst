@@ -164,7 +164,7 @@ Then use the Ingress client to create the Subscription in OCS:
 At this point, we are ready to send OMF data to OCS, and consume it as well. To learn how to do this, click 
 here: https://github.com/osisoft/OMF-Samples/tree/master/Tutorials/CSharp_Sds
 
-Cleanup: Deleting Types, Behaviors, Views and Streams
+Cleanup: Deleting Types, Stream Views, and Streams
 -----------------------------------------------------
 
 In order to prevent a bunch of unused resources from being left behind, this 

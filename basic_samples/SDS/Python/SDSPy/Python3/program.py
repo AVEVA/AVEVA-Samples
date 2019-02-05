@@ -250,7 +250,6 @@ sampleTypeId = "WaveData_SampleType"
 sampleTargetTypeId = "WaveDataTarget_SampleType"
 sampleIntegerTypeId = "WaveData_IntegerType"
 sampleStreamId = "WaveData_SampleStream"
-sampleBehaviorId = "WaveData_SampleBehavior"
 sampleStreamViewId = "WaveData_SampleStreamView"
 sampleStreamViewIntId = "WaveData_SampleIntStreamView"
 
@@ -290,7 +289,6 @@ try:
     stream.Name = "WaveStreamPySample"
     stream.Description = "A Stream to store the WaveData events"
     stream.TypeId = waveType.Id
-    stream.BehaviorId = None
     client.createOrUpdateStream(namespaceId, stream)
 
     ######################################################################################################
@@ -302,7 +300,7 @@ try:
     print("Inserting data")
     # Insert a single event
     event = nextWave(start, span, 2.0, 0)
-    client.insertValue(namespaceId, stream.Id, event)
+    client.insertValues(namespaceId, stream.Id, [event])
 
     # Insert a list of events
     waves = []
@@ -327,7 +325,7 @@ try:
     print("Updating events")
     # Update the first event
     event = nextWave(start, span, 4.0, 0)
-    client.updateValue(namespaceId, stream.Id, event)
+    client.updateValues(namespaceId, stream.Id, [event])
 
     # Update the rest of the events, adding events that have no prior index entry
     updatedEvents = []
@@ -347,7 +345,7 @@ try:
     print("Replacing events")
     # replace one value
     event = nextWave(start, span, 10.0, 0)
-    client.replaceValue(namespaceId, stream.Id, event)
+    client.replaceValues(namespaceId, stream.Id, [event])
     
     # replace multiple values
     replacedEvents = []
@@ -390,7 +388,7 @@ try:
 
     waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
     print()
-    print("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.")
+    print("We can override this read behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.")
     print("Sds will now return the default value for the data type:")
     for wave in waves:
         print(("Order: {order}: Radians: {radians} Cos: {cos}".format(order = wave.Order, radians = wave.Radians, cos = wave.Cos)))
@@ -531,7 +529,7 @@ except Exception as i:
 
 finally:
     ######################################################################################################
-    # SdsType, SdsStream, SdsStreamView and SdsBehavior deletion
+    # SdsType, SdsStream, and SdsStreamView deletion
     ######################################################################################################
 
     # Clean up the remaining artifacts

@@ -26,6 +26,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -43,10 +44,6 @@ public class SdsClient {
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";
     private String getTypesPath = typesBase + "?skip={skip}&count={count}";
-    // behavior paths
-    private String behaviorsBase = requestBase + "/Behaviors";
-    private String getBehaviorPath = behaviorsBase + "/{behaviorId}";
-    private String getBehaviorsPath = behaviorsBase + "?skip={skip}&count={count}";
     // stream paths
     private String streamsBase = requestBase + "/Streams";
     private String getStreamPath = streamsBase + "/{streamId}";
@@ -58,18 +55,15 @@ public class SdsClient {
     
     // data paths
     private String dataBase = requestBase + "/Streams/{streamId}/Data";
-    private String insertSinglePath = dataBase + "/InsertValue";
-    private String insertMultiplePath = dataBase + "/InsertValues";
-    private String getSingleQuery = dataBase + "/GetValue?index={index}";
-    private String getLastValuePath = dataBase + "/GetLastValue?";
-    private String getFirstValuePath = dataBase + "/GetFirstValue?";
-    private String getWindowQuery = dataBase + "/GetWindowValues?startIndex={startIndex}&endIndex={endIndex}";
-    private String getRangeQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}";
-    private String getRangeStreamViewQuery = dataBase + "/GetRangeValues?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&streamViewId={streamViewId}";
-    private String updateSinglePath = dataBase + "/UpdateValue";
-    private String updateMultiplePath = dataBase + "/UpdateValues";
-    private String replaceSinglePath = dataBase + "/ReplaceValue";
-    private String replaceMultiplePath = dataBase + "/ReplaceValues";
+    private String insertMultiplePath = dataBase;
+    private String getSingleQuery = dataBase + "?index={index}";
+    private String getLastValuePath = dataBase + "/Last?";
+    private String getFirstValuePath = dataBase + "/First?";
+    private String getWindowQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
+    private String getRangeQuery = dataBase + "/Transform?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}";
+    private String getRangeStreamViewQuery = dataBase + "/Transform?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&streamViewId={streamViewId}";
+    private String updateMultiplePath = dataBase;
+    private String replaceMultiplePath = dataBase + "?allowCreate=false";
     private String removeSingleQuery = dataBase + "/RemoveValue?index={index}";
     private String removeMultipleQuery = dataBase + "/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}";
 
@@ -99,7 +93,7 @@ public class SdsClient {
         this.apiVersion = getConfiguration("apiVersion");
         this.mGson = new Gson();
     }
-    
+   
     public static HttpURLConnection getConnection(URL url, String method) {
         HttpURLConnection urlConnection = null;
         String token = AcquireAuthToken();
@@ -851,41 +845,6 @@ public class SdsClient {
         return jsonResults.toString();
     }
 
-    public void insertValue(String tenantId, String namespaceId, String streamId, String evt) throws SdsError {
-        URL url = null;
-        HttpURLConnection urlConnection = null;
-
-        try {
-            url = new URL(baseUrl + insertSinglePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
-            urlConnection = getConnection(url, "POST");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
-            writer.write(evt);
-            writer.close();
-
-            int httpResult = urlConnection.getResponseCode();
-            if (isSuccessResponseCode(httpResult)) {
-            } else {
-                throw new SdsError(urlConnection, "insert single value request failed");
-
-            }
-        } catch (SdsError sdsError) {
-            printSdsErrorMessage(sdsError);
-            throw sdsError;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void insertValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -1172,42 +1131,6 @@ public class SdsClient {
         return response.toString();
     }
 
-    
-    public void updateValue(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        URL url = null;
-        HttpURLConnection urlConnection = null;
-
-        try {
-            url = new URL(baseUrl + updateSinglePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
-            urlConnection = getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
-            writer.write(json);
-            writer.close();
-
-            int httpResult = urlConnection.getResponseCode();
-            if (isSuccessResponseCode(httpResult)) {
-            } else {
-                throw new SdsError(urlConnection, "update single value request failed");
-            }
-
-        } catch (SdsError sdsError) {
-            printSdsErrorMessage(sdsError);
-            throw sdsError;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void updateValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -1233,40 +1156,6 @@ public class SdsClient {
             if (isSuccessResponseCode(httpResult)) {
             } else {
                 throw new SdsError(urlConnection, "update multiple values request failed");
-            }
-        } catch (SdsError sdsError) {
-            printSdsErrorMessage(sdsError);
-            throw sdsError;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void replaceValue(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
-        URL url;
-        HttpURLConnection urlConnection = null;
-
-        try {
-            url = new URL(baseUrl + replaceSinglePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
-            urlConnection = getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
-            writer.write(json);
-            writer.close();
-
-            int httpResult = urlConnection.getResponseCode();
-            if (isSuccessResponseCode(httpResult)) {
-            } else {
-                throw new SdsError(urlConnection, "replace single value request failed");
             }
         } catch (SdsError sdsError) {
             printSdsErrorMessage(sdsError);
