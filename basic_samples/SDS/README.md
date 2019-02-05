@@ -21,4 +21,7 @@ All basic SDS samples are console applications that follow the same sequence of 
 11. Delete events
 12. Delete metadata objects
 
+Python3 Program Test  
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
 These steps illustrate the fundamental programming steps of SDS.  Feel free to modify the samples and propose changes.
