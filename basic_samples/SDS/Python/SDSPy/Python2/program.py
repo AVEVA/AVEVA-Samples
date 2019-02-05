@@ -1,6 +1,6 @@
 # program.py
 #
-# Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
+# Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 #
 # THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 # OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -251,6 +251,7 @@ sampleTypeId = "WaveData_SampleType"
 sampleTargetTypeId = "WaveDataTarget_SampleType"
 sampleIntegerTypeId = "WaveData_IntegerType"
 sampleStreamId = "WaveData_SampleStream"
+sampleBehaviorId = "WaveData_SampleBehavior"
 sampleStreamViewId = "WaveData_SampleStreamView"
 sampleStreamViewIntId = "WaveData_SampleIntStreamView"
 sampleDataviewId = "WaveData_Dataview"
@@ -269,8 +270,8 @@ try:
     print("        \/      \/    \/           \/     ")	
     print("------------------------------------------")
 
-    client = SdsClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Resource'), 
-                    config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
+    client = SdsClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Address'), config.get('Credentials', 'Resource'),
+                      config.get('Credentials', 'Authority'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
 
     namespaceId = config.get('Configurations', 'Namespace')
 
@@ -293,6 +294,7 @@ try:
     stream.Name = "WaveStreamPySample"
     stream.Description = "A Stream to store the WaveData events"
     stream.TypeId = waveType.Id
+    stream.BehaviorId = None
     client.createOrUpdateStream(namespaceId, stream)
 
     ######################################################################################################
@@ -302,9 +304,10 @@ try:
     start = datetime.datetime.now()
     span = datetime.datetime.strptime("0:1:0", "%H:%M:%S")
     print("Inserting data")
+
     # Insert a single event
     event = nextWave(start, span, 2.0, 0)
-    client.insertValue(namespaceId, stream.Id, event)
+    client.insertValues(namespaceId, stream.Id, [event])
 
     # Insert a list of events
     waves = []
@@ -329,7 +332,7 @@ try:
     print("Updating events")
     # Update the first event
     event = nextWave(start, span, 4.0, 0)
-    client.updateValue(namespaceId, stream.Id, event)
+    client.updateValues(namespaceId, stream.Id, [event])
 
     # Update the rest of the events, adding events that have no prior index entry
     updatedEvents = []
@@ -349,7 +352,7 @@ try:
     print("Replacing events")
     # replace one value
     event = nextWave(start, span, 10.0, 0)
-    client.replaceValue(namespaceId, stream.Id, event)
+    client.replaceValues(namespaceId, stream.Id, [event])
     
     # replace multiple values
     replacedEvents = []
@@ -365,6 +368,7 @@ try:
     for wave in waves:
         print(toString(wave))
     print
+
     ######################################################################################################
     # Property Overrides
     ######################################################################################################
@@ -373,7 +377,7 @@ try:
     print("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:")
     print
     
-	# We will retrieve three events using the default read behavior, Continuous
+	# We will retrieve three events using the default behavior, Continuous
     waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
 
     print("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:")
@@ -461,6 +465,7 @@ try:
     print
     print("Specifying a streamView with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:")
     for way in rangeWaves:
+        print(rangeWaves[0])
         print(("SinTarget: {sinTarget}, CosTarget: {cosTarget}, TanTarget: {tanTarget}".format(sinTarget = way.SinTarget, cosTarget = way.CosTarget, tanTarget = way.TanTarget)))
 
     rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataInteger, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, manualStreamView.Id)
@@ -482,7 +487,7 @@ try:
         else:
             print(("{source} => {dest}".format(source = prop.SourceId, dest = 'Not mapped')))
 			
-	######################################################################################################
+    ######################################################################################################
     # Tags and Metadata
     ######################################################################################################
     print
@@ -535,7 +540,7 @@ except Exception as ex:
 
 finally:
     ######################################################################################################
-    # SdsType, SdsStream, SdsStreamView, and DataView deletion
+    # SdsType, SdsStream, SdsStreamView and SdsBehavior deletion
     ######################################################################################################
 
     # Clean up the remaining artifacts

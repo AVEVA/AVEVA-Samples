@@ -46,18 +46,15 @@ module.exports = {
         this.apiBase = "/api/" + apiVersion;
         this.typesBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Types";
         this.streamsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Streams";
-        this.viewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
-        this.insertSingleValueBase = "/Data/InsertValue";
-        this.insertMultipleValuesBase = "/Data/InsertValues";
-        this.getLastValueBase = "/{0}/Data/GetLastValue";
-        this.getWindowValuesBase = "/{0}/Data/GetWindowValues?startIndex={1}&endIndex={2}";
-        this.getRangeValuesBase = "/{0}/Data/GetRangeValues?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&viewId={6}";
-        this.updateSingleValueBase = "/Data/UpdateValue";
-        this.updateMultipleValuesBase = "/Data/UpdateValues";
-        this.replaceSingleValueBase = "/Data/ReplaceValue";
-        this.replaceMultipleValuesBase = "/Data/ReplaceValues";
-        this.removeSingleValueBase = "/{0}/Data/RemoveValue?index={1}";
-        this.removeMultipleValuesBase = "/{0}/Data/RemoveWindowValues?startIndex={1}&endIndex={2}";
+        this.streamViewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
+        this.insertValuesBase = "/Data";
+        this.getLastValueBase = "/{0}/Data/Last";
+        this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
+        this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&viewId={6}";
+        this.updateValuesBase = "/Data";
+        this.replaceValuesBase = "/Data?allowCreate=false";
+        this.removeSingleValueBase = "/{0}/Data?index={1}";
+        this.removeMultipleValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
         this.token = "";
         this.tokenExpires = "";
 
@@ -164,22 +161,11 @@ module.exports = {
             });
         };
 
-        // insert an event into a stream
-        this.insertEvent = function (tenantId, namespaceId, streamId, event) {
-            return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                    streamId + this.insertSingleValueBase,
-                method: 'POST',
-                headers: this.getHeaders(),
-                body: JSON.stringify(event)
-            });
-        };
-
         // insert an array of events
         this.insertEvents = function (tenantId, namespaceId, streamId, events) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                    streamId + this.insertMultipleValuesBase,
+                    streamId + this.insertValuesBase,
                 method: 'POST',
                 headers: this.getHeaders(),
                 body: JSON.stringify(events)
@@ -223,36 +209,14 @@ module.exports = {
             });
         };
 
-        // update an event
-        this.updateEvent = function (tenantId, namespaceId, streamId, evt) {
-            return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.updateSingleValueBase,
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(evt)
-            });
-        };
-
         // update an array of events
         this.updateEvents = function (tenantId, namespaceId, streamId, events) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.updateMultipleValuesBase,
+                streamId + this.updateValuesBase,
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(events)
-            });
-        };
-
-        // replace an event
-        this.replaceEvent = function (tenantId, namespaceId, streamId, evt) {
-            return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.replaceSingleValueBase,
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(evt)
             });
         };
 
@@ -260,7 +224,7 @@ module.exports = {
         this.replaceEvents = function (tenantId, namespaceId, streamId, events) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.replaceMultipleValuesBase,
+                streamId + this.replaceValuesBase,
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(events)
