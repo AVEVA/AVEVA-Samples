@@ -307,9 +307,9 @@ http.createServer(function (request1, response) {
     var updateEvent = printWindowEvents.then(
         function (res) {
             // update the first value
+            event = [];
             evt = res[0];
             evt = waveDataObj.NextWave(interval, 4.0, 0);
-            events = [];
             event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -319,7 +319,7 @@ http.createServer(function (request1, response) {
                         return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
+                return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, event);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -384,13 +384,14 @@ http.createServer(function (request1, response) {
     var replaceEvent = printUpdateEvents.then(
         function (res) {
             console.log("\nReplacing events");
+            var event = [];
             var replaceEvent = res[0];
             currentEvents = res;
             replaceEvent.sinProperty = 1/2;
             replaceEvent.cosProperty = Math.sqrt(3)/2;
             replaceEvent.tanProperty = 1;
-            event = [];
             event.push(replaceEvent);
+
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -667,7 +668,6 @@ http.createServer(function (request1, response) {
     var dumpStreamViewEvent = getRangeStreamViewEvents.then(
         function (res) {
             var obj = JSON.parse(res);
-            console.log(obj)
             console.log("\nSpecifying a StreamView with an SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
             obj.forEach(function (elem) {
                 console.log("SinTarget: " + elem.SinTarget +
@@ -696,7 +696,6 @@ http.createServer(function (request1, response) {
     var dumpIntegerStreamViewEvent = getRangeIntegerStreamViewEvents.then(
             function (res) {
                 var obj = JSON.parse(res);
-                console.log(obj)
                 console.log("\nSdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
                 obj.forEach(function (elem) {
                     console.log("SinInt: " + elem.SinInt +

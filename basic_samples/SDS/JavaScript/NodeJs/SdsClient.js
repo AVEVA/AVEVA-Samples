@@ -50,7 +50,7 @@ module.exports = {
         this.insertValuesBase = "/Data";
         this.getLastValueBase = "/{0}/Data/Last";
         this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
-        this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&viewId={6}";
+        this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&streamViewId={6}";
         this.updateValuesBase = "/Data";
         this.replaceValuesBase = "/Data?allowCreate=false";
         this.removeSingleValueBase = "/{0}/Data?index={1}";
