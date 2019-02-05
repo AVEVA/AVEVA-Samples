@@ -26,7 +26,7 @@ steps:
   inputs:
     sourceFolder: $(Agent.TempDirectory)
     contents: config.ini
-    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/'
+    targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/'
     #cleanTargetFolder: false # Optional
     overWrite: true # Optional
     #flattenFolders: false # Optional
@@ -43,12 +43,12 @@ steps:
   
 - script: |
     pip install -r requirements.txt
-  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
   displayName: 'Install requirements'
   
 - script: |
-    python -m pytest
+    python -m pytest ./program.py
   displayName: 'Test with pytest'
-  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python2/
+  workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
 
     
