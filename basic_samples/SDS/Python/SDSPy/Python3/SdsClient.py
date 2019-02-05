@@ -14,6 +14,7 @@
 # OSIsoft, LLC
 # 1600 Alvarado St, San Leandro, CA 94577
 
+
 from urllib.parse import urlparse
 import urllib.request, urllib.parse, urllib.error
 import http.client as http
@@ -103,7 +104,7 @@ class SdsClient(object):
             raise SdsError("Failed to get all SdsTypes. {status}:{reason}".
                           format(status=response.status_code, reason=response.text))
 
-        types = json.loads(response.content)
+        types = json.loads(response.content) 
         results = []
         for t in types:
             results.append(SdsType.fromJson(t))
