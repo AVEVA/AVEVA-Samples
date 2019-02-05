@@ -319,7 +319,7 @@ http.createServer(function (request1, response) {
                         return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, event);
+                return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
             }
         }
     ).catch(function (err) { logError(err); });
