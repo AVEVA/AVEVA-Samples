@@ -92,10 +92,8 @@ public class Program {
             // get the last value in stream
             System.out.println("Getting latest event");
             String jsonSingleValue = sdsclient.getLastValue(tenantId, namespaceId, sampleStreamId);
-            Type singleListType = new TypeToken<ArrayList<WaveData>>() {}.getType(); // necessary for gson to decode list of WaveData, represents ArrayList<WaveData> type
-            ArrayList<WaveData> foundEvent = sdsclient.mGson.fromJson(jsonSingleValue, singleListType);
-            System.out.println("Total events found: " + foundEvent.size());
-            dumpEvents(foundEvent);
+            WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
+            System.out.println(data.toString());
             System.out.println();
             
             // get all values
