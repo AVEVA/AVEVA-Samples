@@ -1,18 +1,18 @@
 // <copyright file="Program.cs" company="OSIsoft, LLC">
 //
-// Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
+//Copyright 2019 OSIsoft, LLC
 //
-// THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
-// OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-// THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
 //
-// RESTRICTED RIGHTS LEGEND
-// Use, duplication, or disclosure by the Government is subject to restrictions
-// as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
-// Computer Software clause at DFARS 252.227.7013
+//<http://www.apache.org/licenses/LICENSE-2.0>
 //
-// OSIsoft, LLC
-// 1600 Alvarado St, San Leandro, CA 94577
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
 // </copyright>
 
 using System;
@@ -136,9 +136,9 @@ namespace SdsRestApiCore
                 {
                     throw new HttpRequestException(response.ToString());
                 }
-                List<WaveData> retrieved =
-                    JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine(retrieved[0].ToString());
+                WaveData retrieved =
+                    JsonConvert.DeserializeObject<WaveData>(await response.Content.ReadAsStringAsync());
+                Console.WriteLine(retrieved.ToString());
                 Console.WriteLine();
 
                 // get all events
@@ -162,15 +162,16 @@ namespace SdsRestApiCore
                 Console.WriteLine("Updating events");
 
                 // update one event
-                var updateEvent = retrieved[0];
+                var updateEvent = retrieved;
                 updateEvent.Sin = 1/2.0;
                 updateEvent.Cos = Math.Sqrt(3)/2;
                 updateEvent.Tan = 1;
-                retrieved[0] = updateEvent;
+                List<WaveData> updateWave = new List<WaveData>();
+                updateWave.Add(updateEvent);
 
                 response = await httpClient.PutAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data",
-                    new StringContent(JsonConvert.SerializeObject(retrieved)));
+                    new StringContent(JsonConvert.SerializeObject(updateWave)));
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(response.ToString());
@@ -265,7 +266,7 @@ namespace SdsRestApiCore
                 }
                 List<WaveData> rangeValuesContinuous =
                     JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine("Default (Continuous) stream behavior, requesting data starting at index location '1', Sds will interpolate this value:");
+                Console.WriteLine("Default (Continuous) stream read behavior, requesting data starting at index location '1', Sds will interpolate this value:");
                 foreach (var waveData in rangeValuesContinuous)
                 {
                     Console.WriteLine($"Order: {waveData.Order}, Radians: {waveData.Radians}, Cos: {waveData.Cos}");
@@ -291,7 +292,7 @@ namespace SdsRestApiCore
                     throw new HttpRequestException(response.ToString());
                 }
 
-                Console.WriteLine("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
+                Console.WriteLine("We can override this read behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
                 Console.WriteLine("Sds will now return the default value for the data type:");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/Transform?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}");

@@ -1,18 +1,18 @@
 // SdsClient.js
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+//Copyright 2019 OSIsoft, LLC
 //
-// THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
-// OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-// THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
 //
-// RESTRICTED RIGHTS LEGEND
-// Use, duplication, or disclosure by the Government is subject to restrictions
-// as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
-// Computer Software clause at DFARS 252.227.7013
+//<http://www.apache.org/licenses/LICENSE-2.0>
 //
-// OSIsoft, LLC
-// 1600 Alvarado St, San Leandro, CA 94577
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
 
 
 
@@ -46,18 +46,15 @@ module.exports = {
         this.apiBase = "/api/" + apiVersion;
         this.typesBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Types";
         this.streamsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/Streams";
-        this.viewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
-        this.insertSingleValueBase = "/Data/InsertValue";
-        this.insertMultipleValuesBase = "/Data/InsertValues";
-        this.getLastValueBase = "/{0}/Data/GetLastValue";
-        this.getWindowValuesBase = "/{0}/Data/GetWindowValues?startIndex={1}&endIndex={2}";
-        this.getRangeValuesBase = "/{0}/Data/GetRangeValues?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&viewId={6}";
-        this.updateSingleValueBase = "/Data/UpdateValue";
-        this.updateMultipleValuesBase = "/Data/UpdateValues";
-        this.replaceSingleValueBase = "/Data/ReplaceValue";
-        this.replaceMultipleValuesBase = "/Data/ReplaceValues";
-        this.removeSingleValueBase = "/{0}/Data/RemoveValue?index={1}";
-        this.removeMultipleValuesBase = "/{0}/Data/RemoveWindowValues?startIndex={1}&endIndex={2}";
+        this.streamViewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
+        this.insertValuesBase = "/Data";
+        this.getLastValueBase = "/{0}/Data/Last";
+        this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
+        this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&streamViewId={6}";
+        this.updateValuesBase = "/Data";
+        this.replaceValuesBase = "/Data?allowCreate=false";
+        this.removeSingleValueBase = "/{0}/Data?index={1}";
+        this.removeMultipleValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
         this.token = "";
         this.tokenExpires = "";
 
@@ -164,22 +161,11 @@ module.exports = {
             });
         };
 
-        // insert an event into a stream
-        this.insertEvent = function (tenantId, namespaceId, streamId, event) {
-            return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                    streamId + this.insertSingleValueBase,
-                method: 'POST',
-                headers: this.getHeaders(),
-                body: JSON.stringify(event)
-            });
-        };
-
         // insert an array of events
         this.insertEvents = function (tenantId, namespaceId, streamId, events) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                    streamId + this.insertMultipleValuesBase,
+                    streamId + this.insertValuesBase,
                 method: 'POST',
                 headers: this.getHeaders(),
                 body: JSON.stringify(events)
@@ -223,36 +209,14 @@ module.exports = {
             });
         };
 
-        // update an event
-        this.updateEvent = function (tenantId, namespaceId, streamId, evt) {
-            return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.updateSingleValueBase,
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(evt)
-            });
-        };
-
         // update an array of events
         this.updateEvents = function (tenantId, namespaceId, streamId, events) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.updateMultipleValuesBase,
+                streamId + this.updateValuesBase,
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(events)
-            });
-        };
-
-        // replace an event
-        this.replaceEvent = function (tenantId, namespaceId, streamId, evt) {
-            return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.replaceSingleValueBase,
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(evt)
             });
         };
 
@@ -260,7 +224,7 @@ module.exports = {
         this.replaceEvents = function (tenantId, namespaceId, streamId, events) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.replaceMultipleValuesBase,
+                streamId + this.replaceValuesBase,
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(events)

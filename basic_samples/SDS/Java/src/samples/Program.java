@@ -1,18 +1,18 @@
 /** Program.java
  * 
- *  Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
- * 
- *  THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
- *  OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
- *  THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
- * 
- *  RESTRICTED RIGHTS LEGEND
- *  Use, duplication, or disclosure by the Government is subject to restrictions
- *  as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
- *  Computer Software clause at DFARS 252.227.7013
- * 
- *  OSIsoft, LLC
- *  1600 Alvarado St, San Leandro, CA 94577
+ *  Copyright 2019 OSIsoft, LLC
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0>
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package samples;
@@ -92,10 +92,8 @@ public class Program {
             // get the last value in stream
             System.out.println("Getting latest event");
             String jsonSingleValue = sdsclient.getLastValue(tenantId, namespaceId, sampleStreamId);
-            Type singleListType = new TypeToken<ArrayList<WaveData>>() {}.getType(); // necessary for gson to decode list of WaveData, represents ArrayList<WaveData> type
-            ArrayList<WaveData> foundEvent = sdsclient.mGson.fromJson(jsonSingleValue, singleListType);
-            System.out.println("Total events found: " + foundEvent.size());
-            dumpEvents(foundEvent);
+            WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
+            System.out.println(data.toString());
             System.out.println();
             
             // get all values
