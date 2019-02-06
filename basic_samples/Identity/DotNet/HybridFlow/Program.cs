@@ -33,7 +33,8 @@ namespace HybridFlow
             // Get access token and refresh token.
             var (accessToken, refreshToken, expiration) = HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
             Console.WriteLine("Access Token: " + accessToken);
-            Console.WriteLine("Refresh Token: " + refreshToken);
+            var refreshStatus =  !string.IsNullOrEmpty(refreshToken) ? refreshToken : "No refresh token requested";
+            Console.WriteLine("Refresh Token: " + refreshStatus);
             Console.WriteLine("Expires: " + expiration);
 
             //  Make a request to GetTenant endpoint
@@ -41,12 +42,24 @@ namespace HybridFlow
                 ? "Request succeeded"
                 : "request failed");
 
-            // Get a new access token from a refresh token. If the previous access token has not expired it can still be used.
-            // This will also reissue a new refresh token. Old refresh token will no longer be valid after use.
-            (accessToken, refreshToken, expiration) = HybridFlow.GetAccessTokenFromRefreshToken(refreshToken, clientId, clientSecret);
-            Console.WriteLine("Access Token: " + accessToken);
-            Console.WriteLine("Refresh Token: " + refreshToken);
-            Console.WriteLine("Expires: " + expiration);
+
+            // Check if offline_access scope has been requested. This scope can be requested for hybrid clients
+            // that have been created with AllowRefreshToken option set to true, which is also the default option.
+            if (scope.Contains("offline_access"))
+            {
+                // Get a new access token from a refresh token. If the previous access token has not expired it can still be used.
+                // This will also reissue a new refresh token. Old refresh token will no longer be valid after use.
+                (accessToken, refreshToken, expiration) =
+                    HybridFlow.GetAccessTokenFromRefreshToken(refreshToken, clientId, clientSecret);
+                Console.WriteLine("Access Token: " + accessToken);
+                Console.WriteLine("Refresh Token: " + refreshToken);
+                Console.WriteLine("Expires: " + expiration);
+            }
+            else
+            {
+                Console.WriteLine("No refresh token requested.");
+            }
+
 
             //  Make a request to GetTenant endpoint
             Console.WriteLine(GetRequest($"{GetConfigValue("OCSUrl")}/api/Tenants/{tenantId}", accessToken).Result
