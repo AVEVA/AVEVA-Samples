@@ -32,14 +32,12 @@ the sample in the appsettings.json configuration file as follows:
 ::
 
 	{
-		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"Address": "https://dat-a.osisoft.com",
-		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
-		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		"ClientKey": "REPLACE_WITH_CLIENT_SECRET",
-		"ApiVersion": "v1-preview",
-		"AADInstanceFormat": "https://login.windows.net/<REPLACE_WITH_TENANT_ID>/oauth2/token"
+		  "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+		  "TenantId": "REPLACE_WITH_TENANT_ID",
+		  "Resource": "https://dat-b.osisoft.com",
+		  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+		  "ClientKey": "REPLACE_WITH_CLIENT_SECRET",
+		  "ApiVersion": "v1-preview"
 	}
 
 
@@ -47,12 +45,11 @@ The security handler is attached to the HttpClient as follows:
 
 .. code:: cs
 
-	SdsSecurityHandler securityHandler =
-		new SdsSecurityHandler(resource, tenantId, aadInstanceFormat, clientId, clientKey);
-			HttpClient httpClient = new HttpClient(securityHandler)
-			{
-				BaseAddress = new Uri(address)
-			};
+            SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, clientId, clientKey);
+            HttpClient httpClient = new HttpClient(securityHandler)
+            {
+                BaseAddress = new Uri(resource)
+            };
             
 Note that SDS returns a status of 302 (Found), when metadata collisions exist. The HttpClient 
 auto-redirect, which automatically issues a GET when receiving a 302, will result in an 
@@ -174,12 +171,11 @@ An event can be created using the following POST request:
 .. code:: cs
 
 	response = await httpClient.PostAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValue",
-			new StringContent(JsonConvert.SerializeObject(wave)));
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data",
+			new StringContent(JsonConvert.SerializeObject(singleWaveList)));
 
 
-Inserting multiple values is similar, but the payload has list of events
-and the url for POST call varies:
+When inserting single or multiple values, the payload has to be a list of events.
 
 .. code:: cs
 
@@ -190,7 +186,7 @@ and the url for POST call varies:
 		waves.Add(newEvent);
 	}
 	response = await httpClient.PostAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/InsertValues",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data",
 			new StringContent(JsonConvert.SerializeObject(waves)));
 
 The SDS REST API provides many more types of data insertion calls beyond
@@ -203,19 +199,18 @@ Retrieve Values from a Stream
 
 There are many methods in the SDS REST API allowing for the retrieval of
 events from a stream. The retrieval methods take string type start and
-end values; in the case of the GetWindowValues call, these are the start and 
-end ordinal indices expressed as strings. The index values must capable of 
-conversion to the type of the index assigned in the SdsType.
+end values; these are the start and end ordinal indices expressed as strings. 
+The index values must capable of conversion to the type of the index assigned in the SdsType.
 
 .. code:: cs
 
 	response = await httpClient.GetAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/GetWindowValues?startIndex=0&endIndex={waves[waves.Count - 1].Order}");
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex=0&endIndex={waves[waves.Count - 1].Order}");
 
 -  parameters are the SdsStream Id and the starting and ending index
    values for the desired window Ex: For a time index, request url
    format will be
-   "/{streamId}/Data/GetWindowValues?startIndex={startTime}&endIndex={endTime}
+   "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
 
 As with data insertion, the SDS REST API provides many more types of data retrieval calls beyond
 those demonstrated in this application. Go to the 
@@ -230,14 +225,14 @@ Updating events is handled by PUT REST call as follows:
 .. code:: cs
 
 	response = await httpClient.PutAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValue",
-			new StringContent(JsonConvert.SerializeObject(updateEvent)));
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data",
+			new StringContent(JsonConvert.SerializeObject(updateWave)));
 
--  the request body has the new event that will update an existing event
+-  the request body has the list with the new event that will update an existing event
    at the same index
 
-Updating multiple events is similar, but the payload has an array of
-event objects and url for PUT is slightly different:
+When updating single or multiple events, the payload has to be an array of
+event objects and url:
 
 .. code:: cs
 
@@ -249,7 +244,7 @@ event objects and url for PUT is slightly different:
 	}
 
 	response = await httpClient.PutAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/UpdateValues",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data",
 			new StringContent(JsonConvert.SerializeObject(updateWaves)));
 
 If you attempt to update values that do not exist they will be created. The sample updates
@@ -258,17 +253,16 @@ collection of twenty values.
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
-program demonstrates this by replacing all twenty values. The calling conventions are
-identical to ``updateValue`` and ``updateValues``:
+program demonstrates this by replacing all twenty values.
 
 .. code:: cs
 
 	response = await httpClient.PutAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValue",
-			new StringContent(JsonConvert.SerializeObject(replaceEvent)));
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?allowCreate=false",
+			new StringContent(JsonConvert.SerializeObject(replaceSingleWaveList)));
 
 	response = await httpClient.PutAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/ReplaceValues",
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?allowCreate=false",
 			new StringContent(JsonConvert.SerializeObject(replaceEvents)));
 
 Property Overrides
@@ -369,10 +363,10 @@ is shown below:
 .. code:: cs
 
 	response = await httpClient.DeleteAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveValue?index=0");
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?index=0");
 
 	response = await httpClient.DeleteAsync(
-		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/RemoveWindowValues?startIndex=0&endIndex=40");
+		$"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex=0&endIndex=40");
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to '0' and '40'
