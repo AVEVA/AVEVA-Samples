@@ -26,14 +26,13 @@ replace the placeholders with the authentication-related values you received fro
 
 ::
 
-	{
-		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"Address": "https://dat-a.osisoft.com",
-		"Resource": "https://qihomeprod.onmicrosoft.com/ocsapi",
-		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		"ClientKey": "REPLACE_WITH_CLIENT_SECRET"
-	}
+{
+  "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+  "TenantId": "REPLACE_WITH_TENANT_ID",
+  "Resource": "https://dat-b.osisoft.com",
+  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+  "ClientKey": "REPLACE_WITH_CLIENT_SECRET"
+}
 
 
 
@@ -52,11 +51,11 @@ The following code block illustrates how to configure clients to use throughout 
 
 .. code:: cs
 
-	SdsSecurityHandler securityHandler = new SdsSecurityHandler(resource, tenant, clientId, clientKey);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
 
-	SdsService sdsService = new SdsService(new Uri(address), securityHandler);
-	var metadataService = sdsService.GetMetadataService(tenant, namespaceId);
-	var dataService = sdsService.GetDataService(tenant, namespaceId);
+            SdsService sdsService = new SdsService(new Uri(resource), authenticationHandler);
+            var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
+            var dataService = sdsService.GetDataService(tenantId, namespaceId);
   
   
 
