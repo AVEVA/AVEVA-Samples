@@ -416,7 +416,7 @@ The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 .. code:: python
 
-        viewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
+        streamViewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
 
 
 Deleting Values from a Stream
