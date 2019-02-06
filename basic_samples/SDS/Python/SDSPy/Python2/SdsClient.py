@@ -1,6 +1,6 @@
 # SdsClient.py
 #
-# Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+# Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 #
 # THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
 # OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
@@ -18,8 +18,6 @@
 import urlparse
 import json
 
-import adal as adal
-
 from SdsError import SdsError
 from SdsType import SdsType
 from SdsStream import SdsStream
@@ -36,19 +34,16 @@ import time
 class SdsClient(object):
     """Handles communication with Sds Service"""
 
-    def __init__(self, apiVersion, tenant, url, resource, authority, clientId, clientSecret):
-        self.__apiVersion = apiVersion
+    def __init__(self, api_version, tenant, resource, clientId, clientSecret):
+        self.__apiVersion = api_version
         self.__tenant = tenant
-        self.__url = url
-        self.__resource = resource
         self.__clientId = clientId
         self.__clientSecret = clientSecret
-
-        self.__authority = authority
+        self.__url = resource
 
         self.__token = ""
         self.__expiration = 0
-        #self.__getToken()
+        self.__getToken()
 
         self.__setPathAndQueryTemplates()
 
@@ -466,7 +461,7 @@ class SdsClient(object):
     # The following section provides functionality to interact with Data
     #    We assume the value(s) passed follow the Sds object patterns supporting fromJson and toJson method
 
-    def getValue(self, namespace_id, stream_id, index, value_class, streamView_id=""):
+    def getValue(self, namespace_id, stream_id, index, value_class):
         """Retrieves JSON object from Sds Service for value specified by 'index' from Sds Service """
         if namespace_id is None:
             raise TypeError
@@ -911,24 +906,39 @@ class SdsClient(object):
         return value_class.fromJson(content)
 		
     # private methods
-
     def __getToken(self):
         if ((self.__expiration - time.time()) > 5 * 60):
             return self.__token
 
-        context = adal.AuthenticationContext(self.__authority, validate_authority=True)
-        token = context.acquire_token_with_client_credentials(self.__resource, self.__clientId, self.__clientSecret)
+        discoveryUrl = requests.get(
+            self.__url + "/identity/.well-known/openid-configuration",
+            headers= {"Accept" : "application/json"})
+
+        if discoveryUrl.status_code < 200 or discoveryUrl.status_code >= 300:
+            discoveryUrl.close()
+            raise SdsError("Failed to get access token endpoint from discovery URL: {status}:{reason}".
+                            format(status=discoveryUrl.status_code, reason=discoveryUrl.text))
+
+        tokenEndpoint = json.loads(discoveryUrl.content)["token_endpoint"]
+
+        tokenInformation = requests.post(
+            tokenEndpoint,
+            data = {"client_id" : self.__clientId,
+                    "client_secret" : self.__clientSecret,
+                    "grant_type" : "client_credentials"})
+
+        token = json.loads(tokenInformation.content)
 
         if token is None:
-            raise Exception("Failed to retrieve AAD Token")
+            raise Exception("Failed to retrieve Token")
 
-        self.__expiration = float(token['expiresIn']) + time.time()
-        self.__token = token['accessToken']
+        self.__expiration = float(token['expires_in']) + time.time()
+        self.__token = token['access_token']
         return self.__token
 
     def __sdsHeaders(self):
-        #"Authorization": "bearer %s" % self.__getToken(), 
-        return {"Content-type": "application/json",
+        return {"Authorization": "bearer %s" % self.__getToken(),
+                "Content-type": "application/json",
                 "Accept": "*/*; q=1"
                 }
 
@@ -940,8 +950,6 @@ class SdsClient(object):
         self.__basePath = "/api/{api_version}/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
         self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
-        self.__behaviorsPath = self.__basePath + "/Behaviors/{behavior_id}"
-        self.__getBehaviorsPath = self.__basePath + "/Behaviors?skip={skip}&count={count}"
         self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
         self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
         self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
@@ -949,11 +957,10 @@ class SdsClient(object):
 
         self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
         self.__getValueQuery = self.__dataPath + "?index={index}"
-        self.__getFirstValue = self.__dataPath + "/First"
-        self.__getLastValue = self.__dataPath + "/Last"
+        self.__getFirstValue = self.__dataPath + "/First?"
+        self.__getLastValue = self.__dataPath + "/Last?"
         self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"
         self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
-
 
         self.__insertValuesPath = self.__dataPath
         self.__updateValuesPath = self.__dataPath
