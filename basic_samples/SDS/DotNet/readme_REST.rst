@@ -231,8 +231,7 @@ Updating events is handled by PUT REST call as follows:
 -  the request body has the list with the new event that will update an existing event
    at the same index
 
-When updating single or multiple events, the payload has to be an array of
-event objects and url:
+When updating single or multiple events, the payload has to be an array of event objects:
 
 .. code:: cs
 
