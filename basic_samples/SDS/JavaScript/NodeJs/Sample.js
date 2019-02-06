@@ -190,6 +190,7 @@ http.createServer(function (request1, response) {
 
     // insert data
     console.log("Inserting data")
+    var event = [];
     var interval = new Date();
     interval.setHours(0, 1, 0, 0);
     var evt = null;
@@ -198,14 +199,15 @@ http.createServer(function (request1, response) {
     var insertValue = createStream.then(
         function (res) {
             evt = waveDataObj.NextWave(interval, 2.0, 0);
+            event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.insertEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                        return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.insertEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -305,17 +307,19 @@ http.createServer(function (request1, response) {
     var updateEvent = printWindowEvents.then(
         function (res) {
             // update the first value
+            event = [];
             evt = res[0];
             evt = waveDataObj.NextWave(interval, 4.0, 0);
+            event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
                         console.log("\nUpdating events")
-                        return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                        return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -380,20 +384,22 @@ http.createServer(function (request1, response) {
     var replaceEvent = printUpdateEvents.then(
         function (res) {
             console.log("\nReplacing events");
+            var event = [];
             var replaceEvent = res[0];
             currentEvents = res;
             replaceEvent.sinProperty = 1/2;
             replaceEvent.cosProperty = Math.sqrt(3)/2;
             replaceEvent.tanProperty = 1;
+            event.push(replaceEvent);
 
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.replaceEvent(tenantId, sampleNamespaceId, sampleStreamId, replaceEvent)
+                        return client.replaceEvents(tenantId, sampleNamespaceId, sampleStreamId, event)
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.replaceEvent(tenantId, sampleNamespaceId, sampleStreamId, replaceEvent)
+                return client.replaceEvents(tenantId, sampleNamespaceId, sampleStreamId, event)
             }
         }
     ).catch(function (err) { logError(err); });

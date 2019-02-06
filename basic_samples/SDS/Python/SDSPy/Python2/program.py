@@ -304,7 +304,7 @@ try:
     print("Inserting data")
     # Insert a single event
     event = nextWave(start, span, 2.0, 0)
-    client.insertValue(namespaceId, stream.Id, event)
+    client.insertValues(namespaceId, stream.Id, [event])
 
     # Insert a list of events
     waves = []
@@ -329,7 +329,7 @@ try:
     print("Updating events")
     # Update the first event
     event = nextWave(start, span, 4.0, 0)
-    client.updateValue(namespaceId, stream.Id, event)
+    client.updateValues(namespaceId, stream.Id, [event])
 
     # Update the rest of the events, adding events that have no prior index entry
     updatedEvents = []
@@ -349,7 +349,7 @@ try:
     print("Replacing events")
     # replace one value
     event = nextWave(start, span, 10.0, 0)
-    client.replaceValue(namespaceId, stream.Id, event)
+    client.replaceValues(namespaceId, stream.Id, [event])
     
     # replace multiple values
     replacedEvents = []

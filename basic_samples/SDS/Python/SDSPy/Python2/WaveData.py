@@ -196,17 +196,13 @@ class WaveDataInteger:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
-            # Pre-Assign the default
-            prop[1].fset(wave, 0)
+        properties = inspect.getmembers(WaveDataInteger,
+                                        lambda o: isinstance(o, property))
+        for p in properties:
+            if p[0] in content:
+                setattr(wave, p[0], content[p[0]])
 
-            # If found in JSON object, then set
-            if prop[0] in content:
-                value = content[prop[0]]
-                if value is not None:
-                    prop[1].fset(wave, value)
         return wave
-
 
 class WaveDataTarget:
     """Represents a data point to be injected into Sds Service"""
@@ -310,14 +306,10 @@ class WaveDataTarget:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
-            # Pre-Assign the default
-            prop[1].fset(wave, 0)
-
-            # If found in JSON object, then set
-            if prop[0] in content:
-                value = content[prop[0]]
-                if value is not None:
-                    prop[1].fset(wave, value)
+        properties = inspect.getmembers(WaveDataTarget,
+                                        lambda o: isinstance(o, property))
+        for p in properties:
+            if p[0] in content:
+                setattr(wave, p[0], content[p[0]])
 
         return wave
