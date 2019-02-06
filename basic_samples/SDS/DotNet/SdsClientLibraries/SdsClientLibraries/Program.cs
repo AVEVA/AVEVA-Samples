@@ -345,12 +345,12 @@ namespace SdsClientLibraries
             {
                 Console.WriteLine("Cleaning up");
                 // Delete the stream, types and streamViews
-                Console.WriteLine("Deleteing stream");
+                Console.WriteLine("Deleting stream");
                 await metadataService.DeleteStreamAsync(streamId);
-                Console.WriteLine("Deleteing streamViews");
+                Console.WriteLine("Deleting streamViews");
                 await metadataService.DeleteStreamViewAsync(autoStreamViewId);
                 await metadataService.DeleteStreamViewAsync(manualStreamViewId);
-                Console.WriteLine("Deleteing types");
+                Console.WriteLine("Deleting types");
                 await metadataService.DeleteTypeAsync(typeId);
                 await metadataService.DeleteTypeAsync(targetTypeId);
                 await metadataService.DeleteTypeAsync(targetIntTypeId);
