@@ -33,23 +33,6 @@ The official OCS samples are divided in multiple categories depending on the sce
  </tr>
  <tr>
    <td width="25%">
-      <h3>SDS Application <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="basic_samples/SDS">Details</a>
-  </td>
-    <td>
-     <a href="basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Java">JAVA</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
-   <td width="25%">
       <h3>Client Credential Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
   </td>
   <td width="35%">
@@ -79,6 +62,24 @@ The official OCS samples are divided in multiple categories depending on the sce
   </td>
     <td>
      <a href="basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow">.NET and JavaScript</a>
+  </td>
+ </tr>
+ 
+ <tr>
+   <td width="25%">
+      <h3>SDS Application <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
+  </td>
+  <td width="35%">
+    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="basic_samples/SDS">Details</a>
+  </td>
+    <td>
+     <a href="basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Java">JAVA</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a>&nbsp; &nbsp;
+     <a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
