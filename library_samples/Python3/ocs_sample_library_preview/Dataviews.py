@@ -1,4 +1,4 @@
-# DataviewClient.py
+# Dataviews.py
 #
 # Copyright 2019 OSIsoft, LLC
 #
@@ -29,20 +29,12 @@ from .BaseClient import BaseClient as BaseClient
 import requests
 
 
-class DataviewClient(object):
+class Dataviews(object):
     """Handles communication with Sds Service"""
 
-    def __init__(self, api_version, tenant, url, client):
-        self.__apiVersion = api_version
-        self.__tenant = tenant
-        self.__url = url
+    def __init__(self, client):
         self.__baseClient = client
-
         self.__setPathAndQueryTemplates()
-
-    @property
-    def Uri(self):
-        return self.__url
    
     def postDataview(self, namespace_id, dataview):
         """Tells Sds Service to create a dataview based on local 'dataview' or get if existing dataview matches"""
@@ -52,7 +44,7 @@ class DataviewClient(object):
             raise TypeError		
 		
         response = requests.post(
-            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers= self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -72,7 +64,7 @@ class DataviewClient(object):
             raise TypeError
 
         response = requests.patch(
-            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -93,7 +85,7 @@ class DataviewClient(object):
             raise TypeError
 	
         response = requests.delete(
-            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -112,7 +104,7 @@ class DataviewClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__dataviewPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -129,7 +121,7 @@ class DataviewClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getDataviews.format(tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__baseClient.Uri + self.__getDataviews.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -150,7 +142,7 @@ class DataviewClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getDatagroups.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
+            self.__baseClient.Uri + self.__getDatagroups.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -176,7 +168,7 @@ class DataviewClient(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getDatagroup.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
+            self.__baseClient.Uri + self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -213,7 +205,7 @@ class DataviewClient(object):
         
         
         response = requests.get(
-            self.__url + self.__getDataviewPreview.format(tenant_id=self.__tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
+            self.__baseClient.Uri + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -227,10 +219,6 @@ class DataviewClient(object):
             return (content)
         return value_class.fromJson(content)
 		
-    # private methods
-    def __validateUri(self, url):
-        splitUri = urlparse(url)
-        return splitUri.netloc + splitUri.path
 
     def __setPathAndQueryTemplates(self):
         self.__basePath = "/api/Tenants/{tenant_id}/Namespaces/{namespace_id}"

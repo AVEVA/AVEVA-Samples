@@ -14,9 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .SdsClient import SdsClient
 from .BaseClient import BaseClient
-from .DataviewClient import DataviewClient
+from .Dataviews import Dataviews
+from .Types import Types
+from .Streams import Streams
 from .SdsError import SdsError
 
 
@@ -25,13 +26,30 @@ class OCSClient:
 
     def __init__(self, apiversion, tenant, url, clientId, clientSecret):
         self.__baseClient = BaseClient(apiversion, tenant, url, clientId, clientSecret)
-        self.__DataviewClient  = DataviewClient(apiversion, tenant, url, self.__baseClient)
-        self.__SDSClient  = SdsClient(apiversion, tenant, url, self.__baseClient)
+        
+        self.__Dataviews  = Dataviews(self.__baseClient)
+        self.__Types  = Types(self.__baseClient)
+        self.__Streams  = Streams(self.__baseClient)
+
 
     @property 
-    def Dataview(self):
-        return self.__DataviewClient
+    def uri(self):
+        return self.__baseClient.uri
 
     @property 
-    def Sds(self):
-        return self.__SDSClient
+    def tenant(self):
+        return self.__baseClient.tenant
+
+        
+
+    @property 
+    def Dataviews(self):
+        return self.__Dataviews
+
+    @property 
+    def Types(self):
+        return self.__Types
+
+    @property 
+    def Streams(self):
+        return self.__Streams

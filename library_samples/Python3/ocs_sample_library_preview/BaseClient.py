@@ -30,6 +30,7 @@ class BaseClient(object):
 
     def __init__(self, apiversion, tenant, url, clientId, clientSecret):
         self.__apiversion = apiversion
+        self.__tenant = tenant
         self.__clientId = clientId
         self.__clientSecret = clientSecret
         self.__url = url # if resource.endswith("/")  else resource + "/" 
@@ -37,6 +38,19 @@ class BaseClient(object):
         self.__token = ""
         self.__expiration = 0
         self.__getToken()
+
+    
+    @property
+    def uri(self):
+        return self.__url
+    
+    @property
+    def api_version(self):
+        return self.__apiversion
+        
+    @property
+    def tenant(self):
+        return self.__tenant
 
     def __getToken(self):
         if ((self.__expiration - time.time()) > 5 * 60):

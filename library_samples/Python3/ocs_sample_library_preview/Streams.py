@@ -1,4 +1,4 @@
-# SdsClient.py
+# Streams.py
 #
 # Copyright (C) 2018-2019 OSIsoft, LLC. All rights reserved.
 #
@@ -21,141 +21,24 @@ import http.client as http
 import json
 
 from .SdsError import SdsError
-from .SDS.SdsType import SdsType
 from .SDS.SdsStream import SdsStream
+from .SDS.SdsType import SdsType
 from .SDS.SdsStreamView import SdsStreamView
 from .SDS.SdsStreamViewMap import SdsStreamViewMap
 from .SDS.SdsBoundaryType import SdsBoundaryType
 import requests
 
 
-class SdsClient(object):
+class Streams(object):
     """Handles communication with Sds Service"""
 
-    def __init__(self, api_version, tenant, url, client):
-        self.__apiVersion = api_version
-        self.__tenant = tenant
-        self.__url = url # if resource.endswith("/")  else resource + "/" 
+    def __init__(self, client):
+        self.__apiVersion = client.api_version
+        self.__tenant = client.tenant
+        self.__url = client.uri
         self.__baseClient = client
 
         self.__setPathAndQueryTemplates()
-
-    @property
-    def Uri(self):
-        return self.__url
-
-    def getType(self, namespace_id, type_id):
-        """Retrieves the type specified by 'type_id' from Sds Service"""
-        if namespace_id is None:
-            raise TypeError
-        if type_id is None:
-            raise TypeError
-
-        response = requests.get(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
-            headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsType, {type_id}. {status}:{reason}".
-                          format(type_id=type_id, status=response.status_code, reason=response.text))
-        
-        type = SdsType.fromJson(json.loads(response.content))
-        response.close()
-        return type
-
-    def getTypeReferenceCount(self, namespace_id, type_id):
-        """Retrieves the number of times the type is referenced"""
-        if namespace_id is None:
-            raise TypeError
-        if type_id is None:
-            raise TypeError
-
-        response = requests.get(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id) + "/ReferenceCount",
-            headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsType reference count, {type_id}. {status}:{reason}".
-                          format(type_id=type_id, status=response.status_code, reason=response.text))
-        
-        count = json.loads(response.content)
-        response.close()
-        return int(count)
-
-    def getTypes(self, namespace_id, skip=0, count=100):
-        """Retrieves a list of types associated with the specified 'namespace_id' under the current tenant"""
-        if namespace_id is None:
-            raise TypeError
-
-        response = requests.get(
-            self.__url + self.__getTypesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
-            headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get all SdsTypes. {status}:{reason}".
-                          format(status=response.status_code, reason=response.text))
-
-        types = json.loads(response.content) 
-        results = []
-        for t in types:
-            results.append(SdsType.fromJson(t))
-        response.close()
-        return results
-
-    def getOrCreateType(self, namespace_id, type):
-        """Tells Sds Service to create a type based on local 'type' or get if existing type matches"""
-        if namespace_id is None:
-            raise TypeError
-        if type is None or not isinstance(type, SdsType):
-            raise TypeError
-
-        response = requests.post(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
-            data=type.toJson(), 
-            headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to create type, {type_id}. {status}:{reason}".format(type_id=type.Id, status=response.status_code, reason=response.text))
-        
-        type = SdsType.fromJson(json.loads(response.content.decode('utf-8')))
-        response.close()
-        return type
-
-    def createOrUpdateType(self, namespace_id, type):
-        """Tells Sds Service to create a type based on local 'type' object"""
-        if namespace_id is None:
-            raise TypeError
-        if type is None or not isinstance(type, SdsType):
-            raise TypeError
-
-        response = requests.put(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
-            data=type.toJson(), headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to create type, {type_id}. {status}:{reason}".format(type_id=type.Id, status=response.status_code, reason=response.text))
-        
-        response.close()
-
-    def deleteType(self, namespace_id, type_id):
-        """Tells Sds Service to delete the type specified by 'type_id'"""
-        if namespace_id is None:
-            raise TypeError
-        if type_id is None:
-            raise TypeError
-
-        response = requests.delete(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
-            headers=self.__baseClient.sdsHeaders())
-
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to delete SdsType, {type_id}. {status}:{reason}".
-                          format(type_id=type_id, status=response.status_code, reason=response.text))
-
-        response.close()
 
     def getStreamView(self, namespace_id, streamView_id):
         """Retrieves the streamView specified by 'streamView_id' from Sds Service"""
