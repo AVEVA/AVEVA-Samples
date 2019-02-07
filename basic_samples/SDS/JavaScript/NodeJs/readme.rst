@@ -60,23 +60,20 @@ The REST calls in this sample are set up as follows:
 
 .. code:: javascript
 
-        var restCall = require("request-promise")
-        restCall({
-                    url : 'URL',
-                    method: 'REST-METHOD',
-                    headers : {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                "Authorization" : "bearer "+ TOKEN,
-                                "Content-type": "application/json", 
-                                "Accept": "text/plain"
-                    },
-                    form : {    
-                                'grant_type' : 'client_credentials',
-                                'client_Id' : CLIENT-ID,
-                                'client_secret' : CLIENT-KEY,
-                                'resource' : RESOURCE-URL
-                            }
-                });
+            var restCall = require("request-promise")
+            restCall({
+                url: authItems["authority"],
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                form: {
+                    'grant_type': 'client_credentials',
+                    'client_id': authItems['clientId'],
+                    'client_secret': authItems['clientSecret'],
+                    'resource': authItems['resource']
+                }
+            });
 
 -  URL - The service endpoint
 -  REST-METHOD - Denotes the type of REST call
@@ -140,9 +137,9 @@ The values to be replaced are in ``config.js``:
                          'clientId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
                          'clientSecret' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
         sdsServerUrl : "PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL",
-		tenantId: "PLACEHOLDER_REPLACE_WITH_TENANT_ID",
-		namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
-        	apiVersion: "v1-preview"
+	tenantId: "PLACEHOLDER_REPLACE_WITH_TENANT_ID",
+	namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
+        apiVersion: "v1-preview"
 
 Obtain an Authentication Token
 ------------------------------
@@ -168,7 +165,7 @@ SDS REST API request:
                                 return {
                                             "Authorization" : "bearer "+ this.token,
                                             "Content-type": "application/json", 
-                                            "Accept": "text/plain"
+                                            "Accept": "*/*; q=1"
                                         }
 
 Note that the value of the ``Authorization`` header is the word
@@ -201,9 +198,9 @@ calls):
 
 .. code:: javascript
 
-    var getTokenSuccess = client.getToken(authItems)
-                                        .catch(function(err){logError(err)});
-    var createTypeSuccess = getTokenSuccess.then(...<SDS REST call to create a type>...)
+    var getClientToken = client.getToken(authItems)
+        .catch(function (err) { throw err });
+    var createType = getClientToken.then(...<SDS REST call to create a type>...)
 
 In the above snippet, the type creation method is called only if token
 acquisition was successful. This is not mandatory for interaction with
@@ -239,12 +236,12 @@ An SdsType can be created by a POST request as follows:
 
 .. code:: javascript
 
-        restCall({
-                    url : this.url+this.typesBase.format([tenantId, namespaceId]) + "/" + type.Id,,
-                    method: 'POST',
-                    headers : this.getHeaders(),
-                    body : JSON.stringify(wave).toString()
-                });
+            restCall({
+                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "/" + type.Id,
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify(type).toString()
+            });
 
 -  Returns the SdsType object in a json format
 -  If a type with the same Id exists, url path of the existing SDS type
@@ -261,24 +258,24 @@ the value of the SdsType ``Id`` property.
 
 .. code:: javascript
 
-       SdsStream : function(sdsStream){
-            this.Id = sdsStream.Id;
-            this.Name = sdsStream.Name;
-            this.Description = sdsStream.Description;
-            this.TypeId = sdsStream.TypeId;
-        }
+    var sampleStream = new sdsObjs.SdsStream({
+        "Id": sampleStreamId, 
+	"Name": "WaveStreamJs",
+        "Description": "A Stream to store the WaveDatan Sds types events",
+        "TypeId": sampleTypeId
+        });
 
 The local SdsStream can be created in the SDS service by a POST request as
 follows:
 
 .. code:: javascript
 
-    restCall({
-            url : this.url+this.streamsBase.format([tenantId, namespaceId]) + "/" + stream.Id,,
-            method : 'POST',
-            headers : this.getHeaders(),
-            body : JSON.stringify(sdsStream).toString()
-        });
+            restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + stream.Id,
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify(stream).toString()
+            });
 
 -  SdsStream object is passed in json format
 
@@ -291,30 +288,19 @@ event. Events are passed in json format.
 
 An event can be created using the following POST request:
 
-.. code:: javascript
-
-    restCall({
-                url : this.url+this.streamsBase.format([tenantId, namespaceId])+"/"+
-                        sdsStream.Id+this.insertSingleValueBase,
-                method : 'POST',
-                headers : this.getHeaders(),
-                body : JSON.stringify(evt)
-            });
-
 -  sdsStream.Id is the stream Id
--  body is the event object in json format
+-  body is the list of event objects in json format
 
-Inserting multiple values is similar, but the payload has list of events
-and the url for POST call varies:
+When inserting single or multiple values, the payload has to be a list of events:
 
 .. code:: javascript
 
-    restCall({
-                url : this.url+this.streamsBase+"/"+
-                        sdsStream.Id+this.insertMultipleValuesBase,
-                method : 'POST',
-                headers : this.getHeaders(),
-                body : JSON.stringify(events)
+            restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
+                    streamId + this.insertValuesBase,
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify(events)
             });
 
 The SDS REST API provides many more types of data insertion calls beyond
@@ -331,51 +317,39 @@ end values; in our case, these are the start and end ordinal indices
 expressed as strings. The index values must
 capable of conversion to the type of the index assigned in the SdsType.
 
-This sample implements only a few of the many available retrieval methods -
-getWindowValues, getRangeValues and getLastValue.
+This sample implements only a few of the many available retrieval methods.
 
 .. code:: javascript
 
-    restCall({
-            url : this.url+this.streamsBase+this.getSingleValueBase.format([sdsStream.Id,start,end]),
-            method : 'GET',
-            headers : this.getHeaders()
+        restCall({
+            url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]),
+            method: 'GET',
+            headers: this.getHeaders()
         });
 
 -  parameters are the SdsStream Id and the starting and ending index
    values for the desired window Ex: For a time index, request url
    format will be
-   "/{streamId}/Data/GetWindowValues?startIndex={startTime}&endIndex={endTime}
+   "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
 
 Update Events and Replacing Values
 ----------------------------------
 
 Updating events is handled by PUT REST call as follows:
 
-.. code:: javascript
-
-     restCall({
-                url : this.url+this.streamsBase+"/"+
-                        sdsStream.Id+this.updateSingleValueBase,
-                method : 'PUT',
-                headers : this.getHeaders(),
-                body : JSON.stringify(evt)
-            });
-
 -  the request body has the new event that will update an existing event
    at the same index
 
-Updating multiple events is similar, but the payload has an array of
-event objects and url for PUT is slightly different:
+When updating single or multiple events, the payload has to be an array of event objects:
 
 .. code:: javascript
 
-     restCall({
-                url : this.url+this.streamsBase+"/"+
-                        sdsStream.Id+this.updateMultipleValuesBase,
-                method : 'PUT',
-                headers : this.getHeaders(),
-                body : JSON.stringify(events)
+            restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
+                streamId + this.updateValuesBase,
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify(events)
             });
 
 If you attempt to update values that do not exist they will be created. The sample updates
@@ -385,24 +359,16 @@ collection of twenty values.
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
 program demonstrates this by replacing all twenty values. The calling conventions are
-identical to ``updateValue`` and ``updateValues``:
+identical to ``updateValues``:
 
 .. code:: javascript
-
-     restCall({
-                url : this.url+this.streamsBase+"/"+
-                        sdsStream.Id+this.replaceSingleValueBase,
-                method : 'PUT',
-                headers : this.getHeaders(),
-                body : JSON.stringify(evt)
-            });
      
-     restCall({
-                url : this.url+this.streamsBase+"/"+
-                        sdsStream.Id+this.replaceMultipleValuesBase,
-                method : 'PUT',
-                headers : this.getHeaders(),
-                body : JSON.stringify(events)
+            restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
+                streamId + this.replaceValuesBase,
+                method: 'PUT',
+                headers: this.getHeaders(),
+                body: JSON.stringify(events)
             });
 
 Property Overrides
@@ -488,17 +454,17 @@ is shown below:
 
 .. code:: javascript
 
-    restCall({
-                url : this.url+this.streamsBase+this.removeSingleValueBase.format([sdsStream.Id, index]),
-                method : 'DELETE',
-                headers : this.getHeaders()
-            });
+        restCall({
+	    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.removeSingleValueBase.format([streamId, index]),
+	    method: 'DELETE',
+	    headers: this.getHeaders()
+	});
 
-    restCall({
-                url : this.url+this.streamsBase+this.removeMultipleValuesBase.format([sdsStream.Id, start, end]),
-                method : 'DELETE',
-                headers : this.getHeaders()
-            });
+	restCall({
+	    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.removeMultipleValuesBase.format([streamId, start, end]),
+	    method: 'DELETE',
+	    headers: this.getHeaders()
+	});
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to start and end
@@ -513,16 +479,16 @@ be achieved by a DELETE REST call and passing the corresponding Id.
 
 .. code:: javascript
 
-     restCall({
-            url : this.url+this.streamsBase+"/"+streamId,
-            method : 'DELETE',
-            headers : this.getHeaders()
-        });
+            restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
+                method: 'DELETE',
+                headers: this.getHeaders()
+            });
 
 .. code:: javascript
 
-    restCall({
-                url : this.url+this.typesBase+"/"+typeId,
-                method : 'DELETE',
-                headers : this.getHeaders()
+	    restCall({
+                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "/" + typeId,
+                method: 'DELETE',
+                headers: this.getHeaders()
             });

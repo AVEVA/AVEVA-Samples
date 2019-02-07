@@ -79,11 +79,16 @@ serializer/deserializer to convert between Java Objects and JSON.
 
 .. code:: java
 
-    public SdsClient(String baseUrl, String apiVersion) {
-        this.baseUrl =  baseUrl;
-        this.apiVersion = apiVersion;
+    public SdsClient() {
+        gclientId = getConfiguration("clientId");
+        gclientSecret = getConfiguration("clientSecret");
+        gresource = getConfiguration("resource");
+        gresource = gresource.endsWith("/") ? gresource :  gresource + "/";
+
+        this.baseUrl = gresource;
+        this.apiVersion = getConfiguration("apiVersion");
         this.mGson = new Gson();
-    }   
+    }
 
 Configure the Sample:
 -----------------------
@@ -127,6 +132,7 @@ and may be used in the sample.
 The values to be replaced are in ``config.properties``:
 
 .. code:: java
+
     resource = https://dat-b.osisoft.com
     clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
     clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
@@ -256,17 +262,19 @@ and inserts them with a single call:
 
 .. code:: java
 
-    // insert a single event
-    WaveData evt = WaveData.next(1, 2.0, 0);
-    sdsclient.insertValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
+            // insert a single event
+            List<WaveData> event = new ArrayList<WaveData>();
+            WaveData evt = WaveData.next(1, 2.0, 0);
+            event.add(evt);
+            sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(event));
 
-    // insert an a collection of events
-    List<WaveData> events = new ArrayList<WaveData>();
-    for (int i = 2; i < 20; i+=2) {
-        evt = WaveData.next(1, 2.0, i);
-        events.add(evt);
-    }
-    sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(events));
+	    // insert an a collection of events
+	    List<WaveData> events = new ArrayList<WaveData>();
+	    for (int i = 2; i < 20; i+=2) {
+		evt = WaveData.next(1, 2.0, i);
+		events.add(evt);
+	    }
+	    sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(events));
 
 Retrieve Values from a Stream
 -----------------------------
@@ -321,21 +329,21 @@ the original ten values and then adds another ten values by updating with a
 collection of twenty values.
 
 After you have modified the client-side events, you submit them to the
-SDS Service with ``updateValue`` or ``updateValues`` as shown here:
+SDS Service with ``updateValues`` as shown here:
 
 .. code:: java
 
-    sdsclient.updateValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
+    sdsclient.updateValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvent));
     sdsclient.updateValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvents));
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
 program demonstrates this by replacing all twenty values. The calling conventions are
-identical to ``updateValue`` and ``updateValues``:
+identical to ``updateValues``:
 
 .. code:: java
 
-    sdsclient.replaceValue(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(evt));
+    sdsclient.replaceValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvent));
     sdsclient.replaceValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvents));
 
 Property Overrides
@@ -466,7 +474,7 @@ the corresponding Id.
 .. code:: java
 
     sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
-	sdsclient.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
+    sdsclient.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
 
 Note that the IDs of the objects are passed, not the object themselves.
 Similarly, the following code deletes the type from the SDS Service:

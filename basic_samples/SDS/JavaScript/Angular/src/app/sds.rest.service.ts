@@ -199,29 +199,14 @@ export class SdsRestService {
     return this.authHttp.delete(url);
   }
 
-  insertValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
-    return this.authHttp.post(url, JSON.stringify(event).toString());
-  }
-
   insertValues(streamId: string, events: Array<any>) {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
     return this.authHttp.post(url, JSON.stringify(events).toString());
   }
 
-  updateValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
-    return this.authHttp.put(url, JSON.stringify(event).toString());
-  }
-
   updateValues(streamId: string, events: Array<any>) {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
-  }
-
-  replaceValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?allowCreate=false`;
-    return this.authHttp.put(url, JSON.stringify(event).toString());
   }
 
   replaceValues(streamId: string, events: Array<any>) {
