@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-from .SdsStreamView import SdsStreamView
+import json 
 
 class SdsStreamViewProperty(object):
     """Sds StreamView Property definition"""
@@ -48,6 +47,8 @@ class SdsStreamViewProperty(object):
         dictionary = { 'SourceId' : self.SourceId, 'TargetId' : self.TargetId }
 
         if hasattr(self, 'SdsStreamView'):
+            
+            from .SdsStreamView import SdsStreamView 
             dictionary['SdsStreamView'] = self.SdsStreamView.toDictionary()
 
         return dictionary
@@ -70,6 +71,8 @@ class SdsStreamViewProperty(object):
             streamViewProperty.TargetId = content['TargetId']
 		
         if 'SdsStreamView' in content:
+            
+            from .SdsStreamView import SdsStreamView 
             streamViewProperty.SdsStreamView = SdsStreamView.fromDictionary(content['SdsStreamView'])
 
         return streamViewProperty

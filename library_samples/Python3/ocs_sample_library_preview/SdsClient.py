@@ -27,7 +27,6 @@ from .SDS.SdsStreamView import SdsStreamView
 from .SDS.SdsStreamViewMap import SdsStreamViewMap
 from .SDS.SdsBoundaryType import SdsBoundaryType
 import requests
-import time
 
 
 class SdsClient(object):
@@ -326,7 +325,7 @@ class SdsClient(object):
                           format(status=response.status_code, reason=response.text))
 
         content = json.loads(response.content)
-        results = []
+        results: [SdsStream] = []
         for item in content:
             results.append(SdsStream.fromJson(item))
         response.close()

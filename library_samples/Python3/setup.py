@@ -14,7 +14,6 @@ setuptools.setup(
     url="https://github.com/osisoft/ocs-samples",
     packages=setuptools.find_packages(),    
     install_requires=[
-        'adal',
         'requests'
     ],
     classifiers=[

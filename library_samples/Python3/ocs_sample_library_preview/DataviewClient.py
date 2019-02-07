@@ -21,21 +21,18 @@ import urllib.request, urllib.parse, urllib.error
 import http.client as http
 import json
 
-import adal as adal
-
 from .SdsError import SdsError
 from .Dataview.Dataview import Dataview
 from .Dataview.Datagroup import Datagroup 
 from .BaseClient import BaseClient as BaseClient
 
 import requests
-import time
 
 
 class DataviewClient(object):
     """Handles communication with Sds Service"""
 
-    def __init__(self, api_version, tenant, url, client = None):
+    def __init__(self, api_version, tenant, url, client):
         self.__apiVersion = api_version
         self.__tenant = tenant
         self.__url = url
