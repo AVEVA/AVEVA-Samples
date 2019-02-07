@@ -172,22 +172,14 @@ A single event is a data point in the stream. An event object cannot be
 empty and should have at least the key value of the SDS type for the
 event. Events are passed in json format.
 
-An event can be created using the following POST request:
+An event can be created using the following POST request.
 
-.. code:: javascript
-
-    insertValue(streamId: string, event: any) {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
-        return this.authHttp.post(url, JSON.stringify(event).toString());
-    }
-
-Inserting multiple values is similar, but the payload has list of events
-and the url for POST call varies:
+When inserting single or multiple values, the payload has to be the list of events:
 
 .. code:: javascript
 
     insertValues(streamId: string, events: Array<any>) {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
         return this.authHttp.post(url, JSON.stringify(events).toString());
         }
 
@@ -206,14 +198,14 @@ expressed as strings. The index values must
 capable of conversion to the type of the index assigned in the SdsType.
 
 This sample implements only two of the many available retrieval methods -
-getRangeValues and getLastValue.
+Transform and Last.
 
 .. code:: javascript
 
     getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
         const url = this.sdsUrl +
             `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-            `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
+            `/Data/Transform?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
         return this.authHttp.get(url);
     }
 
@@ -223,23 +215,15 @@ Update Events and Replacing Values
 
 Updating events is handled by PUT REST call as follows:
 
-.. code:: javascript
-
-    updateValue(streamId: string, event: any) {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
-        return this.authHttp.put(url, JSON.stringify(event).toString());
-    }
-
 -  the request body has the new event that will update an existing event
    at the same index
 
-Updating multiple events is similar, but the payload has an array of
-event objects and url for PUT is slightly different:
+When updating single or multiple values, the payload has to be the list of events.
 
 .. code:: javascript
 
     updateValues(streamId: string, events: Array<any>) {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
         return this.authHttp.put(url, JSON.stringify(events).toString());
     }
 
@@ -249,18 +233,12 @@ collection of twenty values.
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
-program demonstrates this by replacing all twenty values. The calling conventions are
-identical to ``updateValue`` and ``updateValues``:
+program demonstrates this by replacing all twenty values.
 
 .. code:: javascript
 
-    replaceValue(streamId: string, event: any) {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
-        return this.authHttp.put(url, JSON.stringify(event).toString());
-    }
-
     replaceValues(streamId: string, events: Array<any>) {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?allowCreate=false`;
         return this.authHttp.put(url, JSON.stringify(events).toString());
     }
 
@@ -354,14 +332,14 @@ is shown below:
 .. code:: javascript
 
     deleteValue(streamId: string, index): Observable<any> {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?index=${index}`;
         return this.authHttp.delete(url);
     }
 
     deleteWindowValues(streamId: string, start, end): Observable<any> {
         const url = this.sdsUrl +
         `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-        `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
+        `/Data?startIndex=${start}&endIndex=${end}`;
         return this.authHttp.delete(url);
     }
 
@@ -379,7 +357,7 @@ achieved by a DELETE REST call and passing the corresponding Id.
 .. code:: javascript
 
     deleteValue(streamId: string, index): Observable<any> {
-        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+        const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?index=${index}`;
         return this.authHttp.delete(url);
     }
 
@@ -388,6 +366,6 @@ achieved by a DELETE REST call and passing the corresponding Id.
     deleteWindowValues(streamId: string, start, end): Observable<any> {
         const url = this.sdsUrl +
         `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-        `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
+        `/Data?startIndex=${start}&endIndex=${end}`;
         return this.authHttp.delete(url);
     }

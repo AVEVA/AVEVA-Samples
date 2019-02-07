@@ -1,4 +1,4 @@
-﻿Building a Python client to make REST API calls to the SDS Service
+Building a Python client to make REST API calls to the SDS Service
 ==================================================================
 
 The sample code in this topic demonstrates how to invoke SDS REST APIs
@@ -27,9 +27,10 @@ a different version you might encounter errors or unexepected behavior.
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
-2. Open the folder with your favorite IDE
-3. Update ``config.ini`` with the credentials provided by OSIsoft
-4. Run ``program.py``
+2. Install required modules: ``pip install -r requirements.txt``
+3. Open the folder with your favorite IDE
+4. Update ``config.ini`` with the credentials provided by OSIsoft
+5. Run ``program.py``
 
 Establish a Connection
 ----------------------
@@ -109,13 +110,11 @@ The values to be replaced are in ``config.ini``:
 	Namespace = Samples
 
 	[Access]
-	Address = https://dat-a.osisoft.com
+	Resource = https://dat-b.osisoft.com
 	Tenant = REPLACE_WITH_TENANT_ID
-    	ApiVersion = v1-preview
+	ApiVersion = v1-preview
 
 	[Credentials]
-	Resource = https://sdshomeprod.onmicrosoft.com/ocsapi
-	Authority = https://login.microsoftonline.com/<REPLACE_WITH_TENANT_ID>
 	ClientId = REPLACE_WITH_APPLICATION_IDENTIFIER
 	ClientSecret = REPLACE_WITH_APPLICATION_SECRET
 
@@ -123,11 +122,12 @@ Obtain an Authentication Token
 ------------------------------
 
 Within each request to SDS, the headers are provided by a function that is also
-responsible for refreshing the token. An authentication token is acquired from the authority endpoint based on the resource URL.
+responsible for refreshing the token. An authentication context is created 
+and a token is acquired from that context.
 
 .. code:: python
 
-        tokenInformation = requests.post(
+           tokenInformation = requests.post(
             tokenEndpoint,
             data = {"client_id" : self.clientId,
                     "client_secret" : self.clientSecret,
@@ -241,16 +241,14 @@ event. Events are passed in JSON format and are serialized in
 
 .. code:: python
 
-    payload = json.dumps(value, cls=Encoder)
-    response = requests.post(self.__uri 
-                   + self.__insertValuePath.format(tenant_id=self.__tenant, 
-                     namespaceId=namespaceId,
-                     stream_id=stream_id), data=payload, 
-                     headers=self.__sdsHeaders())
+        payload = json.dumps(events)
+        response = requests.post(
+            self.__url + self.__insertValuesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            data=payload, 
+            headers=self.__sdsHeaders())
 
-You use a similar process to insert multiple values; however, the payload has a
-collection of events and InsertValue is plural ``insertValues`` in the
-URL. See the sample code for an example.
+When inserting single or multiple values, the payload has to be a
+collection of events. See the sample code for an example.
 
 Retrieve Values from a Stream
 -----------------------------
@@ -270,7 +268,7 @@ Here is how to use ``getWindowValues``:
 
 .. code:: python
 
-    def getWindowValues(self, namespaceId, stream_id, start, end):
+    def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
 
 *start* and *end* (inclusive) represent the starting and ending indices for the
 retrieval. Additionally, the namespace ID and stream ID must
@@ -279,7 +277,7 @@ found values is returned. In the sample the call is:
 
 .. code:: python
 
-    events = client.getWindowValues(namespaceId, stream.Id, 0, 40)
+    waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
 
 Optionally, you can retrieve a range of values from a start index using the
 ``getRangeValues`` method in ``SdsClient``. The starting index is the ID
@@ -289,8 +287,7 @@ declaration of getRangeValues in SdsClient.py:
 
 .. code:: python
 
-    def getRangeValues(self, namespaceId, stream_id, start, skip, 
-        count, reverse, boundary_type):
+    def getRangeValues(self, namespace_id, stream_id, value_class, start, skip, count, reverse, boundary_type, streamView_id=""):
 
 *skip* is the increment by which the retrieval will happen. *count* is
 how many values you wish to have returned. *reverse* is a boolean that
@@ -305,8 +302,7 @@ program.py:
 
 .. code:: python
 
-    events = client.getRangeValues(namespaceId, stream.Id, 
-             "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
+    waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
 
 Updating and Replacing Values
 -----------------------------
@@ -327,7 +323,7 @@ Update values:
 
     # update one value
     event = nextWave(start, span, 4.0, 0)
-    client.updateValue(namespaceId, stream.Id, event)
+    client.updateValues(namespaceId, stream.Id, [event])
     # update multiple values
     updatedEvents = []
     for i in range(2, 40, 2):
@@ -341,7 +337,7 @@ Replace values:
 
     # replace one value
     event = nextWave(start, span, 10.0, 0)
-    client.replaceValue(namespaceId, stream.Id, event)
+    client.replaceValues(namespaceId, stream.Id, [event])
     # replace multiple values
     replacedEvents = []
     for i in range(2, 40, 2):
