@@ -17,6 +17,13 @@
 import json
 
 class DataviewGroupRule(object):
+    
+    def __init__(self, id = None, type_= None, tokenRules = None):
+        self.__id = id
+        self.__type= type_
+        self.__tokenRules = tokenRules
+
+
     """Sds dataview definition"""
     @property
     def Id(self):

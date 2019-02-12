@@ -15,9 +15,17 @@
 # limitations under the License.
 
 import json
-from DataviewQueryQuery import DataviewQueryQuery
+from .DataviewQueryQuery import DataviewQueryQuery
 
-class DataviewQuery(object):
+class DataviewQuery(object):    
+
+    def __init__(self, id = None, intype = None, value= None, operator = None,  query = None):
+        self.__id = id
+        if query:
+            self.__query = query
+        else:
+            self.__query = DataviewQueryQuery(intype,value, operator)      
+
     """Sds dataview definition"""
     @property
     def Id(self):

@@ -1,4 +1,4 @@
-# SdsType.py
+# SdsStreamView.py
 #
 # Copyright 2019 OSIsoft, LLC
 #
@@ -14,18 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
-from JsonEncoder import Encoder
 import json
 import inspect
-from SdsTypeCode import SdsTypeCode
-from SdsTypeProperty import SdsTypeProperty
+from .SdsStreamViewProperty import SdsStreamViewProperty
 
-class SdsType(object):
-    """Sds type definitions"""
-    def __init__(self):
-        self.SdsTypeCode = SdsTypeCode.Empty
-
+class SdsStreamView(object):
+    """Sds StreamView definitions"""
     @property
     def Id(self):
         return self.__id
@@ -48,18 +42,18 @@ class SdsType(object):
         self.__description = description
 
     @property
-    def BaseType(self):
-        return self.__baseType
-    @BaseType.setter
-    def BaseType(self, baseType):
-        self.__baseType = baseType
+    def SourceTypeId(self):
+        return self.__sourceTypeId
+    @SourceTypeId.setter
+    def SourceTypeId(self, baseType):
+        self.__sourceTypeId = baseType
     
     @property
-    def SdsTypeCode(self):
-        return self.__typeCode
-    @SdsTypeCode.setter
-    def SdsTypeCode(self, typeCode):
-        self.__typeCode = typeCode
+    def TargetTypeId(self):
+        return self.__targetTypeId
+    @TargetTypeId.setter
+    def TargetTypeId(self, typeCode):
+        self.__targetTypeId = typeCode
 
     @property
     def Properties(self):
@@ -73,7 +67,7 @@ class SdsType(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'SdsTypeCode' : self.SdsTypeCode.value }
+        dictionary = { 'Id' : self.Id, 'SourceTypeId' : self.SourceTypeId, 'TargetTypeId' : self.TargetTypeId }
 
         # optional properties
         if hasattr(self, 'Properties'):
@@ -81,52 +75,45 @@ class SdsType(object):
             for value in self.Properties:
                 dictionary['Properties'].append(value.toDictionary())
 
-        if hasattr(self, 'Id'):
-            dictionary['Id'] = self.Id
-
         if hasattr(self, 'Name'):
             dictionary['Name'] = self.Name
 
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
 
-        #if self.BaseType is not None and len(self.BaseType) > 0:
-        if hasattr(self, 'BaseType'):
-            dictionary['BaseType'] = self.BaseType.toDictionary()
-
         return dictionary
 
     @staticmethod
     def fromJson(jsonObj):
-        return SdsType.fromDictionary(jsonObj)
+        return SdsStreamView.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
-        type = SdsType()
+        streamView = SdsStreamView()
 
         if len(content) == 0:
-            return type
+            return streamView
 
         if 'Id' in content:
-            type.Id = content['Id']
+            streamView.Id = content['Id']
 
         if 'Name' in content:
-            type.Name = content['Name']
+            streamView.Name = content['Name']
 
         if 'Description' in content:
-            type.Description = content['Description']
+            streamView.Description = content['Description']
 
-        if 'SdsTypeCode' in content:
-            type.SdsTypeCode = SdsTypeCode(content['SdsTypeCode'])
+        if 'TargetTypeId' in content:
+            streamView.TargetTypeId = content['TargetTypeId']
 
-        if 'BaseType' in content:
-            type.BaseType = SdsType.fromDictionary(content['BaseType'])
+        if 'SourceTypeId' in content:
+            streamView.SourceTypeId = content['SourceTypeId']
        
         if 'Properties' in content:
             properties = content['Properties']
             if properties is not None and len(properties) > 0:
-                type.Properties = []
+                streamView.Properties = []
                 for value in properties:
-                    type.Properties.append(SdsTypeProperty.fromDictionary(value))
+                    streamView.Properties.append(SdsStreamViewProperty.fromDictionary(value))
 
-        return type
+        return streamView

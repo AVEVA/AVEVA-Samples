@@ -15,9 +15,26 @@
 # limitations under the License.
 
 import json
-from DataviewMappingColumn import DataviewMappingColumn
+from .DataviewMappingColumn import DataviewMappingColumn
 
 class DataviewMapping(object):
+
+    
+
+    def __init__(self, isDefault = None, columns = None):
+        
+        self.__columns = columns
+
+        if isDefault:
+            self.__isDefault = isDefault
+        else:
+            if columns:
+                self.__isDefault = False
+            else:
+                self.__isDefault = True
+
+
+
     """Sds dataview definition"""
     @property
     def IsDefault(self):
@@ -41,7 +58,7 @@ class DataviewMapping(object):
         # required properties
         dictionary = { 'IsDefault' : self.IsDefault}
 	
-        if hasattr(self, 'Columns'):
+        if hasattr(self, 'Columns') and self.Columns is not None:
             dictionary['Columns'] = []
             for value in self.Columns:
                 dictionary['Columns'].append(value.toDictionary())			

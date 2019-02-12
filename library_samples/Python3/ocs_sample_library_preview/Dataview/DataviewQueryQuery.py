@@ -17,13 +17,20 @@
 import json
 
 class DataviewQueryQuery(object):
+
+
+    def __init__(self, intype = None, value= None, operator = None):
+        self.__type = intype
+        self.__value = value
+        self.__operator = operator
+
     """Sds dataview definition"""
     @property
     def Type(self):
         return self.__type
     @Type.setter
-    def Type(self, type):
-        self.__type = type
+    def Type(self, intype):
+        self.__type = intype
     
     @property
     def Value(self):

@@ -15,7 +15,6 @@
 # limitations under the License.
 
 from enum import Enum
-import SdsType
 
 class SdsTypeProperty(object):
     """Sds type property definition"""
@@ -84,7 +83,8 @@ class SdsTypeProperty(object):
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
 
-        if hasattr(self, 'SdsType'):
+        if hasattr(self, 'SdsType'):            
+            from .SdsType import SdsType
             dictionary['SdsType'] = self.SdsType.toDictionary()
 
         if hasattr(self, 'Value'):
@@ -118,7 +118,8 @@ class SdsTypeProperty(object):
             typeProperty.Description = content['Description']
 
         if 'SdsType' in content:
-            typeProperty.SdsType = SdsType.SdsType.fromDictionary(content['SdsType'])
+            from .SdsType import SdsType
+            typeProperty.SdsType = SdsType.fromDictionary(content['SdsType'])
 
         if 'Value' in content:
             typeProperty.Value = content['Value']

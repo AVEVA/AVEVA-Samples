@@ -15,8 +15,8 @@
 # limitations under the License.
 
 import json
-from SdsStreamIndex import SdsStreamIndex
-from SdsStreamPropertyOverride import SdsStreamPropertyOverride
+from .SdsStreamIndex import SdsStreamIndex
+from .SdsStreamPropertyOverride import SdsStreamPropertyOverride
 
 class SdsStream(object):
     """Sds stream definition"""

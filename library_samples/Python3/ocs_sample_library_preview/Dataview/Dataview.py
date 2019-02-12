@@ -15,12 +15,27 @@
 # limitations under the License.
 
 import json
-from DataviewQuery import DataviewQuery
-from DataviewMapping import DataviewMapping
-from DataviewIndexConfig import DataviewIndexConfig
-from DataviewGroupRule import DataviewGroupRule
+from .DataviewQuery import DataviewQuery
+from .DataviewMapping import DataviewMapping
+from .DataviewIndexConfig import DataviewIndexConfig
+from .DataviewGroupRule import DataviewGroupRule
 
 class Dataview(object):
+
+
+    def __init__(self, id = None, name= None, description = None, queries = [], mappings = None, indexConfig = None, indexDataType =None, groupRules = []):
+        self.__id = id
+        self.__name = name
+        self.__description = description
+        self.__queries = queries
+        if mappings:
+            self.__mappings = mappings 
+        else:
+            self.__mappings  = DataviewMapping()
+        self.__indexConfig = indexConfig 
+        self.__indexDataType = indexDataType 
+        self.__groupRules = groupRules
+
     """Sds dataview definition"""
     @property
     def Id(self):
@@ -97,10 +112,10 @@ class Dataview(object):
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
 
-        if hasattr(self, 'Mappings'):
+        if hasattr(self, 'Mappings') and self.Mappings is not None:
             dictionary['Mappings'] = self.Mappings.toDictionary()
 
-        if hasattr(self, 'IndexConfig'):
+        if hasattr(self, 'IndexConfig') and self.IndexConfig is not None:
             dictionary['IndexConfig'] = self.IndexConfig.toDictionary()
 
         if hasattr(self, 'IndexDataType'):
