@@ -58,7 +58,7 @@ Set up Sds clients
 
 The client example works through two client interfaces: 
 
-* ISdsMetadataService for SdsStream, SdsType, SdsView and SdsStreamBehavior metadata operations
+* ISdsMetadataService for SdsStream, SdsType, and SdsStreamView metadata operations
 * ISdsDataService for reading and writing data
 
 The following code block illustrates how to configure clients to use throughout the sample:

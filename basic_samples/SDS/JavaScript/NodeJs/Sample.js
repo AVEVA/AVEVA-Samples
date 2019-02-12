@@ -1,18 +1,18 @@
 // Sample.js
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+//Copyright 2019 OSIsoft, LLC
 //
-// THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
-// OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-// THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
 //
-// RESTRICTED RIGHTS LEGEND
-// Use, duplication, or disclosure by the Government is subject to restrictions
-// as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
-// Computer Software clause at DFARS 252.227.7013
+//<http://www.apache.org/licenses/LICENSE-2.0>
 //
-// OSIsoft, LLC
-// 1600 Alvarado St, San Leandro, CA 94577
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
 
 var http = require("http");
 var restCall = require("request-promise");
@@ -190,6 +190,7 @@ http.createServer(function (request1, response) {
 
     // insert data
     console.log("Inserting data")
+    var event = [];
     var interval = new Date();
     interval.setHours(0, 1, 0, 0);
     var evt = null;
@@ -198,14 +199,15 @@ http.createServer(function (request1, response) {
     var insertValue = createStream.then(
         function (res) {
             evt = waveDataObj.NextWave(interval, 2.0, 0);
+            event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.insertEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                        return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.insertEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -305,17 +307,19 @@ http.createServer(function (request1, response) {
     var updateEvent = printWindowEvents.then(
         function (res) {
             // update the first value
+            event = [];
             evt = res[0];
             evt = waveDataObj.NextWave(interval, 4.0, 0);
+            event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
                         console.log("\nUpdating events")
-                        return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                        return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.updateEvent(tenantId, sampleNamespaceId, sampleStreamId, evt);
+                return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -380,20 +384,22 @@ http.createServer(function (request1, response) {
     var replaceEvent = printUpdateEvents.then(
         function (res) {
             console.log("\nReplacing events");
+            var event = [];
             var replaceEvent = res[0];
             currentEvents = res;
             replaceEvent.sinProperty = 1/2;
             replaceEvent.cosProperty = Math.sqrt(3)/2;
             replaceEvent.tanProperty = 1;
+            event.push(replaceEvent);
 
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.replaceEvent(tenantId, sampleNamespaceId, sampleStreamId, replaceEvent)
+                        return client.replaceEvents(tenantId, sampleNamespaceId, sampleStreamId, event)
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.replaceEvent(tenantId, sampleNamespaceId, sampleStreamId, replaceEvent)
+                return client.replaceEvents(tenantId, sampleNamespaceId, sampleStreamId, event)
             }
         }
     ).catch(function (err) { logError(err); });

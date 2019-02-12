@@ -1,18 +1,18 @@
 // sds.rest.service.ts
 //
-// Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+//Copyright 2019 OSIsoft, LLC
 //
-// THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
-// OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-// THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
 //
-// RESTRICTED RIGHTS LEGEND
-// Use, duplication, or disclosure by the Government is subject to restrictions
-// as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
-// Computer Software clause at DFARS 252.227.7013
+//<http://www.apache.org/licenses/LICENSE-2.0>
 //
-// OSIsoft, LLC
-// 1600 Alvarado St, San Leandro, CA 94577
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -178,14 +178,14 @@ export class SdsRestService {
   getLastValue(streamId: string): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-      `/Data/GetlastValue`;
+      `/Data/Last`;
     return this.authHttp.get(url);
   }
 
   getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-      `/Data/GetRangeValues?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
+      `/Data/Transform?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
     return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control','no-cache')});
   }
 
@@ -199,33 +199,18 @@ export class SdsRestService {
     return this.authHttp.delete(url);
   }
 
-  insertValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValue`;
-    return this.authHttp.post(url, JSON.stringify(event).toString());
-  }
-
   insertValues(streamId: string, events: Array<any>) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/InsertValues`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
     return this.authHttp.post(url, JSON.stringify(events).toString());
   }
 
-  updateValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValue`;
-    return this.authHttp.put(url, JSON.stringify(event).toString());
-  }
-
   updateValues(streamId: string, events: Array<any>) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/UpdateValues`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
-  replaceValue(streamId: string, event: any) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValue`;
-    return this.authHttp.put(url, JSON.stringify(event).toString());
-  }
-
   replaceValues(streamId: string, events: Array<any>) {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/ReplaceValues`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?allowCreate=false`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
@@ -245,14 +230,14 @@ export class SdsRestService {
   }
 
   deleteValue(streamId: string, index): Observable<any> {
-    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data/RemoveValue?index=${index}`;
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?index=${index}`;
     return this.authHttp.delete(url);
   }
 
   deleteWindowValues(streamId: string, start, end):Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-      `/Data/RemoveWindowValues?startIndex=${start}&endIndex=${end}`;
+      `/Data?startIndex=${start}&endIndex=${end}`;
     return this.authHttp.delete(url);
   }
 }

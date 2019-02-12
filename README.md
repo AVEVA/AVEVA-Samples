@@ -143,7 +143,7 @@ This samples sends snapshot values from PI to OCS via OMF.
   </td>
  </tr>
  </table>
-
+ 
 ## Credentials 
 
 A credential config.ini or app.config file is used in the examples unless otherwise noted in the example.  

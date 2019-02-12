@@ -8,7 +8,7 @@ Writing to OSIsoft Cloud Services (OCS) using OSIsoft Message Format (OMF)
 OSIsoft Cloud Services is able to ingest OSIsoft Message Format messages. OCS includes services that 
 unpack OMF message content and write the contained information to the SDS (the OCS data store).
 
-OSIsoft Cloud Services documentation can be found at https://cloud.osisoft.com/documentation
+OSIsoft Cloud Services documentation can be found at https://ocs-docs.osisoft.com/Documentation/OSIsoft_Cloud_Services.html
 OSIsoft Message Format documentation can be found at http://omf-docs.osisoft.com/en/v1.0/ 
 
 This sample is not intended to be used as a robust tool for migrating data from PI Data Archive to

@@ -1,18 +1,18 @@
 # sds_stream.py
 #
-# Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+# Copyright 2019 OSIsoft, LLC
 #
-# THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
-# OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-# THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# RESTRICTED RIGHTS LEGEND
-# Use, duplication, or disclosure by the Government is subject to restrictions
-# as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
-# Computer Software clause at DFARS 252.227.7013
+# <http://www.apache.org/licenses/LICENSE-2.0>
 #
-# OSIsoft, LLC
-# 1600 Alvarado St, San Leandro, CA 94577
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import json
 from sds_stream_index import SdsStreamIndex
@@ -59,14 +59,6 @@ class SdsStream(object):
         self.__type_id = typeId
 
     @property
-    def BehaviorId(self):
-        return self.__behavior_id
-
-    @BehaviorId.setter
-    def BehaviorId(self, behavior_id):
-        self.__behavior_id = behavior_id
-
-    @property
     def Indexes(self):
         return self.__indexes
 
@@ -87,10 +79,7 @@ class SdsStream(object):
 
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
-
-        if hasattr(self, 'BehaviorId'):
-            dictionary['BehaviorId'] = self.BehaviorId
-
+			
         if hasattr(self, 'Indexes'):
             dictionary['Indexes'] = []
             for value in self.Indexes:
@@ -120,10 +109,7 @@ class SdsStream(object):
 
         if 'TypeId' in content:
             stream.TypeId = content['TypeId']
-
-        if 'BehaviorId' in content:
-            stream.BehaviorId = content['BehaviorId']
-
+			
         if 'Indexes' in content:
             indexes = content['Indexes']
             if indexes is not None and len(indexes) > 0:

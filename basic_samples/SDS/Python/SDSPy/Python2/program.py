@@ -251,7 +251,6 @@ sampleTypeId = "WaveData_SampleType"
 sampleTargetTypeId = "WaveDataTarget_SampleType"
 sampleIntegerTypeId = "WaveData_IntegerType"
 sampleStreamId = "WaveData_SampleStream"
-sampleBehaviorId = "WaveData_SampleBehavior"
 sampleStreamViewId = "WaveData_SampleStreamView"
 sampleStreamViewIntId = "WaveData_SampleIntStreamView"
 sampleDataviewId = "WaveData_Dataview"
@@ -294,7 +293,6 @@ try:
     stream.Name = "WaveStreamPySample"
     stream.Description = "A Stream to store the WaveData events"
     stream.TypeId = waveType.Id
-    stream.BehaviorId = None
     client.createOrUpdateStream(namespaceId, stream)
 
     ######################################################################################################
@@ -306,7 +304,7 @@ try:
     print("Inserting data")
     # Insert a single event
     event = nextWave(start, span, 2.0, 0)
-    client.insertValue(namespaceId, stream.Id, event)
+    client.insertValues(namespaceId, stream.Id, [event])
 
     # Insert a list of events
     waves = []
@@ -331,7 +329,7 @@ try:
     print("Updating events")
     # Update the first event
     event = nextWave(start, span, 4.0, 0)
-    client.updateValue(namespaceId, stream.Id, event)
+    client.updateValues(namespaceId, stream.Id, [event])
 
     # Update the rest of the events, adding events that have no prior index entry
     updatedEvents = []
@@ -351,7 +349,7 @@ try:
     print("Replacing events")
     # replace one value
     event = nextWave(start, span, 10.0, 0)
-    client.replaceValue(namespaceId, stream.Id, event)
+    client.replaceValues(namespaceId, stream.Id, [event])
     
     # replace multiple values
     replacedEvents = []
@@ -375,7 +373,7 @@ try:
     print("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:")
     print
     
-	# We will retrieve three events using the default behavior, Continuous
+	# We will retrieve three events using the default read behavior, Continuous
     waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
 
     print("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:")
@@ -537,7 +535,7 @@ except Exception as ex:
 
 finally:
     ######################################################################################################
-    # SdsType, SdsStream, SdsStreamView and SdsBehavior deletion
+    # SdsType, SdsStream, SdsStreamView, and DataView deletion
     ######################################################################################################
 
     # Clean up the remaining artifacts

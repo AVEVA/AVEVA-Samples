@@ -1,18 +1,18 @@
 # WaveData.py
 #
-# Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
+# Copyright 2019 OSIsoft, LLC
 #
-# THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE SECRETS OF
-# OSIsoft, LLC.  USE, DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT
-# THE PRIOR EXPRESS WRITTEN PERMISSION OF OSIsoft, LLC.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# RESTRICTED RIGHTS LEGEND
-# Use, duplication, or disclosure by the Government is subject to restrictions
-# as set forth in subparagraph (c)(1)(ii) of the Rights in Technical Data and
-# Computer Software clause at DFARS 252.227.7013
+# <http://www.apache.org/licenses/LICENSE-2.0>
 #
-# OSIsoft, LLC
-# 1600 Alvarado St, San Leandro, CA 94577
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import datetime
 import math
@@ -196,17 +196,13 @@ class WaveDataInteger:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
-            # Pre-Assign the default
-            prop[1].fset(wave, 0)
+        properties = inspect.getmembers(WaveDataInteger,
+                                        lambda o: isinstance(o, property))
+        for p in properties:
+            if p[0] in content:
+                setattr(wave, p[0], content[p[0]])
 
-            # If found in JSON object, then set
-            if prop[0] in content:
-                value = content[prop[0]]
-                if value is not None:
-                    prop[1].fset(wave, value)
         return wave
-
 
 class WaveDataTarget:
     """Represents a data point to be injected into Sds Service"""
@@ -310,14 +306,10 @@ class WaveDataTarget:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
-            # Pre-Assign the default
-            prop[1].fset(wave, 0)
-
-            # If found in JSON object, then set
-            if prop[0] in content:
-                value = content[prop[0]]
-                if value is not None:
-                    prop[1].fset(wave, value)
+        properties = inspect.getmembers(WaveDataTarget,
+                                        lambda o: isinstance(o, property))
+        for p in properties:
+            if p[0] in content:
+                setattr(wave, p[0], content[p[0]])
 
         return wave
