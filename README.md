@@ -33,6 +33,40 @@ The official OCS samples are divided in multiple categories depending on the sce
  </tr>
  <tr>
    <td width="25%">
+      <h3>Client Credential Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
+  </td>
+  <td width="35%">
+    Covers the client credential flow of authentication against OCS.  Click here For more  <a href="basic_samples/Authentication/">Details</a> on the various credential patterns. 
+  </td>
+    <td>
+     <a href="basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>
+  </td>
+ </tr>
+ <tr>
+   <td width="25%">
+      <h3>Hybrid Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
+  </td>
+  <td width="35%">
+    Covers the hybrid flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. 
+  </td>
+    <td>
+     <a href="basic_samples/Authentication/HybridFlow/DotNet/HybridFlow">.NET</a>
+  </td>
+ </tr>
+ <tr>
+   <td width="25%">
+      <h3>Implicit Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
+  </td>
+  <td width="35%">
+    Covers the implicit flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. 
+  </td>
+    <td>
+     <a href="basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow">.NET and JavaScript</a>
+  </td>
+ </tr>
+ 
+ <tr>
+   <td width="25%">
       <h3>SDS Application <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
   </td>
   <td width="35%">
@@ -46,18 +80,6 @@ The official OCS samples are divided in multiple categories depending on the sce
      <a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a>&nbsp; &nbsp;
      <a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
- <tr>
-   <td width="25%">
-      <h3>Identity <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers different flows of authentication against OCS.  <a href="basic_samples/Identity/">Details</a>
-  </td>
-    <td>
-     <a href="basic_samples/Identity/DotNet/">.NET</a>
   </td>
  </tr>
  <tr>
