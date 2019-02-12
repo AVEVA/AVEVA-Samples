@@ -218,11 +218,11 @@ def main():
 
         
         print
-        print("Cerating dataview")		
+        print("Creating dataview")		
         dataviews = ocsClient.Dataviews.postDataview(namespaceId, dataview)
 
         print
-        print("getting dataview")		
+        print("Getting dataview")		
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
 
         #assert is added to make sure we get back what we are expecting
