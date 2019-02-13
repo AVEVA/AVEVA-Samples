@@ -47,5 +47,10 @@
         <artifactId>commons-io</artifactId>
         <version>2.6</version>
     </dependency>
+      <dependency>
+        <groupId>com.osisoft.ocs_sample_library_preview</groupId>
+        <artifactId>ocs_sample_library_preview</artifactId>
+        <version>0.0.1-preview</version>
+    </dependency>
   </dependencies>
 </project>

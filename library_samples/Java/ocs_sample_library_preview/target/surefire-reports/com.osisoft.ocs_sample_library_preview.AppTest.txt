@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.osisoft.ocs_sample_library_preview.AppTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 s - in com.osisoft.ocs_sample_library_preview.AppTest
