@@ -559,14 +559,22 @@ public class Program {
 	
     public static void cleanUp(OCSClient ocsClient) throws SdsError 
 	{
-		System.out.println("Deleting the stream");
-        ocsClient.Streams.deleteStream(tenantId, namespaceId, sampleStreamId);
+        System.out.println("Deleting the stream");
+        try{ocsClient.Streams.deleteStream(tenantId, namespaceId, sampleStreamId);}
+        catch(Exception e){}
+
         System.out.println("Deleting the streamViews");
-        ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
-        ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleManualStreamViewId);
+        try{ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);}
+        catch(Exception e){}
+        try{ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleManualStreamViewId);}
+        catch(Exception e){}
+
         System.out.println("Deleting the types");
-        ocsClient.Types.deleteType(tenantId, namespaceId, sampleTypeId);
-        ocsClient.Types.deleteType(tenantId, namespaceId, targetTypeId);
-        ocsClient.Types.deleteType(tenantId, namespaceId, integerTargetTypeId);
-	};
+        try{ocsClient.Types.deleteType(tenantId, namespaceId, sampleTypeId);}
+        catch(Exception e){}
+        try{ocsClient.Types.deleteType(tenantId, namespaceId, targetTypeId);}
+        catch(Exception e){}
+        try{ocsClient.Types.deleteType(tenantId, namespaceId, integerTargetTypeId);}
+        catch(Exception e){}
+	}
 }
