@@ -425,4 +425,9 @@ public class DataviewClient {
         return results;
        // return response.toString();
     }
+
+    public Map<String,Object>[]  getDataviewPreview(String tenantId, String namespaceId, String dataviewId) throws SdsError {
+        return getDataviewPreview(tenantId, namespaceId, dataviewId, "","","","",0,"");
+    }
+    
 }

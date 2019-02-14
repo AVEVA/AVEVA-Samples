@@ -24,6 +24,17 @@ public class DataviewQueryQuery {
     private String Value = "";
     private String Operator = "";
 
+    public DataviewQueryQuery()
+    {
+    }
+
+    public DataviewQueryQuery(String Type, String Value, String Operator)
+    {
+        this.Type =Type;
+        this.Value = Value;
+        this.Operator = Operator;
+    }
+
     public String getType() {
         return Type;
     }

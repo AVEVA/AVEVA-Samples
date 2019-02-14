@@ -17,7 +17,7 @@ import java.time.*;
 
 import  com.github.osisoft.ocs_sample_library_preview.*;
 import  com.github.osisoft.ocs_sample_library_preview.sds.*;
-import  com.github.osisoft.ocs_sample_library_preview.dataview.*;
+import  com.github.osisoft.ocs_sample_library_preview.dataviews.*;
 
 public class App {
     // get configuration
@@ -38,8 +38,6 @@ public class App {
 
     static boolean needData = false;
 
-    static SdsClient sdsclient;
-    static DataviewClient dataviewclient;
     
     public static void main(String[] args) throws InterruptedException {
     	
@@ -54,19 +52,16 @@ public class App {
         System.out.println(" ######  #    #   #   #    #   ##   # ###### #    #  #####  #     #    #    #     # ");
         System.out.println("------------------------------------------------------------------------------------");
         
-        String server = ocsServerUrl + "/";
-        ocsClient = new OCSClient();
-        System.out.println("Sds endpoint at " + server);
-        System.out.println();
+        OCSClient ocsClient = new OCSClient();
 
         try { 	 
 
             if(needData)
             {
-                createData();
+                createData(ocsClient);
             }
             String sampleStreamId = "SampleStream";
-
+/*
             Dataview dataview = new Dataview();
             dataview.setId(sampleDataviewId);
             DataviewQuery query  = new DataviewQuery();
@@ -88,20 +83,27 @@ public class App {
             groupRule.setType("StreamTag"); 
             DataviewGroupRule[]  rules  =  new DataviewGroupRule[1];
             rules[0] = groupRule;
+            */
 //            dataview.setGroupRules(rules);
 
+            DataviewQuery dq  = new DataviewQuery(sampleDataviewId, "streamname", sampleStreamId, "contains");
+            DataviewGroupRule dgr = new DataviewGroupRule("DefaultGroupRule","StreamTag");
+            DataviewQuery[] dqArray = {dq};
+            DataviewGroupRule[] dgrArray = {dgr};
+
+            Dataview dataview = new Dataview(sampleDataviewId,  dqArray, dgrArray, "datetime" );
 
             System.out.println();
             System.out.println("Cerating dataview");	
-            System.out.println(dataviewclient.mGson.toJson(dataview));	
-            Dataview dataviewOut = dataviewclient.postDataview(tenantId, namespaceId, dataview);
+            System.out.println(ocsClient.mGson.toJson(dataview));	
+            Dataview dataviewOut = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
             
             //Getting the complete set of dataviews to make sure it is there
             System.out.println();
             System.out.println("Getting dataviews");		
-            ArrayList<Dataview> dataviews = dataviewclient.getDataviews(tenantId,namespaceId);
+            ArrayList<Dataview> dataviews = ocsClient.Dataviews.getDataviews(tenantId,namespaceId);
             for (Dataview dv: dataviews){
-                System.out.println(dataviewclient.mGson.toJson(dv));                
+                System.out.println(ocsClient.mGson.toJson(dv));                
             }            
                 
     
@@ -110,20 +112,24 @@ public class App {
         
             System.out.println();            
             System.out.println("Retrieving data from the Dataview");
-            Map<String,Object>[] dataviewData = dataviewclient.getDataviewPreview(tenantId, namespaceId, sampleDataviewId);
-            System.out.println(dataviewclient.mGson.toJson(dataviewData));
+            Map<String,Object>[] dataviewData = ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId, sampleDataviewId);
+            System.out.println(ocsClient.mGson.toJson(dataviewData));
             
 
             
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            System.out.println("Cleaning up");          
-            cleanUp();
+            System.out.println("Cleaning up"); 
+            if(needData)    
+            {        
+                cleanUp(ocsClient);
+            }
+            try{ocsClient.Dataviews.deleteDataview(tenantId, namespaceId, sampleDataviewId);}catch(Exception e) {e.printStackTrace();}
         }
     }
     
-    private static void createData() {
+    private static void createData(OCSClient ocsClient) {
         
         try {
 
@@ -166,11 +172,11 @@ public class App {
             
 
             System.out.println("Creating SDS Type");
-            System.out.println(sdsclient.mGson.toJson(pressure_SDSType));
+            System.out.println(ocsClient.mGson.toJson(pressure_SDSType));
 
 
-            sdsclient.createType(tenantId, namespaceId, pressure_SDSType);
-            sdsclient.createType(tenantId, namespaceId, temperature_SDSType);
+            ocsClient.Types.createType(tenantId, namespaceId, pressure_SDSType);
+            ocsClient.Types.createType(tenantId, namespaceId, temperature_SDSType);
 
             SdsStream pressureStream = new SdsStream(samplePressureStreamId, samplePressureTypeId);
             pressureStream.setName(samplePressureStreamName);
@@ -179,8 +185,8 @@ public class App {
             temperatureStream.setName(sampleTemperatureStreamName);
             
             System.out.println("Creating SDS Streams");
-            String jsonStream = sdsclient.createStream(tenantId, namespaceId, pressureStream);
-            jsonStream = sdsclient.createStream(tenantId, namespaceId, temperatureStream);
+            String jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, pressureStream);
+            jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, temperatureStream);
 
             Instant start = Instant.now().minus(Duration.ofHours(1));
 
@@ -200,9 +206,9 @@ public class App {
             String tVals = "[" + String.join(",", temperatureValues) + "]";
 
             System.out.println("Sending pressure values");
-            sdsclient.updateValues(tenantId, namespaceId, samplePressureStreamId, pVals);
+            ocsClient.Streams.updateValues(tenantId, namespaceId, samplePressureStreamId, pVals);
             System.out.println("Sending temperature values");
-            sdsclient.updateValues(tenantId, namespaceId, sampleTemperatureStreamId, tVals);
+            ocsClient.Streams.updateValues(tenantId, namespaceId, sampleTemperatureStreamId, tVals);
 
         }
         catch (Exception e) {
@@ -229,7 +235,7 @@ public class App {
         InputStream inputStream;
 
         try {
-            inputStream = new FileInputStream(System.getProperty("user.dir") + "\\basic_samples\\Dataviews\\JAVA\\config.properties");
+            inputStream = new FileInputStream(System.getProperty("user.dir") + "config.properties"); // "\\basic_samples\\Dataviews\\JAVA\\config.properties");
             props.load(inputStream);
             property = props.getProperty(propertyId);
         } catch (Exception e) {
@@ -239,28 +245,14 @@ public class App {
         return property;
     }
 	
-    public static void cleanUp() 
+    public static void cleanUp(OCSClient ocsClient) 
 	{
-        try
-        {
-            if(true)
-            {
-                System.out.println("Deleting the streams");
-                sdsclient.deleteStream(tenantId, namespaceId, samplePressureStreamId);
-                sdsclient.deleteStream(tenantId, namespaceId, sampleTemperatureStreamId);
-                System.out.println("Deleting the types");
-                sdsclient.deleteType(tenantId, namespaceId, samplePressureTypeId);
-                sdsclient.deleteType(tenantId, namespaceId, sampleTemperatureTypeId);
+        System.out.println("Deleting the streams");
+        try{ ocsClient.Streams.deleteStream(tenantId, namespaceId, samplePressureStreamId);}catch(Exception e) {e.printStackTrace();}
+        try{ocsClient.Streams.deleteStream(tenantId, namespaceId, sampleTemperatureStreamId);}catch(Exception e) {e.printStackTrace();}
 
-            }
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    };
-    
-    public static Boolean getBool()
-    {
-        return false;
+        System.out.println("Deleting the types");
+        try{ocsClient.Types.deleteType(tenantId, namespaceId, samplePressureTypeId);}catch(Exception e) {e.printStackTrace();}
+        try{ocsClient.Types.deleteType(tenantId, namespaceId, sampleTemperatureTypeId);}catch(Exception e) {e.printStackTrace();}
     }
 }

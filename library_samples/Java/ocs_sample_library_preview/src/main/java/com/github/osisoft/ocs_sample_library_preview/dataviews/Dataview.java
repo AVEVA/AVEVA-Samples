@@ -24,9 +24,38 @@ public class Dataview {
     private String Name = "";
     private String Description = "";
     private DataviewQuery[] Queries;
+    private DataviewGroupRule[] GroupRules;
     private DataviewMapping Mappings;
     private DataviewIndexConfig IndexConfig;
     private String IndexDataType = "";
+
+    public Dataview()
+    {
+        this.Mappings =  new DataviewMapping();
+        this.IndexConfig = new DataviewIndexConfig();
+    }
+
+    public Dataview(String Id, DataviewQuery[] Queries, DataviewGroupRule[] GroupRules,String IndexDataType)
+    {
+        this.Id = Id;
+        this.Queries = Queries;
+        this.GroupRules = GroupRules;
+        this.Mappings = new DataviewMapping();
+        this.IndexConfig = new DataviewIndexConfig();
+        this.IndexDataType = IndexDataType;
+    }
+
+    public Dataview(String Id, String Name, String Description, DataviewQuery[] Queries, DataviewGroupRule[] GroupRules, DataviewMapping Mappings, DataviewIndexConfig IndexConfig,String IndexDataType)
+    {
+        this.Id = Id;
+        this.Name = Name;
+        this.Description = Description;
+        this.Queries = Queries;
+        this.GroupRules = GroupRules;
+        this.Mappings = Mappings;
+        this.IndexConfig = IndexConfig;
+        this.IndexDataType = IndexDataType;
+    }
 
     public String getId() {
         return Id;
@@ -72,7 +101,7 @@ public class Dataview {
         return IndexConfig;
     }
 
-    public void setQueries(DataviewIndexConfig indexConfig) {
+    public void setIndexConfig(DataviewIndexConfig indexConfig) {
         this.IndexConfig = indexConfig;
     }
 
@@ -82,5 +111,14 @@ public class Dataview {
 
     public void setIndexDataType(String indexDataType) {
         this.IndexDataType = indexDataType;
+    }
+    
+
+    public DataviewGroupRule[]  getGroupRules() {
+        return GroupRules;
+    }
+
+    public void setGroupRules(DataviewGroupRule[]  rules) {
+        this.GroupRules = rules;
     }
 }
