@@ -18,10 +18,11 @@ Summary of steps to run the Java demo
 Using Eclipse or any IDE
 1. Clone a local copy of the GitHub repository.
 2. Install Maven.
-3. If you are using Eclipse, select ``File`` > ``Import`` >
+3. *Install the ocs_sample_library_preview to your local Maven repo using run mvn install pom.xml from \library_samples\Java\ocs_sample_library_preview\
+4. If you are using Eclipse, select ``File`` > ``Import`` >
    ``Maven``> ``Existing maven project`` and then select the local
    copy.
-4. Replace the configuration strings in ``config.properties``
+5. Replace the configuration strings in ``config.properties``
 
 Using a command line
 1. Clone a local copy of the GitHub repository.
@@ -40,20 +41,23 @@ Using a command line
 
       and, also add ~\apache-maven-x.x.x\bin path to the Path variable in System variables.
 
-4. Building and running the project.
+4. *Install the  ocs_sample_library_preview to your local Maven repo using run mvn install pom.xml from \library_samples\Java\ocs_sample_library_preview\
+5. Building and running the project.
    a) cd to your project location.
    b) run "mvn package exec:java" on cmd.
+
+*Currently this project is not hosted on the central Maven repo and must be compiled and installed locally.
 
 Java Samples: Building a Client using the SDS REST API
 -----------------------------------------------------
 
-This sample is written using only the SDS REST API. The API allows you to
+This sample is written using the ocs_sample_library_preview library which uses the SDS REST API. The API allows you to
 create SDS Service clients in any language that can make HTTP calls. Objects 
 are passed between client and server as JSON strings. The sample uses the Gson library 
 for the Java client, but you can use any method to create a JSON representation 
 of objects.
 
-Instantiate an SDS Client
+Instantiate an OCS Client
 -----------------------
 
 Each REST API call consists of an HTTP request along with a specific URL and
@@ -73,13 +77,14 @@ HTTP methods to CRUD operations as shown in the following table:
 | DELETE        | Delete           | URL parameters     |
 +---------------+------------------+--------------------+
 
-The constructor for the SdsClient class takes the base URL (that is, the
+The constructor for the OCSClient class takes the base URL (that is, the
 protocol, server address and port number) and the api version. It also creates a new Gson
-serializer/deserializer to convert between Java Objects and JSON.
+serializer/deserializer to convert between Java Objects and JSON.  This is all done in a shared baseClient 
+that is used amongst the the various services that we can interact with.
 
 .. code:: java
 
-    public SdsClient() {
+    public BaseClient() {
         gclientId = getConfiguration("clientId");
         gclientSecret = getConfiguration("clientSecret");
         gresource = getConfiguration("resource");
@@ -95,7 +100,7 @@ Configure the Sample:
 
 Included in the sample is a configuration file with placeholders 
 that need to be replaced with the proper values. They include information 
-for authentication, connecting to the SDS Service, and pointing to a namespace.
+for authentication, connecting to OCS, and pointing to a namespace.
 
 The SDS Service is secured using Azure Active Directory. The sample application 
 is an example of a *confidential client*. Confidential clients provide an 
@@ -143,7 +148,7 @@ The values to be replaced are in ``config.properties``:
 Obtain an Authentication Token
 ------------------------------
 
-Near the end of the ``SdsClient.Java`` file is a method called
+Near the end of the ``BaseClient.Java`` file is a method called
 ``AcquireAuthToken``. The first step in obtaining an authorization token
 is to connect to the Open ID discovery endpoint and get a URI for obtaining the token.
 Thereafter, the token based on ``clientId`` and ``clientSecret`` is retrieved.
@@ -219,8 +224,8 @@ SdsClient.java.
 
 .. code:: java
 
-    String evtTypeString = sdsclient.CreateType(type);
-    evtType = sdsclient.mGson.fromJson(evtTypeString, SdsType.class);
+    String evtTypeString = ocsClient.Types.CreateType(type);
+    evtType = ocsClient.mGson.fromJson(evtTypeString, SdsType.class);
 
 All SdsTypes are constructed in a similar manner. Basic SdsTypes form the basis for
 SdsTypeProperties, which are then assigned to a complex user-defined
@@ -239,8 +244,8 @@ it is called from the main program:
 .. code:: java
 
     SdsStream sampleStream = new SdsStream(sampleStreamId, sampleTypeId);
-    String streamJson = sdsclient.createStream(tenantId, namespaceId, sampleStream);
-    sampleStream = sdsclient.mGson.fromJson(streamJson, SdsStream.class);
+    String streamJson = ocsClient.Streams.createStream(tenantId, namespaceId, sampleStream);
+    sampleStream = ocsClient.mGson.fromJson(streamJson, SdsStream.class);
 
 Note that you set the ``TypeId`` property of the stream
 to the Id of the SdsType previously created.
@@ -266,7 +271,7 @@ and inserts them with a single call:
             List<WaveData> event = new ArrayList<WaveData>();
             WaveData evt = WaveData.next(1, 2.0, 0);
             event.add(evt);
-            sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(event));
+            ocsClient.Streams.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(event));
 
 	    // insert an a collection of events
 	    List<WaveData> events = new ArrayList<WaveData>();
@@ -274,7 +279,7 @@ and inserts them with a single call:
 		evt = WaveData.next(1, 2.0, i);
 		events.add(evt);
 	    }
-	    sdsclient.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(events));
+	    ocsClient.Streams.insertValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(events));
 
 Retrieve Values from a Stream
 -----------------------------
@@ -285,7 +290,7 @@ which are passed using the URL. The index values must be capable of
 conversion to the type of the index assigned in the SdsType.
 
 In this sample, four of the available methods are implemented in
-SdsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
+StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
 ``getWindowValues`` can be used to retrieve events over a specific index
 range. ``getRangeValues`` can be used to retrieve a specified number of
 events from a starting index.
@@ -294,30 +299,30 @@ Get single value:
 
 .. code:: java
 
-    String jsonSingleValue = sdsclient.getValue(tenantId, namespaceId, sampleStreamId, "0");
-    WaveData data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class);
+    String jsonSingleValue = ocsClient.Streams.getValue(tenantId, namespaceId, sampleStreamId, "0");
+    WaveData data = ocsClient.mGson.fromJson(jsonSingleValue, WaveData.class);
 
 Get last value inserted:
 
 .. code:: java
 
-    jsonSingleValue = sdsclient.getLastValue(tenantId, namespaceId, sampleStreamId);
-    data = sdsclient.mGson.fromJson(jsonSingleValue, WaveData.class));
+    jsonSingleValue = ocsClient.Streams.getLastValue(tenantId, namespaceId, sampleStreamId);
+    data = ocsClient.mGson.fromJson(jsonSingleValue, WaveData.class));
 
 Get window of values:
 
 .. code:: java
 
-    String jsonMultipleValues = sdsclient.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "18");
+    String jsonMultipleValues = ocsClient.Streams.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "18");
     Type listType = new TypeToken<ArrayList<WaveData>>() {}.getType(); // necessary for gson to decode list of WaveData, represents ArrayList<WaveData> type
-    ArrayList<WaveData> foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
+    ArrayList<WaveData> foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
 
 Get range of values:
 
 .. code:: java
 
-    jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
-    foundEvents = sdsclient.mGson.fromJson(jsonMultipleValues, listType);
+    jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
+    foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
 
 Updating and Replacing Values
 -----------------------------
@@ -333,8 +338,8 @@ SDS Service with ``updateValues`` as shown here:
 
 .. code:: java
 
-    sdsclient.updateValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvent));
-    sdsclient.updateValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvents));
+    ocsClient.Streams.updateValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(newEvent));
+    ocsClient.Streams.updateValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(newEvents));
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
@@ -343,8 +348,8 @@ identical to ``updateValues``:
 
 .. code:: java
 
-    sdsclient.replaceValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvent));
-    sdsclient.replaceValues(tenantId, namespaceId, sampleStreamId, sdsclient.mGson.toJson(newEvents));
+    ocsClient.Streams.replaceValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(newEvent));
+    ocsClient.Streams.replaceValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(newEvents));
 
 Property Overrides
 ------------------
@@ -369,7 +374,7 @@ The following shows how this is done in the code:
 
 	// update the stream   		 	
 	sampleStream.setPropertyOverrides(propertyOverrides);
-	sdsclient.updateStream(tenantId, namespaceId, sampleStreamId, sampleStream);
+	ocsClient.Streams.updateStream(tenantId, namespaceId, sampleStreamId, sampleStream);
 
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
@@ -391,7 +396,7 @@ or when the properties have the same name, SDS will map the properties automatic
 
 .. code:: java
 
-        jsonMultipleValues = sdsclient.getRangeValues(tenantId, namespaceId, sampleStream.getId(), "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleStreamViewId);
+        jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStream.getId(), "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleStreamViewId);
 
 To map a property that is beyond the ability of SDS to map on its own, 
 you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
@@ -419,7 +424,7 @@ The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 .. code:: java
 
-         String jsonStreamViewMap = sdsclient.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
+         String jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
 
 
 Deleting Values from a Stream
@@ -434,8 +439,8 @@ declarations of both functions:
 
 .. code:: java
 
-    sdsclient.removeValue(tenantId, namespaceId, sampleStreamId, "0");
-    sdsclient.removeWindowValues(tenantId, namespaceId, sampleStreamId, "2", "40");
+    ocsClient.Streams.removeValue(tenantId, namespaceId, sampleStreamId, "0");
+    ocsClient.Streams.removeWindowValues(tenantId, namespaceId, sampleStreamId, "2", "40");
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to Order=2 and Order=40
@@ -453,12 +458,12 @@ and getStreams:
 .. code:: java
 
     // get a single stream
-    String stream = sdsclient.getStream(tenantId, namespaceId, sampleStreamId);
-    SdsStream = sdsclient.mGson.fromJson(returnedStream, SdsStream.class));
+    String stream = ocsClient.Streams.getStream(tenantId, namespaceId, sampleStreamId);
+    SdsStream = ocsClient.mGson.fromJson(returnedStream, SdsStream.class));
     // get multiple streams
-    String returnedStreams = sdsclient.getStreams(tenantId, namespaceId, "","0", "100");
+    String returnedStreams = ocsClient.Streams.getStreams(tenantId, namespaceId, "","0", "100");
     Type streamListType = new TypeToken<ArrayList<SdsStream>>(){}.getType();
-    ArrayList<SdsStream> streams = sdsclient.mGson.fromJson(returnedStreams, streamListType);
+    ArrayList<SdsStream> streams = ocsClient.mGson.fromJson(returnedStreams, streamListType);
 
 For a complete list of HTTP request URLs refer to the `Sds
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
@@ -473,15 +478,15 @@ the corresponding Id.
 
 .. code:: java
 
-    sdsclient.deleteStream(tenantId, namespaceId, sampleStreamId);
-    sdsclient.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
+    ocsClient.Streams.deleteStream(tenantId, namespaceId, sampleStreamId);
+    ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);
 
 Note that the IDs of the objects are passed, not the object themselves.
 Similarly, the following code deletes the type from the SDS Service:
 
 .. code:: java
 
-    sdsclient.deleteType(tenantId, namespaceId, sampleTypeId);
+    ocsClient.Types.deleteType(tenantId, namespaceId, sampleTypeId);
 
 
 
