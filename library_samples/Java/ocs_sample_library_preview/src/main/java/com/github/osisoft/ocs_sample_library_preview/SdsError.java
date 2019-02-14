@@ -78,5 +78,6 @@ public class SdsError extends Exception {
         System.out.println("SdsError Msg: " + this.getSdsErrorMessage());
         System.out.println("HttpStatusCode: " + this.getHttpStatusCode());
         System.out.println("errorMessage: " + this.getMessage());
+        System.out.println("httpErrorMessage: " + this.httpErrorMessage.toString());
     }  
 }
