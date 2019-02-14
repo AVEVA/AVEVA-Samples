@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import com.osisoft.ocs_sample_library_preview.*;
-import com.osisoft.ocs_sample_library_preview.sds.*;
+import  com.github.osisoft.ocs_sample_library_preview.*;
+import  com.github.osisoft.ocs_sample_library_preview.sds.*;
 
 public class Program {
     // get configuration
