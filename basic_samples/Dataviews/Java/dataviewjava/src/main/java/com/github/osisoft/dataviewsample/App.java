@@ -235,7 +235,9 @@ public class App {
         InputStream inputStream;
 
         try {
-            inputStream = new FileInputStream(System.getProperty("user.dir") + "config.properties"); // "\\basic_samples\\Dataviews\\JAVA\\config.properties");
+            inputStream = new FileInputStream(System.getProperty("user.dir") + "\\config.properties"); 
+            //if launching from git folder use this:
+            // "\\basic_samples\\Dataviews\\JAVA\\config.properties");
             props.load(inputStream);
             property = props.getProperty(propertyId);
         } catch (Exception e) {
