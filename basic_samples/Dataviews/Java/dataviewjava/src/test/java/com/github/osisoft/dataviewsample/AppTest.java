@@ -7,18 +7,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.github.osisoft.ocs_sample_library_preview.*;
+import com.github.osisoft.ocs_sample_library_preview.sds.*;
+import com.github.osisoft.ocs_sample_library_preview.dataviews.*;
 
 /**
- * Unit test for simple App.
+ * Test for simple App.
  */
 public class AppTest 
 {
-    /**
-     * Rigorous Test :-)
-     */
     @Test
-    public void shouldAnswerWithTrue()
+    public void runMainProgram()
     {
-        assertTrue( true );
+        assertTrue( App.toRun() );
     }
+    
 }

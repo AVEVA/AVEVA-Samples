@@ -41,8 +41,13 @@ public class App {
     
     public static void main(String[] args) throws InterruptedException {
     	
+        toRun();
+    }
+
+    public static Boolean toRun() {
+        Boolean success = true;
         // Create Sds client to communicate with server
-    	System.out.println("------------------------------------------------------------------------------------");
+        System.out.println("------------------------------------------------------------------------------------");
         System.out.println(" ######                                                   #    #    #     #    #    ");
         System.out.println(" #     #   ##   #####   ##   #    # # ###### #    #       #   # #   #     #   # #   ");
         System.out.println(" #     #  #  #    #    #  #  #    # # #      #    #       #  #   #  #     #  #   #  ");
@@ -51,82 +56,86 @@ public class App {
         System.out.println(" #     # #    #   #   #    #  #  #  # #      ##  ## #     # #     #   # #   #     # ");
         System.out.println(" ######  #    #   #   #    #   ##   # ###### #    #  #####  #     #    #    #     # ");
         System.out.println("------------------------------------------------------------------------------------");
-        
+
         OCSClient ocsClient = new OCSClient();
+        
+        try {
 
-        try { 	 
-
-            if(needData)
-            {
+            if (needData) {
                 createData(ocsClient);
             }
             String sampleStreamId = "SampleStream";
-/*
-            Dataview dataview = new Dataview();
-            dataview.setId(sampleDataviewId);
-            DataviewQuery query  = new DataviewQuery();
-            query.setId(sampleDataviewId);
-            DataviewQueryQuery queryQuery = new DataviewQueryQuery();
-            queryQuery.setType("streamname"); 
-            queryQuery.setValue(sampleStreamId);
-            queryQuery.setOperator("Contains"); 
-            query.setQuery(queryQuery);
-            DataviewQuery[]  queries  =  new DataviewQuery[1];
-            queries[0] = query;
-            dataview.setQueries(queries);
-            DataviewMapping map = new  DataviewMapping();
-            map.setIsDefault("true");
-            dataview.setMappings(map); 
-            dataview.setIndexDataType("datetime"); 
-            DataviewGroupRule groupRule = new DataviewGroupRule();
-            groupRule.setId("DefaultGroupRule"); 
-            groupRule.setType("StreamTag"); 
-            DataviewGroupRule[]  rules  =  new DataviewGroupRule[1];
-            rules[0] = groupRule;
-            */
-//            dataview.setGroupRules(rules);
+            /*
+             * Dataview dataview = new Dataview(); dataview.setId(sampleDataviewId);
+             * DataviewQuery query = new DataviewQuery(); query.setId(sampleDataviewId);
+             * DataviewQueryQuery queryQuery = new DataviewQueryQuery();
+             * queryQuery.setType("streamname"); queryQuery.setValue(sampleStreamId);
+             * queryQuery.setOperator("Contains"); query.setQuery(queryQuery);
+             * DataviewQuery[] queries = new DataviewQuery[1]; queries[0] = query;
+             * dataview.setQueries(queries); DataviewMapping map = new DataviewMapping();
+             * map.setIsDefault("true"); dataview.setMappings(map);
+             * dataview.setIndexDataType("datetime"); DataviewGroupRule groupRule = new
+             * DataviewGroupRule(); groupRule.setId("DefaultGroupRule");
+             * groupRule.setType("StreamTag"); DataviewGroupRule[] rules = new
+             * DataviewGroupRule[1]; rules[0] = groupRule;
+             */
+            // dataview.setGroupRules(rules);
 
-            DataviewQuery dq  = new DataviewQuery(sampleDataviewId, "streamname", sampleStreamId, "contains");
-            DataviewGroupRule dgr = new DataviewGroupRule("DefaultGroupRule","StreamTag");
-            DataviewQuery[] dqArray = {dq};
-            DataviewGroupRule[] dgrArray = {dgr};
+            DataviewQuery dq = new DataviewQuery(sampleDataviewId, "streamname", sampleStreamId, "contains");
+            DataviewGroupRule dgr = new DataviewGroupRule("DefaultGroupRule", "StreamTag");
+            DataviewQuery[] dqArray = { dq };
+            DataviewGroupRule[] dgrArray = { dgr };
 
-            Dataview dataview = new Dataview(sampleDataviewId,  dqArray, dgrArray, "datetime" );
+            Dataview dataview = new Dataview(sampleDataviewId, dqArray, dgrArray, "datetime");
 
             System.out.println();
-            System.out.println("Cerating dataview");	
-            System.out.println(ocsClient.mGson.toJson(dataview));	
+            System.out.println("Cerating dataview");
+            System.out.println(ocsClient.mGson.toJson(dataview));
             Dataview dataviewOut = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
-            
-            //Getting the complete set of dataviews to make sure it is there
-            System.out.println();
-            System.out.println("Getting dataviews");		
-            ArrayList<Dataview> dataviews = ocsClient.Dataviews.getDataviews(tenantId,namespaceId);
-            for (Dataview dv: dataviews){
-                System.out.println(ocsClient.mGson.toJson(dv));                
-            }            
-                
-    
-            //By default this will get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
-            //Beyond the normal API optoins, this function does have the option to return the data in a class if you have created a Type for the data you re retreiving.
-        
-            System.out.println();            
-            System.out.println("Retrieving data from the Dataview");
-            Map<String,Object>[] dataviewData = ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId, sampleDataviewId);
-            System.out.println(ocsClient.mGson.toJson(dataviewData));
-            
+            String retrievedDv = ocsClient.mGson.toJson(dataviewOut);
+            String expectedDV = ocsClient.mGson.toJson(dataview);
 
-            
+            if(!retrievedDv.equals((expectedDV)))
+            {
+                throw new SdsError("Dataview doesn't match expected one");
+            }
+
+            // Getting the complete set of dataviews to make sure it is there
+            System.out.println();
+            System.out.println("Getting dataviews");
+            ArrayList<Dataview> dataviews = ocsClient.Dataviews.getDataviews(tenantId, namespaceId);
+            for (Dataview dv : dataviews) {
+                System.out.println(ocsClient.mGson.toJson(dv));
+            }
+
+            // By default this will get interpolated values every minute over the last hour,
+            // which lines up with our data that we sent in.
+            // Beyond the normal API optoins, this function does have the option to return
+            // the data in a class if you have created a Type for the data you re
+            // retreiving.
+
+            System.out.println();
+            System.out.println("Retrieving data from the Dataview");
+            Map<String, Object>[] dataviewData = ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId,
+                    sampleDataviewId);
+            System.out.println(ocsClient.mGson.toJson(dataviewData));
+
         } catch (Exception e) {
             e.printStackTrace();
+            success = false;
         } finally {
-            System.out.println("Cleaning up"); 
-            if(needData)    
-            {        
+            System.out.println("Cleaning up");
+            if (needData) {
                 cleanUp(ocsClient);
             }
-            try{ocsClient.Dataviews.deleteDataview(tenantId, namespaceId, sampleDataviewId);}catch(Exception e) {e.printStackTrace();}
+            try {
+                ocsClient.Dataviews.deleteDataview(tenantId, namespaceId, sampleDataviewId);
+            } catch (Exception e) {
+                e.printStackTrace();                
+                success = false;
+            }
         }
+        return success;
     }
     
     private static void createData(OCSClient ocsClient) {
