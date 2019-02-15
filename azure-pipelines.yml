@@ -54,6 +54,12 @@ jobs:
       displayName: 'Test with pytest'
       workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
 
+      
+    - script: |
+        python -m pytest ./program.py
+      displayName: 'Test with pytest2'
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
+
 - job: SDSPy2
 
   pool:
