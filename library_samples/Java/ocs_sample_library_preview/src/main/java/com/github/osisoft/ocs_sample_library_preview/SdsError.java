@@ -28,7 +28,6 @@ public class SdsError extends Exception {
     private String sdsErrorMessage;
     
     public SdsError(String msg) {
-        String inputLine;
         this.sdsErrorMessage = msg;
     }
 
