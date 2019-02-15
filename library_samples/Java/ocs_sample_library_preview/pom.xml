@@ -5,7 +5,7 @@
 
   <groupId> com.github.osisoft.ocs_sample_library_preview</groupId>
   <artifactId>ocs_sample_library_preview</artifactId>
-  <version>0.0.2-preview-SNAPSHOT</version>
+  <version>0.0.2-preview</version>
 
   <name>ocs_sample_library_preview</name>
   <description>A preview of an OCS (OSIsoft Cloud Services) client library </description>
@@ -31,7 +31,7 @@
     
   <connection>scm:git:git://github.com/osisoft/OCS-Samples/tree/master/library_samples/Java/ocs_sample_library_preview.git</connection>
     <url>https://github.com/osisoft/OCS-Samples</url>
-    <tag>HEAD</tag>
+    <tag>ocs_sample_library_preview-0.0.2-preview</tag>
   </scm>
  
 
