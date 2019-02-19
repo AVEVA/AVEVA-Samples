@@ -15,7 +15,8 @@ the pom.xml file.
 
 Summary of steps to run the Java demo
 --------------------------------------
-Using Eclipse or any IDE
+Using Eclipse or any IDE:
+
 1. Clone a local copy of the GitHub repository.
 
 2. Install Maven.
@@ -29,7 +30,8 @@ Using Eclipse or any IDE
 5. Replace the configuration strings in ``config.properties``
 
 
-Using a command line
+Using a command line:
+
 1. Clone a local copy of the GitHub repository.
 
 2. Download apache-maven-x.x.x.zip from http://maven.apache.org and extract it.
