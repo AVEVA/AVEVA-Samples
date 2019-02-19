@@ -147,8 +147,8 @@ This sample sends snapshot values from PI to OCS via OMF.
  </tr>
  <tr>
    <td width="25%">
-      <h3> <img src="miscellaneous/images/ctp.png" alt="ctp icon"></h3>  Dataviews <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon">
-
+      <h3> <img src="miscellaneous/images/ctp.png" alt="ctp icon">  Dataviews <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon">
+      </h3>
   </td>
   <td width="35%">
 These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  <a href="basic_samples/Dataviews">Details</a>
