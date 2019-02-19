@@ -44,7 +44,7 @@ class Dataviews(object):
             raise TypeError		
 		
         response = requests.post(
-            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers= self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -56,15 +56,14 @@ class Dataviews(object):
         response.close()
         return dataview
 		
-    def patchDataview(self, namespace_id, dataview):
+    def putDataview(self, namespace_id, dataview):
         """Tells Sds Service to update a dataview based on local 'dataview'"""
         if namespace_id is None:
             raise TypeError
         if dataview is None or not isinstance(dataview, Dataview):
             raise TypeError
-
-        response = requests.patch(
-            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+        response = requests.put(
+            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -85,7 +84,7 @@ class Dataviews(object):
             raise TypeError
 	
         response = requests.delete(
-            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -104,13 +103,13 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.Uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to get dataview, {dataview_id}. {status}:{reason}".
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
-        
+
         dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
         return dataview
@@ -121,7 +120,7 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.Uri + self.__getDataviews.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__baseClient.uri + self.__getDataviews.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -142,19 +141,20 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.Uri + self.__getDatagroups.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
+            self.__baseClient.uri + self.__getDatagroups.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to get datagroups for dataview, . {status}:{reason}".
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
         
+        datagroups = json.loads(response.content)   
 
-        datagroups = json.loads(response.content)
+
         results = {}
-        for key, value in datagroups.iteritems():
+        for key, value in datagroups.items():
             innerobj = {}
-            for key2, value2 in value.iteritems():
+            for key2, value2 in value.items():
                 innerobj[key2] = Datagroup.fromJson(value2)
             results[key] = innerobj
         response.close()
@@ -168,7 +168,7 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.Uri + self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
+            self.__baseClient.uri + self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -205,12 +205,51 @@ class Dataviews(object):
         
         
         response = requests.get(
-            self.__baseClient.Uri + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
+            self.__baseClient.uri + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to get dataview preview for dataview {dataview_id}. {status}:{reason}".
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+
+        content = json.loads(response.content)
+        response.close()
+		
+        if value_class is None:
+            return (content)
+        return value_class.fromJson(content)
+		
+    def getDataInterpolated(self, namespace_id, dataview_id, skip = -1, count = -1, form = None, sessionId = -1,  value_class = None):
+        """Retrieves the dataviewpreview of the 'dataview_id' from Sds Service"""
+        if namespace_id is None:
+            raise TypeError
+        if dataview_id is None:
+            raise TypeError
+
+        urlAdd = []
+        urlAddStr = ""
+        if count != -1:
+            urlAdd.append("count=" + str(count))
+        if skip != -1:
+            urlAdd.append("skip=" + str(count))        
+        if form is not None:
+            urlAdd.append("form=" +form)
+        if sessionId != -1:
+            urlAdd.append("sessionId=" + str(count))
+        if len(urlAdd) != 0:
+            urlAddStr = "?" + '&'.join(str(x) for x in urlAdd)
+        
+        
+        response = requests.get(
+            self.__baseClient.uri + self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
+            headers=self.__baseClient.sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get dataview data interpolated for dataview {dataview_id}. {status}:{reason}".
+                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+                          
+        if(form is not None):
+            return response.content.decode("utf-8") 
 
         content = json.loads(response.content)
         response.close()
@@ -255,3 +294,4 @@ class Dataviews(object):
         self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
         self.__getDatagroups = self.__datagroupPath + "?skip={skip}&count={count}"
         self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"
+        self.__getDataInterpolated= self.__dataviewPath + "/data/interpolated"

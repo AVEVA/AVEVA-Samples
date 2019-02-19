@@ -19,18 +19,26 @@ import json
 class DataviewQueryQuery(object):
 
 
-    def __init__(self, intype = None, value= None, operator = None):
-        self.__type = intype
+    def __init__(self, resource = None, field = None, value= None, operator = None):
+        self.__resource = resource
+        self.__field= field
         self.__value = value
         self.__operator = operator
 
     """Sds dataview definition"""
     @property
-    def Type(self):
-        return self.__type
-    @Type.setter
-    def Type(self, intype):
-        self.__type = intype
+    def Resource(self):
+        return self.__resource
+    @Resource.setter
+    def Resource(self, resource):
+        self.__resource = resource
+
+    @property
+    def Field(self):
+        return self.__field
+    @Field.setter
+    def Field(self, field):
+        self.__field = field
     
     @property
     def Value(self):
@@ -53,7 +61,7 @@ class DataviewQueryQuery(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Type' : self.Type, 'Value' : self.Value, 'Operator' : self.Operator}
+        dictionary = { 'Resource' : self.Resource,'Field' : self.Field, 'Value' : self.Value, 'Operator' : self.Operator}
 	
         return dictionary
 
@@ -68,8 +76,11 @@ class DataviewQueryQuery(object):
         if len(content) == 0:
             return dataviewQueryQuery
 
-        if 'Type' in content:
-            dataviewQueryQuery.Type = content['Type']
+        if 'Resource' in content:
+            dataviewQueryQuery.Resource = content['Resource']
+
+        if 'Field' in content:
+            dataviewQueryQuery.Field = content['Field']
 
         if 'Value' in content:
             dataviewQueryQuery.Value = content['Value']

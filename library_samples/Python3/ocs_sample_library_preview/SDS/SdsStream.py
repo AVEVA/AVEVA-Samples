@@ -20,6 +20,17 @@ from .SdsStreamPropertyOverride import SdsStreamPropertyOverride
 
 class SdsStream(object):
     """Sds stream definition"""
+
+    def __init__(self, id = None, name = None, description = None, typeId = None, propertyOverrides = None, indexes = None, interpolationMode = None, extrapolationMode = None):
+        self.Id = id
+        self.Name = name
+        self.Description = description
+        self.TypeId = typeId
+        self.PropertyOverrides = propertyOverrides
+        self.Indexes = indexes
+        self.InterpolationMode = interpolationMode
+        self.ExtrapolationMode = extrapolationMode
+
     @property
     def Id(self):
         return self.__id
@@ -97,14 +108,16 @@ class SdsStream(object):
             dictionary['ExtrapolationMode'] = self.ExtrapolationMode
             
         if hasattr(self, 'PropertyOverrides'):
-            dictionary['PropertyOverrides'] = []
-            for value in self.PropertyOverrides:
-                dictionary['PropertyOverrides'].append(value.toDictionary())
+            if self.PropertyOverrides is not None:                
+                dictionary['PropertyOverrides'] = []
+                for value in self.PropertyOverrides:
+                    dictionary['PropertyOverrides'].append(value.toDictionary())
 
         if hasattr(self, 'Indexes'):
-            dictionary['Indexes'] = []
-            for value in self.Indexes:
-                dictionary['Indexes'].append(value.toDictionary())
+            if self.Indexes is not None:     
+                dictionary['Indexes'] = []
+                for value in self.Indexes:
+                    dictionary['Indexes'].append(value.toDictionary())
 
         return dictionary
 

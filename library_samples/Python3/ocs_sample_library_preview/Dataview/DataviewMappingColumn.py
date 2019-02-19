@@ -31,13 +31,20 @@ class DataviewMappingColumn(object):
     @IsKey.setter
     def IsKey(self, isKey):
         self.__isKey= isKey
+
+    @property
+    def DataType(self):
+        return self.__dataType
+    @DataType.setter
+    def DataType(self, dataType):
+        self.__dataType = dataType
 		   
     @property
-    def PropertyMappingRule(self):
-        return self.__propertyMappingRule
-    @PropertyMappingRule.setter
-    def PropertyMappingRule(self, propertyMappingRule):
-        self.__propertyMappingRule= propertyMappingRule
+    def MappingRule(self):
+        return self.__MappingRule
+    @MappingRule.setter
+    def MappingRule(self, MappingRule):
+        self.__MappingRule= MappingRule
     
 
 
@@ -49,8 +56,11 @@ class DataviewMappingColumn(object):
         dictionary = { 'Name' : self.Name}
         dictionary['IsKey'] = self.IsKey
         
-        if hasattr(self, 'PropertyMappingRule'):
-            dictionary['PropertyMappingRule'] = self.PropertyMappingRule      
+        if hasattr(self, 'DataType'):
+            dictionary['DataType'] = self.DataType
+        
+        if hasattr(self, 'MappingRule'):
+            dictionary['MappingRule'] = self.MappingRule      
 
         return dictionary
 
@@ -71,8 +81,11 @@ class DataviewMappingColumn(object):
         if 'IsKey' in content:
             dataviewMappingColumn.IsKey = content['IsKey']
 
-        if 'PropertyMappingRule' in content:
-            dataviewMappingColumn.PropertyMappingRule = content['PropertyMappingRule']       
+        if 'DataType' in content:
+            dataviewMappingColumn.DataType = content['DataType']
+
+        if 'MappingRule' in content:
+            dataviewMappingColumn.MappingRule = content['MappingRule']       
             
 
         return dataviewMappingColumn

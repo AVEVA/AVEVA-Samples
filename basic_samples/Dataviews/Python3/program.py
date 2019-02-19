@@ -28,6 +28,9 @@ import traceback
 ######################################################################################################
 
 sampleDataviewId = "Dataview_Sample"
+sampleDataviewName = "Dataview_Sample_Name"
+sampleDataviewDescription = "A Sample Description that describes that this Dataview is just used for our sample."
+sampleDataviewDescription_modified = "A longer sample description that describes that this Dataview is just used for our sample and this part shows a post."
 
 
 samplePressureTypeId = "Time_Pressure_SampleType"
@@ -45,7 +48,7 @@ sampleTemperatureStreamName = "Tank Temperature SampleStream"
 #In the rest of the code it is assumed this is used.
 #The SDS code is not highlighted, but should be straightforward to follow.  
 #It creates enough Types, Streams and Data to see a result.  For more details on the creating SDS objects see the SDS python example.
-#This is kept seperate because chances are your data collection will occur at a different time then your creation of Dataviews, but for having an example we need both.  
+#This is kept seperate because chances are your data collection will occur at a different time then your creation of Dataviews, but for a complete example we assume a blank start.  
 
 needData = True
 namespaceId = ''
@@ -59,7 +62,6 @@ def supressError(sdsCall):
     except Exception as e:
         print(("Encountered Error: {error}".format(error = e)))
 
-#This assumes you have downloaded the full sample repo, because the SDSpy code is kept seperate.
 def createData(ocsClient):
     
     import random
@@ -96,11 +98,6 @@ def createData(ocsClient):
     temperature_SDSType.Description = "This is a sample Sds type for storing Temperature type events for Dataviews"
     temperature_SDSType.SdsTypeCode = SdsTypeCode.Object
     temperature_SDSType.Properties = [temperatureDoubleProperty, timeDateTimeProperty]
-
-    print(config.get('Access', 'Resource'))
-    print(config.get('Access', 'ApiVersion'))
-
-
 
     print('Creating SDS Type')
     print(pressure_SDSType.toJson())
@@ -148,10 +145,6 @@ def createData(ocsClient):
 def main():
 
     try:
-      #  config = configparser.ConfigParser()
-       # config.read('config.ini')
-
-
         print("--------------------------------------------------------------------")
         print(" ######                                             ######  #     # ")        
         print(" #     #   ##   #####   ##   #    # # ###### #    # #     #  #   #  ")
@@ -164,14 +157,15 @@ def main():
 
         ocsClient = OCSClient(config.get('Access', 'ApiVersion'), config.get('Access', 'Tenant'), config.get('Access', 'Resource'), 
                         config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
-                        
+
+        namespaceId = config.get('Configurations', 'Namespace')
+        
         print(namespaceId)
+        print (ocsClient.uri)
 
 
         if needData:
             createData(ocsClient)    
-
-        print("Dataview endpoint at {url}".format(url = ocsClient.uri))
 
         sampleStreamId = "SampleStream"
 
@@ -181,41 +175,18 @@ def main():
 
         #We need to create the dataview.  Dataview are complex objects so we write out each step in the long comment below.
         #For our dataview we are going to combine the two streams that were created, using a search to find the streams, using common part of their name. 
-        #We are using the default mappings.  This means our columns won't be renamed.  
+        #We are using the default mappings.  This means our columns won't be renamed.  Another typical use of columns is to change what stream propertis get mapped to which column.  
         #Mappings allow you to rename a column in the results to something different.  So if we want to we could rename Pressure to press.
         #We then define the IndexDataType.  Currently only datetime is supported.
         #Next we need to define the grouping rules.  Grouping decides how each row in the result is filled in. 
         #In this case we are grouping by tag, which effectively squashes are results together so that way Pressure and Temperature and Time all get results in a row.
-        #If we grouped by StreamName, each row would be filled is as fully as it can by eacg Stream name.  Giving us results with Pressure and Time seperate from Pressure and Temperature
-        '''
-        dataview = Dataview()
-        dataview.Id = sampleDataviewId
-        query  = DataviewQuery()
-        query.Id = sampleDataviewId
-        queryQuery = DataviewQueryQuery()
-        queryQuery.Type = 'streamname'
-        queryQuery.Value = sampleStreamId
-        queryQuery.Operator = 'Contains'
-        query.Query = queryQuery
-        dataview.Queries = []
-        dataview.Queries.append(query)
-        map = DataviewMapping()
-        map.IsDefault = True
-        dataview.Mappings = map
-        dataview.IndexDataType = "datetime"	
-        groupRule = DataviewGroupRule()
-        groupRule.Id = "DefaultGroupRule"
-        groupRule.Type = "StreamTag"
-        dataview.GroupRules = []
-        dataview.GroupRules.append(groupRule)
-        '''
+        #If we grouped by StreamName, each row would be filled is as fully as it can by each Stream name.  Giving us results with Pressure and Time seperate from Pressure and Temperature
 
-        #Its more clear what is going on if we use constructors, including taking advantage of some default constructors
         queryObj  = DataviewQuery(sampleDataviewId, 'streamname',sampleStreamId, 'Contains' )
         groupRuleObj = DataviewGroupRule( "DefaultGroupRule","StreamTag")
+        mappingObj = DataviewMapping(isDefault= True)
 
-        dataview  = Dataview(id = sampleDataviewId, queries= [queryObj], indexDataType = "datetime", groupRules=[groupRuleObj])
-
+        dataview  = Dataview(id = sampleDataviewId, queries= [queryObj], indexDataType = "datetime", groupRules=[groupRuleObj], mappings= mappingObj, name = sampleDataviewName, description= sampleDataviewDescription)
         
         print
         print("Creating dataview")		
@@ -227,27 +198,56 @@ def main():
 
         #assert is added to make sure we get back what we are expecting
         assert dv.toJson() == '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Type": "StreamName", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample", "Description": null, "Mappings": {"IsDefault": true}, "IndexDataType": "datetime", "GroupRules": [{"Id": "StreamTag", "Type": null, "TokenRules": null}]}', 'Dataview is different'
- 
+        dv.Description = sampleDataviewDescription_modified
+
+        print
+        print("Updating dataview")		
+        dv = ocsClient.Dataviews.postDataview(namespaceId, dv)
+            
+        assert dv.toJson() == '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Type": "StreamName", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample", "Description": null, "Mappings": {"IsDefault": true}, "IndexDataType": "datetime", "GroupRules": [{"Id": "StreamTag", "Type": null, "TokenRules": null}]}', 'Dataview is different'
+    
+
         #Getting the complete set of dataviews to make sure it is there
         print
         print("Getting dataviews")		
         dataviews = ocsClient.Dataviews.getDataviews(namespaceId)
         for dataview1 in dataviews:
             if hasattr(dataview1, "Id") :
-                print(dataview1.toJson())	
-            	
+                print(dataview1.toJson())	            
+
+        	
+        #Getting the datagroups of the defined dataview.  The datgroup lets you see what is returned by the Dataview Query.
+        print
+        print("Getting Datagroups")		
+        datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId)
+        for datagroup in datagroups:
+            print(datagroup.toJson())	 
             
 
-        #By default this will get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
-        #Beyond the normal API optoins, this function does have the option to return the data in a class if you have created a Type for the data you re retreiving.
+        #By default the preview get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
+        #Beyond the normal API optoins, this function does have the option to return the data in a class if you have created a Type for the data you are retreiving.
 
         print
-        print("Retrieving data from the Dataview")		
+        print("Retrieving data preview from the Dataview")		
         dataviewData = ocsClient.Dataviews.getDataviewPreview(namespaceId,sampleDataviewId)
         print(str(dataviewData))
         if needData:
             assert dataviewData[0] == firstData, "Data not what was expected"       
-        
+
+        '''
+
+        #Now we can get the data creating a session.  The session allows us to get pages of data ensuring that the underlying data won't change as we collect the pages.
+        #There are apis to manage the sessions, but that is beyond the scope of this basic example.
+        #To highlight the use of the sessions this we will access the data, add a stream that would be added to result. 
+        #It won't show up because of the session, but we will see it in the preview that doesn't use the session.
+
+        print
+        print("Retrieving data preview from the Dataview")		
+        dataviewData = ocsClient.Dataviews.getDataInterpolated(namespaceId,sampleDataviewId)
+        print(str(dataviewData))
+        if needData:
+            assert dataviewData[0] == firstData, "Data not what was expected"      
+        '''
 
 
     except Exception as ex:
