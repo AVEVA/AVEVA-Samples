@@ -14,6 +14,7 @@ There are three types of samples/apps in the repo:
 
 ` denotes that the language example may not currently run without modifications or updates
 
+* <img src="miscellaneous/images/ctp.png" alt="ctp icon">   This task and code uses services that are currently in preview and may not be available without contacting OCS support.  
 
 The official OCS samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table:
 
@@ -136,10 +137,22 @@ The project is a complete (very simple) command line application that takes a PI
  <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"></h3>
   </td>
   <td width="35%">
-This samples sends snapshot values from PI to OCS via OMF.
+This sample sends snapshot values from PI to OCS via OMF.
   </td>
   <td>
      <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*'</a>&nbsp; &nbsp;
+  </td>
+ </tr>
+ <tr>
+   <td width="25%">
+      <h3>Dataviews
+ <img src="miscellaneous/images/ctp.png" alt="ctp icon"></h3>
+  </td>
+  <td width="35%">
+These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  
+  </td>
+  <td>
+     <a href="basic_samples/Dataviews/Python3">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  </table>

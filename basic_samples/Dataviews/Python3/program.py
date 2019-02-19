@@ -30,7 +30,7 @@ import traceback
 sampleDataviewId = "Dataview_Sample"
 sampleDataviewName = "Dataview_Sample_Name"
 sampleDataviewDescription = "A Sample Description that describes that this Dataview is just used for our sample."
-sampleDataviewDescription_modified = "A longer sample description that describes that this Dataview is just used for our sample and this part shows a post."
+sampleDataviewDescription_modified = "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put."
 
 
 samplePressureTypeId = "Time_Pressure_SampleType"
@@ -62,59 +62,27 @@ def supressError(sdsCall):
     except Exception as e:
         print(("Encountered Error: {error}".format(error = e)))
 
-def createData(ocsClient):
-    
+def createData(ocsClient):    
     import random
+    global namespaceId, firstData
     
-    doubleType = SdsType()
-    doubleType.Id = "doubleType"
-    doubleType.SdsTypeCode = SdsTypeCode.Double
+    doubleType = SdsType(id= "doubleType", sdsTypeCode = SdsTypeCode.Double)    
+    dateTimeType = SdsType(id= "dateTimeType", sdsTypeCode = SdsTypeCode.DateTime)
     
-    dateTimeType = SdsType()
-    dateTimeType.Id = "dateTimeType"
-    dateTimeType.SdsTypeCode = SdsTypeCode.DateTime
-    
-    pressureDoubleProperty = SdsTypeProperty()
-    pressureDoubleProperty.Id = "pressure"
-    pressureDoubleProperty.SdsType = doubleType
-    
-    temperatureDoubleProperty = SdsTypeProperty()
-    temperatureDoubleProperty.Id = "temperature"
-    temperatureDoubleProperty.SdsType = doubleType
-    
-    timeDateTimeProperty = SdsTypeProperty()
-    timeDateTimeProperty.Id = "time"
-    timeDateTimeProperty.SdsType = dateTimeType
-    timeDateTimeProperty.IsKey = True
+    pressureDoubleProperty = SdsTypeProperty(id = "pressure", sdsType = doubleType)    
+    temperatureDoubleProperty = SdsTypeProperty(id = "temperature", sdsType = doubleType)    
+    timeDateTimeProperty = SdsTypeProperty(id = "time", sdsType = dateTimeType, isKey=True)
 
-    pressure_SDSType = SdsType()
-    pressure_SDSType.Id = samplePressureTypeId
-    pressure_SDSType.Description = "This is a sample Sds type for storing Pressure type events for Dataviews"
-    pressure_SDSType.SdsTypeCode = SdsTypeCode.Object
-    pressure_SDSType.Properties = [pressureDoubleProperty, timeDateTimeProperty]
-
-    temperature_SDSType = SdsType()
-    temperature_SDSType.Id = sampleTemperatureTypeId
-    temperature_SDSType.Description = "This is a sample Sds type for storing Temperature type events for Dataviews"
-    temperature_SDSType.SdsTypeCode = SdsTypeCode.Object
-    temperature_SDSType.Properties = [temperatureDoubleProperty, timeDateTimeProperty]
-
+    pressure_SDSType = SdsType(id = samplePressureTypeId, description="This is a sample Sds type for storing Pressure type events for Dataviews", sdsTypeCode=SdsTypeCode.Object, properties=[pressureDoubleProperty, timeDateTimeProperty])
+    temperature_SDSType = SdsType(id = sampleTemperatureTypeId,description="This is a sample Sds type for storing Temperature type events for Dataviews", sdsTypeCode=SdsTypeCode.Object, properties=[temperatureDoubleProperty, timeDateTimeProperty])
+ 
     print('Creating SDS Type')
-    print(pressure_SDSType.toJson())
     ocsClient.Types.getOrCreateType(namespaceId, pressure_SDSType)
     ocsClient.Types.getOrCreateType(namespaceId, temperature_SDSType)
 
-    pressureStream = SdsStream()
-    pressureStream.Id = samplePressureStreamId
-    pressureStream.Name = samplePressureStreamName
-    pressureStream.Description = "A Stream to store the sample Pressure events"
-    pressureStream.TypeId = samplePressureTypeId
-    
-    temperatureStream = SdsStream()
-    temperatureStream.Id = sampleTemperatureStreamId
-    temperatureStream.Name = sampleTemperatureStreamName
-    temperatureStream.Description = "A Stream to store the sample Pressure events"
-    temperatureStream.TypeId = sampleTemperatureTypeId
+    pressureStream = SdsStream(id =samplePressureStreamId, name=samplePressureStreamName, description="A Stream to store the sample Pressure events", typeId=samplePressureTypeId)   
+    temperatureStream = SdsStream(id =sampleTemperatureStreamId, name=sampleTemperatureStreamName, description="A Stream to store the sample Temperature events", typeId=sampleTemperatureTypeId)
+
 
     print('Creating SDS Streams')
     ocsClient.Streams.createOrUpdateStream(namespaceId, pressureStream)
@@ -143,6 +111,7 @@ def createData(ocsClient):
 
 
 def main():
+    global namespaceId, firstData
 
     try:
         print("--------------------------------------------------------------------")
@@ -175,14 +144,19 @@ def main():
 
         #We need to create the dataview.  Dataview are complex objects so we write out each step in the long comment below.
         #For our dataview we are going to combine the two streams that were created, using a search to find the streams, using common part of their name. 
-        #We are using the default mappings.  This means our columns won't be renamed.  Another typical use of columns is to change what stream propertis get mapped to which column.  
+        #We are using the default mappings.  This means our columns will keep their original names.  Another typical use of columns is to change what stream properties get mapped to which column.  
         #Mappings allow you to rename a column in the results to something different.  So if we want to we could rename Pressure to press.
         #We then define the IndexDataType.  Currently only datetime is supported.
         #Next we need to define the grouping rules.  Grouping decides how each row in the result is filled in. 
         #In this case we are grouping by tag, which effectively squashes are results together so that way Pressure and Temperature and Time all get results in a row.
         #If we grouped by StreamName, each row would be filled is as fully as it can by each Stream name.  Giving us results with Pressure and Time seperate from Pressure and Temperature
+        #Our results when looking at it like a table looks like:
+        #time,DefaultGroupRule_Tags,pressure,temperature
+        #2019-02-18T18:50:17.1084594Z,(NoTags),13.8038967965309,57.6749982613741
+        #2019-02-18T18:51:17.1084594Z,(NoTags),13.8038967965309,57.674998261374
+        #....
 
-        queryObj  = DataviewQuery(sampleDataviewId, 'streamname',sampleStreamId, 'Contains' )
+        queryObj  = DataviewQuery(sampleDataviewId, 'streams', 'name', sampleStreamId, 'Contains' )
         groupRuleObj = DataviewGroupRule( "DefaultGroupRule","StreamTag")
         mappingObj = DataviewMapping(isDefault= True)
 
@@ -197,14 +171,19 @@ def main():
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
 
         #assert is added to make sure we get back what we are expecting
-        assert dv.toJson() == '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Type": "StreamName", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample", "Description": null, "Mappings": {"IsDefault": true}, "IndexDataType": "datetime", "GroupRules": [{"Id": "StreamTag", "Type": null, "TokenRules": null}]}', 'Dataview is different'
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
+        assert dv.toJson() == expectedJSON, 'Dataview is different: ' + dv.toJson()
+        
+        
         dv.Description = sampleDataviewDescription_modified
+        dv.Mappings.IsDefault = False # for now we have to change this to post the dataview
 
         print
         print("Updating dataview")		
-        dv = ocsClient.Dataviews.postDataview(namespaceId, dv)
+        dv = ocsClient.Dataviews.putDataview(namespaceId, dv)
             
-        assert dv.toJson() == '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Type": "StreamName", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample", "Description": null, "Mappings": {"IsDefault": true}, "IndexDataType": "datetime", "GroupRules": [{"Id": "StreamTag", "Type": null, "TokenRules": null}]}', 'Dataview is different'
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put.", "Mappings": {"IsDefault": false, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
+        assert dv.toJson() == expectedJSON, 'Dataview is different ' + dv.toJson()
     
 
         #Getting the complete set of dataviews to make sure it is there
@@ -220,7 +199,8 @@ def main():
         print
         print("Getting Datagroups")		
         datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId)
-        for datagroup in datagroups:
+        for key, datagroup in datagroups['DataGroups'].items():
+            print('datagroup')
             print(datagroup.toJson())	 
             
 
@@ -229,12 +209,8 @@ def main():
 
         print
         print("Retrieving data preview from the Dataview")		
-        dataviewData = ocsClient.Dataviews.getDataviewPreview(namespaceId,sampleDataviewId)
-        print(str(dataviewData))
-        if needData:
-            assert dataviewData[0] == firstData, "Data not what was expected"       
-
-        '''
+        dataviewDataPreview1 = ocsClient.Dataviews.getDataviewPreview(namespaceId,sampleDataviewId)
+        print(str(dataviewDataPreview1[0]))        
 
         #Now we can get the data creating a session.  The session allows us to get pages of data ensuring that the underlying data won't change as we collect the pages.
         #There are apis to manage the sessions, but that is beyond the scope of this basic example.
@@ -242,12 +218,34 @@ def main():
         #It won't show up because of the session, but we will see it in the preview that doesn't use the session.
 
         print
-        print("Retrieving data preview from the Dataview")		
-        dataviewData = ocsClient.Dataviews.getDataInterpolated(namespaceId,sampleDataviewId)
-        print(str(dataviewData))
-        if needData:
-            assert dataviewData[0] == firstData, "Data not what was expected"      
-        '''
+        print("Retrieving data from the Dataview using session")		
+        dataviewDataSession1 = ocsClient.Dataviews.getDataInterpolated(namespaceId,sampleDataviewId)
+        print(str(dataviewDataSession1[0]))
+
+        
+        print("Intentional waiting for 5 seconds to show a noticeable change in time.")
+        # We wait for 5 seconds so the preview is different that before, but our session data should be the same
+        time.sleep(5)
+
+        dataviewDataPreview2 = ocsClient.Dataviews.getDataviewPreview(namespaceId,sampleDataviewId)
+        print(str(dataviewDataPreview2[0]))
+
+        dataviewDataSession2 = ocsClient.Dataviews.getDataInterpolated(namespaceId,sampleDataviewId)
+        print(str(dataviewDataSession2[0]))
+
+        assert (dataviewDataSession2[0] == dataviewDataSession1[0]) , "Returned values from Dataview Data Sessions is different"
+
+        
+        print()
+        print("Getting data as a table, seperated by commas, with headers")
+        # Viewing the whole returned result as a table
+        dataviewDataSession3 = ocsClient.Dataviews.getDataInterpolated(namespaceId,sampleDataviewId, form= "csvh")
+        
+        #I only want to print out the headers and 2 rows, otherwise it monpolizes the printed screen.
+        print(dataviewDataSession3[:193])
+
+
+
 
 
     except Exception as ex:
