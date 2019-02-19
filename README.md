@@ -14,7 +14,7 @@ Some tasks and individual language examples may have some additional labels as f
 
 \* denotes that the language example uses the rest API directily instead of a library
 
-* <img src="miscellaneous/images/ctp.png" alt="ctp icon">   This task and code uses services that are currently in preview and may not be available without contacting OCS support.  
+* <img src="miscellaneous/images/ctp.png" alt="ctp icon">   This task and code uses services that are currently in preview and this may not be available to you.  If you are interested in this functionality, please contact OCS support.  
 
 
 
