@@ -15,6 +15,10 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*.class
+target/
+release.properties
+.releaseBackup
 
 # External tool builders
 .externalToolBuilders/
@@ -306,3 +310,4 @@ typings/
 /.vs
 /Basic/DotNet/SdsClientLibraries/SdsClientLibraries/.vs/config/applicationhost.config
 /Basic/DotNet/SdsRestApiCore/.vs/config/applicationhost.config
+.vscode/launch.json
