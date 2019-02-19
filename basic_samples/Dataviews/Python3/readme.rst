@@ -1,10 +1,11 @@
-Building a Python client to make REST API calls to the Dataview Service
+Building a Python client to make calls to the Dataview Service
 ==================================================================
 
-The sample code in this topic demonstrates how to invoke Dataview REST APIs
-using Python. By examining the code, you will see how to establish a connection 
+The sample code in this demonstrates how to invoke Dataview REST APIs via the sample Python client library. 
+By examining the code, you will see how to establish a connection 
 to SDS, obtain an authorization token, create an  SdsType and  SdsStream with data (if needed), 
-create a Dataview, and retrieve data from it.  At the end everything that was created is deleted. 
+create a Dataview, update it, retreive it, and retrieve data from it a couple of different ways.  
+At the end everything that was created is deleted. 
 
 
 	
