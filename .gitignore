@@ -18,6 +18,7 @@ local.properties
 *.class
 target/
 release.properties
+.releaseBackup
 
 # External tool builders
 .externalToolBuilders/
