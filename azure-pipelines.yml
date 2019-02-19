@@ -16,10 +16,10 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/
       displayName: display config file
 
-      
-    - script: mvn install -f pom.xml 
-      workingDirectory: $(Build.SourcesDirectory)/library_samples/Java/ocs_sample_library_preview/
-      displayName: install library
+      #
+   # - script: mvn install -f pom.xml 
+   #   workingDirectory: $(Build.SourcesDirectory)/library_samples/Java/ocs_sample_library_preview/
+   #   displayName: install library
 
     # Download Secure File
     # Download a secure file to a temporary location on the build or release agent
