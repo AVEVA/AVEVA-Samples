@@ -50,7 +50,7 @@
       <dependency> 
         <groupId> com.github.osisoft.ocs_sample_library_preview</groupId>
         <artifactId>ocs_sample_library_preview</artifactId>
-        <version>0.0.1-preview</version>
+        <version>0.0.3-preview-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
