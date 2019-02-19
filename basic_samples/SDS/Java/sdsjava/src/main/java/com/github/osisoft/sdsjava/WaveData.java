@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package samples;
+package com.github.osisoft.sdsjava;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

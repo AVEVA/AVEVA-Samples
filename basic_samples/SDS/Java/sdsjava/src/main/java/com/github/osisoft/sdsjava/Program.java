@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package samples;
+package com.github.osisoft.sdsjava;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -47,10 +47,14 @@ public class Program {
     static String sampleManualStreamViewId = "WaveData_SampleManualStreamView";
     
     
-    public static void main(String[] args) throws InterruptedException {
-    	
+    public static void main(String[] args) throws InterruptedException {    	
+        toRun();
+    }
+
+    public static boolean toRun() {
+        Boolean success = true;
         // Create Sds client to communicate with server
-    	System.out.println("---------------------------------------------------");
+        System.out.println("---------------------------------------------------");
         System.out.println("  _________    .___          ____.                    ");
         System.out.println(" /   _____/  __| _/______   |    |____ ___  _______   ");
         System.out.println(" \\_____  \\  / __ |/  ___/   |    \\__  \\\\  \\/ /\\__  \\  ");
@@ -58,25 +62,25 @@ public class Program {
         System.out.println("/_______  /\\____ /____  >________(____  /\\_/  (____  /");
         System.out.println("        \\/      \\/    \\/              \\/           \\/ ");
         System.out.println("---------------------------------------------------");
-        
+
         OCSClient ocsClient = new OCSClient();
 
-        try { 	          	
+        try {
             // create a SdsType
-        	System.out.println("Creating a SdsType");
+            System.out.println("Creating a SdsType");
             SdsType sampleType = getWaveDataType(sampleTypeId);
             String jsonType = ocsClient.Types.createType(tenantId, namespaceId, sampleType);
-            sampleType = ocsClient.mGson.fromJson(jsonType, SdsType.class); 
-            
-            //create a SdsStream
+            sampleType = ocsClient.mGson.fromJson(jsonType, SdsType.class);
+
+            // create a SdsStream
             System.out.println("Creating a SdsStream");
             SdsStream sampleStream = new SdsStream(sampleStreamId, sampleTypeId);
             String jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, sampleStream);
             sampleStream = ocsClient.mGson.fromJson(jsonStream, SdsStream.class);
-            
+
             // insert data
             System.out.println("Inserting data");
-            
+
             // insert a single event
             List<WaveData> event = new ArrayList<WaveData>();
             WaveData evt = WaveData.next(1, 2.0, 0);
@@ -89,25 +93,28 @@ public class Program {
                 evt = WaveData.next(1, 2.0, i);
                 events.add(evt);
                 Thread.sleep(10);
-            	}
+            }
             ocsClient.Streams.insertValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(events));
-            
+
             // get the last value in stream
             System.out.println("Getting latest event");
             String jsonSingleValue = ocsClient.Streams.getLastValue(tenantId, namespaceId, sampleStreamId);
             WaveData data = ocsClient.mGson.fromJson(jsonSingleValue, WaveData.class);
             System.out.println(data.toString());
             System.out.println();
-            
+
             // get all values
-            System.out.println("Getting all events");            
-            String jsonMultipleValues = ocsClient.Streams.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "20");
-            Type listType = new TypeToken<ArrayList<WaveData>>() {}.getType(); // necessary for gson to decode list of WaveData, represents ArrayList<WaveData> type
+            System.out.println("Getting all events");
+            String jsonMultipleValues = ocsClient.Streams.getWindowValues(tenantId, namespaceId, sampleStreamId, "0",
+                    "20");
+            Type listType = new TypeToken<ArrayList<WaveData>>() {
+            }.getType(); // necessary for gson to decode list of WaveData, represents ArrayList<WaveData>
+                         // type
             ArrayList<WaveData> foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
-            
+
             // update the first value
             System.out.println("Updating events");
             List<WaveData> newEvent = new ArrayList<WaveData>();
@@ -117,7 +124,8 @@ public class Program {
 
             // update existing values and add 10 new values using update
             List<WaveData> newEvents = new ArrayList<WaveData>();
-            for (int i = 2; i < 40; i += 2) // note: update will replace a value if it already exists, and create one if it does not
+            for (int i = 2; i < 40; i += 2) // note: update will replace a value if it already exists, and create one if
+                                            // it does not
             {
                 WaveData newEvt = WaveData.next(1, 1.0, i);
                 newEvents.add(newEvt);
@@ -132,7 +140,7 @@ public class Program {
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
-            
+
             // replace the first value
             System.out.println("Replacing events");
             newEvent = new ArrayList<WaveData>();
@@ -156,195 +164,219 @@ public class Program {
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
-            
-   		 	// Property Overrides
+
+            // Property Overrides
             System.out.println("Property Overrides");
-            System.out.println("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
+            System.out.println(
+                    "Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
             System.out.println();
-   		 	listType = new TypeToken<ArrayList<WaveData>>() {}.getType(); 
-   		 	jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
-   		 	foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
-         
-   		 	System.out.println("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:");
-   		 	for (WaveData evnt : foundEvents) {
-   		 		System.out.println("Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
-   		 	}
-   		 	System.out.println();
-         
-   		 	// Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
-   		 	SdsStreamPropertyOverride propertyOverride = new SdsStreamPropertyOverride();
-   		 	propertyOverride.setSdsTypePropertyId("Radians");
-   		 	propertyOverride.setInterpolationMode(SdsInterpolationMode.Discrete);
-   		 	List<SdsStreamPropertyOverride> propertyOverrides = new ArrayList<SdsStreamPropertyOverride>();
-   		 	propertyOverrides.add(propertyOverride);
-   		 	
-			// update the stream
-			sampleStream.setPropertyOverrides(propertyOverrides);
+            listType = new TypeToken<ArrayList<WaveData>>() {
+            }.getType();
+            jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3,
+                    false, SdsBoundaryType.ExactOrCalculated);
+            foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
+
+            System.out.println(
+                    "Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:");
+            for (WaveData evnt : foundEvents) {
+                System.out.println(
+                        "Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
+            }
+            System.out.println();
+
+            // Create a Discrete stream PropertyOverride indicating that we do not want Sds
+            // to calculate a value for Radians and update our stream
+            SdsStreamPropertyOverride propertyOverride = new SdsStreamPropertyOverride();
+            propertyOverride.setSdsTypePropertyId("Radians");
+            propertyOverride.setInterpolationMode(SdsInterpolationMode.Discrete);
+            List<SdsStreamPropertyOverride> propertyOverrides = new ArrayList<SdsStreamPropertyOverride>();
+            propertyOverrides.add(propertyOverride);
+
+            // update the stream
+            sampleStream.setPropertyOverrides(propertyOverrides);
             ocsClient.Streams.updateStream(tenantId, namespaceId, sampleStreamId, sampleStream);
 
-   		 	// repeat the retrieval
-   		 	jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
-   		 	foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
-   		    System.out.println("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
-   		    System.out.println("Sds will now return the default value for the data type:");
-   		 	for (WaveData evnt : foundEvents) {
-   		 		System.out.println("Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
-   		 	}
-   		 	System.out.println();
-         
-   		 	// SdsStreamViews 
-   		 	System.out.println("SdsStreamViews"); 
-   		 	System.out.println("Here is some of our data as it is stored on the server:");
-   		 	for (WaveData evnt : foundEvents) {
-   		 		System.out.println("Sin: " + evnt.getSin() + ", Cos: " + evnt.getCos() + ", Tan" + evnt.getTan());            
-   		 	}
-   		 	System.out.println();
-         
-   		 	// create target SdsTypes         
-   		 	SdsType targetType = getWaveDataTargetType(targetTypeId);
-   		 	String jsonTargetType = ocsClient.Types.createType(tenantId, namespaceId, targetType);
-   		 	targetType = ocsClient.mGson.fromJson(jsonTargetType, SdsType.class);         
-   		 	SdsType targetIntegerType = getWaveDataTargetIntegerType(integerTargetTypeId);
-   		 	String jsonTargetIntegerType = ocsClient.Types.createType(tenantId, namespaceId, targetIntegerType);
-   		 	targetIntegerType = ocsClient.mGson.fromJson(jsonTargetIntegerType, SdsType.class);
-         
-   		 	// create a SdsStreamView
-   		 	SdsStreamView autoStreamView = new SdsStreamView();
-   		 	autoStreamView.setId(sampleStreamViewId);
-   		 	autoStreamView.setName("SampleAutoStreamView");
-   		 	autoStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
-   		 	autoStreamView.setSourceTypeId(sampleTypeId);
-   		 	autoStreamView.setTargetTypeId(targetTypeId);
-   		 	String jsonAutoStreamView = ocsClient.Streams.createStreamView(tenantId, namespaceId, autoStreamView);
-   		 	autoStreamView = ocsClient.mGson.fromJson(jsonAutoStreamView, SdsStreamView.class);
-                  
-   		 	// create SdsStreamViewProperties
-   		 	SdsStreamViewProperty vp1 = new SdsStreamViewProperty();
-   		 	vp1.setSourceId("Order");
-   		 	vp1.setTargetId("OrderTarget");
-         
-   		 	SdsStreamViewProperty vp2 = new SdsStreamViewProperty();
-   		 	vp2.setSourceId("Sin");
-   		 	vp2.setTargetId("SinInt");
-         
-   		 	SdsStreamViewProperty vp3 = new SdsStreamViewProperty();
-   		 	vp3.setSourceId("Cos");
-   		 	vp3.setTargetId("CosInt");
-         
-   		 	SdsStreamViewProperty vp4 = new SdsStreamViewProperty();
-   		 	vp4.setSourceId("Tan");
-   		 	vp4.setTargetId("TanInt");
-         
-   		 	SdsStreamViewProperty[] props = {vp1,vp2,vp3,vp4};
-         
-   		 	// create a SdsStreamView with explicit SdsStreamViewProperties         
-   		 	SdsStreamView manualStreamView = new SdsStreamView();
-   		 	manualStreamView.setId(sampleManualStreamViewId);
-   		 	manualStreamView.setName("SampleManualStreamView");
-   		 	manualStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
-   		 	manualStreamView.setSourceTypeId(sampleTypeId);
-   		 	manualStreamView.setTargetTypeId(integerTargetTypeId);
-   		 	manualStreamView.setProperties(props);
-   		 	String jsonManualStreamView = ocsClient.Streams.createStreamView(tenantId, namespaceId, manualStreamView);
-   		 	manualStreamView = ocsClient.mGson.fromJson(jsonManualStreamView, SdsStreamView.class);
-         
-   		 	// range values with automatically mapped SdsStreamView
-   		 	System.out.println("Specifying a StreamView with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
-   		 	Type targetListType = new TypeToken<ArrayList<WaveDataTarget>>() {}.getType(); 
-   		 	jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleStreamViewId);
-   		 	ArrayList<WaveDataTarget> foundTargetEvents = ocsClient.mGson.fromJson(jsonMultipleValues, targetListType);
-   		 	for (WaveDataTarget evnt : foundTargetEvents) {
-   		 		System.out.println("SinTarget: " + evnt.getSinTarget() + ", CosTarget: " + evnt.getCosTarget() + ", TanTarget: " + evnt.getTanTarget());            
-   		 	}
-   		 	System.out.println();
+            // repeat the retrieval
+            jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3,
+                    false, SdsBoundaryType.ExactOrCalculated);
+            foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
+            System.out.println(
+                    "We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
+            System.out.println("Sds will now return the default value for the data type:");
+            for (WaveData evnt : foundEvents) {
+                System.out.println(
+                        "Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
+            }
+            System.out.println();
 
-   		 	// range values with manually mapped SdsStreamView
-   		 	System.out.println("SdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
-   		 	Type integerListType = new TypeToken<ArrayList<WaveDataInteger>>() {}.getType(); 
-   		 	jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated, sampleManualStreamViewId);
-   		 	ArrayList<WaveDataInteger> foundIntegerEvents = ocsClient.mGson.fromJson(jsonMultipleValues, integerListType);
-   		 	for (WaveDataInteger evnt : foundIntegerEvents) {
-   		 		System.out.println("SinInt: " + evnt.getSinInt() + ", CosInt: " + evnt.getCosInt() + ", TanInt: " + evnt.getTanInt());            
-   		 	}
-   		 	System.out.println();
-         
-   		 	// SdsStreamViewMaps
-   		 	System.out.println("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
-   		 	Type sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {}.getType(); 
-   		 	String jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
-   		 	SdsStreamViewMap streamViewMap = ocsClient.mGson.fromJson(jsonStreamViewMap, sdsStreamViewType);
-   		 	dumpSdsStreamViewMap(streamViewMap);
-   		 	System.out.println();
-         
-   		 	System.out.println("Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
-   		 	sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {}.getType(); 
-   		 	jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleManualStreamViewId);
-   		 	streamViewMap = ocsClient.mGson.fromJson(jsonStreamViewMap, sdsStreamViewType);
-   		 	dumpSdsStreamViewMap(streamViewMap);
-   		 	System.out.println();
-            		
-			// tags and metadata
-   		 	System.out.println("Let's add some Tags and Metadata to our stream:");
-   		 	System.out.println();
-   		 
-   		 	ArrayList<String> tags = new ArrayList<String>();
-   		 	tags.add("waves");
-   		 	tags.add("periodic");
-   		 	tags.add("2018");
-   		 	tags.add("validated");
-   		 	
-   		 	Map<String, String> metadata = new HashMap<String, String>();
-   		 	metadata.put("Region", "North America");
-   		    metadata.put("Country", "Canada");
-   		    metadata.put("Province", "Quebec");
-   		    
-   		    ocsClient.Streams.updateTags(tenantId, namespaceId, sampleStreamId, tags);
-   		    ocsClient.Streams.updateMetadata(tenantId, namespaceId, sampleStreamId, metadata);
-   		    
-   		    System.out.println("Tags now associated with " + sampleStreamId);
-   		    tags = ocsClient.Streams.getTags(tenantId, namespaceId, sampleStreamId);
-   		    
-   		    for (String tag: tags) {
-		 		System.out.println(tag);
-		 	}   		    
-   		    System.out.println();
-   		 	
-   		    String region = ocsClient.Streams.getMetadata(tenantId, namespaceId, sampleStreamId, "Region");
-   		    String country = ocsClient.Streams.getMetadata(tenantId, namespaceId, sampleStreamId, "Country"); 
-   		    String province =  ocsClient.Streams.getMetadata(tenantId, namespaceId, sampleStreamId, "Province");
-   		    
-   		    System.out.println("Metadata now associated with " + sampleStreamId);
-   		    System.out.println("Metadata key Region: " + region);
-   		    System.out.println("Metadata key Country: " + country);
-   		 	System.out.println("Metadata key Province: " + province);
-   		    
-			System.out.println();   		 	
-   		 	
-   		    // delete data
-   		 	
-   		 	// remove the first value
-   		 	System.out.println("Deleting values from the SdsStream");
-   		 	ocsClient.Streams.removeValue(tenantId, namespaceId, sampleStreamId, "0");
+            // SdsStreamViews
+            System.out.println("SdsStreamViews");
+            System.out.println("Here is some of our data as it is stored on the server:");
+            for (WaveData evnt : foundEvents) {
+                System.out.println("Sin: " + evnt.getSin() + ", Cos: " + evnt.getCos() + ", Tan" + evnt.getTan());
+            }
+            System.out.println();
 
-   		 	// remove remaining values
-   		 	ocsClient.Streams.removeWindowValues(tenantId, namespaceId, sampleStreamId, "2", "40");
+            // create target SdsTypes
+            SdsType targetType = getWaveDataTargetType(targetTypeId);
+            String jsonTargetType = ocsClient.Types.createType(tenantId, namespaceId, targetType);
+            targetType = ocsClient.mGson.fromJson(jsonTargetType, SdsType.class);
+            SdsType targetIntegerType = getWaveDataTargetIntegerType(integerTargetTypeId);
+            String jsonTargetIntegerType = ocsClient.Types.createType(tenantId, namespaceId, targetIntegerType);
+            targetIntegerType = ocsClient.mGson.fromJson(jsonTargetIntegerType, SdsType.class);
 
-   		 	// retrieve values to check deletion
-   		 	jsonMultipleValues = ocsClient.Streams.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "200");
-   		 	foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
-   		 	if(foundEvents.isEmpty())
-   		 		System.out.println("All values deleted successfully!");
+            // create a SdsStreamView
+            SdsStreamView autoStreamView = new SdsStreamView();
+            autoStreamView.setId(sampleStreamViewId);
+            autoStreamView.setName("SampleAutoStreamView");
+            autoStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
+            autoStreamView.setSourceTypeId(sampleTypeId);
+            autoStreamView.setTargetTypeId(targetTypeId);
+            String jsonAutoStreamView = ocsClient.Streams.createStreamView(tenantId, namespaceId, autoStreamView);
+            autoStreamView = ocsClient.mGson.fromJson(jsonAutoStreamView, SdsStreamView.class);
+
+            // create SdsStreamViewProperties
+            SdsStreamViewProperty vp1 = new SdsStreamViewProperty();
+            vp1.setSourceId("Order");
+            vp1.setTargetId("OrderTarget");
+
+            SdsStreamViewProperty vp2 = new SdsStreamViewProperty();
+            vp2.setSourceId("Sin");
+            vp2.setTargetId("SinInt");
+
+            SdsStreamViewProperty vp3 = new SdsStreamViewProperty();
+            vp3.setSourceId("Cos");
+            vp3.setTargetId("CosInt");
+
+            SdsStreamViewProperty vp4 = new SdsStreamViewProperty();
+            vp4.setSourceId("Tan");
+            vp4.setTargetId("TanInt");
+
+            SdsStreamViewProperty[] props = { vp1, vp2, vp3, vp4 };
+
+            // create a SdsStreamView with explicit SdsStreamViewProperties
+            SdsStreamView manualStreamView = new SdsStreamView();
+            manualStreamView.setId(sampleManualStreamViewId);
+            manualStreamView.setName("SampleManualStreamView");
+            manualStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
+            manualStreamView.setSourceTypeId(sampleTypeId);
+            manualStreamView.setTargetTypeId(integerTargetTypeId);
+            manualStreamView.setProperties(props);
+            String jsonManualStreamView = ocsClient.Streams.createStreamView(tenantId, namespaceId, manualStreamView);
+            manualStreamView = ocsClient.mGson.fromJson(jsonManualStreamView, SdsStreamView.class);
+
+            // range values with automatically mapped SdsStreamView
+            System.out.println(
+                    "Specifying a StreamView with a SdsType of the same shape returns values that are automatically mapped to the target SdsType's properties:");
+            Type targetListType = new TypeToken<ArrayList<WaveDataTarget>>() {
+            }.getType();
+            jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3,
+                    false, SdsBoundaryType.ExactOrCalculated, sampleStreamViewId);
+            ArrayList<WaveDataTarget> foundTargetEvents = ocsClient.mGson.fromJson(jsonMultipleValues, targetListType);
+            for (WaveDataTarget evnt : foundTargetEvents) {
+                System.out.println("SinTarget: " + evnt.getSinTarget() + ", CosTarget: " + evnt.getCosTarget()
+                        + ", TanTarget: " + evnt.getTanTarget());
+            }
+            System.out.println();
+
+            // range values with manually mapped SdsStreamView
+            System.out.println(
+                    "SdsStreamViews can also convert certain types of data, here we return integers where the original values were doubles:");
+            Type integerListType = new TypeToken<ArrayList<WaveDataInteger>>() {
+            }.getType();
+            jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3,
+                    false, SdsBoundaryType.ExactOrCalculated, sampleManualStreamViewId);
+            ArrayList<WaveDataInteger> foundIntegerEvents = ocsClient.mGson.fromJson(jsonMultipleValues,
+                    integerListType);
+            for (WaveDataInteger evnt : foundIntegerEvents) {
+                System.out.println("SinInt: " + evnt.getSinInt() + ", CosInt: " + evnt.getCosInt() + ", TanInt: "
+                        + evnt.getTanInt());
+            }
+            System.out.println();
+
+            // SdsStreamViewMaps
+            System.out.println(
+                    "We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+            Type sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {
+            }.getType();
+            String jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
+            SdsStreamViewMap streamViewMap = ocsClient.mGson.fromJson(jsonStreamViewMap, sdsStreamViewType);
+            dumpSdsStreamViewMap(streamViewMap);
+            System.out.println();
+
+            System.out.println(
+                    "Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
+            sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {
+            }.getType();
+            jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleManualStreamViewId);
+            streamViewMap = ocsClient.mGson.fromJson(jsonStreamViewMap, sdsStreamViewType);
+            dumpSdsStreamViewMap(streamViewMap);
+            System.out.println();
+
+            // tags and metadata
+            System.out.println("Let's add some Tags and Metadata to our stream:");
+            System.out.println();
+
+            ArrayList<String> tags = new ArrayList<String>();
+            tags.add("waves");
+            tags.add("periodic");
+            tags.add("2018");
+            tags.add("validated");
+
+            Map<String, String> metadata = new HashMap<String, String>();
+            metadata.put("Region", "North America");
+            metadata.put("Country", "Canada");
+            metadata.put("Province", "Quebec");
+
+            ocsClient.Streams.updateTags(tenantId, namespaceId, sampleStreamId, tags);
+            ocsClient.Streams.updateMetadata(tenantId, namespaceId, sampleStreamId, metadata);
+
+            System.out.println("Tags now associated with " + sampleStreamId);
+            tags = ocsClient.Streams.getTags(tenantId, namespaceId, sampleStreamId);
+
+            for (String tag : tags) {
+                System.out.println(tag);
+            }
+            System.out.println();
+
+            String region = ocsClient.Streams.getMetadata(tenantId, namespaceId, sampleStreamId, "Region");
+            String country = ocsClient.Streams.getMetadata(tenantId, namespaceId, sampleStreamId, "Country");
+            String province = ocsClient.Streams.getMetadata(tenantId, namespaceId, sampleStreamId, "Province");
+
+            System.out.println("Metadata now associated with " + sampleStreamId);
+            System.out.println("Metadata key Region: " + region);
+            System.out.println("Metadata key Country: " + country);
+            System.out.println("Metadata key Province: " + province);
+
+            System.out.println();
+
+            // delete data
+
+            // remove the first value
+            System.out.println("Deleting values from the SdsStream");
+            ocsClient.Streams.removeValue(tenantId, namespaceId, sampleStreamId, "0");
+
+            // remove remaining values
+            ocsClient.Streams.removeWindowValues(tenantId, namespaceId, sampleStreamId, "2", "40");
+
+            // retrieve values to check deletion
+            jsonMultipleValues = ocsClient.Streams.getWindowValues(tenantId, namespaceId, sampleStreamId, "0", "200");
+            foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
+            if (foundEvents.isEmpty())
+                System.out.println("All values deleted successfully!");
         } catch (Exception e) {
+            success = false;
             e.printStackTrace();
         } finally {
             try {
-                System.out.println("Cleaning up");          
+                System.out.println("Cleaning up");
                 cleanUp(ocsClient);
                 System.out.println("done");
             } catch (Exception e) {
                 printError("Error deleting the Sds Objects", e);
             }
         }
+        return success;
     }
 
     /**

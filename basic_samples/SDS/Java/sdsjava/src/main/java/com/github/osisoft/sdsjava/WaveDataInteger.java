@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package samples;
+package com.github.osisoft.sdsjava;
 
 public class WaveDataInteger {
 
