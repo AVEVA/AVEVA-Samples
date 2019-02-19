@@ -17,6 +17,7 @@ local.properties
 .loadpath
 *.class
 target/
+release.properties
 
 # External tool builders
 .externalToolBuilders/
