@@ -101,7 +101,6 @@ class Types(object):
             raise TypeError
         if type is None or not isinstance(type, SdsType):
             raise TypeError
-
         response = requests.post(
             self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
             data=type.toJson(), 

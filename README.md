@@ -10,9 +10,12 @@ There are three types of samples/apps in the repo:
 
 * <img src="miscellaneous/images/app-type-e2e.png" alt="e2e icon">   End-End apps - Real world examples of web, desktop, mobile, and other applications using OCS data.  
 
+Some tasks and individual language examples may have some additional labels as follows:
+
 \* denotes that the language example uses the rest API directily instead of a library
 
-` denotes that the language example may not currently run without modifications or updates
+* <img src="miscellaneous/images/ctp.png" alt="ctp icon">   This task and code uses services that are currently in preview and this may not be available to you.  If you are interested in this functionality, please contact OCS support.  
+
 
 
 The official OCS samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table:
@@ -127,7 +130,7 @@ The project is a complete (very simple) command line application that takes a PI
 
   </td>
   <td>
-     <a href="advanced_samples/PIToOcsOmfSample/Dotnet/">.NET'</a>&nbsp; &nbsp;
+     <a href="advanced_samples/PIToOcsOmfSample/Dotnet/">.NET</a>&nbsp; &nbsp;
   </td>
  </tr>
  <tr>
@@ -136,10 +139,22 @@ The project is a complete (very simple) command line application that takes a PI
  <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"></h3>
   </td>
   <td width="35%">
-This samples sends snapshot values from PI to OCS via OMF.
+This sample sends snapshot values from PI to OCS via OMF.
   </td>
   <td>
-     <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*'</a>&nbsp; &nbsp;
+     <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*</a>&nbsp; &nbsp;
+  </td>
+ </tr>
+ <tr>
+   <td width="25%">
+      <h3> <img src="miscellaneous/images/ctp.png" alt="ctp icon">  Dataviews <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon">
+      </h3>
+  </td>
+  <td width="35%">
+These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  <a href="basic_samples/Dataviews">Details</a>
+  </td>
+  <td>
+     <a href="basic_samples/Dataviews/Python3">Python3</a>&nbsp; &nbsp;
   </td>
  </tr>
  </table>
