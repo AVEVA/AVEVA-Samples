@@ -1,7 +1,7 @@
 Using the OCS Dataview Service in Python
 ==================================================================
 
-The sample code in this demonstrates how to invoke Dataview REST APIs via the sample Python client library. 
+The sample code in this demonstrates how to invoke Dataview REST APIs via the sample Python client [library]( https://github.com/osisoft/OCS-Samples/tree/master/library_samples/Python3/ocs_sample_library_preview ). 
 By examining the code, you will see how to establish a connection 
 to SDS, obtain an authorization token, create an  SdsType and  SdsStream with data (if needed), 
 create a Dataview, update it, retreive it, and retrieve data from it a couple of different ways.  
