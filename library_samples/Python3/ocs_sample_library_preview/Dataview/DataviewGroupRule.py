@@ -78,11 +78,11 @@ class DataviewGroupRule(object):
 			
 
         if 'Type' in content:
-            dataviewGroupRule.Id = content['Type']
+            dataviewGroupRule.Type = content['Type']
             
 
         if 'TokenRules' in content:
-            dataviewGroupRule.Id = content['TokenRules']
+            dataviewGroupRule.TokenRules = content['TokenRules']
 
 
         return dataviewGroupRule

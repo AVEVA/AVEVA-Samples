@@ -19,12 +19,12 @@ from .DataviewQueryQuery import DataviewQueryQuery
 
 class DataviewQuery(object):    
 
-    def __init__(self, id = None, intype = None, value= None, operator = None,  query = None):
+    def __init__(self, id = None,  resource = None, field = None, value= None, operator = None,  query = None):
         self.__id = id
         if query:
             self.__query = query
         else:
-            self.__query = DataviewQueryQuery(intype,value, operator)      
+            self.__query = DataviewQueryQuery(resource, field, value, operator)      
 
     """Sds dataview definition"""
     @property

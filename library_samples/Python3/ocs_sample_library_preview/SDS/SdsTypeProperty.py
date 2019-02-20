@@ -19,8 +19,13 @@ from enum import Enum
 class SdsTypeProperty(object):
     """Sds type property definition"""
 
-    def __init__(self):
-            self.__isKey = False
+    def __init__(self, id = None, name =None, description = None, isKey = False, sdsType = None, value = None, order = None):
+            self.Id = id
+            self.Description = description
+            self.IsKey = isKey
+            self.SdsType = sdsType
+            self.Value = value
+            self.Order = order
             
     @property
     def Id(self):

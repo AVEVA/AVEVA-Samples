@@ -22,8 +22,14 @@ from .SdsTypeProperty import SdsTypeProperty
 
 class SdsType(object):
     """Sds type definitions"""
-    def __init__(self):
-        self.SdsTypeCode = SdsTypeCode.Empty
+    def __init__(self, id = None, name = None, description = None, baseType = None, sdsTypeCode = SdsTypeCode.Empty, properties = None):
+        self.SdsTypeCode = sdsTypeCode
+        self.Id = id
+        self.Name = name
+        self.Description = description
+        self.BaseType = baseType
+        self.Properties = properties
+
 
     @property
     def Id(self):
@@ -75,10 +81,11 @@ class SdsType(object):
         dictionary = { 'SdsTypeCode' : self.SdsTypeCode.value }
 
         # optional properties
-        if hasattr(self, 'Properties'):
-            dictionary['Properties'] = []
-            for value in self.Properties:
-                dictionary['Properties'].append(value.toDictionary())
+        if hasattr(self, 'Properties') :
+            if(self.Properties is not None):
+                dictionary['Properties'] = []
+                for value in self.Properties:
+                    dictionary['Properties'].append(value.toDictionary())
 
         if hasattr(self, 'Id'):
             dictionary['Id'] = self.Id
@@ -90,8 +97,9 @@ class SdsType(object):
             dictionary['Description'] = self.Description
 
         #if self.BaseType is not None and len(self.BaseType) > 0:
-        if hasattr(self, 'BaseType'):
-            dictionary['BaseType'] = self.BaseType.toDictionary()
+        if hasattr(self, 'BaseType'):            
+            if(self.BaseType is not None):
+                dictionary['BaseType'] = self.BaseType.toDictionary()
 
         return dictionary
 
