@@ -12,7 +12,7 @@ There are three types of samples/apps in the repo:
 
 Some tasks and individual language examples may have some additional labels as follows:
 
-\* denotes that the language example uses the rest API directily instead of a library
+* \* denotes that the language example uses the rest API directily instead of a library
 
 * <img src="miscellaneous/images/ctp.png" alt="ctp icon">   This task and code uses services that are currently in preview.  If you are interested in this functionality, please contact OCS support.  
 
@@ -20,145 +20,19 @@ Some tasks and individual language examples may have some additional labels as f
 
 The official OCS samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table:
 
+Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+----|-----------|---------|-----------
+**Client Credential Authentication**  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers the client credential flow of authentication against OCS.  Click here For more  <a href="basic_samples/Authentication/">Details</a> on the various credential patterns. | <a href="basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>
+**Hybrid Authentication**  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers the hybrid flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. | <a href="basic_samples/Authentication/HybridFlow/DotNet/HybridFlow">.NET</a>
+**Implicit Authentication**  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers the implicit flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. | <a href="basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow">.NET and JavaScript</a>
+**SDS Application** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="basic_samples/SDS">Details</a> | <a href="basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a><br /><a href="basic_samples/SDS/DotNet/SdsRestApiCore">.NET*</a><br /><a href="basic_samples/SDS/Java">JAVA</a><br /><a href="basic_samples/SDS/JavaScript/Angular">Angular</a><br /><a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a><br /><a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a><br /><a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a> | <br /> <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master&jobName=SDSJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br /> <br /> <br /> <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master&jobName=SDSPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+**Ingress Management** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers management operations for Ingress, including creating and deleting publishers, ingress tokens, topics, and subscriptions. | <a href="basic_samples/IngressClientLibraries/DotNet">.NET</a>&nbsp; &nbsp;
+**UOM** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers the basic functionality of the UOM system on OCS | <a href="advanced_samples/UomsSample/Dotnet/UomsSample">.NET</a>&nbsp; &nbsp;
+**Local OS Performance monitoring** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> |  In this sample we show how to create, add and read data from a stream.  The data is obtained from the OS using Performance monitors. | <a href="advanced_samples/PerfmonSample/DotNet/PerfmonSample/">.NET</a><br /><a href="advanced_samples/PerfmonSample/Python3/">Python3</a>&nbsp; &nbsp;
+**PIToOCS Historical** <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"> | The project is a complete (very simple) command line application that takes a PIPoint name search mask (e.g. sinu*), a start time and an endtime and writes all the data found for the points and time range into OCS. | <a href="advanced_samples/PIToOcsOmfSample/Dotnet/">.NET</a>&nbsp; &nbsp;
+**PIToOCS Snapshot** <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"> | This samples sends snapshot values from PI to OCS via OMF. | <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*</a>&nbsp; &nbsp;
+<img src="miscellaneous/images/ctp.png" alt="ctp icon">  **Dataviews** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  <a href="basic_samples/Dataviews">Details</a> |  <a href="basic_samples/Dataviews/Python3">Python3</a>&nbsp; &nbsp;
 
-
-<table>
- <tr>
-   <td width="25%">
-      <h3><b>Task</b></h3>
-  </td>
-  <td>
-      <h3 width="35%"><b>Description</b></h3>
-  </td>
-  <td>
-      <h3><b>Languages</b></h3>
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>Client Credential Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers the client credential flow of authentication against OCS.  Click here For more  <a href="basic_samples/Authentication/">Details</a> on the various credential patterns. 
-  </td>
-    <td>
-     <a href="basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>Hybrid Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers the hybrid flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. 
-  </td>
-    <td>
-     <a href="basic_samples/Authentication/HybridFlow/DotNet/HybridFlow">.NET</a>
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>Implicit Authentication  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers the implicit flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. 
-  </td>
-    <td>
-     <a href="basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow">.NET and JavaScript</a>
-  </td>
- </tr>
- 
- <tr>
-   <td width="25%">
-      <h3>SDS Application <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers typical operations against the Sds, including creating, updating, and deleting types, streams and events.  This is the recommended starting example, and a good a base for all other Tasks.  <a href="basic_samples/SDS">Details</a>
-  </td>
-    <td>
-     <a href="basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/DotNet/SdsRestApiCore">.NET*</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Java/sdsjava">JAVA</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/JavaScript/Angular">Angular</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/JavaScript/NodeJs">nodeJS</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Python/SDSPy/Python2">Python2</a>&nbsp; &nbsp;
-     <a href="basic_samples/SDS/Python/SDSPy/Python3">Python3</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>Ingress Management <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-    Covers management operations for Ingress, including creating and deleting publishers, ingress tokens, topics, and subscriptions.  
-  </td>
-  <td>
-     <a href="basic_samples/IngressClientLibraries/DotNet">.NET</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>UOM <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-  Covers the basic functionality of the UOM system on OCS
-  </td>
-  <td>
-     <a href="advanced_samples/UomsSample/Dotnet/UomsSample">.NET</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>Local OS Performance monitoring <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"></h3>
-  </td>
-  <td width="35%">
-  In this sample we show how to create, add and read data from a stream.  The data is obtained from the OS using Performance monitors.
-  </td>
-  <td>
-     <a href="advanced_samples/PerfmonSample/DotNet/PerfmonSample/">.NET</a>&nbsp; &nbsp;
-     <a href="advanced_samples/PerfmonSample/Python3/">Python3</a>&nbsp; &nbsp;
-  </td>
- </tr>
- 
- <tr>
-   <td width="25%">
-      <h3>PIToOCS Historical
- <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"></h3>
-  </td>
-  <td width="35%">
-The project is a complete (very simple) command line application that takes a PIPoint name search mask (e.g. sinu*), a start time and an endtime and writes all the data found for the points and time range into OCS.
-
-  </td>
-  <td>
-     <a href="advanced_samples/PIToOcsOmfSample/Dotnet/">.NET</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3>PIToOCS Snapshot
- <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"></h3>
-  </td>
-  <td width="35%">
-This sample sends snapshot values from PI to OCS via OMF.
-  </td>
-  <td>
-     <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*</a>&nbsp; &nbsp;
-  </td>
- </tr>
- <tr>
-   <td width="25%">
-      <h3> <img src="miscellaneous/images/ctp.png" alt="ctp icon">  Dataviews <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon">
-      </h3>
-  </td>
-  <td width="35%">
-These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  <a href="basic_samples/Dataviews">Details</a>
-  </td>
-  <td>
-     <a href="basic_samples/Dataviews/Python3">Python3</a>&nbsp; &nbsp;
-  </td>
- </tr>
- </table>
- 
 ## Credentials 
 
 A credential config.ini or app.config file is used in the examples unless otherwise noted in the example.  
@@ -172,6 +46,10 @@ A credential config.ini or app.config file is used in the examples unless otherw
 ## Request for example 
 
 Please raise an issue if you would like to see a new task, a new example inside of a task, or an existing example in a particular langauge.    
+
+## Contributions
+
+If you wish to contribute please take a look at the [contribution guide](CONTRIBUTING.md).
 
 ## License
 
