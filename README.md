@@ -20,7 +20,7 @@ Some tasks and individual language examples may have some additional labels as f
 
 The official OCS samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table:
 
-Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ----|-----------|---------|-----------
 **Client Credential Authentication**  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers the client credential flow of authentication against OCS.  Click here For more  <a href="basic_samples/Authentication/">Details</a> on the various credential patterns. | <a href="basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>
 **Hybrid Authentication**  <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | Covers the hybrid flow of authentication against OCS.  Click here For more  <a href="basic_samples/Identity/">Details</a> on the various credential patterns. | <a href="basic_samples/Authentication/HybridFlow/DotNet/HybridFlow">.NET</a>
