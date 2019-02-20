@@ -31,7 +31,7 @@ Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;S
 **Local OS Performance monitoring** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> |  In this sample we show how to create, add and read data from a stream.  The data is obtained from the OS using Performance monitors. | <a href="advanced_samples/PerfmonSample/DotNet/PerfmonSample/">.NET</a><br /><a href="advanced_samples/PerfmonSample/Python3/">Python3</a>&nbsp; &nbsp;
 **PIToOCS Historical** <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"> | The project is a complete (very simple) command line application that takes a PIPoint name search mask (e.g. sinu*), a start time and an endtime and writes all the data found for the points and time range into OCS. | <a href="advanced_samples/PIToOcsOmfSample/Dotnet/">.NET</a>&nbsp; &nbsp;
 **PIToOCS Snapshot** <img src="miscellaneous/images/app-type-ingress.png" alt="ingress icon"> | This samples sends snapshot values from PI to OCS via OMF. | <a href="advanced_samples/PItoOCSviaAPISample/DotNet">.NET*</a>&nbsp; &nbsp;
-
+<img src="miscellaneous/images/ctp.png" alt="ctp icon">  **Dataviews** <img src="miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  <a href="basic_samples/Dataviews">Details</a> |  <a href="basic_samples/Dataviews/Python3">Python3</a>&nbsp; &nbsp;
 
 ## Credentials 
 
