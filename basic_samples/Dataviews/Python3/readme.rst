@@ -1,4 +1,4 @@
-Building a Python client to make calls to the Dataview Service
+Using the OCS Dataview Service in Python
 ==================================================================
 
 The sample code in this demonstrates how to invoke Dataview REST APIs via the sample Python client library. 
