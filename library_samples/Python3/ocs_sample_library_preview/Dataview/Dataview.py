@@ -20,7 +20,7 @@ from .DataviewMapping import DataviewMapping
 from .DataviewIndexConfig import DataviewIndexConfig
 from .DataviewGroupRule import DataviewGroupRule
 
-class Dataview(object):
+class Dataview(object): 
 
 
     def __init__(self, id = None, name= None, description = None, queries = [], mappings = None, indexConfig = None, indexDataType =None, groupRules = []):
