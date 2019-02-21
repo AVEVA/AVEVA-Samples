@@ -20,6 +20,15 @@ package  com.github.osisoft.ocs_sample_library_preview.sds;
 
 public class SdsType {
 
+    public SdsType ()
+    {
+
+    } 
+    public SdsType (String id, String name, String description, String sdsTypeCode, SdsTypeProperty[] properties)
+    {
+
+    } 
+
     private String Id = "";
     private String Name = "";
     private String Description = "";

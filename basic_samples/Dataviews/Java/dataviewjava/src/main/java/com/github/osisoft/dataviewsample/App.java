@@ -1,18 +1,12 @@
 package com.github.osisoft.dataviewsample;
 
 
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import java.time.*;
 
 import  com.github.osisoft.ocs_sample_library_preview.*;
@@ -65,21 +59,6 @@ public class App {
                 createData(ocsClient);
             }
             String sampleStreamId = "SampleStream";
-            /*
-             * Dataview dataview = new Dataview(); dataview.setId(sampleDataviewId);
-             * DataviewQuery query = new DataviewQuery(); query.setId(sampleDataviewId);
-             * DataviewQueryQuery queryQuery = new DataviewQueryQuery();
-             * queryQuery.setType("streamname"); queryQuery.setValue(sampleStreamId);
-             * queryQuery.setOperator("Contains"); query.setQuery(queryQuery);
-             * DataviewQuery[] queries = new DataviewQuery[1]; queries[0] = query;
-             * dataview.setQueries(queries); DataviewMapping map = new DataviewMapping();
-             * map.setIsDefault("true"); dataview.setMappings(map);
-             * dataview.setIndexDataType("datetime"); DataviewGroupRule groupRule = new
-             * DataviewGroupRule(); groupRule.setId("DefaultGroupRule");
-             * groupRule.setType("StreamTag"); DataviewGroupRule[] rules = new
-             * DataviewGroupRule[1]; rules[0] = groupRule;
-             */
-            // dataview.setGroupRules(rules);
 
             DataviewQuery dq = new DataviewQuery(sampleDataviewId, "streamname", sampleStreamId, "contains");
             DataviewGroupRule dgr = new DataviewGroupRule("DefaultGroupRule", "StreamTag");
