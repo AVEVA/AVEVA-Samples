@@ -12,5 +12,5 @@ All pull requests and issues will be reviewed by the team.
 * Clear Task Name
 * General Readme
 * Language Specific Readme (Can be in general readme if there is only 1 language.  This should be easily seperated out of the general readme in case another language is added late.r)
-* Tests (See [sample testing guide](test_guide.md) for expected level of tests.)
+* Tests (See [sample testing guide](test_guide.md) for details.)
 
