@@ -21,7 +21,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: config.ini
+        secureFile: prod_config.ini
 
 
     # Copy Files
@@ -29,12 +29,18 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.ini
+        contents: prod_config.ini
         targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+
+    - script: |
+        mv prod_config.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'rename config file'
+      
 
       
     - script: |
@@ -113,7 +119,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: config.properties
+        secureFile: prod_config.properties
 
       #
     - script: mvn install -f pom.xml 
@@ -125,12 +131,18 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.properties
+        contents: prod_config.properties
         targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+      
+
+    - script: |
+        mv prod_config.properties config.properties
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/
+      displayName: 'Install requirements'
       
     - task: Maven@3
       inputs:
