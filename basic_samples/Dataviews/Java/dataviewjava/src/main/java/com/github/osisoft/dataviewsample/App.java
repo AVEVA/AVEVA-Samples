@@ -273,12 +273,13 @@ public class App {
 
     
     private static String getConfiguration(String propertyId) {
+        
         String property = "";
         Properties props = new Properties();
         InputStream inputStream;
 
         try {
-            inputStream = new FileInputStream(System.getProperty("user.dir") + "\\config.properties"); 
+            inputStream = new FileInputStream("config.properties"); 
             //if launching from git folder use this:
             // "\\basic_samples\\Dataviews\\JAVA\\config.properties");
             props.load(inputStream);

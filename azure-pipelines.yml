@@ -6,6 +6,7 @@
 
   
 jobs:      
+
 - job: SDSPy
 
   pool:
@@ -138,6 +139,7 @@ jobs:
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
     
+
 - job: DataviewJava
 
   pool:
