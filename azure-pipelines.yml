@@ -139,7 +139,7 @@ jobs:
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
     
-    
+
 - job: DataviewJava
 
   pool:
@@ -168,15 +168,6 @@ jobs:
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
-
-    - script: dir
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/Dataviews/Java/dataviewjava/
-      displayName: display files
-
-      
-    - script: cat config.properties 
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/Dataviews/Java/dataviewjava/
-      displayName: display config file
       
     - task: Maven@3
       inputs:
