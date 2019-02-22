@@ -164,6 +164,7 @@ def main():
         
         print
         print("Creating dataview")		
+        print(dataview.toJson())	 
         dataviews = ocsClient.Dataviews.postDataview(namespaceId, dataview)
 
         print

@@ -32,7 +32,6 @@ public class Dataview {
     public Dataview()
     {
         this.Mappings =  new DataviewMapping();
-        this.IndexConfig = new DataviewIndexConfig();
     }
 
     public Dataview(String Id, DataviewQuery[] Queries, DataviewGroupRule[] GroupRules,String IndexDataType)
@@ -41,7 +40,6 @@ public class Dataview {
         this.Queries = Queries;
         this.GroupRules = GroupRules;
         this.Mappings = new DataviewMapping();
-        this.IndexConfig = new DataviewIndexConfig();
         this.IndexDataType = IndexDataType;
     }
 
@@ -51,7 +49,6 @@ public class Dataview {
         this.Queries = Queries;
         this.GroupRules = GroupRules;
         this.Mappings = new DataviewMapping();
-        this.IndexConfig = new DataviewIndexConfig();
         this.IndexDataType = IndexDataType;
     }
 

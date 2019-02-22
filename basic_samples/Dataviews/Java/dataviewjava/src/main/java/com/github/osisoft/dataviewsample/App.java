@@ -88,10 +88,11 @@ public class App {
             DataviewGroupRule dataviewGroupRule = new DataviewGroupRule("DefaultGroupRule", "StreamTag");
             DataviewMapping dataviewMapping = new DataviewMapping();
             Dataview dataview = new Dataview(sampleDataviewId, sampleDataviewName, sampleDataviewDescription, 
-                new DataviewQuery[] { dataviewQuery }, new DataviewGroupRule[] { dataviewGroupRule }, dataviewMapping,  new DataviewIndexConfig(),  "datetime");
+                new DataviewQuery[] { dataviewQuery }, new DataviewGroupRule[] { dataviewGroupRule }, dataviewMapping,  null,  "datetime");
 
             System.out.println();
             System.out.println("Creating dataview");
+            System.out.println(ocsClient.mGson.toJson(dataview));
 
             Dataview dataviewOut = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
             dataview.setDescription(sampleDataviewDescription_modified);
