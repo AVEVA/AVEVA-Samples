@@ -1,12 +1,12 @@
 package com.github.osisoft.dataviewsample;
 
-
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.time.*;
 
 import  com.github.osisoft.ocs_sample_library_preview.*;
@@ -21,6 +21,11 @@ public class App {
 	
     // id strings
     static String sampleDataviewId = "Dataview_Sample";
+    
+    static String sampleDataviewName = "Dataview_Sample_Name"; 
+    static String sampleDataviewDescription = "A Sample Description that describes that this Dataview is just used for our sample.";
+    static String sampleDataviewDescription_modified = "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put.";
+
 
     static String samplePressureTypeId = "Time_Pressure_SampleType";
     static String samplePressureStreamId = "Tank_Pressure_SampleStream";
@@ -30,7 +35,7 @@ public class App {
     static String sampleTemperatureStreamId = "Tank_Temperature_SampleStream";    
     static String sampleTemperatureStreamName = "Tank Temperature SampleStream";
 
-    static boolean needData = false;
+    static boolean needData = true;
 
     
     public static void main(String[] args) throws InterruptedException {
@@ -59,24 +64,49 @@ public class App {
                 createData(ocsClient);
             }
             String sampleStreamId = "SampleStream";
+/*
+            ######################################################################################################
+            # Dataviews
+            ######################################################################################################	
+    
+            #We need to create the dataview.  Dataview are complex objects.
+            #For our dataview we are going to combine the two streams that were created, using a search to find the streams, using a common part of their name. 
+            #We are using the default mappings.  This means our columns will keep their original names.  Another typical use of columns is to change what stream properties get mapped to which column.  
+            #Mappings allow you to rename a column in the results to something different.  So if we want to we could rename Pressure to press.
+            #We then define the IndexDataType.  Currently only datetime is supported.
+            #Next we need to define the grouping rules.  Grouping decides how each row in the result is filled in. 
+            #In this case we are grouping by tag, which effectively squashes are results together so that way Pressure and Temperature and Time all get results in a row.
+            #If we grouped by StreamName, each row would be filled is as fully as it can by each Stream name.  Giving us results with Pressure and Time seperate from Pressure and Temperature
+            #Our results when looking at it like a table looks like:
+            #time,DefaultGroupRule_Tags,pressure,temperature
+            #2019-02-18T18:50:17.1084594Z,(NoTags),13.8038967965309,57.6749982613741
+            #2019-02-18T18:51:17.1084594Z,(NoTags),13.8038967965309,57.674998261374
+            #....
+            */
 
-            DataviewQuery dq = new DataviewQuery(sampleDataviewId, "streamname", sampleStreamId, "contains");
-            DataviewGroupRule dgr = new DataviewGroupRule("DefaultGroupRule", "StreamTag");
-            DataviewQuery[] dqArray = { dq };
-            DataviewGroupRule[] dgrArray = { dgr };
-
-            Dataview dataview = new Dataview(sampleDataviewId, dqArray, dgrArray, "datetime");
+            DataviewQuery dataviewQuery = new DataviewQuery(sampleDataviewId, "streams", "name", sampleStreamId, "contains");
+            DataviewGroupRule dataviewGroupRule = new DataviewGroupRule("DefaultGroupRule", "StreamTag");
+            DataviewMapping dataviewMapping = new DataviewMapping();
+            Dataview dataview = new Dataview(sampleDataviewId, sampleDataviewName, sampleDataviewDescription, 
+                new DataviewQuery[] { dataviewQuery }, new DataviewGroupRule[] { dataviewGroupRule }, dataviewMapping,  new DataviewIndexConfig(),  "datetime");
 
             System.out.println();
-            System.out.println("Cerating dataview");
-            System.out.println(ocsClient.mGson.toJson(dataview));
-            Dataview dataviewOut = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
-            String retrievedDv = ocsClient.mGson.toJson(dataviewOut);
-            String expectedDV = ocsClient.mGson.toJson(dataview);
+            System.out.println("Creating dataview");
 
-            if(!retrievedDv.equals((expectedDV)))
+            Dataview dataviewOut = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
+            dataview.setDescription(sampleDataviewDescription_modified);
+
+            if(!(Objects.equals(dataviewOut.getId(),sampleDataviewId) && Objects.equals(dataviewOut.getDescription(),sampleDataviewDescription)))
             {
                 throw new SdsError("Dataview doesn't match expected one");
+            }
+            
+            dataviewOut = ocsClient.Dataviews.putDataview(tenantId, namespaceId, dataview);
+            
+
+            if(!(Objects.equals(dataviewOut.getId(),sampleDataviewId) && Objects.equals(dataviewOut.getDescription(),sampleDataviewDescription_modified)))
+            {
+                throw new SdsError("Dataview modified doesn't match expected one");
             }
 
             // Getting the complete set of dataviews to make sure it is there
@@ -86,18 +116,71 @@ public class App {
             for (Dataview dv : dataviews) {
                 System.out.println(ocsClient.mGson.toJson(dv));
             }
+            
+            System.out.println();
+            System.out.println("Getting datagroups");
+            Datagroups dataGroups = ocsClient.Dataviews.getDatagroups(tenantId, namespaceId, sampleDataviewId, 0, 100);
+            for (Datagroup dg : dataGroups.getDataGroups().values()) {
+                System.out.println("Datagroup");
+                System.out.println(ocsClient.mGson.toJson(dg));
+            }
 
-            // By default this will get interpolated values every minute over the last hour,
-            // which lines up with our data that we sent in.
-            // Beyond the normal API optoins, this function does have the option to return
-            // the data in a class if you have created a Type for the data you re
-            // retreiving.
+ 
+            ///By default the preview get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
+            ///Beyond the normal API optoins, this function does have the option to return the data in a class if you have created a Type for the data you are retreiving.
 
             System.out.println();
-            System.out.println("Retrieving data from the Dataview");
-            Map<String, Object>[] dataviewData = ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId,
-                    sampleDataviewId);
-            System.out.println(ocsClient.mGson.toJson(dataviewData));
+            System.out.println("Retrieving preview data from the Dataview");
+            Map<String, Object>[] dataviewPreviewData =  ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId,
+                    sampleDataviewId));
+           System.out.println(ocsClient.mGson.toJson(dataviewPreviewData[0]));
+
+
+           //#Now we get the data creating a session.  The session allows us to get pages of data ensuring that the underlying data won't change as we collect the pages.
+           //#There are apis to manage the sessions, but that is beyond the scope of this basic example.
+           //#To highlight the use of the sessions this we will access the data, and wait 5 seconds to see the difference in the returned time.
+
+           System.out.println();
+           System.out.println("Retrieving session data from the Dataview");
+           Map<String, Object>[] dataviewSessionData = ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
+                   sampleDataviewId, "","","","",0));
+          System.out.println(ocsClient.mGson.toJson(dataviewSessionData[0]));
+
+          
+        
+        
+          System.out.println(("Intentional waiting for 5 seconds to show a noticeable change in time."));
+          //# We wait for 5 seconds so the preview is different that before, but our session data should be the same
+          TimeUnit.SECONDS.sleep(5);
+
+          
+          Map<String, Object>[] dataviewPreviewData2 = ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId,
+          sampleDataviewId));
+          System.out.println(ocsClient.mGson.toJson(dataviewPreviewData2[0]));
+          
+          Map<String, Object>[] dataviewSessionData2 = ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
+          sampleDataviewId, "","","","",0));
+          System.out.println(ocsClient.mGson.toJson(dataviewSessionData2[0]));
+
+          
+          if(!(Objects.equals(dataviewSessionData2[0],dataviewSessionData[0])))
+          {
+              throw new SdsError("Dataview session data doesn't match expected one");
+          } 
+          
+          if(Objects.equals(dataviewPreviewData[0],dataviewPreviewData2[0]))
+          {
+              throw new SdsError("Dataview preview data matches");
+          }
+          
+          
+          System.out.println();
+          System.out.println("Retrieving preview data from the Dataview in table format with headers");
+          String dataviewSessionDataTable = ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
+                  sampleDataviewId, "","","","csvh",0);
+         System.out.println(dataviewSessionDataTable.substring(0,193));
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,60 +200,30 @@ public class App {
         return success;
     }
     
-    private static void createData(OCSClient ocsClient) {
+    private static void createData(OCSClient ocsClient) throws Exception {
         
         try {
 
-            SdsType doubleType = new SdsType();
-            doubleType.setId("doubleType");
-            doubleType.setSdsTypeCode(SdsTypeCode.Double);
+            SdsType doubleType = new SdsType("doubleType","", "", SdsTypeCode.Double);
+            SdsType dateTimeType = new SdsType("dateTimeType","","", SdsTypeCode.DateTime);
 
-            SdsType dateTimeType = new SdsType();
-            dateTimeType.setId("dateTimeType");
-            dateTimeType.setSdsTypeCode(SdsTypeCode.DateTimeOffset);
-
-
-            SdsTypeProperty pressureDoubleProperty = new SdsTypeProperty();
-            pressureDoubleProperty.setId("pressure");
-            pressureDoubleProperty.setSdsType(doubleType);
-
-            SdsTypeProperty temperatureDoubleProperty = new SdsTypeProperty();
-            temperatureDoubleProperty.setId("temperature");
-            temperatureDoubleProperty.setSdsType(doubleType);
-            
-            SdsTypeProperty timeDateTimeProperty = new SdsTypeProperty();
-            timeDateTimeProperty.setId("time");
-            timeDateTimeProperty.setSdsType(dateTimeType);
-            timeDateTimeProperty.setIsKey(true);
+            SdsTypeProperty pressureDoubleProperty = new SdsTypeProperty("pressure","","",doubleType, false);
+            SdsTypeProperty temperatureDoubleProperty = new SdsTypeProperty("temperature", "", "", doubleType, false);            
+            SdsTypeProperty timeDateTimeProperty = new SdsTypeProperty("time", "","", dateTimeType, true);
 
             // Create a SdsType for our WaveData class; the metadata properties are the ones we just created
             
-            SdsType pressure_SDSType = new SdsType();
-            pressure_SDSType.setId(samplePressureTypeId);
-            SdsTypeProperty[] props = {pressureDoubleProperty, timeDateTimeProperty};
-            pressure_SDSType.setProperties(props);
-            pressure_SDSType.setSdsTypeCode(SdsTypeCode.Object);
+            SdsType pressure_SDSType = new SdsType(samplePressureTypeId, "","", SdsTypeCode.Object, new SdsTypeProperty[] {pressureDoubleProperty, timeDateTimeProperty}) ;
+            SdsType temperature_SDSType = new SdsType(sampleTemperatureTypeId, "","", SdsTypeCode.Object, new SdsTypeProperty[] {temperatureDoubleProperty, timeDateTimeProperty}) ;            
 
-            SdsType temperature_SDSType = new SdsType();
-            temperature_SDSType.setId(sampleTemperatureTypeId);
-            SdsTypeProperty[] props2 = {temperatureDoubleProperty, timeDateTimeProperty};
-            temperature_SDSType.setProperties(props2);
-            temperature_SDSType.setSdsTypeCode(SdsTypeCode.Object);
-
-            
 
             System.out.println("Creating SDS Type");
-            System.out.println(ocsClient.mGson.toJson(pressure_SDSType));
-
 
             ocsClient.Types.createType(tenantId, namespaceId, pressure_SDSType);
             ocsClient.Types.createType(tenantId, namespaceId, temperature_SDSType);
 
-            SdsStream pressureStream = new SdsStream(samplePressureStreamId, samplePressureTypeId);
-            pressureStream.setName(samplePressureStreamName);
-
-            SdsStream temperatureStream = new SdsStream(sampleTemperatureStreamId, sampleTemperatureTypeId);
-            temperatureStream.setName(sampleTemperatureStreamName);
+            SdsStream pressureStream = new SdsStream(samplePressureStreamId, samplePressureTypeId, "",samplePressureStreamName);
+            SdsStream temperatureStream = new SdsStream(sampleTemperatureStreamId, sampleTemperatureTypeId, "", sampleTemperatureStreamName);
             
             System.out.println("Creating SDS Streams");
             String jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, pressureStream);
@@ -200,7 +253,8 @@ public class App {
 
         }
         catch (Exception e) {
-            printError("Error craeting Sds Objects", e);
+            printError("Error creating Sds Objects", e);
+            throw e;
         }
     }
 

@@ -28,10 +28,10 @@ public class DataviewQuery {
         this.Query = new DataviewQueryQuery();
     }
 
-    public DataviewQuery(String Id, String Type, String Value, String Operator )
+    public DataviewQuery(String Id, String Resource, String Field, String Value, String Operator )
     {
         this.Id = Id;
-        this.Query = new DataviewQueryQuery(Type, Value, Operator);
+        this.Query = new DataviewQueryQuery(Resource, Field, Value, Operator);
     }
 
     public String getId() {

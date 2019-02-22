@@ -29,14 +29,21 @@ public class SdsStream {
     private List<SdsStreamPropertyOverride> PropertyOverrides;
     private List<SdsTypeProperty> Properties;
 
-    public SdsStream(String name, String typeid) {
-        this.Id = name;
-        this.Name = name;
+    public SdsStream(String id, String typeid) {
+        this.Id = id;
+        this.Name = id;
         this.TypeId = typeid;
     }
 
-    public SdsStream(String name, String typeid, String description) {
-        this.Id = name;
+    public SdsStream(String id, String typeid, String description) {
+        this.Id = id;
+        this.Name = id;
+        this.TypeId = typeid;
+        this.Description = description;
+    }
+
+    public SdsStream(String id, String typeid, String description, String name) {
+        this.Id = id;
         this.Name = name;
         this.TypeId = typeid;
         this.Description = description;

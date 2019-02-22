@@ -45,6 +45,16 @@ public class Dataview {
         this.IndexDataType = IndexDataType;
     }
 
+    public Dataview(String Id ,String Name, String Description, DataviewQuery[] Queries, DataviewGroupRule[] GroupRules,String IndexDataType)
+    {
+        this.Id = Id;
+        this.Queries = Queries;
+        this.GroupRules = GroupRules;
+        this.Mappings = new DataviewMapping();
+        this.IndexConfig = new DataviewIndexConfig();
+        this.IndexDataType = IndexDataType;
+    }
+
     public Dataview(String Id, String Name, String Description, DataviewQuery[] Queries, DataviewGroupRule[] GroupRules, DataviewMapping Mappings, DataviewIndexConfig IndexConfig,String IndexDataType)
     {
         this.Id = Id;

@@ -20,17 +20,17 @@ package  com.github.osisoft.ocs_sample_library_preview.dataviews;
 
 public class DataviewIndexConfig {
 
-    private String IsDefault = "";
+    private Boolean IsDefault = true;
     private String StartIndex = "";
     private String EndIndex = "";
     private String Mode = "";
     private String Interval = "";
 
-    public String getIsDefault() {
+    public Boolean getIsDefault() {
         return IsDefault;
     }
 
-    public void setIsDefault(String isDefault) {
+    public void setIsDefault(Boolean isDefault) {
         this.IsDefault = isDefault;
     }
 

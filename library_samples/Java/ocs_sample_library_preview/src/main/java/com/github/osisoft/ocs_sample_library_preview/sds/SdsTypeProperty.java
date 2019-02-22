@@ -18,6 +18,19 @@
 package  com.github.osisoft.ocs_sample_library_preview.sds;
 
 public class SdsTypeProperty {
+
+    public SdsTypeProperty()
+    {}
+
+    public SdsTypeProperty(String id, String name, String description, SdsType sdsType, boolean isKey)
+    {
+        setName(name);
+        setId(id);
+        setDescription(description);
+        setSdsType(sdsType);
+        setIsKey(isKey);    
+    }
+
     private String Name;
     private String Id;
     private String Description;

@@ -24,9 +24,20 @@ public class SdsType {
     {
 
     } 
-    public SdsType (String id, String name, String description, String sdsTypeCode, SdsTypeProperty[] properties)
+    public SdsType (String id, String name, String description, SdsTypeCode sdsTypeCode)
     {
-
+        setId(id);
+        setName(name);
+        setDescription(description);
+        setSdsTypeCode(sdsTypeCode);
+    } 
+    public SdsType (String id, String name, String description, SdsTypeCode sdsTypeCode, SdsTypeProperty[] properties)
+    {
+        setId(id);
+        setName(name);
+        setDescription(description);
+        setSdsTypeCode(sdsTypeCode);
+        setProperties(properties);
     } 
 
     private String Id = "";
