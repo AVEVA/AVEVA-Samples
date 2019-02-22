@@ -29,12 +29,18 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.ini
+        contents: prod_config.ini
         targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+
+    - script: |
+        mv prod_config.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'Install requirements'
+      
 
       
     - script: |
@@ -131,6 +137,12 @@ jobs:
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+      
+
+    - script: |
+        mv prod_config.properties config.properties
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/
+      displayName: 'Install requirements'
       
     - task: Maven@3
       inputs:
