@@ -46,7 +46,8 @@ public class DataviewClient {
     private String dataviewBase = requestBase + "/Dataviews";
     private String getDataviews = dataviewBase + "?skip={skip}&count={count}";
     private String dataviewPath = dataviewBase + "/{dataview_id}";
-    private String getDataviewPreview = dataviewPath + "/preview/interpolated";
+    private String getDataviewPreview = dataviewPath + "/preview/interpolated?startIndex={startIndex}&endIndex={endIndex}&interval={interval}&form={form}&count={count}";
+    private String getDataviewInterpolated= dataviewPath + "/data/interpolated?startIndex={startIndex}&endIndex={endIndex}&interval={interval}&form={form}&count={count}";
 
     private String datagroupPath = dataviewPath + "/Datagroups";
     private String getDatagroup  = datagroupPath + "/{datagroup_id}";
@@ -114,7 +115,7 @@ public class DataviewClient {
        // return response.toString();
     }    
 
-    public Dataview patchDataview(String tenantId, String namespaceId, Dataview dataviewDef) throws SdsError {
+    public Dataview putDataview(String tenantId, String namespaceId, Dataview dataviewDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -123,7 +124,7 @@ public class DataviewClient {
         
         try {
             url = new URL(baseUrl + dataviewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
-            urlConnection = baseClient.getConnection(url, "PATCH");
+            urlConnection = baseClient.getConnection(url, "PUT");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
         } catch (IllegalStateException e) {
@@ -382,7 +383,7 @@ public class DataviewClient {
        // return response.toString();
     }
 
-    public Map<String,Object>[]  getDataviewPreview(String tenantId, String namespaceId, String dataviewId, String startIndex, String endIndex, String interval, String form, Integer count, String value_class) throws SdsError {
+    public String getDataviewPreview(String tenantId, String namespaceId, String dataviewId, String startIndex, String endIndex, String interval, String form, Integer count, String value_class) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -421,8 +422,59 @@ public class DataviewClient {
             e.printStackTrace();
         }
 
-        Map<String,Object>[]  results = mGson.fromJson(response.toString(), new TypeToken<Map<String,Object>[]>(){}.getType());
-        return results;
+       // Map<String,Object>[]  results = mGson.fromJson(response.toString(), new TypeToken<Map<String,Object>[]>(){}.getType());
+      //  return results;
+        return response.toString();
+    }
+
+    public String  getDataviewPreview(String tenantId, String namespaceId, String dataviewId) throws SdsError {
+        return getDataviewPreview(tenantId, namespaceId, dataviewId, "","","","",0,"");
+    }
+    
+    public String getDataviewInterpolated(String tenantId, String namespaceId, String dataviewId, String startIndex, String endIndex, String interval, String form, Integer count) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        
+        try {
+            url = new URL(baseUrl + getDataviewInterpolated.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId).replace("{startIndex}", startIndex.toString()).replace("{endIndex}", endIndex.toString()).replace("{interval}", interval.toString()).replace("{form}", form.toString()).replace("{count}", count.toString()));
+            urlConnection = baseClient.getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get dataview data interpolated request failed");
+            }
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            sdsError.print();
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response.toString();
+//        Map<String,Object>[]  results = mGson.fromJson(response.toString(), new TypeToken<Map<String,Object>[]>(){}.getType());
+ //       return results;
        // return response.toString();
     }
+
+
 }

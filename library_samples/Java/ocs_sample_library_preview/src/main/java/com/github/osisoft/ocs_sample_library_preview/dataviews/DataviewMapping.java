@@ -20,14 +20,14 @@ package  com.github.osisoft.ocs_sample_library_preview.dataviews;
 
 public class DataviewMapping {
 
-    private String IsDefault = "";
+    private Boolean IsDefault = true;
     private DataviewMappingColumn[] Columns;
 
-    public String getIsDefault() {
+    public Boolean getIsDefault() {
         return IsDefault;
     }
 
-    public void setIsDefault(String isDefault) {
+    public void setIsDefault(Boolean isDefault) {
         this.IsDefault = isDefault;
     }
 

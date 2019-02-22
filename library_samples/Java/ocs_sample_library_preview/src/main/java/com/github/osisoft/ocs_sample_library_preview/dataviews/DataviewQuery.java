@@ -23,6 +23,17 @@ public class DataviewQuery {
     private String Id = "";
     private DataviewQueryQuery Query;
 
+    public DataviewQuery( )
+    {
+        this.Query = new DataviewQueryQuery();
+    }
+
+    public DataviewQuery(String Id, String Resource, String Field, String Value, String Operator )
+    {
+        this.Id = Id;
+        this.Query = new DataviewQueryQuery(Resource, Field, Value, Operator);
+    }
+
     public String getId() {
         return Id;
     }

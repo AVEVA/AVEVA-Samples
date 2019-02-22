@@ -63,4 +63,9 @@ public class OCSClient {
         mGson = baseClient.mGson;
     }
 
+    public Map<String,Object>[] jsonStringToMapArray(String input)
+    {        
+        return mGson.fromJson(input, new TypeToken<Map<String,Object>[]>(){}.getType());
+    }
+
 }

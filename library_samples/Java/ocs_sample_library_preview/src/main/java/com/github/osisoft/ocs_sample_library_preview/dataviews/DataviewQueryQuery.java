@@ -20,16 +20,37 @@ package  com.github.osisoft.ocs_sample_library_preview.dataviews;
 
 public class DataviewQueryQuery {
 
-    private String Type = "";
+    private String Resource = "";
+    private String Field = "";
     private String Value = "";
     private String Operator = "";
 
-    public String getType() {
-        return Type;
+    public DataviewQueryQuery()
+    {
     }
 
-    public void setType(String type) {
-        this.Type = type;
+    public DataviewQueryQuery(String resource, String field, String Value, String Operator)
+    {
+        this.Resource =resource;
+        this.Field =field;
+        this.Value = Value;
+        this.Operator = Operator;
+    }
+
+    public String getResource() {
+        return Resource;
+    }
+
+    public void setResource(String resource) {
+        this.Resource = resource;
+    }
+
+    public String getField() {
+        return Field;
+    }
+
+    public void setField(String field) {
+        this.Field = field;
     }
 
     public String getValue() {
