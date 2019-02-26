@@ -8,6 +8,7 @@ The sample described in this section makes use of the OSIsoft Ingress Client Lib
 it is recommended that you use these libraries. The libraries are available as NuGet packages. The packages used are:
 
 * OSIsoft.Contracts.Ingress
+* OSIsoft.Models.Ingress
 * OSIsoft.Identity.AuthenticationHandler
 
 The libraries offer a framework of classes that make client development easier.
@@ -39,17 +40,17 @@ The AuthenticationHandler is a DelegatingHandler that is attached to an HttpClie
 Other Configuration
 -------------------
 
-The aforementioned appsettings.json file has placeholders for the names of the publishers, topics 
-and subscriptions too. You must fill in those values as well.
+The aforementioned appsettings.json file has placeholders for the names of the topic
+and subscription, as well as a client Id to map to the topic. You must fill in those values as well.
 
-Set up Ingress clients
+Set up IngressService
 ----------------------
 
-The client example works through one client interface: 
+The example works through one interface: 
 
-* IIngressService for Publisher, Token, Topic and Subscription object operations
+* IIngressService for Topic and Subscription object operations
 
-The following code block illustrates how to configure the client to use throughout the sample:
+The following code block illustrates how to configure the IngressService to use throughout the sample:
 
 .. code:: cs
 
@@ -58,60 +59,17 @@ The following code block illustrates how to configure the client to use througho
 	IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
 	IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
   
-  
+Mapped clients
+---------------
 
-Create a Publisher
-------------------
-
-To send OMF data to OCS through Ingress, you must first create a Publisher.
-
-A producer of OMF messages intended for OCS is called a Publisher. For more information about Publishers, 
-refer to the Ingress Documentation. First, the Publisher has to be created locally by instantiating a 
-new Publisher object:
-
-.. code:: cs
-
-	Publisher publisher = new Publisher
-	{
-		TenantId = tenantId,
-		Name = "REPLACE_WITH_PUBLISHER_NAME",
-		Description = "This is a sample Publisher for sending OMF data to OCS"
-	};
-    
-Then use the Ingress client to create a Publisher in OCS:
-
-.. code:: cs
-
-	Publisher createdPubliher = await ingressService.CreateOrUpdatePublisherAsync(publisher);
-
-Create a Token
---------------
-
-After creating a publisher, security tokens for that publisher can be created. 
-These tokens are a type of bearer token, which means that any client that presents 
-the token will be able to authenticate as that publisher. First, we create the Token 
-locally by instantiating a new Token object:
-
-.. code:: cs
-
-	Token token = new Token()
-    {
-		PublisherId = createdPublisher.Id,
-		ExpirationDate = DateTime.UtcNow.AddDays(7),
-		IsDeleted = false
-    };
-
-As with the Publisher, next use the Ingress client to create the Token in OCS:
-
-.. code:: cs
-
-	Token createdToken = await ingressService.CreateOrUndeleteTokenAsync(token, createdPublisher.Id);
+The same clients obtained from the Identity Server are used to send OMF messages to a topic. A client may only be mapped to one topic per namespace. 
+It is recommended that the client you wish to map to the topic be different from the client used too authenticate. 
 
 Create a Topic
 --------------
 
-A Topic is used to aggregate data received from publishers and make it available for consumption 
-via a Subscription. A topic must contain at least one publisher. Publishers may be added to 
+A Topic is used to aggregate data received from clients and make it available for consumption 
+via a Subscription. A topic must contain at least one client Id. Client Ids may be added to 
 or removed from an existing topic. First, we create the Topic locally by instantiating 
 a new Topic object:
 
@@ -123,7 +81,7 @@ a new Topic object:
 		NamespaceId = namespaceId,
 		Name = "REPLACE_WITH_TOPIC_NAME",
 		Description = "This is a sample Topic",
-		Publishers = new List<string>() { createdPublisher.Id }
+		ClientIds = new List<string>() { mappedClientId }
 	};
 
 Then use the Ingress client to create the Topic in OCS:
@@ -168,13 +126,10 @@ Cleanup: Deleting Types, Stream Views, and Streams
 -----------------------------------------------------
 
 In order to prevent a bunch of unused resources from being left behind, this 
-sample performs some cleanup before exiting. Deleting Subscriptions, Topics, 
-Tokens  and Publishers can be achieved using the Ingress client and passing 
-the corresponding object Ids:
+sample performs some cleanup before exiting. Deleting Subscriptions and Topics 
+can be achieved using the Ingress client and passing the corresponding object Ids:
 
 .. code:: cs
 
 	await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
 	await ingressService.DeleteTopicAsync(createdTopic.Id);
-	await ingressService.DeleteTokenAsync(createdPublisher.Id, createdToken.Id);
-	await ingressService.DeletePublisherAsync(createdPublisher.Id);
