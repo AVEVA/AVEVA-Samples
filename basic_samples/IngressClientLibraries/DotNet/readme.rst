@@ -63,7 +63,7 @@ Mapped clients
 ---------------
 
 The same clients obtained from the Identity Server are used to send OMF messages to a topic. A client may only be mapped to one topic per namespace. 
-It is recommended that the client you wish to map to the topic be different from the client used too authenticate. 
+It is recommended that the client you wish to map to the topic be different from the client used in the AuthenticationHandler.
 
 Create a Topic
 --------------
