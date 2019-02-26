@@ -77,7 +77,7 @@ namespace IngressClientLibraries
                     NamespaceId = namespaceId,
                     Name = topicName,
                     Description = "This is a sample Topic",
-                    Publishers = new List<string>() { mappedClientId }
+                    ClientIds = new List<string>() { mappedClientId }
                 };
                 createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
                 Console.WriteLine($"Created a Topic with Id {createdTopic.Id}");
