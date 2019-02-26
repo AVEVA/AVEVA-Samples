@@ -55,7 +55,7 @@ namespace IngressClientLibraries
 
             //Get Ingress Services to communicate with server
             LoggerCallbackHandler.UseDefaultLogging = false;
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientSecret);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(new Uri(address), clientId, clientSecret);
 
             IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
             IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
@@ -113,25 +113,30 @@ namespace IngressClientLibraries
             {
                 try
                 {
-                    // Delete the Subscription
-                    Console.WriteLine($"Deleting the OCS Subscription with Id {createdSubscription.Id}");
-                    Console.WriteLine();
+                    // Delete the Subscription                  
                     if (createdSubscription != null)
                     {
+                        Console.WriteLine($"Deleting the OCS Subscription with Id {createdSubscription.Id}");
+                        Console.WriteLine();
+
                         await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
-                    }
-                    Console.WriteLine($"Deleted the OCS Subscription with Id {createdSubscription.Id}");
-                    Console.WriteLine();
+
+                        Console.WriteLine($"Deleted the OCS Subscription with Id {createdSubscription.Id}");
+                        Console.WriteLine();
+                    }                  
 
                     // Delete the Topic
-                    Console.WriteLine($"Deleting the Topic with Id {createdTopic.Id}");
-                    Console.WriteLine();
                     if (createdTopic != null)
                     {
+                        Console.WriteLine($"Deleting the Topic with Id {createdTopic.Id}");
+                        Console.WriteLine();
+
                         await ingressService.DeleteTopicAsync(createdTopic.Id);
+
+                        Console.WriteLine($"Deleted the Topic with Id {createdTopic.Id}");
+                        Console.WriteLine();
                     }
-                    Console.WriteLine($"Deleted the Topic with Id {createdTopic.Id}");
-                    Console.WriteLine();
+                    
                 }
                 catch (Exception ex)
                 {
