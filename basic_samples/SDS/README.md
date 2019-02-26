@@ -25,11 +25,13 @@ All basic SDS samples are console applications that follow the same sequence of 
 15. Tags & Metadata
 16. Delete events
 17. Create an SdsStream with a secondary index 
-18. Compound index
+18. Created an SdsType and SdsStream with Compound index
 19. Inserting and retreiving compound index data
 20. Delete metadata objects
 
-Python3 Program Test  
-[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
 These steps illustrate the fundamental programming steps of SDS.  Feel free to modify the samples and propose changes.
+
+Step numbers are searchable in the code.  For find the relevant part of the code for filtering on types search: Step 14
+
+
