@@ -50,6 +50,7 @@ namespace IngressClientLibraries
             string clientId = configuration["ClientId"];
             string clientSecret = configuration["ClientSecret"];
             string topicName = configuration["TopicName"];
+            string mappedClientId = configuration["MappedClientId"];
             string subscriptionName = configuration["SubscriptionName"];
 
             //Get Ingress Services to communicate with server
@@ -68,7 +69,7 @@ namespace IngressClientLibraries
             try
             {
                 // Create a Topic
-                Console.WriteLine($"Creating a Topic in Namespace {namespaceId} for Client with Id {clientId}");
+                Console.WriteLine($"Creating a Topic in Namespace {namespaceId} for Client with Id {mappedClientId}");
                 Console.WriteLine();
                 Topic topic = new Topic()
                 {
@@ -76,7 +77,7 @@ namespace IngressClientLibraries
                     NamespaceId = namespaceId,
                     Name = topicName,
                     Description = "This is a sample Topic",
-                    Publishers = new List<string>() { clientId }
+                    Publishers = new List<string>() { mappedClientId }
                 };
                 createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
                 Console.WriteLine($"Created a Topic with Id {createdTopic.Id}");
