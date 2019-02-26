@@ -142,7 +142,7 @@ namespace SdsClientLibraries
                 //Step2 Getting all events in table format with headers.
                 var tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
 
-                Console.WriteLine("Getting table  events");
+                Console.WriteLine("Getting table events");
                 foreach (var evnt in tableEvents.Rows)
                 {
                     Console.WriteLine(String.Join(",", evnt.ToArray()));
@@ -233,10 +233,10 @@ namespace SdsClientLibraries
                 Console.WriteLine();       
 
                 // Step 10
-                // We will retrieve events filtered to only get the ones where the order is a factor of 4.  Note, this can be done on non-index properties too.
+                // We will retrieve events filtered to only get the ones where the radians are less than 50.  Note, this can be done on index properties too.
   
                 var retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
-                Console.WriteLine(" Sds will only return the values where the order is a factor of 4:");
+                Console.WriteLine(" Sds will only return the values where the radains are less than 50:");
                 foreach (var value in retrievedInterpolatedFiltered)
                 {
                     Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
