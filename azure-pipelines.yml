@@ -41,6 +41,7 @@ jobs:
       
       
     - script: |
+        dotnet restore
         dotnet test
       workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibrariesCoreTests/
       displayName: 'Run Test'
