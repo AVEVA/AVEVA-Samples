@@ -7,6 +7,47 @@
   
 jobs:      
 
+- job: SDSDotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_appsettings.json
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_appsettings.ini appsettings.ini
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/
+      displayName: 'rename config file'
+      
+
+      
+      
+    - script: |
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibrariesCoreTests/
+      displayName: 'Run Test'
+      
+
+
+
 - job: SDSPy
 
   pool:
@@ -109,6 +150,8 @@ jobs:
       displayName: 'Test with pytest'
       workingDirectory: $(Build.SourcesDirectory)/basic_samples/Dataviews/Python3/
 
+
+
 - job: SDSJava
 
   pool:
@@ -151,7 +194,6 @@ jobs:
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
     
-
 - job: DataviewJava
 
   pool:
