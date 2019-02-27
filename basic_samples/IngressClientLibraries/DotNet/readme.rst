@@ -25,11 +25,14 @@ replace the placeholders with the authentication-related values you received fro
 ::
 
 	{
-		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		"Address": "https://dat-b.osisoft.com",
-		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		"ClientSecret": "REPLACE_WITH_CLIENT_SECRET"
+	  "TenantId": "REPLACE_WITH_TENANT_ID",
+	  "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+	  "Address": "https://dat-b.osisoft.com",
+	  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+	  "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
+	  "TopicName": "REPLACE_WITH_TOPIC_NAME",
+	  "DeviceClientId": "REPLACE_WITH_CLIENT_ID_TO_MAP_TO_TOPIC",
+	  "SubscriptionName": "REPLACE_WITH_SUBSCRIPTION_NAME"
 	}
 
 
@@ -41,7 +44,7 @@ Other Configuration
 -------------------
 
 The aforementioned appsettings.json file has placeholders for the names of the topic
-and subscription, as well as a client Id to map to the topic. You must fill in those values as well.
+and subscription, as well as a client Id to map a device to the topic. You must fill in those values as well.
 
 Set up IngressService
 ----------------------
@@ -62,8 +65,7 @@ The following code block illustrates how to configure the IngressService to use 
 Mapped clients
 ---------------
 
-The same clients obtained from the Identity Server are used to send OMF messages to a topic. A client may only be mapped to one topic per namespace. 
-It is recommended that the client you wish to map to the topic be different from the client used in the AuthenticationHandler.
+Devices sending OMF messages each need their own unique clientId and clientSecret. The clientId and secret are used to authenticate the requests, and the clientId is used route messages to the proper topic(s). ClientIds may be mapped to at most one topic per namespace.
 
 Create a Topic
 --------------
@@ -122,7 +124,7 @@ Then use the Ingress client to create the Subscription in OCS:
 At this point, we are ready to send OMF data to OCS, and consume it as well. To learn how to do this, click 
 here: https://github.com/osisoft/OMF-Samples/tree/master/Tutorials/CSharp_Sds
 
-Cleanup: Deleting Types, Stream Views, and Streams
+Cleanup: Deleting Topics and Subscriptions
 -----------------------------------------------------
 
 In order to prevent a bunch of unused resources from being left behind, this 
