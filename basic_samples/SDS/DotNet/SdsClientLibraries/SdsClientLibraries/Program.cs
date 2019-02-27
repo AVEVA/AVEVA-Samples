@@ -95,7 +95,7 @@ namespace SdsClientLibraries
 
                 // Step 3
                 // create an SdsStream
-                Console.WriteLine("Creating an SdsStream");
+               Console.WriteLine("Creating an SdsStream");
                 var stream = new SdsStream
                 {
                     Id = streamId,
@@ -218,7 +218,7 @@ namespace SdsClientLibraries
                 Console.WriteLine("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for this property and then return entered values:");
                 foreach (var value in retrieved)
                 {
-                    Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
+                    Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();
                 
@@ -228,7 +228,7 @@ namespace SdsClientLibraries
                 Console.WriteLine(" Sds will interpolate a value for each index asked for (5,14,23,32):");
                 foreach (var value in retrievedInterpolated)
                 {
-                    Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
+                    Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();       
 
@@ -239,7 +239,7 @@ namespace SdsClientLibraries
                 Console.WriteLine(" Sds will only return the values where the radains are less than 50:");
                 foreach (var value in retrievedInterpolatedFiltered)
                 {
-                    Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
+                    Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();        
 
@@ -264,7 +264,7 @@ namespace SdsClientLibraries
 
                 foreach (var value in retrieved)
                 {
-                    Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
+                    Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();
 
@@ -348,14 +348,21 @@ namespace SdsClientLibraries
                 // Step 13
                 // Update Stream Type based on SdsStreamView
                 Console.WriteLine("We will now update the stream type based on the streamview");
-              //  var originalType = await metadataService.GetTypeAsync(stream.TypeId);
+                //  var originalType = await metadataService.GetTypeAsync(stream.TypeId);
+
+
+                var firstVal = await dataService.GetFirstValueAsync<WaveData>(stream.Id);
+
                 await metadataService.UpdateStreamTypeAsync(stream.Id, autoStreamViewId);
                 var newStream = await metadataService.GetStreamAsync(stream.Id);
 
+                var firstValUpdated = await dataService.GetFirstValueAsync<WaveData>(stream.Id);
+
                 Console.WriteLine($"The new type id {newStream.TypeId} compared to the original one {stream.TypeId}.");
+                Console.WriteLine($"The new type value {firstVal.ToString()} compared to the original one {firstValUpdated.ToString()}.");
 
                 // Step 14
-                // Show filtering on Type, works the same as filtering on iither objects, Streams, etc...
+                // Show filtering on Type, works the same as filtering on Streams
 
                 var types = await metadataService.GetTypesAsync("");
                 var typesFiltered = await metadataService.GetTypesAsync("", "contains(Id, 'Target')");
@@ -405,13 +412,14 @@ namespace SdsClientLibraries
                 Console.WriteLine();
 
                 // Step 17
-                // Secondary index addition
+                // Adding a new stream with a secondary index.
                 Console.WriteLine("Adding a stream with a secondary index.");
 
                 SdsStreamIndex measurementIndex = new SdsStreamIndex()
                 {
                     SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("Radians")).Id
                 };
+
                 SdsStream secondary = new SdsStream()
                 {
                     Id = streamIdSecondary,
@@ -421,9 +429,43 @@ namespace SdsClientLibraries
                       measurementIndex
                   }
                 };
+
                 secondary = await metadataService.GetOrCreateStreamAsync(secondary);
                 Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
                 Console.WriteLine();
+
+                
+                // Modifying an existing stream with a secondary index.
+                Console.WriteLine("Modifying a stream to have a secondary index.");
+
+
+                stream = await metadataService.GetStreamAsync(stream.Id);
+                type = await metadataService.GetTypeAsync(stream.TypeId);
+
+
+                SdsStreamIndex measurementTargetIndex = new SdsStreamIndex()
+                {
+                    SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("RadiansTarget")).Id
+                };
+
+                stream.Indexes = new List<SdsStreamIndex>() { measurementTargetIndex };
+
+                await metadataService.CreateOrUpdateStreamAsync(stream);
+                stream = await metadataService.GetStreamAsync(stream.Id);
+
+
+                // Modifying an existing stream to remove the secondary index
+                Console.WriteLine("Removing a secondary index from a stream.");
+
+                secondary.Indexes = null;
+
+                await metadataService.CreateOrUpdateStreamAsync(secondary);
+                secondary = await metadataService.GetStreamAsync(secondary.Id);
+                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
+                Console.WriteLine();
+
+
+
 
                 // Step 18
                 // Adding Compound Index Type
@@ -509,10 +551,11 @@ namespace SdsClientLibraries
             try
             {
                 await methodToRun(value);
+                
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex.Message);
+               Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
             }
         }
 

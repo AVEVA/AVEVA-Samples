@@ -24,7 +24,7 @@ All basic SDS samples are console applications that follow the same sequence of 
 14. Filtering on types 
 15. Tags & Metadata
 16. Delete events
-17. Create an SdsStream with a secondary index 
+17. Create an SdsStream with a secondary index, update an existing stream to a secondary index and remove a secondary index
 18. Created an SdsType and SdsStream with Compound index
 19. Inserting and retreiving compound index data
 20. Delete metadata objects
