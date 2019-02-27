@@ -29,12 +29,14 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SdsClientLibraries
 {
-    internal class Program
+    public class Program
     {
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
-        private static async Task MainAsync()
+        public static async Task<bool> MainAsync(bool test = false)
         {
+            bool success = true;
+            Exception toThrow = null;
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -515,7 +517,9 @@ namespace SdsClientLibraries
             }
             catch (Exception ex)
             {
+                success = false;
                 Console.WriteLine(ex.Message);
+                toThrow = ex;
             }
             finally
             {
@@ -537,8 +541,12 @@ namespace SdsClientLibraries
 
 
                 Console.WriteLine("done");
-                Console.ReadKey();
+                //Console.ReadKey();
             }
+
+            if (test && !success)
+                throw toThrow;
+            return success;
         }
 
         /// <summary>
