@@ -8,7 +8,7 @@ namespace SdsRestApiCoreTest
         [Fact]
         public void Test1()
         {
-
+            Assert.True(SdsRestApiCore.Program.MainAsync(true).Result);
         }
     }
 }

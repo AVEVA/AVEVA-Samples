@@ -350,18 +350,16 @@ namespace SdsClientLibraries
                 // Step 13
                 // Update Stream Type based on SdsStreamView
                 Console.WriteLine("We will now update the stream type based on the streamview");
-                //  var originalType = await metadataService.GetTypeAsync(stream.TypeId);
-
 
                 var firstVal = await dataService.GetFirstValueAsync<WaveData>(stream.Id);
 
                 await metadataService.UpdateStreamTypeAsync(stream.Id, autoStreamViewId);
                 var newStream = await metadataService.GetStreamAsync(stream.Id);
 
-                var firstValUpdated = await dataService.GetFirstValueAsync<WaveData>(stream.Id);
+                var firstValUpdated = await dataService.GetFirstValueAsync<WaveDataTarget>(stream.Id);
 
                 Console.WriteLine($"The new type id {newStream.TypeId} compared to the original one {stream.TypeId}.");
-                Console.WriteLine($"The new type value {firstVal.ToString()} compared to the original one {firstValUpdated.ToString()}.");
+                Console.WriteLine($"The new type value {firstValUpdated.ToString()} compared to the original one {firstVal.ToString()}.");
 
                 // Step 14
                 // Show filtering on Type, works the same as filtering on Streams

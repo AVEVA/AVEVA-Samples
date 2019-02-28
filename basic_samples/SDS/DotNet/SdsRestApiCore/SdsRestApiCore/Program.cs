@@ -26,11 +26,15 @@ using Newtonsoft.Json;
 
 namespace SdsRestApiCore
 {
-    class Program
+    public class Program
     {
         public static void Main() => MainAsync().GetAwaiter().GetResult();
-        private static async Task MainAsync()
+
+        public static async Task<bool> MainAsync(bool test = false)
         {
+            bool success = true;
+            Exception toThrow = null;
+
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -455,10 +459,10 @@ namespace SdsRestApiCore
 
                 SdsStream steamnew = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
 
-                WaveData lastDataUpdated = JsonConvert.DeserializeObject<WaveData>(await response.Content.ReadAsStringAsync());
+                WaveDataTarget lastDataUpdated = JsonConvert.DeserializeObject<WaveDataTarget>(await response.Content.ReadAsStringAsync());
 
 
-                Console.WriteLine($"The new type id {waveStream.TypeId} compared to the original one {steamnew.TypeId}.");
+                Console.WriteLine($"The new type id {steamnew.TypeId} compared to the original one {waveStream.TypeId}.");
                 Console.WriteLine($"The new type value {lastDataUpdated.ToString()} compared to the original one {lastData.ToString()}.");
 
 
@@ -699,7 +703,9 @@ namespace SdsRestApiCore
             }
             catch (Exception e)
             {
+                success = false;
                 Console.WriteLine(e.Message);
+                toThrow = e;
             }
             finally
             {
@@ -709,18 +715,24 @@ namespace SdsRestApiCore
                 // Delete the stream, types and streamViews
                 Console.WriteLine("Deleting stream");
                 RunInTryCatch(httpClient.DeleteAsync, $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{StreamId}");
+                RunInTryCatch(httpClient.DeleteAsync, $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{streamIdSecondary}");
+                RunInTryCatch(httpClient.DeleteAsync, $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{streamIdCompound}");
                 Console.WriteLine("Deleting streamViews");
                 RunInTryCatch(httpClient.DeleteAsync, ($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{ManualStreamViewId}"));
                 Console.WriteLine("Deleting types");
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TypeId}"));
+                RunInTryCatch(httpClient.DeleteAsync, ($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{compoundTypeId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetTypeId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetIntTypeId}"));
 
                 Console.WriteLine("done");
             }
 
-            Console.ReadKey();
+
+            if (test && !success)
+                throw toThrow;
+            return success;
         }
 
         private static void CheckIfResponseWasSuccessful(HttpResponseMessage response)
