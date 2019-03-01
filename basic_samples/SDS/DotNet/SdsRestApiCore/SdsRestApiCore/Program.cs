@@ -625,10 +625,9 @@ namespace SdsRestApiCore
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
                 Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}. ");
                 Console.WriteLine();
-
+                
 
                 // Step 18
-                //TODO
 
                 Console.WriteLine("Creating a SdsType with a compound index");
                 SdsType waveCompound = BuildWaveDataCompoundType(compoundTypeId);
@@ -683,8 +682,8 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
                 WaveDataCompound firstCompound = JsonConvert.DeserializeObject<WaveDataCompound>(await response.Content.ReadAsStringAsync());
 
-                var startIndex = Tuple.Create(2, 1);
-                var endIndex = Tuple.Create(10, 8);
+                var startIndex = "2|1";
+                var endIndex = "10|8";
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{streamCompound.Id}/Data/Transform?startIndex={startIndex}&endIndex={endIndex}");
                 CheckIfResponseWasSuccessful(response);
                 List<WaveDataCompound> data = JsonConvert.DeserializeObject<List<WaveDataCompound>>(await response.Content.ReadAsStringAsync());                
@@ -1096,6 +1095,7 @@ namespace SdsRestApiCore
                 Properties = new List<SdsTypeProperty>
                 {
                     orderProperty,
+                    multiplierProperty,
                     tauProperty,
                     radiansProperty,
                     sinProperty,

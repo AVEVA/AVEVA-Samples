@@ -539,7 +539,8 @@ namespace SdsClientLibraries
 
 
                 Console.WriteLine("done");
-                //Console.ReadKey();
+                if(!test)
+                    Console.ReadKey();
             }
 
             if (test && !success)
