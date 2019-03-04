@@ -22,10 +22,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OSIsoft.Data;
-using OSIsoft.Data.Http.Security;
+//using OSIsoft.Data.Http.Security;
 using OSIsoft.Data.Reflection;
 using OSIsoft.Identity; 
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+//using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SdsClientLibraries
 {
@@ -62,16 +62,17 @@ namespace SdsClientLibraries
             string manualStreamViewId = "SampleManualStreamView";
             string compoundTypeId = "SampleType_Compound";
 
+            var uriResource = new Uri(resource);
             // Step 1 
             // Get Sds Services to communicate with server
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(uriResource, clientId, clientKey);
 
             SdsService sdsService = new SdsService(new Uri(resource), authenticationHandler);
             var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
             var dataService = sdsService.GetDataService(tenantId, namespaceId);
             var tableService = sdsService.GetTableService(tenantId, namespaceId);
 
-            LoggerCallbackHandler.UseDefaultLogging = false;
+           // LoggerCallbackHandler.UseDefaultLogging = false;
 
 
             Console.WriteLine(@"-------------------------------------------------------------");
