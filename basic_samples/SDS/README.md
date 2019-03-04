@@ -34,4 +34,5 @@ These steps illustrate the fundamental programming steps of SDS.  Feel free to m
 
 Step numbers are searchable in the code.  For find the relevant part of the code for filtering on types search: Step 14
 
+Note: Currently the Angular, nodeJS, Pyhton2, and Python 3 examples are missing some steps, and searchability on step numbers.  This is coming soon!
 
