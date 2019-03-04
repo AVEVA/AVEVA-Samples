@@ -49,13 +49,13 @@ namespace IngressClientLibraries
             string address = configuration["Address"];
             string clientId = configuration["ClientId"];
             string clientSecret = configuration["ClientSecret"];
-            string publisherName = configuration["PublisherName"];
             string topicName = configuration["TopicName"];
+            string mappedClientId = configuration["MappedClientId"];
             string subscriptionName = configuration["SubscriptionName"];
 
             //Get Ingress Services to communicate with server
             LoggerCallbackHandler.UseDefaultLogging = false;
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientSecret);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(new Uri(address), clientId, clientSecret);
 
             IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
             IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
@@ -63,41 +63,13 @@ namespace IngressClientLibraries
             Console.WriteLine($"OCS endpoint at {address}");
             Console.WriteLine();
 
-            Publisher createdPublisher = null;
-            Token createdToken = null;
             Topic createdTopic = null;
             Subscription createdSubscription = null;
 
             try
             {
-                // Create a Publisher
-                Console.WriteLine($"Creating a Publisher");
-                Console.WriteLine();
-                Publisher publisher = new Publisher()
-                {
-                    TenantId = tenantId,
-                    Name = publisherName,
-                    Description = "This is a sample Publisher for sending OMF data to OCS"
-                };
-                createdPublisher = await ingressService.CreateOrUpdatePublisherAsync(publisher);
-                Console.WriteLine($"Created a Publisher with Id {createdPublisher.Id}");
-                Console.WriteLine();
-
-                // Create a Token
-                Console.WriteLine($"Creating a Token for Publisher with Id {createdPublisher.Id}");
-                Console.WriteLine();
-                Token token = new Token()
-                {
-                    PublisherId = createdPublisher.Id,
-                    ExpirationDate = DateTime.UtcNow.AddDays(7),
-                    IsDeleted = false
-                };
-                createdToken = await ingressService.CreateOrUndeleteTokenAsync(token, createdPublisher.Id);
-                Console.WriteLine($"Created a Token with tokenString {createdToken.TokenString}");
-                Console.WriteLine();
-
                 // Create a Topic
-                Console.WriteLine($"Creating a Topic in Namespace {namespaceId} for Publisher with Id {createdPublisher.Id}");
+                Console.WriteLine($"Creating a Topic in Namespace {namespaceId} for Client with Id {mappedClientId}");
                 Console.WriteLine();
                 Topic topic = new Topic()
                 {
@@ -105,7 +77,7 @@ namespace IngressClientLibraries
                     NamespaceId = namespaceId,
                     Name = topicName,
                     Description = "This is a sample Topic",
-                    Publishers = new List<string>() { createdPublisher.Id }
+                    ClientIds = new List<string>() { mappedClientId }
                 };
                 createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
                 Console.WriteLine($"Created a Topic with Id {createdTopic.Id}");
@@ -141,45 +113,30 @@ namespace IngressClientLibraries
             {
                 try
                 {
-                    // Delete the Subscription
-                    Console.WriteLine($"Deleting the OCS Subscription with Id {createdSubscription.Id}");
-                    Console.WriteLine();
+                    // Delete the Subscription                  
                     if (createdSubscription != null)
                     {
+                        Console.WriteLine($"Deleting the OCS Subscription with Id {createdSubscription.Id}");
+                        Console.WriteLine();
+
                         await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
-                    }
-                    Console.WriteLine($"Deleted the OCS Subscription with Id {createdSubscription.Id}");
-                    Console.WriteLine();
+
+                        Console.WriteLine($"Deleted the OCS Subscription with Id {createdSubscription.Id}");
+                        Console.WriteLine();
+                    }                  
 
                     // Delete the Topic
-                    Console.WriteLine($"Deleting the Topic with Id {createdTopic.Id}");
-                    Console.WriteLine();
                     if (createdTopic != null)
                     {
+                        Console.WriteLine($"Deleting the Topic with Id {createdTopic.Id}");
+                        Console.WriteLine();
+
                         await ingressService.DeleteTopicAsync(createdTopic.Id);
-                    }
-                    Console.WriteLine($"Deleted the Topic with Id {createdTopic.Id}");
-                    Console.WriteLine();
 
-                    // Delete the Token
-                    Console.WriteLine($"Deleting the Token with Id {createdTopic.Id}");
-                    Console.WriteLine();
-                    if (createdToken != null)
-                    {
-                        await ingressService.DeleteTokenAsync(createdPublisher.Id, createdToken.Id);
+                        Console.WriteLine($"Deleted the Topic with Id {createdTopic.Id}");
+                        Console.WriteLine();
                     }
-                    Console.WriteLine($"Deleted the Token with Id {createdToken.Id}");
-                    Console.WriteLine();
-
-                    // Delete the Publisher
-                    Console.WriteLine($"Deleting the Publisher with Id {createdPublisher.Id}");
-                    Console.WriteLine();
-                    if (createdPublisher != null)
-                    {
-                        await ingressService.DeletePublisherAsync(createdPublisher.Id);
-                    }
-                    Console.WriteLine($"Deleted the Publisher with Id {createdPublisher.Id}");
-                    Console.WriteLine();
+                    
                 }
                 catch (Exception ex)
                 {

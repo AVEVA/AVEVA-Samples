@@ -8,6 +8,7 @@ The sample described in this section makes use of the OSIsoft Ingress Client Lib
 it is recommended that you use these libraries. The libraries are available as NuGet packages. The packages used are:
 
 * OSIsoft.Contracts.Ingress
+* OSIsoft.Models.Ingress
 * OSIsoft.Identity.AuthenticationHandler
 
 The libraries offer a framework of classes that make client development easier.
@@ -24,11 +25,14 @@ replace the placeholders with the authentication-related values you received fro
 ::
 
 	{
-		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		"Address": "https://dat-b.osisoft.com",
-		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		"ClientSecret": "REPLACE_WITH_CLIENT_SECRET"
+	  "TenantId": "REPLACE_WITH_TENANT_ID",
+	  "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+	  "Address": "https://dat-b.osisoft.com",
+	  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+	  "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
+	  "TopicName": "REPLACE_WITH_TOPIC_NAME",
+	  "DeviceClientId": "REPLACE_WITH_CLIENT_ID_TO_MAP_TO_TOPIC",
+	  "SubscriptionName": "REPLACE_WITH_SUBSCRIPTION_NAME"
 	}
 
 
@@ -39,17 +43,17 @@ The AuthenticationHandler is a DelegatingHandler that is attached to an HttpClie
 Other Configuration
 -------------------
 
-The aforementioned appsettings.json file has placeholders for the names of the publishers, topics 
-and subscriptions too. You must fill in those values as well.
+The aforementioned appsettings.json file has placeholders for the names of the topic
+and subscription, as well as a client Id to map a device to the topic. You must fill in those values as well.
 
-Set up Ingress clients
+Set up IngressService
 ----------------------
 
-The client example works through one client interface: 
+The example works through one interface: 
 
-* IIngressService for Publisher, Token, Topic and Subscription object operations
+* IIngressService for Topic and Subscription object operations
 
-The following code block illustrates how to configure the client to use throughout the sample:
+The following code block illustrates how to configure the IngressService to use throughout the sample:
 
 .. code:: cs
 
@@ -58,60 +62,16 @@ The following code block illustrates how to configure the client to use througho
 	IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
 	IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
   
-  
+Mapped clients
+---------------
 
-Create a Publisher
-------------------
-
-To send OMF data to OCS through Ingress, you must first create a Publisher.
-
-A producer of OMF messages intended for OCS is called a Publisher. For more information about Publishers, 
-refer to the Ingress Documentation. First, the Publisher has to be created locally by instantiating a 
-new Publisher object:
-
-.. code:: cs
-
-	Publisher publisher = new Publisher
-	{
-		TenantId = tenantId,
-		Name = "REPLACE_WITH_PUBLISHER_NAME",
-		Description = "This is a sample Publisher for sending OMF data to OCS"
-	};
-    
-Then use the Ingress client to create a Publisher in OCS:
-
-.. code:: cs
-
-	Publisher createdPubliher = await ingressService.CreateOrUpdatePublisherAsync(publisher);
-
-Create a Token
---------------
-
-After creating a publisher, security tokens for that publisher can be created. 
-These tokens are a type of bearer token, which means that any client that presents 
-the token will be able to authenticate as that publisher. First, we create the Token 
-locally by instantiating a new Token object:
-
-.. code:: cs
-
-	Token token = new Token()
-    {
-		PublisherId = createdPublisher.Id,
-		ExpirationDate = DateTime.UtcNow.AddDays(7),
-		IsDeleted = false
-    };
-
-As with the Publisher, next use the Ingress client to create the Token in OCS:
-
-.. code:: cs
-
-	Token createdToken = await ingressService.CreateOrUndeleteTokenAsync(token, createdPublisher.Id);
+Devices sending OMF messages each need their own unique clientId and clientSecret. The clientId and secret are used to authenticate the requests, and the clientId is used route messages to the proper topic(s). ClientIds may be mapped to at most one topic per namespace.
 
 Create a Topic
 --------------
 
-A Topic is used to aggregate data received from publishers and make it available for consumption 
-via a Subscription. A topic must contain at least one publisher. Publishers may be added to 
+A Topic is used to aggregate data received from clients and make it available for consumption 
+via a Subscription. A topic must contain at least one client Id. Client Ids may be added to 
 or removed from an existing topic. First, we create the Topic locally by instantiating 
 a new Topic object:
 
@@ -123,7 +83,7 @@ a new Topic object:
 		NamespaceId = namespaceId,
 		Name = "REPLACE_WITH_TOPIC_NAME",
 		Description = "This is a sample Topic",
-		Publishers = new List<string>() { createdPublisher.Id }
+		ClientIds = new List<string>() { mappedClientId }
 	};
 
 Then use the Ingress client to create the Topic in OCS:
@@ -164,17 +124,14 @@ Then use the Ingress client to create the Subscription in OCS:
 At this point, we are ready to send OMF data to OCS, and consume it as well. To learn how to do this, click 
 here: https://github.com/osisoft/OMF-Samples/tree/master/Tutorials/CSharp_Sds
 
-Cleanup: Deleting Types, Stream Views, and Streams
+Cleanup: Deleting Topics and Subscriptions
 -----------------------------------------------------
 
 In order to prevent a bunch of unused resources from being left behind, this 
-sample performs some cleanup before exiting. Deleting Subscriptions, Topics, 
-Tokens  and Publishers can be achieved using the Ingress client and passing 
-the corresponding object Ids:
+sample performs some cleanup before exiting. Deleting Subscriptions and Topics 
+can be achieved using the Ingress client and passing the corresponding object Ids:
 
 .. code:: cs
 
 	await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
 	await ingressService.DeleteTopicAsync(createdTopic.Id);
-	await ingressService.DeleteTokenAsync(createdPublisher.Id, createdToken.Id);
-	await ingressService.DeletePublisherAsync(createdPublisher.Id);
