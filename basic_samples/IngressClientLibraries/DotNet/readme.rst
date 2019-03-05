@@ -31,15 +31,10 @@ replace the placeholders with the authentication-related values you received fro
 	  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
 	  "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
 	  "TopicName": "REPLACE_WITH_TOPIC_NAME",
-<<<<<<< HEAD
 	  "SubscriptionName": "REPLACE_WITH_SUBSCRIPTION_NAME",
 	  "StreamId": "REPLACE_WITH_STREAM_ID",
 	  "DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",
 	  "DeviceClientSecret": "REPLACE_WITH_DEVICE_CLIENT_SECRET"
-=======
-	  "DeviceClientId": "REPLACE_WITH_CLIENT_ID_TO_MAP_TO_TOPIC",
-	  "SubscriptionName": "REPLACE_WITH_SUBSCRIPTION_NAME"
->>>>>>> 9ed10236647a9de2e4e836c78089ae29a09a326c
 	}
 
 
@@ -72,7 +67,7 @@ The following code block illustrates how to configure the IngressService to use 
 Mapped clients
 ---------------
 
-Devices sending OMF messages each need their own unique clientId and clientSecret. The clientId and secret are used to authenticate the requests, and the clientId is used route messages to the proper topic(s). ClientIds may be mapped to at most one topic per namespace.
+Devices sending OMF messages each need their own unique clientId and clientSecret. The clientId and secret are used to authenticate the requests, and the clientId is used route messages to the proper topic(s). ClientIds may be mapped to at most one topic per namespace. The device clientID and clientSecret must be used to create a separate IngressService to send OMF messages.
 
 Create a Topic
 --------------
@@ -128,8 +123,39 @@ Then use the Ingress client to create the Subscription in OCS:
 
 	Subscription createdSubscription = await ingressService.CreateOrUpdateSubscriptionAsync(subscription);
 	
-At this point, we are ready to send OMF data to OCS, and consume it as well. To learn how to do this, click 
-here: https://github.com/osisoft/OMF-Samples/tree/master/Tutorials/CSharp_Sds
+
+Send OMF Messages
+-------------------
+
+OMF messages sent to OCS are routed to a Topic, where they are passed via an OCS Data Store Subscription to the Sequential Data Store. In this example, 
+we send an OMF Type message which creates an SDS type in the data store, an OMF Container message which creates an SDS stream, and then send OMF Data messages, 
+which use the containerId in the message body to route the data to the SDS stream. Refer to the data store documentation for how to view the types/streams/data in SDS.
+For each type of message, we first construct the message body using the Generation.OMF library:
+
+..code:: cs
+	
+	string OMFTypeBody = OMFGenerator.ProduceOMFTypeMessage(new List<JObject>() { OMFGenerator.GetTypeInOMF<SimpleOMFType>(new OMFTypeDefinition(SimpleOMFType.TypeId)) });
+	string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
+	string OMFDataBody = OMFGenerator.ProduceOMFDataMessage(new List<OMFValuesGroup>() { new OMFValuesPerContainer(streamId, new List<SimpleOMFType>() { dataPoint }) });
+
+Then we pass this body, along with the desired action to the supplied helper message to construct an OMFMessage object:
+
+.. code:: cs
+
+	OMFMessage omfMessage = new OMFMessage()
+    {
+        MessageType = messageType,
+        Action = action,
+        MessageFormat = MessageFormat.JSON,
+        Body = Encoding.UTF8.GetBytes(messageBody),
+        Version = OMFConstants.DefaultOMFVersion
+    };
+
+Then we use the device Ingress Client, which uses the device clientId and clientSecret to authenticate the requests. The device clientId is used to route the message
+to the Topic that the clientId is mapped to. 
+
+.. code:: cs
+	await
 
 Cleanup: Deleting Topics and Subscriptions
 -----------------------------------------------------

@@ -24,40 +24,40 @@ namespace IngressClientLibraries
 {
     class OMFHelper
     {
-        public static OMFMessage GenerateOMFTypeMessage(string message, MessageAction action)
+        public static OMFMessage GenerateOMFTypeMessage(string messageBody, MessageAction action)
         {
             OMFMessage omfType = new OMFMessage()
             {
                 MessageType = MessageType.Type,
                 Action = action,
                 MessageFormat = MessageFormat.JSON,
-                Body = Encoding.UTF8.GetBytes(message),
+                Body = Encoding.UTF8.GetBytes(messageBody),
                 Version = OMFConstants.DefaultOMFVersion
             };
             return omfType;
         }
 
-        public static OMFMessage GenerateOMFContainerMessage(string message, MessageAction action)
+        public static OMFMessage GenerateOMFContainerMessage(string messageBody, MessageAction action)
         {
             OMFMessage omfContainer = new OMFMessage()
             {
                 MessageType = MessageType.Container,
                 Action = action,
                 MessageFormat = MessageFormat.JSON,
-                Body = Encoding.UTF8.GetBytes(message),
+                Body = Encoding.UTF8.GetBytes(messageBody),
                 Version = OMFConstants.DefaultOMFVersion
             };
             return omfContainer;
         }
 
-        public static OMFMessage GenerateOMFDataMessage(string message, MessageAction action)
+        public static OMFMessage GenerateOMFDataMessage(string messageBody, MessageAction action)
         {
             OMFMessage omfDataMessage = new OMFMessage()
             {
                 MessageType = MessageType.Data,
                 Action = action,
                 MessageFormat = MessageFormat.JSON,
-                Body = Encoding.UTF8.GetBytes(message),
+                Body = Encoding.UTF8.GetBytes(messageBody),
                 Version = OMFConstants.DefaultOMFVersion
             };
             return omfDataMessage;
