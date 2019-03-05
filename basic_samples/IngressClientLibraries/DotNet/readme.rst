@@ -132,7 +132,7 @@ we send an OMF Type message which creates an SDS type in the data store, an OMF 
 which use the containerId in the message body to route the data to the SDS stream. Refer to the data store documentation for how to view the types/streams/data in SDS.
 For each type of message, we first construct the message body using the Generation.OMF library:
 
-..code:: cs
+.. code:: cs
 	
 	string OMFTypeBody = OMFGenerator.ProduceOMFTypeMessage(new List<JObject>() { OMFGenerator.GetTypeInOMF<SimpleOMFType>(new OMFTypeDefinition(SimpleOMFType.TypeId)) });
 	string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
@@ -155,13 +155,24 @@ Then we use the device Ingress Client, which uses the device clientId and client
 to the Topic that the clientId is mapped to. 
 
 .. code:: cs
-	await
+	await deviceIngressService.SendOMFMessageAsync(omfDataMessage);
 
 Cleanup: Deleting Topics and Subscriptions
 -----------------------------------------------------
 
 In order to prevent a bunch of unused resources from being left behind, this 
-sample performs some cleanup before exiting. Deleting Subscriptions and Topics 
+sample performs some cleanup before exiting. 
+
+Deleting Containers and Types can be achieved by constructing the same OMF messages, but instead specifying the Delete action:
+
+.. code:: cs
+ 	OMFMessage omfContainer = OMFHelper.GenerateOMFContainerMessage(OMFContainerBody, MessageAction.Delete);
+    await deviceIngressService.SendOMFMessageAsync(omfContainer);
+
+	OMFMessage omfType = OMFHelper.GenerateOMFTypeMessage(OMFTypeBody, MessageAction.Delete);
+    await deviceIngressService.SendOMFMessageAsync(omfType);     
+
+Deleting Subscriptions and Topics 
 can be achieved using the Ingress client and passing the corresponding object Ids:
 
 .. code:: cs
