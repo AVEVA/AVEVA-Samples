@@ -54,9 +54,9 @@ namespace IngressClientLibraries
             string clientSecret = configuration["ClientSecret"];
             string topicName = configuration["TopicName"];
             string subscriptionName = configuration["SubscriptionName"];
-            string deviceClientId = configuration["DeviceClientId"];
-            string deviceClientSecret = configuration["DeviceClientSecret"];
             string streamId = configuration["StreamId"];
+            string deviceClientId = configuration["DeviceClientId"];
+            string deviceClientSecret = configuration["DeviceClientSecret"];        
 
             //Get Ingress Services to communicate with server and handle ingress management
             LoggerCallbackHandler.UseDefaultLogging = false;

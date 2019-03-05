@@ -8,7 +8,7 @@ The sample described in this section makes use of the OSIsoft Ingress Client Lib
 it is recommended that you use these libraries. The libraries are available as NuGet packages. The packages used are:
 
 * OSIsoft.Contracts.Ingress
-* OSIsoft.Models.Ingress
+* OSIsoft.Generation.OMF
 * OSIsoft.Identity.AuthenticationHandler
 
 The libraries offer a framework of classes that make client development easier.
@@ -25,11 +25,16 @@ replace the placeholders with the authentication-related values you received fro
 ::
 
 	{
-		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		"Address": "https://dat-b.osisoft.com",
-		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		"ClientSecret": "REPLACE_WITH_CLIENT_SECRET"
+	  "TenantId": "REPLACE_WITH_TENANT_ID",
+	  "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+	  "Address": "https://dat-b.osisoft.com",
+	  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+	  "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
+	  "TopicName": "REPLACE_WITH_TOPIC_NAME",
+	  "SubscriptionName": "REPLACE_WITH_SUBSCRIPTION_NAME",
+	  "StreamId": "REPLACE_WITH_STREAM_ID",
+	  "DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",
+	  "DeviceClientSecret": "REPLACE_WITH_DEVICE_CLIENT_SECRET"
 	}
 
 
