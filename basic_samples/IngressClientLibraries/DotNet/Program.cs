@@ -140,7 +140,7 @@ namespace IngressClientLibraries
 
                         await deviceIngressService.SendOMFMessageAsync(omfDataMessage);
                         Console.WriteLine($"Sent data point: Time: {dataPoint.Timestamp}, Value: {dataPoint.Value}");
-                        Task.Delay(1000).Wait();
+                        await Task.Delay(1000);
                     }
                 } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
                 Console.WriteLine();

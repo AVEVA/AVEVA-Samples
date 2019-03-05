@@ -1,4 +1,4 @@
-﻿// <copyright file="Program.cs" company="OSIsoft, LLC">
+﻿// <copyright file="OMFHelper.cs" company="OSIsoft, LLC">
 //
 //Copyright 2019 OSIsoft, LLC
 //

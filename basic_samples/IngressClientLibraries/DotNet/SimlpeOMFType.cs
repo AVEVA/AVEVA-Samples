@@ -1,4 +1,4 @@
-﻿// <copyright file="Program.cs" company="OSIsoft, LLC">
+﻿// <copyright file="SimpleOMFType.cs" company="OSIsoft, LLC">
 //
 //Copyright 2019 OSIsoft, LLC
 //
@@ -17,7 +17,6 @@
 
 using System;
 using OSIsoft.Data;
-
 
 namespace IngressClientLibraries
 {
