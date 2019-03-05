@@ -68,7 +68,7 @@ namespace IngressClientLibraries
             AuthenticationHandler deviceAuthenticationHandler = new AuthenticationHandler(new Uri(address), deviceClientId, deviceClientSecret);
 
             IngressService deviceBaseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, deviceAuthenticationHandler);
-            IIngressService deviceIngressService = baseIngressService.GetIngressService(tenantId, namespaceId);
+            IIngressService deviceIngressService = deviceBaseIngressService.GetIngressService(tenantId, namespaceId);
 
             Console.WriteLine($"OCS endpoint at {address}");
             Console.WriteLine();
@@ -113,14 +113,18 @@ namespace IngressClientLibraries
 
                 // At this point, we are ready to send OMF data to OCS.
                 //create type
+                Console.WriteLine($"Creating Type with Id {SimpleOMFType.TypeId}");
+                Console.WriteLine();
                 string OMFTypeBody = OMFGenerator.ProduceOMFTypeMessage(new List<JObject>() { OMFGenerator.GetTypeInOMF<SimpleOMFType>(new OMFTypeDefinition(SimpleOMFType.TypeId)) });
                 OMFMessage omfType = OMFHelper.GenerateOMFTypeMessage(OMFTypeBody, MessageAction.Create);
-                await ingressService.SendOMFMessageAsync(omfType);
+                await deviceIngressService.SendOMFMessageAsync(omfType);
 
                 //create container
+                Console.WriteLine($"Creating Container with Id {streamId}");
+                Console.WriteLine();
                 string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
                 OMFMessage omfContainer = OMFHelper.GenerateOMFContainerMessage(OMFContainerBody, MessageAction.Create);
-                await ingressService.SendOMFMessageAsync(omfContainer);
+                await deviceIngressService.SendOMFMessageAsync(omfContainer);
 
                 //send random data points for 30 seconds
                 Random rand = new Random();
@@ -130,10 +134,11 @@ namespace IngressClientLibraries
                     string OMFDataBody = OMFGenerator.ProduceOMFDataMessage(new List<OMFValuesGroup>() { new OMFValuesPerContainer(streamId, new List<SimpleOMFType>() { dataPoint }) });
                     OMFMessage omfDataMessage = OMFHelper.GenerateOMFDataMessage(OMFDataBody, MessageAction.Create);
 
-                    await ingressService.SendOMFMessageAsync(omfDataMessage);
+                    await deviceIngressService.SendOMFMessageAsync(omfDataMessage);
                     Console.WriteLine($"Sent data point: Time: {dataPoint.Timestamp}, Value: {dataPoint.Value}");
                     Task.Delay(1000).Wait();
                 }
+                Console.WriteLine();
             }
             catch (Exception ex)
             {
@@ -145,14 +150,18 @@ namespace IngressClientLibraries
                 try
                 {
                     //delete container
+                    Console.WriteLine($"Creating Container with Id {streamId}");
+                    Console.WriteLine();
                     string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
                     OMFMessage omfContainer = OMFHelper.GenerateOMFContainerMessage(OMFContainerBody, MessageAction.Delete);
-                    await ingressService.SendOMFMessageAsync(omfContainer);
+                    await deviceIngressService.SendOMFMessageAsync(omfContainer);
 
                     //delete type
+                    Console.WriteLine($"Deleting Type with Id {SimpleOMFType.TypeId}");
+                    Console.WriteLine();
                     string OMFTypeBody = OMFGenerator.ProduceOMFTypeMessage(new List<JObject>() { OMFGenerator.GetTypeInOMF<SimpleOMFType>(new OMFTypeDefinition(SimpleOMFType.TypeId)) });
                     OMFMessage omfType = OMFHelper.GenerateOMFTypeMessage(OMFTypeBody, MessageAction.Delete);
-                    await ingressService.SendOMFMessageAsync(omfType);                 
+                    await deviceIngressService.SendOMFMessageAsync(omfType);                 
 
                     // Delete the Subscription                  
                     if (createdSubscription != null)
