@@ -101,8 +101,14 @@ def send_omf_message_to_endpoint(message_type, message_omf_json):
         verify = VERIFY_SSL,
         timeout = WEB_REQUEST_TIMEOUT_SECONDS
     )
-    # response code 204 if the request was successful!
-    print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
+    
+    # response code in 200s if the request was successful!
+    if response.status_code < 200 or response.status_code >= 300:
+        response.close()
+        raise Exception("OMF message was unsuccessful, {message_type}. {status}:{reason}".
+                        format(message_type=message_type, status=response.status_code, reason=response.text))
+    else:
+        print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
     
 
 def getCurrentTime():
@@ -169,26 +175,12 @@ def create_data_values_for_third_dynamic_type(containerid):
 
 # Creates a JSON packet containing data values for containers
 # of type NonTimeStampIndex defined below
-def create_data_values_for_NonTimeStampIndex_type(containerid):
+def create_data_values_for_NonTimeStampIndexAndMultiIndex_type(NonTimeStampIndexID, MultiIndexId):
     global integer_index1
-
-    integer_index1 = integer_index1 + 1
-    return [
-        {
-            "containerid": containerid,
-            "values": [
-                {
-                    "Value": random.random()*88,
-                    "Int_Key": integer_index1
-                }
-            ]
-        }
-    ]
-    
-# Creates a JSON packet containing data values for containers
-# of type MultiIndex defined below
-def create_data_values_for_MultiIndex_type(containerid):
     global integer_index2_1, integer_index2_2
+
+    integer_index1 = integer_index1 + 2
+    
 
     if integer_index2_2 % 3 == 0:
         integer_index2_2 = 1
@@ -198,16 +190,37 @@ def create_data_values_for_MultiIndex_type(containerid):
 
     return [
         {
-            "containerid": containerid,
+            "containerid": NonTimeStampIndexID,
+            "values": [
+                {
+                    "Value": random.random()*88,
+                    "Int_Key": integer_index1
+                },
+                {
+                    "Value": random.random()*88,
+                    "Int_Key": integer_index1 + 1
+                }
+            ]
+        },
+        {
+            "containerid": MultiIndexId,
             "values": [
                 {
                     "Value1": random.random()*-125,
                     "Value2": random.random()*42,
-                    "IntKey": integer_index2_1
+                    "IntKey": integer_index2_1,
                     "IntKey2": integer_index2_2
                 }
             ]
         }
+    ]
+    
+# Creates a JSON packet containing data values for containers
+# of type MultiIndex defined below
+def create_data_values_for_MultiIndex_type(containerid):
+
+    return [
+        
     ]
 
 
@@ -595,7 +608,7 @@ def oneTimeSendMessages():
 # different containerids at different times
 # ************************************************************************
 def main(test = False):
-
+    success = True
     try:
         global producerToken, omfEndPoint
         print('------------------------------------------------------------------')
@@ -617,7 +630,7 @@ def main(test = False):
         tenant = config.get('Access', 'Tenant')
         apiversion = config.get('Access', 'ApiVersion')
         producerToken = config.get('Credentials', 'ProducerToken')
-        completedURL = config.get('Access', 'completedURL')
+        completedURL = config.get('Access', 'omfendpoint')
 
         if completedURL is not None:
             omfEndPoint = completedURL
@@ -637,11 +650,10 @@ def main(test = False):
         count = 0
         while (not test) and count < 10:
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("container1"))
-            send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndex_type("container4"))
+            send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("container2"))
             send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("container3"))
             send_omf_message_to_endpoint("data", create_data_values_for_third_dynamic_type("container4"))
-            send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndex_type("container5"))
-            send_omf_message_to_endpoint("data", create_data_values_for_MultiIndex_type("container6"))
+            send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndexAndMultiIndex_type("container5", "container6"))
             time.sleep(1)
             count = count +1
     except Exception as ex:
@@ -649,15 +661,17 @@ def main(test = False):
         print
         traceback.print_exc()
         print
+        success = False
         if test:
             raise ex
 
     finally:
-        print        
+        print 
+        return success       
 
 main()
 print("done")
 
-## Straightforward test to make sure program is working using asserts in program.  Can run it yourself with pytest program.py
+## Straightforward test to make sure program is working without an error in program.  Can run it yourself with pytest program.py
 def test_main():
     main(True)
