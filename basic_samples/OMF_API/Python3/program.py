@@ -33,6 +33,7 @@ import socket
 import gzip
 import random 
 import requests
+import traceback
 
 
 # ************************************************************************
@@ -61,6 +62,10 @@ omfEndPoint = ""
 
 integer_boolean_value = 0
 string_boolean_value = "True"
+
+integer_index1 = 0
+integer_index2_1 = 1
+integer_index2_2 = 1
 
 # ************************************************************************
 # Helper function: REQUIRED: wrapper function for sending an HTTPS message
@@ -143,7 +148,6 @@ def create_data_values_for_second_dynamic_type(containerid):
     ]
 
 
-# Creates a JSON packet containing data values for containers
 # of type ThirdDynamicType defined below
 def create_data_values_for_third_dynamic_type(containerid):
     global integer_boolean_value
@@ -163,6 +167,50 @@ def create_data_values_for_third_dynamic_type(containerid):
         }
     ]
 
+# Creates a JSON packet containing data values for containers
+# of type NonTimeStampIndex defined below
+def create_data_values_for_NonTimeStampIndex_type(containerid):
+    global integer_index1
+
+    integer_index1 = integer_index1 + 1
+    return [
+        {
+            "containerid": containerid,
+            "values": [
+                {
+                    "Value": random.random()*88,
+                    "Int_Key": integer_index1
+                }
+            ]
+        }
+    ]
+    
+# Creates a JSON packet containing data values for containers
+# of type MultiIndex defined below
+def create_data_values_for_MultiIndex_type(containerid):
+    global integer_index2_1, integer_index2_2
+
+    if integer_index2_2 % 3 == 0:
+        integer_index2_2 = 1
+        integer_index2_1 = integer_index2_1 +1
+    else:
+        integer_index2_2 = integer_index2_2 + 1
+
+    return [
+        {
+            "containerid": containerid,
+            "values": [
+                {
+                    "Value1": random.random()*-125,
+                    "Value2": random.random()*42,
+                    "IntKey": integer_index2_1
+                    "IntKey2": integer_index2_2
+                }
+            ]
+        }
+    ]
+
+
 def oneTimeSendMessages():
     # ************************************************************************
     # Send the types messages to define the types of streams that will be sent.
@@ -175,6 +223,8 @@ def oneTimeSendMessages():
     # ************************************************************************
 
     # Send a JSON packet to define static types
+    
+    # Note for OCS this message is currently ignored. 
     send_omf_message_to_endpoint("type", [
         {
             "id": "FirstStaticType",
@@ -312,6 +362,62 @@ def oneTimeSendMessages():
         }
     ])
 
+    # Note for PI these messages are ignored. 
+    # Send a JSON packet to define dynamic types
+    send_omf_message_to_endpoint("type", [
+        {
+            "id": "NonTimeStampIndex",
+            "name": "NonTimeStampIndex",
+            "classification": "dynamic",
+            "type": "object",
+            "description": "Integer Fun",
+            "properties": {
+                "Value": {
+                    "type": "number",
+                    "name": "Value",
+                    "description": "This could be any value"
+                },
+                "Int_Key": {
+                    "type": "integer",
+                    "name": "Integer Key",
+                    "isindex": True,
+                    "description": "A non-time stamp key"
+                }
+            }
+        },        
+        {
+            "id": "MultiIndex",
+            "name": "Multi_index",
+            "classification": "dynamic",
+            "type": "object",
+            "description": "This one has multiple indicies",
+            "properties": {
+                "Value": {
+                    "type": "number",
+                    "name": "Value1",
+                    "description": "This could be any value"
+                },                
+                "Value2": {
+                    "type": "number",
+                    "name": "Value2",
+                    "description": "This could be any value too"
+                },
+                "IntKey": {
+                    "type": "integer key part 1",
+                    "name": "integer key part 1",
+                    "isindex": True,
+                    "description": "This could represent any integer value"
+                },
+                "IntKey2": {
+                    "type": "integer key part 2",
+                    "name": "integer key part 2",
+                    "isindex": True,
+                    "description": "This could represent any integer value as well"
+                }
+            }
+        }
+    ])
+
 
     # ************************************************************************
     # Send a JSON packet to define containerids and the type
@@ -338,6 +444,19 @@ def oneTimeSendMessages():
         }
     ])
 
+    
+    # Note for PI these messages are ignored. 
+    send_omf_message_to_endpoint("container", [
+        {
+            "id": "Container5",
+            "typeid": "NonTimeStampIndex"
+        },
+        {
+            "id": "Container6",
+            "typeid": "MultiIndex"
+        }
+    ])
+
 
     # ************************************************************************
     # Send the messages to create the PI AF asset structure
@@ -347,6 +466,8 @@ def oneTimeSendMessages():
     # you can send all of the following data in one message,
     # as far as its size is below maximum allowed - 192K
     # ************************************************************************
+
+    # Note for OCS these messages are ignored. 
 
     # Send a JSON packet to define assets
     send_omf_message_to_endpoint("data", [
@@ -473,55 +594,70 @@ def oneTimeSendMessages():
 # Note: values for each containerid are sent as a batch; you can update
 # different containerids at different times
 # ************************************************************************
-def main():
-    global producerToken, omfEndPoint
-    print('------------------------------------------------------------------')
-    print(' .d88888b.  888b     d888 8888888888        8888888b. Y88b   d88P ')        
-    print('d88P" "Y88b 8888b   d8888 888               888   Y88b Y88b d88P  ')
-    print('888     888 88888b.d88888 888               888    888  Y88o88P   ')
-    print('888     888 888Y88888P888 8888888           888   d88P   Y888P    ')
-    print('888     888 888 Y888P 888 888               8888888P"     888     ')
-    print('888     888 888  Y8P  888 888               888           888     ')	
-    print('Y88b. .d88P 888   "   888 888               888           888     ')	
-    print(' "Y88888P"  888       888 888      88888888 888           888     ')	
-    print('------------------------------------------------------------------')
+def main(test = False):
 
-    config = configparser.ConfigParser()
-    config.read('config.ini')
+    try:
+        global producerToken, omfEndPoint
+        print('------------------------------------------------------------------')
+        print(' .d88888b.  888b     d888 8888888888        8888888b. Y88b   d88P ')        
+        print('d88P" "Y88b 8888b   d8888 888               888   Y88b Y88b d88P  ')
+        print('888     888 88888b.d88888 888               888    888  Y88o88P   ')
+        print('888     888 888Y88888P888 8888888           888   d88P   Y888P    ')
+        print('888     888 888 Y888P 888 888               8888888P"     888     ')
+        print('888     888 888  Y8P  888 888               888           888     ')	
+        print('Y88b. .d88P 888   "   888 888               888           888     ')	
+        print(' "Y88888P"  888       888 888      88888888 888           888     ')	
+        print('------------------------------------------------------------------')
 
-    namespaceId = config.get('Configurations', 'Namespace')
-    resourceBase = config.get('Access', 'Resource')
-    tenant = config.get('Access', 'Tenant')
-    apiversion = config.get('Access', 'ApiVersion')
-    producerToken = config.get('Credentials', 'ProducerToken')
-    completedURL = config.get('Access', 'completedURL')
+        config = configparser.ConfigParser()
+        config.read('config.ini')
 
-    if completedURL is not None:
-        omfEndPoint = completedURL
-    else:
-        omfEndPoint = resourceBase + '/api/' + apiversion + '/tenants/' + tenant + '/namespaces/' + namespaceId +'/omf'
-    
+        namespaceId = config.get('Configurations', 'Namespace')
+        resourceBase = config.get('Access', 'Resource')
+        tenant = config.get('Access', 'Tenant')
+        apiversion = config.get('Access', 'ApiVersion')
+        producerToken = config.get('Credentials', 'ProducerToken')
+        completedURL = config.get('Access', 'completedURL')
 
-# ************************************************************************
-# Turn off HTTPS warnings, if desired
-# ************************************************************************
+        if completedURL is not None:
+            omfEndPoint = completedURL
+        else:
+            omfEndPoint = resourceBase + '/api/' + apiversion + '/tenants/' + tenant + '/namespaces/' + namespaceId +'/omf'
+        
 
-#    if not VERIFY_SSL:
-#        requests.packages.urllib3.disable_warnings()
+    # ************************************************************************
+    # Turn off HTTPS warnings, if desired
+    # ************************************************************************
 
-    oneTimeSendMessages()
+    #    if not VERIFY_SSL:
+    #        requests.packages.urllib3.disable_warnings()
 
+        oneTimeSendMessages()
 
-    while True:
-        send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("container1"))
-        send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("container2"))
-        send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("container3"))
-        send_omf_message_to_endpoint("data", create_data_values_for_third_dynamic_type("container4"))
-        time.sleep(1)
+        count = 0
+        while (not test) and count < 10:
+            send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("container1"))
+            send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndex_type("container4"))
+            send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("container3"))
+            send_omf_message_to_endpoint("data", create_data_values_for_third_dynamic_type("container4"))
+            send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndex_type("container5"))
+            send_omf_message_to_endpoint("data", create_data_values_for_MultiIndex_type("container6"))
+            time.sleep(1)
+            count = count +1
+    except Exception as ex:
+        print(("Encountered Error: {error}".format(error = ex)))
+        print
+        traceback.print_exc()
+        print
+        if test:
+            raise ex
+
+    finally:
+        print        
 
 main()
 print("done")
 
 ## Straightforward test to make sure program is working using asserts in program.  Can run it yourself with pytest program.py
 def test_main():
-    main()
+    main(True)
