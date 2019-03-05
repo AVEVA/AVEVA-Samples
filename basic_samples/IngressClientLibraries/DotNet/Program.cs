@@ -17,10 +17,13 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json.Linq;
 using OSIsoft.Contracts.Ingress;
 using OSIsoft.Data.Http;
+using OSIsoft.Generation.OMF;
 using OSIsoft.Identity;
 using OSIsoft.Models.Ingress;
+using OSIsoft.Models.OMF;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,15 +53,22 @@ namespace IngressClientLibraries
             string clientId = configuration["ClientId"];
             string clientSecret = configuration["ClientSecret"];
             string topicName = configuration["TopicName"];
-            string mappedClientId = configuration["MappedClientId"];
             string subscriptionName = configuration["SubscriptionName"];
+            string deviceClientId = configuration["DeviceClientId"];
+            string deviceClientSecret = configuration["DeviceClientSecret"];
+            string streamId = configuration["StreamId"];
 
-            //Get Ingress Services to communicate with server
+            //Get Ingress Services to communicate with server and handle ingress management
             LoggerCallbackHandler.UseDefaultLogging = false;
             AuthenticationHandler authenticationHandler = new AuthenticationHandler(new Uri(address), clientId, clientSecret);
 
             IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
             IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
+
+            AuthenticationHandler deviceAuthenticationHandler = new AuthenticationHandler(new Uri(address), deviceClientId, deviceClientSecret);
+
+            IngressService deviceBaseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, deviceAuthenticationHandler);
+            IIngressService deviceIngressService = baseIngressService.GetIngressService(tenantId, namespaceId);
 
             Console.WriteLine($"OCS endpoint at {address}");
             Console.WriteLine();
@@ -69,7 +79,7 @@ namespace IngressClientLibraries
             try
             {
                 // Create a Topic
-                Console.WriteLine($"Creating a Topic in Namespace {namespaceId} for Client with Id {mappedClientId}");
+                Console.WriteLine($"Creating a Topic in Namespace {namespaceId} for Client with Id {deviceClientId}");
                 Console.WriteLine();
                 Topic topic = new Topic()
                 {
@@ -77,7 +87,7 @@ namespace IngressClientLibraries
                     NamespaceId = namespaceId,
                     Name = topicName,
                     Description = "This is a sample Topic",
-                    ClientIds = new List<string>() { mappedClientId }
+                    ClientIds = new List<string>() { deviceClientId }
                 };
                 createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
                 Console.WriteLine($"Created a Topic with Id {createdTopic.Id}");
@@ -102,7 +112,28 @@ namespace IngressClientLibraries
                 Console.WriteLine();
 
                 // At this point, we are ready to send OMF data to OCS.
-                // Please visit https://github.com/osisoft/OMF-Samples/tree/master/Tutorials/CSharp_Sds to learn how to do this.
+                //create type
+                string OMFTypeBody = OMFGenerator.ProduceOMFTypeMessage(new List<JObject>() { OMFGenerator.GetTypeInOMF<SimpleOMFType>(new OMFTypeDefinition(SimpleOMFType.TypeId)) });
+                OMFMessage omfType = OMFHelper.GenerateOMFTypeMessage(OMFTypeBody, MessageAction.Create);
+                await ingressService.SendOMFMessageAsync(omfType);
+
+                //create container
+                string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
+                OMFMessage omfContainer = OMFHelper.GenerateOMFContainerMessage(OMFContainerBody, MessageAction.Create);
+                await ingressService.SendOMFMessageAsync(omfContainer);
+
+                //send random data points for 30 seconds
+                Random rand = new Random();
+                for (int i = 0; i < 30; i++)
+                {
+                    SimpleOMFType dataPoint = new SimpleOMFType() { Timestamp = DateTime.UtcNow, Value = rand.NextDouble() };
+                    string OMFDataBody = OMFGenerator.ProduceOMFDataMessage(new List<OMFValuesGroup>() { new OMFValuesPerContainer(streamId, new List<SimpleOMFType>() { dataPoint }) });
+                    OMFMessage omfDataMessage = OMFHelper.GenerateOMFDataMessage(OMFDataBody, MessageAction.Create);
+
+                    await ingressService.SendOMFMessageAsync(omfDataMessage);
+                    Console.WriteLine($"Sent data point: Time: {dataPoint.Timestamp}, Value: {dataPoint.Value}");
+                    Task.Delay(1000).Wait();
+                }
             }
             catch (Exception ex)
             {
@@ -113,6 +144,16 @@ namespace IngressClientLibraries
             {
                 try
                 {
+                    //delete container
+                    string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
+                    OMFMessage omfContainer = OMFHelper.GenerateOMFContainerMessage(OMFContainerBody, MessageAction.Delete);
+                    await ingressService.SendOMFMessageAsync(omfContainer);
+
+                    //delete type
+                    string OMFTypeBody = OMFGenerator.ProduceOMFTypeMessage(new List<JObject>() { OMFGenerator.GetTypeInOMF<SimpleOMFType>(new OMFTypeDefinition(SimpleOMFType.TypeId)) });
+                    OMFMessage omfType = OMFHelper.GenerateOMFTypeMessage(OMFTypeBody, MessageAction.Delete);
+                    await ingressService.SendOMFMessageAsync(omfType);                 
+
                     // Delete the Subscription                  
                     if (createdSubscription != null)
                     {
