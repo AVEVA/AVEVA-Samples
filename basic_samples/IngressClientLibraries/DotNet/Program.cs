@@ -65,6 +65,7 @@ namespace IngressClientLibraries
             IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
             IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
 
+            //Get Ingress Services to authenticate OMF messages from a mock device
             AuthenticationHandler deviceAuthenticationHandler = new AuthenticationHandler(new Uri(address), deviceClientId, deviceClientSecret);
 
             IngressService deviceBaseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, deviceAuthenticationHandler);
@@ -128,16 +129,20 @@ namespace IngressClientLibraries
 
                 //send random data points for 30 seconds
                 Random rand = new Random();
-                for (int i = 0; i < 30; i++)
+                Console.WriteLine("Sending OMF Data Messages. Pres ESC key to stop sending.");
+                do
                 {
-                    SimpleOMFType dataPoint = new SimpleOMFType() { Timestamp = DateTime.UtcNow, Value = rand.NextDouble() };
-                    string OMFDataBody = OMFGenerator.ProduceOMFDataMessage(new List<OMFValuesGroup>() { new OMFValuesPerContainer(streamId, new List<SimpleOMFType>() { dataPoint }) });
-                    OMFMessage omfDataMessage = OMFHelper.GenerateOMFDataMessage(OMFDataBody, MessageAction.Create);
+                    while (!Console.KeyAvailable)
+                    {
+                        SimpleOMFType dataPoint = new SimpleOMFType() { Timestamp = DateTime.UtcNow, Value = rand.NextDouble() };
+                        string OMFDataBody = OMFGenerator.ProduceOMFDataMessage(new List<OMFValuesGroup>() { new OMFValuesPerContainer(streamId, new List<SimpleOMFType>() { dataPoint }) });
+                        OMFMessage omfDataMessage = OMFHelper.GenerateOMFDataMessage(OMFDataBody, MessageAction.Create);
 
-                    await deviceIngressService.SendOMFMessageAsync(omfDataMessage);
-                    Console.WriteLine($"Sent data point: Time: {dataPoint.Timestamp}, Value: {dataPoint.Value}");
-                    Task.Delay(1000).Wait();
-                }
+                        await deviceIngressService.SendOMFMessageAsync(omfDataMessage);
+                        Console.WriteLine($"Sent data point: Time: {dataPoint.Timestamp}, Value: {dataPoint.Value}");
+                        Task.Delay(1000).Wait();
+                    }
+                } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
                 Console.WriteLine();
             }
             catch (Exception ex)
@@ -150,7 +155,7 @@ namespace IngressClientLibraries
                 try
                 {
                     //delete container
-                    Console.WriteLine($"Creating Container with Id {streamId}");
+                    Console.WriteLine($"Deleting Container with Id {streamId}");
                     Console.WriteLine();
                     string OMFContainerBody = OMFGenerator.ProduceOMFContainerMessage(new List<OMFContainerDefinition>() { new OMFContainerDefinition(streamId, SimpleOMFType.TypeId) });
                     OMFMessage omfContainer = OMFHelper.GenerateOMFContainerMessage(OMFContainerBody, MessageAction.Delete);
