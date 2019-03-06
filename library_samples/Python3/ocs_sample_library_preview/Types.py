@@ -32,7 +32,7 @@ class Types(object):
     def __init__(self, client):
         self.__apiVersion = client.api_version
         self.__tenant = client.tenant
-        self.__url = client.uri
+        self.__url = client.uri_API
         self.__baseClient = client
 
         self.__setPathAndQueryTemplates()
@@ -45,7 +45,7 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -64,7 +64,7 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id) + "/ReferenceCount",
+            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id) + "/ReferenceCount",
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -81,7 +81,7 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getTypesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__url + self.__getTypesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -102,7 +102,7 @@ class Types(object):
         if type is None or not isinstance(type, SdsType):
             raise TypeError
         response = requests.post(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
+            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
             data=type.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -122,7 +122,7 @@ class Types(object):
             raise TypeError
 
         response = requests.put(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
+            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
             data=type.toJson(), headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -139,7 +139,7 @@ class Types(object):
             raise TypeError
 
         response = requests.delete(
-            self.__url + self.__typesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
 
         if response.status_code < 200 or response.status_code >= 300:
@@ -154,7 +154,7 @@ class Types(object):
 
 
     def __setPathAndQueryTemplates(self):
-        self.__basePath = "/api/{api_version}/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
         self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
         self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"

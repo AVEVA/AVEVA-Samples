@@ -44,7 +44,7 @@ class Dataviews(object):
             raise TypeError		
 		
         response = requests.post(
-            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers= self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -63,7 +63,7 @@ class Dataviews(object):
         if dataview is None or not isinstance(dataview, Dataview):
             raise TypeError
         response = requests.put(
-            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -84,7 +84,7 @@ class Dataviews(object):
             raise TypeError
 	
         response = requests.delete(
-            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -103,7 +103,7 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -120,7 +120,7 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri + self.__getDataviews.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__baseClient.uri_API + self.__getDataviews.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -141,7 +141,7 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri + self.__getDatagroups.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
+            self.__baseClient.uri_API + self.__getDatagroups.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -168,7 +168,7 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri + self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
+            self.__baseClient.uri_API + self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -205,7 +205,7 @@ class Dataviews(object):
         
         
         response = requests.get(
-            self.__baseClient.uri + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
+            self.__baseClient.uri_API + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -241,7 +241,7 @@ class Dataviews(object):
         
         
         response = requests.get(
-            self.__baseClient.uri + self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
+            self.__baseClient.uri_API + self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -260,33 +260,8 @@ class Dataviews(object):
 		
 
     def __setPathAndQueryTemplates(self):
-        self.__basePath = "/api/Tenants/{tenant_id}/Namespaces/{namespace_id}"
-        self.__typesPath = self.__basePath + "/Types/{type_id}"
-        self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
-        self.__behaviorsPath = self.__basePath + "/Behaviors/{behavior_id}"
-        self.__getBehaviorsPath = self.__basePath + "/Behaviors?skip={skip}&count={count}"
-        self.__viewsPath = self.__basePath + "/Views/{view_id}"
-        self.__getViewsPath = self.__basePath + "/Views?skip={skip}&count={count}"
-        self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
-        self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
-
-        self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
-        self.__getValueQuery = self.__dataPath + "/GetValue?index={index}&viewId={view_id}"
-        self.__getFirstValue = self.__dataPath + "/GetFirstValue?viewId={view_id}"
-        self.__getLastValue = self.__dataPath + "/GetLastValue?viewId={view_id}"
-        self.__getWindowValues = self.__dataPath + "/GetWindowValues?startIndex={start}&endIndex={end}&viewId={view_id}"
-        self.__getRangeValuesQuery = self.__dataPath + "/GetRangeValues?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&viewId={view_id}"
-
-        self.__insertValuePath = self.__dataPath + "/InsertValue"
-        self.__insertValuesPath = self.__dataPath + "/InsertValues"
-        self.__updateValuePath = self.__dataPath + "/UpdateValue"
-        self.__updateValuesPath = self.__dataPath + "/UpdateValues"
-        self.__replaceValuePath = self.__dataPath + "/ReplaceValue"
-        self.__replaceValuesPath = self.__dataPath + "/ReplaceValues"
-        self.__removeValue = self.__dataPath + "/RemoveValue?index={index}"
-        self.__removeWindowValues = self.__dataPath + "/RemoveWindowValues?startIndex={start}&endIndex={end}"
-		
-		
+        self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+              
         self.__dataviewsPath = self.__basePath + "/Dataviews"
         self.__getDataviews= self.__dataviewsPath + "?skip={skip}&count={count}"
         self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"

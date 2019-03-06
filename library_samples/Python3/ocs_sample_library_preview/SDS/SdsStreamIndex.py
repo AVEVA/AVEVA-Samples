@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+
 class SdsStreamIndex(object):
     """Sds Stream Index definitions"""
 
@@ -31,7 +33,7 @@ class SdsStreamIndex(object):
         # required properties
         dictionary = { 'SdsTypePropertyId' : self.SdsTypePropertyId }
 
-        return json.loads(dictionary)
+        return dictionary
 
     @staticmethod
     def fromDictionary(content):

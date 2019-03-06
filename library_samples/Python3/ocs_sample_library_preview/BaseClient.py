@@ -39,10 +39,17 @@ class BaseClient(object):
         self.__expiration = 0
         self.__getToken()
 
+        self.__uri_API =  url + '/api/' + apiversion
+
     
     @property
     def uri(self):
         return self.__url
+
+        
+    @property
+    def uri_API(self):
+        return self.__uri_API
     
     @property
     def api_version(self):
