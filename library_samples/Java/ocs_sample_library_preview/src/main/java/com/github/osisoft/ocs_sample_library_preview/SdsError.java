@@ -26,7 +26,8 @@ public class SdsError extends Exception {
     private int httpStatusCode;
     private StringBuffer httpErrorMessage;
     private String sdsErrorMessage;
-    
+    private String url;
+
     public SdsError(String msg) {
         this.sdsErrorMessage = msg;
     }
@@ -38,6 +39,7 @@ public class SdsError extends Exception {
 
         try {
             this.httpStatusCode = urlConnection.getResponseCode();
+            this.url = urlConnection.getURL().toString();
 
             if (urlConnection.getErrorStream() != null) {
                 BufferedReader in = new BufferedReader(
@@ -85,6 +87,7 @@ public class SdsError extends Exception {
             System.out.println("HttpStatusCode: " + this.getHttpStatusCode());
             System.out.println("errorMessage: " + this.getMessage());
             System.out.println("httpErrorMessage: " + this.httpErrorMessage.toString());
+            System.out.println("url: " + this.url.toString());
         }
     }  
 }

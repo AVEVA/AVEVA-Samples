@@ -94,6 +94,21 @@ To define the SdsType in Sds, use the metadata client as follows:
 
 	SdsType type = config.GetOrCreateTypeAsync(type).GetAwaiter().GetResult();
 
+To Create a type with a compound index we create a new type specifying 2 keys and an order for them:
+
+.. code:: cs
+    public class WaveDataCompound
+    {
+        [SdsMember(IsKey = true, Order = 0)]
+        public int Order { get; set; }
+
+        [SdsMember(IsKey = true, Order = 1)]
+        public int Multiplier { get; set; }
+
+        public double Tau { get; set; }
+
+
+
 Create an SdsStream
 ------------------
 
@@ -120,6 +135,23 @@ to submit it to the SDS Service:
 .. code:: cs
 
 	stream = await metadataService.GetOrCreateStreamAsync(stream);
+
+To create an SdsStream with a secondary index we define this when creating the stream.  In the snippet below we find the property that we are making a secondary index and then we assign it:
+
+.. code:: cs
+		SdsStreamIndex measurementIndex = new SdsStreamIndex()
+		{
+			SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("Radians")).Id
+		};
+		SdsStream secondary = new SdsStream()
+		{
+			Id = streamIdSecondary,
+			TypeId = type.Id,
+			Indexes = new List<SdsStreamIndex>()
+			{
+				measurementIndex
+			}
+		};
 
 Create and Insert Values into the Stream
 ----------------------------------------
@@ -176,6 +208,29 @@ capable of conversion to the type of the index assigned in the SdsType.
 
   IEnumerable<WaveData> retrieved = 
      client.GetWindowValuesAsync<WaveData>(stream.Id, "0", "20").GetAwaiter().GetResult();
+	
+You can retreive the values in the form of a table (in this case with headers)
+
+.. code:: cs
+
+	SdsTable tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
+
+	
+	
+You can retreive interpolated values.  In this case we are asking for values at 5, 14, 23, and 32.  We onlt have values stored at the even numbers, so the odd numbers will be interpolated for.
+
+.. code:: cs
+
+	IEnumerable<WaveData> retrievedInterpolated = await dataService.GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
+	
+	
+When retreiving events you can also filter on what is being returned, so you only get the events you are interested in.
+
+.. code:: cs
+
+	IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
+
+
 
 Update Events and Replacing Values
 ----------------------------------
@@ -280,6 +335,12 @@ you should define an SdsStreamViewProperty and add it to the SdsStreamView's Pro
 	};
 
 	await metadataService.CreateOrUpdateStreamViewAsync(manualStreamView);
+
+You can also use a streamview to change a Stream's type.
+
+
+.. code:: cs
+         await metadataService.UpdateStreamTypeAsync(stream.Id, manualStreamView);
 
 SdsStreamViewMap
 ---------

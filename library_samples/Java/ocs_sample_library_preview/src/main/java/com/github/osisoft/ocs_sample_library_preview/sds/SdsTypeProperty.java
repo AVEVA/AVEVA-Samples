@@ -31,11 +31,22 @@ public class SdsTypeProperty {
         setIsKey(isKey);    
     }
 
+    public SdsTypeProperty(String id, String name, String description, SdsType sdsType, boolean isKey, int order)
+    {
+        setName(name);
+        setId(id);
+        setDescription(description);
+        setSdsType(sdsType);
+        setIsKey(isKey);    
+        setOrder(order);    
+    }
+
     private String Name;
     private String Id;
     private String Description;
     private SdsType SdsType;
     private boolean IsKey;
+    private int Order;
 
     public String getName() {
         return Name;
@@ -69,11 +80,20 @@ public class SdsTypeProperty {
         this.SdsType = sdsType;
     }
 
-    public boolean isIsKey() {
+    public boolean getIsKey() {
         return IsKey;
     }
 
     public void setIsKey(boolean isKey) {
         IsKey = isKey;
     }
+
+    public int getOrder() {
+        return Order;
+    }
+
+    public void setOrder(int order) {
+        Order = order;
+    }
+    
 }
