@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ocs_sample_library_preview",
-    version="0.0.6_preview",
+    version="0.0.7_preview",
     author="OSIsoft",
     author_email="dendres@osisoft.com",
     description="A preview of an OCS (OSIsoft Cloud Services) client library",
