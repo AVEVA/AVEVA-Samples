@@ -15,7 +15,7 @@ var restCall = require('request-promise');
 
 var getToken = function () {
     return restCall({
-        url: 'https://https:dat-b.osisoft.com/identity/connect/token',
+        url: 'https://:dat-b.osisoft.com/identity/connect/token',
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
