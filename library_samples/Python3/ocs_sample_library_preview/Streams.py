@@ -35,7 +35,7 @@ class Streams(object):
     def __init__(self, client):
         self.__apiVersion = client.api_version
         self.__tenant = client.tenant
-        self.__url = client.uri
+        self.__uri_API = client.uri_API
         self.__baseClient = client
 
         self.__setPathAndQueryTemplates()
@@ -48,7 +48,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamViewsPath.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id,
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
             streamView_id=streamView_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -68,7 +68,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamViewsPath.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id) + "/Map", 
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id) + "/Map", 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -85,7 +85,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamViewsPath.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -107,7 +107,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.post(
-            self.__url + self.__streamViewsPath.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
             data=streamView.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -127,7 +127,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__url + self.__streamViewsPath.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
             data=streamView.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -145,7 +145,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__url + self.__streamViewsPath.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id), 
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -162,7 +162,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -181,7 +181,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id) + "/Type", 
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id) + "/Type", 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -200,7 +200,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getStreamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, query=query, skip=skip, count=count),
+            self.__uri_API + self.__getStreamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, query=query, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -221,7 +221,7 @@ class Streams(object):
         if stream is None or not isinstance(stream, SdsStream):
             raise TypeError
         response = requests.post(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
             data=stream.toJson(), 
             headers=self.__baseClient.sdsHeaders())
 
@@ -242,7 +242,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
             data=stream.toJson(), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -260,7 +260,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -275,7 +275,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
             data=json.dumps(tags), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -289,7 +289,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata",
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata",
             data=json.dumps(metadata), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -303,7 +303,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -321,7 +321,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__streamsPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata/" + key,
+            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata/" + key,
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -345,7 +345,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getValueQuery.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=index), 
+            self.__uri_API + self.__getValueQuery.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=index), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -366,7 +366,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getFirstValue.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__uri_API + self.__getFirstValue.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -387,7 +387,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getLastValue.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__uri_API + self.__getLastValue.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
            headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -412,7 +412,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getWindowValues.format(api_version=self.__apiVersion,tenant_id=self.__tenant, namespace_id=namespace_id,
+            self.__uri_API + self.__getWindowValues.format(tenant_id=self.__tenant, namespace_id=namespace_id,
                                                        stream_id=stream_id, start=start, end=end),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -448,7 +448,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getRangeValuesQuery.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id,
+            self.__uri_API + self.__getRangeValuesQuery.format( tenant_id=self.__tenant, namespace_id=namespace_id,
                                                            stream_id=stream_id, start=start, skip=skip, count=count,
                                                            reverse=reverse, boundary_type=boundary_type.value,
                                                            streamView_id=streamView_id),
@@ -486,7 +486,7 @@ class Streams(object):
             payload = values
 
         response = requests.post(
-            self.__url + self.__insertValuesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__uri_API + self.__insertValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             data=payload, 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -510,7 +510,7 @@ class Streams(object):
         else:
             payload = values
 
-        response = requests.put(self.__url + self.__updateValuesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+        response = requests.put(self.__uri_API + self.__updateValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
                                 data=payload, 
                                 headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -537,7 +537,7 @@ class Streams(object):
             payload = values
 
         response = requests.put(
-            self.__url + self.__replaceValuesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__uri_API + self.__replaceValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             data=payload, 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -557,7 +557,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__url + self.__removeValue.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=key), 
+            self.__uri_API + self.__removeValue.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=key), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -578,7 +578,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__url + self.__removeWindowValues.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, start=start, end=end), 
+            self.__uri_API + self.__removeWindowValues.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, start=start, end=end), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -591,7 +591,7 @@ class Streams(object):
 
 
     def __setPathAndQueryTemplates(self):
-        self.__basePath = "/api/{api_version}/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
         self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
         self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
