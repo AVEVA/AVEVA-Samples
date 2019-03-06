@@ -29,7 +29,6 @@ All basic SDS samples are console applications that follow the same sequence of 
 19. Inserting and retreiving compound index data
 20. Delete metadata objects
 
-
 These steps illustrate the fundamental programming steps of SDS.  Feel free to modify the samples and propose changes.
 
 Step numbers are searchable in the code.  For find the relevant part of the code for filtering on types search: Step 14
