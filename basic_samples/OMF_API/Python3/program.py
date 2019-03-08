@@ -630,7 +630,7 @@ def main(test = False):
         tenant = config.get('Access', 'Tenant')
         apiversion = config.get('Access', 'ApiVersion')
         producerToken = config.get('Credentials', 'ProducerToken')
-        completedURL = config.get('Access', 'omfendpoint')
+        completedURL = config.get('Access', 'OMFEndpoint')
 
         if completedURL is not None:
             omfEndPoint = completedURL
