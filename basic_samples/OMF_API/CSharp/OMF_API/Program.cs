@@ -13,7 +13,7 @@ using System.IO.Compression;
 
 namespace OMF_API
 {
-    class Program
+    public class Program
     {
         private static readonly HttpClient client = new HttpClient();
 
@@ -26,7 +26,7 @@ namespace OMF_API
             runMain();
         }
 
-        public static bool runMain()
+        public static bool runMain(bool test= false)
         {
             var success = true;
             IConfigurationBuilder builder = new ConfigurationBuilder()
@@ -130,6 +130,8 @@ namespace OMF_API
             var response = await client.SendAsync(request);
 
             var responseString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error sending OMF response code:{response.StatusCode}.  Response {responseString}");
         }
 
         public static void sendFirstStaticType() {
