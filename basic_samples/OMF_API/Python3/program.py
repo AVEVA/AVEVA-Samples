@@ -269,13 +269,6 @@ def create_data_values_for_NonTimeStampIndexAndMultiIndex_type(NonTimeStampIndex
         }
     ]
     
-# Creates a JSON packet containing data values for containers
-# of type MultiIndex defined below
-def create_data_values_for_MultiIndex_type(containerid):
-
-    return [
-        
-    ]
 
 
 def oneTimeSendMessages(action = 'create'):
@@ -708,7 +701,7 @@ def main(test = False):
         oneTimeSendMessages()
 
         count = 0
-        while (not test) and count < 2:
+        while count > 0 and ((not test) and count < 2):
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container1"))
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container2"))
             send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("Container3"))

@@ -10,6 +10,8 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Net;
 using System.IO.Compression;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace OMF_API
 {
@@ -17,9 +19,29 @@ namespace OMF_API
     {
         private static readonly HttpClient client = new HttpClient();
 
+        static bool zip = false;
+        static bool sendingToOCS = true;
+
+
         static string producerToken;
         static string omfendpoint;
-        static bool zip = false;
+        static string resource;
+
+
+        static string token = null;
+
+        static string omfVersion = "1.0";
+        static string clientId = "1.0";
+        static string clientSecret = "1.0";
+        static Random rnd = new Random();
+        static bool dynamic2 = false;
+        static int dynamic3 = 0;
+
+        static int integer_index1 = 0;
+        static int integer_index2_1 = 0;
+        static int integer_index2_2 = 0;
+
+
 
         static void Main(string[] args)
         {
@@ -29,47 +51,195 @@ namespace OMF_API
         public static bool runMain(bool test= false)
         {
             var success = true;
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-             .AddJsonFile("appsettings.json")
-             .AddJsonFile("appsettings.test.json", optional: true);
-            IConfiguration configuration = builder.Build();
-
-            string tenantId = configuration["TenantId"];
-            string namespaceId = configuration["NamespaceId"];
-            string resource = configuration["Resource"];
-            string apiVersion = configuration["ApiVersion"];
-            producerToken = configuration["ProducerToken"];
-            omfendpoint = configuration["omfendpoint"];
-
-            if (String.IsNullOrWhiteSpace(omfendpoint))
+            Exception exc = null;
+            var a = Directory.GetCurrentDirectory();
+            try
             {
-                omfendpoint = $"{resource}/api/{apiVersion}/tenants/{tenantId}/namespaces/{namespaceId}/omf";
+                IConfigurationBuilder builder = new ConfigurationBuilder()
+                 .SetBasePath(Directory.GetCurrentDirectory())
+                 .AddJsonFile("appsettings.json")
+                 .AddJsonFile("appsettings.test.json", optional: true);
+                IConfiguration configuration = builder.Build();
+
+                string tenantId = configuration["TenantId"];
+                string namespaceId = configuration["NamespaceId"];
+                resource = configuration["Resource"];
+                string apiVersion = configuration["ApiVersion"];
+                producerToken = configuration["ProducerToken"];
+                omfendpoint = configuration["omfendpoint"];
+                clientId = configuration["clientId"];
+                clientSecret = configuration["ClientKey"];
+
+                if (sendingToOCS)
+                {
+                    omfendpoint = $"{resource}/api/{apiVersion}/tenants/{tenantId}/namespaces/{namespaceId}/omf";
+                }
+                if (!sendingToOCS)
+                    omfVersion = "1.1";
+
+                sendTypesAndContainers();
+
+                int count = 0;
+                while ((!test) && count < 2)
+                {
+                    sendValue("data", create_data_values_for_first_dynamic_type("Container1"));
+                    sendValue("data", create_data_values_for_first_dynamic_type("Container2"));
+                    sendValue("data", create_data_values_for_second_dynamic_type("Container3"));
+                    sendValue("data", create_data_values_for_third_dynamic_type("Container4"));
+                    if (sendingToOCS)
+                        sendValue("data", create_data_values_for_NonTimeStampIndexAndMultiIndex_type("Container5", "Container6"));
+                    Thread.Sleep(1000);
+                    count = count + 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+
+                exc = ex;
+                success = false;
+            }
+            finally
+            {
+                Console.WriteLine("Deleting");
+                sendTypesAndContainers("delete");
+
+                Console.WriteLine("Donzo");
+                if (!test)
+                    Console.ReadLine();
             }
 
-            sendTypesAndContainers();
-
+            if (exc != null)
+                throw exc;
             return success;
         }
 
-        private static void sendTypesAndContainers()
+        private static string create_data_values_for_NonTimeStampIndexAndMultiIndex_type(string NonTimeStampIndexID, string MultiIndexId)
         {
-            sendFirstStaticType();
-            sendSecondStaticType();
-            sendFirstDynamicType();
-            sendSecondDynamicType();
-            sendThirdDynamicType();
-            sendNonTimeStampTypes();
+            integer_index1 = integer_index1 + 2;
+
+            if (integer_index2_2 % 3 == 0) {
+                integer_index2_2 = 1;
+                integer_index2_1 = integer_index2_1 + 1;
+            }
+            else
+                integer_index2_2 = integer_index2_2 + 1;
+
+            return String.Format(@"[{{
+                        ""containerid"": ""{0}"",
+                        ""values"": [
+                            {{
+                                ""Value"": {1},
+                                ""Int_Key"": {2}
+                            }},
+                            {{
+                                ""Value"": {3},
+                                ""Int_Key"": {4}
+                            }}
+                        ]
+                    }},
+                    {{
+                        ""containerid"": ""{5}"",
+                        ""values"": [
+                            {{
+                                ""Value1"":{6},
+                                ""Value2"": {7},
+                                ""IntKey"": {8},
+                                ""IntKey2"": {9}
+                            }}
+                        ]
+                    }}]", NonTimeStampIndexID, rnd.NextDouble()*88, integer_index1, rnd.NextDouble() * 88, integer_index1 +1, MultiIndexId, rnd.NextDouble() * -125, rnd.NextDouble() * 42, integer_index2_1, integer_index2_2);
         }
 
-        private static void sendValue(string messageType, string dataJson )
+        private static string create_data_values_for_third_dynamic_type(string containerId)
+        {
+            if (dynamic3 == 1)
+                dynamic3 = 0;
+            else
+                dynamic3 = 1;
+            return String.Format(@"
+                    [{{
+                        ""containerid"": ""{0}"",
+                        ""values"": [
+                            {{
+                                ""timestamp"": ""{1}"",
+                                ""IntegerEnum"": {2}
+                            }}
+                        ]
+                    }}]",
+                    containerId, getCurrentTime(), dynamic3.ToString());
+        }
+
+        private static string create_data_values_for_second_dynamic_type(string containerId)
+        {
+            dynamic2 = !dynamic2;
+            return String.Format(@"
+                    [{{
+                        ""containerid"": ""{0}"",
+                        ""values"": [
+                            {{
+                                ""timestamp"": ""{1}"",
+                                ""NumberProperty1"": {2},
+                                ""NumberProperty2"": {3},
+                                ""StringEnum"": ""{4}""
+                            }}
+                        ]
+                    }}]",
+                    containerId, getCurrentTime(), rnd.NextDouble()*100, rnd.NextDouble() * 100, dynamic2.ToString());
+        }
+
+        private static string create_data_values_for_first_dynamic_type(string containerId)
+        {
+            return String.Format(@"
+                    [{{
+                            ""containerid"": ""{0}"",
+                        ""values"": [
+                            {{
+                                ""timestamp"": ""{1}"",
+                                ""IntegerProperty"": {2}
+                            }}
+                        ]
+                    }}]", 
+                    containerId, getCurrentTime(), rnd.Next(0,100));
+        }
+
+        private static string getCurrentTime()
+        {
+            return DateTime.Now.ToString("o");
+        }
+
+        private static void sendTypesAndContainers(string action = "create")
+        {
+            if (!sendingToOCS)
+            {
+                sendFirstStaticType(action);
+                sendSecondStaticType(action);
+            }
+            sendFirstDynamicType(action);
+            sendSecondDynamicType(action);
+            sendThirdDynamicType(action);
+
+            if (sendingToOCS)
+                sendNonTimeStampTypes(action);
+
+            sendContainers(action);
+
+            if (sendingToOCS)
+                sendContainers2(action);
+
+            if (!sendingToOCS)
+            {
+                sendStaticData(action);
+                sendLinks2(action);
+                sendLinks3(action);
+            }
+        }
+
+        private static void sendValue(string messageType, string dataJson, string action = "create" )
         {
             HttpMethod methodTouse = HttpMethod.Post;
             // Encoding utf8 = System.Text.Encoding.UTF8;
             HttpRequestMessage request = new HttpRequestMessage();
-            request.RequestUri = new Uri(omfendpoint);
-            request.Headers.Clear();
-
             if (!zip)
             {
 
@@ -78,6 +248,7 @@ namespace OMF_API
                     Method = methodTouse,
                     Content = new StringContent(dataJson, System.Text.Encoding.UTF8, "application/json")
                 };
+                request.Headers.Clear();
             }
             else
             {
@@ -98,15 +269,22 @@ namespace OMF_API
                     Method = methodTouse,
                     Content = new ByteArrayContent(bytes)
                 };
+                request.Headers.Clear();
                 request.Headers.Add("compression", "gzip");
 
             }
 
+            request.RequestUri = new Uri(omfendpoint);
+
+            if(sendingToOCS)
+                request.Headers.Add("Authorization", "Bearer " +getToken());
+
+
             request.Headers.Add("producertoken", producerToken);
             request.Headers.Add("messagetype", messageType);
-            request.Headers.Add("action", "create");
+            request.Headers.Add("action", action);
             request.Headers.Add("messageformat", "json");
-            request.Headers.Add("omfversion", "1.0");
+            request.Headers.Add("omfversion", omfVersion);
             
             Send(request).Wait();
         }
@@ -124,7 +302,7 @@ namespace OMF_API
             }
         }
 
-        private static async Task Send(HttpRequestMessage request)
+        private static async Task<string> Send(HttpRequestMessage request)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
             var response = await client.SendAsync(request);
@@ -132,9 +310,10 @@ namespace OMF_API
             var responseString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Error sending OMF response code:{response.StatusCode}.  Response {responseString}");
+            return responseString;
         }
 
-        public static void sendFirstStaticType() {
+        public static void sendFirstStaticType(string action = "create") {
             sendValue("type",
             @"[{
                 ""id"": ""FirstStaticType"",
@@ -161,10 +340,10 @@ namespace OMF_API
                         ""description"": ""First static asset type's configuration attribute""
                     }
                 }
-            }]");
+            }]", action);
         }
 
-        public static void sendSecondStaticType()
+        public static void sendSecondStaticType(string action = "create")
         {
             sendValue("type",
             @"[{
@@ -192,10 +371,10 @@ namespace OMF_API
                         ""description"": ""Second static asset type's configuration attribute""
                     }
                 }
-            }]");
+            }]", action);
             }
 
-        public static void sendFirstDynamicType() {
+        public static void sendFirstDynamicType(string action = "create") {
             sendValue("type",
             @"[{
                ""id"": ""FirstDynamicType"",
@@ -217,10 +396,10 @@ namespace OMF_API
                         ""description"": ""PI point data referenced integer attribute""
                     }
                 }
-            }]");
+            }]", action);
             }
 
-        public static void sendSecondDynamicType() {
+        public static void sendSecondDynamicType(string action = "create") {
             sendValue("type",
             @"[{
                ""id"": ""SecondDynamicType"",
@@ -255,10 +434,10 @@ namespace OMF_API
                         ""description"": ""String enumeration to replace boolean type""
                     }
                 }
-            }]");
+            }]", action);
         }
 
-        public static void sendThirdDynamicType() {
+        public static void sendThirdDynamicType(string action = "create") {
             sendValue("type",
             @"[{
                ""id"": ""ThirdDynamicType"",
@@ -282,10 +461,10 @@ namespace OMF_API
                         ""description"": ""Integer enumeration to replace boolean type""
                     }
                 }
-            }]");
+            }]", action);
         }
 
-        public static void sendNonTimeStampTypes()
+        public static void sendNonTimeStampTypes(string action = "create")
         {
             sendValue("type",
             @"[{
@@ -338,11 +517,10 @@ namespace OMF_API
                     ""description"": ""This could represent any integer value as well""
                 }
             }
-        }]");
+        }]", action);
         }
 
-
-        public static void sendContainers()
+        public static void sendContainers(string action = "create")
         {
             sendValue("container",
             @"[{
@@ -360,10 +538,10 @@ namespace OMF_API
             {
                 ""id"": ""Container4"",
                 ""typeid"": ""ThirdDynamicType""
-            }]");
+            }]", action);
         }
 
-        public static void sendContainers2()
+        public static void sendContainers2(string action = "create")
         {
             sendValue("container",
             @"[
@@ -374,10 +552,10 @@ namespace OMF_API
             {
                 ""id"": ""Container6"",
                 ""typeid"": ""MultiIndex""
-            }]");
+            }]", action);
         }
 
-        public static void sendLinks1()
+        public static void sendStaticData(string action = "create")
         {
             sendValue("data",
             @"[{
@@ -399,10 +577,10 @@ namespace OMF_API
                         ""StringProperty"": ""Child element attribute value""
                     }
                 ]
-            }]");
+            }]", action);
         }
 
-        public static void sendLinks2()
+        public static void sendLinks2(string action = "create")
         {
             sendValue("data",
             @"[{
@@ -429,10 +607,10 @@ namespace OMF_API
                         }
                     }
                 ]
-            }    ]");
+            }    ]", action);
         }
 
-        public static void sendLink3()
+        public static void sendLinks3(string action = "create")
         {
             sendValue("container",
             @"[{
@@ -472,9 +650,45 @@ namespace OMF_API
                     ""target"": {
                             ""containerid"": ""Container4""
                     }
-                }]");
+                }]", action);
         }
 
+        public static string getToken()
+        {
+            if (!String.IsNullOrWhiteSpace(token))
+                return token;
 
+            HttpRequestMessage request = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(resource + "/identity/.well-known/openid-configuration")
+            };
+            request.Headers.Add("Accept", "application/json");
+
+            string res = Send(request).Result;
+            var objectContainingURLForAuth = JsonConvert.DeserializeObject<JObject>(res);
+
+            var data = new Dictionary<string, string>
+            {
+               { "client_id", clientId },
+               { "client_secret", clientSecret },
+               { "grant_type", "client_credentials" }
+            };
+
+            HttpRequestMessage request2 = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(objectContainingURLForAuth["token_endpoint"].ToString()),
+                Content = new FormUrlEncodedContent(data)
+            };
+            request2.Headers.Add("Accept", "application/json");
+
+
+            string res2 = Send(request2).Result;
+
+            var tokenObject = JsonConvert.DeserializeObject<JObject>(res2);
+            token = tokenObject["access_token"].ToString();
+            return token;
+        }
     }
 }
