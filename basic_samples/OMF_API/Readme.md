@@ -21,4 +21,5 @@ All basic OMF samples are console applications that follow the same sequence of 
 
 These steps illustrate common OMF messages to send.  Feel free to modify the samples and propose changes.
 
-NOTE: The examples for PI are not tested using the PI Connector Relay.  
+NOTE: Automated tests are currently OCS only.
+NOTE: The examples for PI are not manually tested against the PI Connector Relay.  
