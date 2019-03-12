@@ -19,20 +19,26 @@ namespace OMF_API
     {
         private static readonly HttpClient client = new HttpClient();
 
+        // Set this to zip data going to endpoints
         static bool zip = false;
+
+        // Set this to indicate if the data is going to PI or OCS.  This changes some of the steps taken in the program due to the endpoints accepting different messages.
         static bool sendingToOCS = true;
 
+        // The version of the OMFmessages
+        static string omfVersion = "1.0";
 
+        // Holders for parameters set by configuration
         static string producerToken;
         static string omfendpoint;
         static string resource;
+        static string clientId = "";
+        static string clientSecret = "";
 
-
+        // Holds the token that is used for Auth for OCS.
         static string token = null;
 
-        static string omfVersion = "1.0";
-        static string clientId = "1.0";
-        static string clientSecret = "1.0";
+        //Holders for the data message values
         static Random rnd = new Random();
         static bool dynamic2 = false;
         static int dynamic3 = 0;
@@ -47,12 +53,26 @@ namespace OMF_API
         {
             runMain();
         }
-
+        
+        /// <summary>
+        /// Main function to allow for easy test.
+        /// </summary>
+        /// <param name="test">Whether this is a test or not</param>
+        /// <returns></returns>
         public static bool runMain(bool test= false)
         {
             var success = true;
             Exception exc = null;
-            var a = Directory.GetCurrentDirectory();
+
+            Console.WriteLine(" .d88888b.  888b     d888 8888888888        8888888b.  8888888888 .d8888b. 88888888888 ");
+            Console.WriteLine("d88P\" \"Y88b 8888b   d8888 888               888   Y88b 888       d88P  Y88b    888     ");
+            Console.WriteLine("888     888 88888b.d88888 888               888    888 888       Y88b.         888     ");
+            Console.WriteLine("888     888 888Y88888P888 8888888           888   d88P 8888888    \"Y888b.      888     ");
+            Console.WriteLine("888     888 888 Y888P 888 888               8888888P\"  888           \"Y88b.    888     ");
+            Console.WriteLine("888     888 888  Y8P  888 888               888 T88b   888             \"888    888     ");
+            Console.WriteLine("Y88b. .d88P 888   \"   888 888               888  T88b  888       Y88b  d88P    888     ");
+            Console.WriteLine(" \"Y88888P\"  888       888 888      88888888 888   T88b 8888888888 \"Y8888P\"     888     ");
+
             try
             {
                 IConfigurationBuilder builder = new ConfigurationBuilder()
@@ -61,10 +81,11 @@ namespace OMF_API
                  .AddJsonFile("appsettings.test.json", optional: true);
                 IConfiguration configuration = builder.Build();
 
+                // Step 1
                 string tenantId = configuration["TenantId"];
                 string namespaceId = configuration["NamespaceId"];
-                resource = configuration["Resource"];
                 string apiVersion = configuration["ApiVersion"];
+                resource = configuration["Resource"];
                 producerToken = configuration["ProducerToken"];
                 omfendpoint = configuration["omfendpoint"];
                 clientId = configuration["clientId"];
@@ -77,11 +98,16 @@ namespace OMF_API
                 if (!sendingToOCS)
                     omfVersion = "1.1";
 
+                // Step 2
+                getToken();
+
+                //step 3- 8  are located in here.  
                 sendTypesAndContainers();
 
                 int count = 0;
-                while ((!test) && count < 2)
+                while (count>0  && ((!test) && count < 2))
                 {
+                    //step 9 
                     sendValue("data", create_data_values_for_first_dynamic_type("Container1"));
                     sendValue("data", create_data_values_for_first_dynamic_type("Container2"));
                     sendValue("data", create_data_values_for_second_dynamic_type("Container3"));
@@ -102,9 +128,10 @@ namespace OMF_API
             finally
             {
                 Console.WriteLine("Deleting");
+                //step 10
                 sendTypesAndContainers("delete");
 
-                Console.WriteLine("Donzo");
+                Console.WriteLine("Done");
                 if (!test)
                     Console.ReadLine();
             }
@@ -114,6 +141,12 @@ namespace OMF_API
             return success;
         }
 
+        /// <summary>
+        /// Wrapper around getting data for nontime stamped and multi-index types
+        /// </summary>
+        /// <param name="NonTimeStampIndexID"></param>
+        /// <param name="MultiIndexId"></param>
+        /// <returns></returns>
         private static string create_data_values_for_NonTimeStampIndexAndMultiIndex_type(string NonTimeStampIndexID, string MultiIndexId)
         {
             integer_index1 = integer_index1 + 2;
@@ -151,6 +184,11 @@ namespace OMF_API
                     }}]", NonTimeStampIndexID, rnd.NextDouble()*88, integer_index1, rnd.NextDouble() * 88, integer_index1 +1, MultiIndexId, rnd.NextDouble() * -125, rnd.NextDouble() * 42, integer_index2_1, integer_index2_2);
         }
 
+        /// <summary>
+        /// Wrapper around getting data for the third dynamic type
+        /// </summary>
+        /// <param name="containerId"></param>
+        /// <returns></returns>
         private static string create_data_values_for_third_dynamic_type(string containerId)
         {
             if (dynamic3 == 1)
@@ -170,6 +208,11 @@ namespace OMF_API
                     containerId, getCurrentTime(), dynamic3.ToString());
         }
 
+        /// <summary>
+        /// Wrapper around getting data for the second dynamic type
+        /// </summary>
+        /// <param name="containerId"></param>
+        /// <returns></returns>
         private static string create_data_values_for_second_dynamic_type(string containerId)
         {
             dynamic2 = !dynamic2;
@@ -188,6 +231,11 @@ namespace OMF_API
                     containerId, getCurrentTime(), rnd.NextDouble()*100, rnd.NextDouble() * 100, dynamic2.ToString());
         }
 
+        /// <summary>
+        /// Wrapper around getting data for the first dynamic type
+        /// </summary>
+        /// <param name="containerId"></param>
+        /// <returns></returns>
         private static string create_data_values_for_first_dynamic_type(string containerId)
         {
             return String.Format(@"
@@ -203,38 +251,60 @@ namespace OMF_API
                     containerId, getCurrentTime(), rnd.Next(0,100));
         }
 
+        /// <summary>
+        /// Gets the current time
+        /// </summary>
+        /// <returns></returns>
         private static string getCurrentTime()
         {
             return DateTime.Now.ToString("o");
         }
 
+        /// <summary>
+        /// Wrapper around the type and container calls
+        /// </summary>
+        /// <param name="action"></param>
         private static void sendTypesAndContainers(string action = "create")
         {
+
+            // Step 3
             if (!sendingToOCS)
             {
                 sendFirstStaticType(action);
                 sendSecondStaticType(action);
             }
+
+            // Step 4
             sendFirstDynamicType(action);
             sendSecondDynamicType(action);
             sendThirdDynamicType(action);
 
+            // Step 5
             if (sendingToOCS)
                 sendNonTimeStampTypes(action);
 
+            // Step 6
             sendContainers(action);
 
             if (sendingToOCS)
                 sendContainers2(action);
-
+            
             if (!sendingToOCS)
             {
+                // Step 7
                 sendStaticData(action);
                 sendLinks2(action);
+                // Step 8
                 sendLinks3(action);
             }
         }
 
+        /// <summary>
+        /// Sends the values to the preconfigured endpoint
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="dataJson"></param>
+        /// <param name="action"></param>
         private static void sendValue(string messageType, string dataJson, string action = "create" )
         {
             HttpMethod methodTouse = HttpMethod.Post;
@@ -289,7 +359,11 @@ namespace OMF_API
             Send(request).Wait();
         }
 
-
+        /// <summary>
+        /// Assists in zipping the message if needed
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dest"></param>
         private static void CopyTo(Stream src, Stream dest)
         {
             byte[] bytes = new byte[4096];
@@ -302,6 +376,11 @@ namespace OMF_API
             }
         }
 
+        /// <summary>
+        /// Actual async call to send message to omf endpoint
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         private static async Task<string> Send(HttpRequestMessage request)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
@@ -313,6 +392,10 @@ namespace OMF_API
             return responseString;
         }
 
+        /// <summary>
+        /// Wrapper around definition of first static type
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendFirstStaticType(string action = "create") {
             sendValue("type",
             @"[{
@@ -343,6 +426,10 @@ namespace OMF_API
             }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of second static type
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendSecondStaticType(string action = "create")
         {
             sendValue("type",
@@ -374,6 +461,10 @@ namespace OMF_API
             }]", action);
             }
 
+        /// <summary>
+        /// wrapper around defintiion of first dynamic type
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendFirstDynamicType(string action = "create") {
             sendValue("type",
             @"[{
@@ -399,6 +490,10 @@ namespace OMF_API
             }]", action);
             }
 
+        /// <summary>
+        /// wrapper around defintiion of second dynamic type
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendSecondDynamicType(string action = "create") {
             sendValue("type",
             @"[{
@@ -437,6 +532,10 @@ namespace OMF_API
             }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of third dynamic type
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendThirdDynamicType(string action = "create") {
             sendValue("type",
             @"[{
@@ -464,6 +563,10 @@ namespace OMF_API
             }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of non time stamp indexed type and multiindex type
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendNonTimeStampTypes(string action = "create")
         {
             sendValue("type",
@@ -520,6 +623,10 @@ namespace OMF_API
         }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of containers
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendContainers(string action = "create")
         {
             sendValue("container",
@@ -541,6 +648,10 @@ namespace OMF_API
             }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of containers of non time stamp indexed types
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendContainers2(string action = "create")
         {
             sendValue("container",
@@ -555,6 +666,10 @@ namespace OMF_API
             }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of data for static types
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendStaticData(string action = "create")
         {
             sendValue("data",
@@ -580,6 +695,10 @@ namespace OMF_API
             }]", action);
         }
 
+        /// <summary>
+        /// wrapper around defintiion of data for links
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendLinks2(string action = "create")
         {
             sendValue("data",
@@ -610,6 +729,11 @@ namespace OMF_API
             }    ]", action);
         }
 
+
+        /// <summary>
+        /// wrapper around defintiion of data for links
+        /// </summary>
+        /// <param name="action"></param>
         public static void sendLinks3(string action = "create")
         {
             sendValue("container",
@@ -653,6 +777,11 @@ namespace OMF_API
                 }]", action);
         }
 
+
+        /// <summary>
+        /// Gets the token for auth for connecting to OCS
+        /// </summary>
+        /// <param name="action"></param>
         public static string getToken()
         {
             if (!String.IsNullOrWhiteSpace(token))

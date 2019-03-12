@@ -40,12 +40,14 @@ import traceback
 # Specify options for sending web requests to the target PI System
 # ************************************************************************
 
+# Specifys whether we are sending to PI or OCS.  The main changes are in the accepted messages and the URL.
+sendingToOCS = False
+
 # Specify whether to compress OMF message before
 # sending it to ingress endpoint
 USE_COMPRESSION = True
 
-# If self-signed certificates are used (true by default),
-# do not verify HTTPS SSL certificates; normally, leave this as is
+# Set this to true if going against self signed certs and you don't want to see the error
 VERIFY_SSL = False
 
 # Specify the timeout, in seconds, for sending web requests
@@ -53,39 +55,44 @@ VERIFY_SSL = False
 WEB_REQUEST_TIMEOUT_SECONDS = 30
 
 # Holder for the producer token.  It is set from the configuration
-# For more information see PI Connector Administration Guide
 producerToken = ""
 
-# Holder for the omfEndPoint.  It is set from the configuration
-# For more information see PI Connector Administration Guide
+# Holder for the omfEndPoint if sending to PI.  It is set from the configuration
 omfEndPoint = ""
 
+# Holder for the omfEndPoint base if sending to OCS.  Auth and OMF endpoint are built from this.  It is set from the configuration
 resourceBase = ""
 
-sendingToOCS = False
+
+# The version of the OMFmessages
 omfVersion = "1.0"
 
+# Holders for data message values
 integer_boolean_value = 0
 string_boolean_value = "True"
-
 integer_index1 = 0
 integer_index2_1 = 1
 integer_index2_2 = 1
 
+# Token information
 __expiration = 0
 __token = ""
 
-resourceBase = ""
+# Auth information.  It is set from the configuration
 clientId = ""
 clientSecret = ""
 
 def getToken():
+    # Gets the oken for the omfsendpoint    
     global __expiration, __token, resourceBase, clientId, clientSecret, producerToken
+
     if(not sendingToOCS):
         return producerToken
 
     if ((__expiration - time.time()) > 5 * 60):
         return __token
+
+    # we can't short circuit it, so we must go retreive it.
 
     discoveryUrl = requests.get(
         resourceBase + "/identity/.well-known/openid-configuration",
@@ -125,7 +132,10 @@ def getToken():
 # this function can later be customized to allow you to port this script to other languages.
 # All it does is take in a data object and a message type, and it sends an HTTPS
 # request to the target OMF endpoint
+
 def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'create'):
+    # Sends the request out to the preconfigured endpoint..
+
     global producerToken, omfEndPoint, omfVersion, sendingToOCS
     # Compress json omf payload, if specified
     compression = 'none'
@@ -134,8 +144,8 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
         compression = 'gzip'
     else:
         msg_body = json.dumps(message_omf_json)
-    # Assemble headers        
 
+    # Assemble headers        
     msg_headers = {
         "Authorization": "Bearer %s" % getToken(),
         'producertoken': getToken(),
@@ -160,18 +170,20 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
         response.close()
         print('Response from relay was bad.  "{0}" message: {1} {2}.  Message holdings: {3}'.format(message_type, response.status_code, response.text, message_omf_json))
         print()
-       # raise Exception("OMF message was unsuccessful, {message_type}. {status}:{reason}".format(message_type=message_type, status=response.status_code, reason=response.text))
+        raise Exception("OMF message was unsuccessful, {message_type}. {status}:{reason}".format(message_type=message_type, status=response.status_code, reason=response.text))
     else:
         print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
     
 
 def getCurrentTime():
+    # Returns the current time
     return datetime.datetime.utcnow().isoformat() + 'Z'
 
 
 # Creates a JSON packet containing data values for containers
 # of type FirstDynamicType defined below
 def create_data_values_for_first_dynamic_type(containerid):
+    # Returns a JSON representation of data for the first dynamic type.
     return [
         {
             "containerid": containerid,
@@ -187,6 +199,7 @@ def create_data_values_for_first_dynamic_type(containerid):
 # Creates a JSON packet containing data values for containers
 # of type SecondDynamicType defined below
 def create_data_values_for_second_dynamic_type(containerid):
+    # Returns a JSON representation of data for the the second type.
     global string_boolean_value
     if string_boolean_value == "True":
         string_boolean_value = "False"
@@ -210,6 +223,7 @@ def create_data_values_for_second_dynamic_type(containerid):
 
 # of type ThirdDynamicType defined below
 def create_data_values_for_third_dynamic_type(containerid):
+    # Returns a JSON representation of data for the third dynamic type.
     global integer_boolean_value
     if integer_boolean_value == 0:
         integer_boolean_value = 1
@@ -230,6 +244,7 @@ def create_data_values_for_third_dynamic_type(containerid):
 # Creates a JSON packet containing data values for containers
 # of type NonTimeStampIndex defined below
 def create_data_values_for_NonTimeStampIndexAndMultiIndex_type(NonTimeStampIndexID, MultiIndexId):
+    # Returns a JSON representation of data for the nontime stap and multi-index types.
     global integer_index1
     global integer_index2_1, integer_index2_2
 
@@ -271,7 +286,9 @@ def create_data_values_for_NonTimeStampIndexAndMultiIndex_type(NonTimeStampIndex
     
 
 
-def oneTimeSendMessages(action = 'create'):
+def oneTimeSendMessages(action = 'create'):    
+    # Wrapper around all of the data and container messages.  
+
     global omfVersion
     # ************************************************************************
     # Send the types messages to define the types of streams that will be sent.
@@ -283,8 +300,10 @@ def oneTimeSendMessages(action = 'create'):
     # in one message, as far as its size is below maximum allowed - 192K
     # ************************************************************************
 
-    # Send a JSON packet to define static types
-    
+
+
+    # Step 3
+    # Send a JSON packet to define static types    
     # Note for OCS this message is currently ignored. 
     send_omf_message_to_endpoint("type", [
         {
@@ -336,6 +355,7 @@ def oneTimeSendMessages(action = 'create'):
     ],
     action)
 
+    # Step 4
     # Send a JSON packet to define dynamic types
     send_omf_message_to_endpoint("type", [
         {
@@ -410,9 +430,9 @@ def oneTimeSendMessages(action = 'create'):
         }
     ],action)
 
-    # Note for PI these messages throw errors
-    # Send a JSON packet to define dynamic types
-
+    # Step 5
+    # Note for PI these messages throw errors if you send them
+    # Send a JSON packet to define dynamic types   
     if(sendingToOCS):
         send_omf_message_to_endpoint("type", [
             {
@@ -475,6 +495,8 @@ def oneTimeSendMessages(action = 'create'):
     # This instantiates these particular containers.
     # We can now directly start sending data to it using its Id.
     # ************************************************************************
+
+    # Step 6
     send_omf_message_to_endpoint("container", [
         {
             "id": "Container1",
@@ -521,6 +543,7 @@ def oneTimeSendMessages(action = 'create'):
 
     # Note for OCS these messages are ignored. 
 
+    # Step 7
     # Send a JSON packet to define assets
     send_omf_message_to_endpoint("data", [
         {
@@ -545,6 +568,8 @@ def oneTimeSendMessages(action = 'create'):
         }
     ],action)
 
+
+    # Step 8
     # Send a JSON packet to define links between assets
     # to create AF Asset structure
     send_omf_message_to_endpoint("data", [
@@ -624,6 +649,7 @@ def oneTimeSendMessages(action = 'create'):
 
 
 def supressError(sdsCall):
+    #easily call a function and not have to wrap it individually for failure
     try:
         sdsCall()
     except Exception as e:
@@ -641,6 +667,7 @@ def supressError(sdsCall):
 # ************************************************************************
 
 def getConfig(section, field):
+    #Reads the config file for the field specified
     config = configparser.ConfigParser()
     config.read('config.ini')
     return config.has_option(section,field) and config.get(section,field) or None
@@ -656,6 +683,7 @@ def getConfig(section, field):
 # different containerids at different times
 # ************************************************************************
 def main(test = False):
+    # Main program.  Seperated out so that we can add a test function and call this easily
     global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret
     success = True
     try:
@@ -670,7 +698,7 @@ def main(test = False):
         print(' "Y88888P"  888       888 888      88888888 888           888     ')	
         print('------------------------------------------------------------------')
 
-
+        # Step 1
         namespaceId = getConfig('Configurations', 'Namespace') 
         resourceBase = getConfig('Access', 'Resource')
         tenant = getConfig('Access', 'Tenant')
@@ -686,9 +714,11 @@ def main(test = False):
         else:
             omfEndPoint = completedURL
         
+        # Step 2
         if(sendingToOCS):
             getToken()
-        else:
+        else:            
+            producerToken = getConfig('Credentials', 'ProducerToken')
             omfVersion = "1.1"
 
     # ************************************************************************
@@ -698,8 +728,10 @@ def main(test = False):
     #    if not VERIFY_SSL:
     #        requests.packages.urllib3.disable_warnings()
 
+        # Steps 3-8 contained in here
         oneTimeSendMessages()
 
+        # Step 9
         count = 0
         while count > 0 and ((not test) and count < 2):
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container1"))
@@ -721,6 +753,8 @@ def main(test = False):
 
     finally:
         print ('Deletings')
+
+        # Step 10
         oneTimeSendMessages('delete')
         print 
         return success       
@@ -730,4 +764,5 @@ print("done")
 
 ## Straightforward test to make sure program is working without an error in program.  Can run it yourself with pytest program.py
 def test_main():
+    #Tests to make sure the sample runs as expected
     main(True)

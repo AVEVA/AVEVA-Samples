@@ -1,4 +1,4 @@
-Building a Python client to send OMF to PI or OCS
+Building a .NET client to send OMF to PI or OCS
 ==================================================================
 
 The sample code in this topic demonstrates how to send OMF messages
