@@ -94,5 +94,5 @@ jobs:
     - script: |
         dotnet restore
         dotnet test
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/CSharp/OMF_API/
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/CSharp/OMF_APITests/
       displayName: 'Run Test'
