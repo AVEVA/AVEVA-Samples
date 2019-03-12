@@ -105,7 +105,7 @@ namespace OMF_API
                 sendTypesAndContainers();
 
                 int count = 0;
-                while (count>0  && ((!test) && count < 2))
+                while (count == 0  || ((!test) && count < 2))
                 {
                     //step 9 
                     sendValue("data", create_data_values_for_first_dynamic_type("Container1"));
