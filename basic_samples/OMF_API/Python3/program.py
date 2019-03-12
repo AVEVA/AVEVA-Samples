@@ -41,11 +41,11 @@ import traceback
 # ************************************************************************
 
 # Specifys whether we are sending to PI or OCS.  The main changes are in the accepted messages and the URL.
-sendingToOCS = False
+sendingToOCS = True
 
 # Specify whether to compress OMF message before
 # sending it to ingress endpoint
-USE_COMPRESSION = True
+USE_COMPRESSION = False
 
 # Set this to true if going against self signed certs and you don't want to see the error
 VERIFY_SSL = False
