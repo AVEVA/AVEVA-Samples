@@ -22,19 +22,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OSIsoft.Data;
-using OSIsoft.Data.Http.Security;
+//using OSIsoft.Data.Http.Security;
 using OSIsoft.Data.Reflection;
 using OSIsoft.Identity; 
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+//using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SdsClientLibraries
 {
-    internal class Program
+    public class Program
     {
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
-        private static async Task MainAsync()
+        public static async Task<bool> MainAsync(bool test = false)
         {
+            bool success = true;
+            Exception toThrow = null;
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -50,20 +52,27 @@ namespace SdsClientLibraries
 
             // ==== Metadata IDs ====
             string streamId = "SampleStream";
+            string streamIdSecondary = "SampleStream_Secondary";
+            string streamIdCompound = "SampleStream_Compound";
+
             string typeId = "SampleType";
             string targetTypeId = "SampleType_Target";
             string targetIntTypeId = "SampleType_TargetInt";
             string autoStreamViewId = "SampleAutoStreamView";
             string manualStreamViewId = "SampleManualStreamView";
+            string compoundTypeId = "SampleType_Compound";
 
+            var uriResource = new Uri(resource);
+            // Step 1 
             // Get Sds Services to communicate with server
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(uriResource, clientId, clientKey);
 
             SdsService sdsService = new SdsService(new Uri(resource), authenticationHandler);
             var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
             var dataService = sdsService.GetDataService(tenantId, namespaceId);
+            var tableService = sdsService.GetTableService(tenantId, namespaceId);
 
-            LoggerCallbackHandler.UseDefaultLogging = false;
+           // LoggerCallbackHandler.UseDefaultLogging = false;
 
 
             Console.WriteLine(@"-------------------------------------------------------------");
@@ -80,14 +89,16 @@ namespace SdsClientLibraries
 
             try
             {
+                // Step 2
                 // create an SdsType
                 Console.WriteLine("Creating an SdsType");
                 SdsType type = SdsTypeBuilder.CreateSdsType<WaveData>();
                 type.Id = typeId;
                 type = await metadataService.GetOrCreateTypeAsync(type);
 
+                // Step 3
                 // create an SdsStream
-                Console.WriteLine("Creating an SdsStream");
+               Console.WriteLine("Creating an SdsStream");
                 var stream = new SdsStream
                 {
                     Id = streamId,
@@ -96,7 +107,8 @@ namespace SdsClientLibraries
                     Description = "This is a sample SdsStream for storing WaveData type measurements"
                 };
                 stream = await metadataService.GetOrCreateStreamAsync(stream);
-
+               
+                // Step 4
                 // insert data
                 Console.WriteLine("Inserting data");
 
@@ -112,6 +124,7 @@ namespace SdsClientLibraries
                 }
                 await dataService.InsertValuesAsync(stream.Id, waves);
 
+                // Step 5
                 // get last event
                 Console.WriteLine("Getting latest event");
                 var latest = await dataService.GetLastValueAsync<WaveData>(streamId);
@@ -128,6 +141,18 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
+                // Step 6
+                //Step2 Getting all events in table format with headers.
+                var tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
+
+                Console.WriteLine("Getting table events");
+                foreach (var evnt in tableEvents.Rows)
+                {
+                    Console.WriteLine(String.Join(",", evnt.ToArray()));
+                }
+                Console.WriteLine();
+
+                // Step 7
                 // update events
                 Console.WriteLine("Updating events");
 
@@ -154,6 +179,7 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
+                // Step 8
                 // replacing events
                 Console.WriteLine("Replacing events");
 
@@ -184,6 +210,7 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
+                // Step 9
                 // Property Overrides
                 Console.WriteLine("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
                 Console.WriteLine();
@@ -191,13 +218,36 @@ namespace SdsClientLibraries
                 // We will retrieve three events using the default behavior, Continuous
                 var retrieved = await dataService
                     .GetRangeValuesAsync<WaveData>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated);
-                Console.WriteLine("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:");
+                Console.WriteLine("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for this property and then return entered values:");
                 foreach (var value in retrieved)
                 {
-                    Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
+                    Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();
+                
+                
+                var retrievedInterpolated = await dataService
+                    .GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
+                Console.WriteLine(" Sds will interpolate a value for each index asked for (5,14,23,32):");
+                foreach (var value in retrievedInterpolated)
+                {
+                    Console.WriteLine(value.ToString());
+                }
+                Console.WriteLine();       
 
+                // Step 10
+                // We will retrieve events filtered to only get the ones where the radians are less than 50.  Note, this can be done on index properties too.
+  
+                var retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
+                Console.WriteLine(" Sds will only return the values where the radains are less than 50:");
+                foreach (var value in retrievedInterpolatedFiltered)
+                {
+                    Console.WriteLine(value.ToString());
+                }
+                Console.WriteLine();        
+
+
+                // Step 11
                 // create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
                 var propertyOverride = new SdsStreamPropertyOverride()
                 {
@@ -217,10 +267,12 @@ namespace SdsClientLibraries
 
                 foreach (var value in retrieved)
                 {
-                    Console.WriteLine($"Order: {value.Order}, Radians: {value.Radians}, Cos: {value.Cos}");
+                    Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();
 
+            
+                // Step 12
                 // StreamViews
                 Console.WriteLine("SdsStreamViews");
                 
@@ -295,7 +347,30 @@ namespace SdsClientLibraries
                 Console.WriteLine("Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
                 var manualStreamViewMap = await metadataService.GetStreamViewMapAsync(manualStreamViewId);
                 PrintStreamViewMapProperties(manualStreamViewMap);
-                
+
+                // Step 13
+                // Update Stream Type based on SdsStreamView
+                Console.WriteLine("We will now update the stream type based on the streamview");
+
+                var firstVal = await dataService.GetFirstValueAsync<WaveData>(stream.Id);
+
+                await metadataService.UpdateStreamTypeAsync(stream.Id, autoStreamViewId);
+                var newStream = await metadataService.GetStreamAsync(stream.Id);
+
+                var firstValUpdated = await dataService.GetFirstValueAsync<WaveDataTarget>(stream.Id);
+
+                Console.WriteLine($"The new type id {newStream.TypeId} compared to the original one {stream.TypeId}.");
+                Console.WriteLine($"The new type value {firstValUpdated.ToString()} compared to the original one {firstVal.ToString()}.");
+
+                // Step 14
+                // Show filtering on Type, works the same as filtering on Streams
+
+                var types = await metadataService.GetTypesAsync("");
+                var typesFiltered = await metadataService.GetTypesAsync("", "contains(Id, 'Target')");
+
+                Console.WriteLine($"The number of types returned without filtering: {types.Count()}.  With filtering {typesFiltered.Count()}.");
+
+                // Step 15
                 // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
                 var tags = new List<string> { "waves", "periodic", "2018", "validated" };
@@ -320,6 +395,7 @@ namespace SdsClientLibraries
 
                 Console.WriteLine();
 
+                // Step 16
                 // delete values
                 Console.WriteLine("Deleting values from the SdsStream");
 
@@ -336,28 +412,158 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
+                // Step 17
+                // Adding a new stream with a secondary index.
+                Console.WriteLine("Adding a stream with a secondary index.");
+
+                SdsStreamIndex measurementIndex = new SdsStreamIndex()
+                {
+                    SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("Radians")).Id
+                };
+
+                SdsStream secondary = new SdsStream()
+                {
+                    Id = streamIdSecondary,
+                    TypeId = type.Id,
+                    Indexes = new List<SdsStreamIndex>()
+                  {
+                      measurementIndex
+                  }
+                };
+
+                secondary = await metadataService.GetOrCreateStreamAsync(secondary);
+                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
+                Console.WriteLine();
+
+                
+                // Modifying an existing stream with a secondary index.
+                Console.WriteLine("Modifying a stream to have a secondary index.");
+
+
+                stream = await metadataService.GetStreamAsync(stream.Id);
+                type = await metadataService.GetTypeAsync(stream.TypeId);
+
+
+                SdsStreamIndex measurementTargetIndex = new SdsStreamIndex()
+                {
+                    SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("RadiansTarget")).Id
+                };
+
+                stream.Indexes = new List<SdsStreamIndex>() { measurementTargetIndex };
+
+                await metadataService.CreateOrUpdateStreamAsync(stream);
+                stream = await metadataService.GetStreamAsync(stream.Id);
+
+
+                // Modifying an existing stream to remove the secondary index
+                Console.WriteLine("Removing a secondary index from a stream.");
+
+                secondary.Indexes = null;
+
+                await metadataService.CreateOrUpdateStreamAsync(secondary);
+                secondary = await metadataService.GetStreamAsync(secondary.Id);
+                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
+                Console.WriteLine();
+
+
+
+
+                // Step 18
+                // Adding Compound Index Type
+                Console.WriteLine("Creating an SdsType with a compound index");
+                SdsType typeCompound = SdsTypeBuilder.CreateSdsType<WaveDataCompound>();
+                typeCompound.Id = compoundTypeId;
+                typeCompound = await metadataService.GetOrCreateTypeAsync(typeCompound);
+
+                // create an SdsStream
+                Console.WriteLine("Creating an SdsStream off of type with compound index");
+                var streamCompound = new SdsStream
+                {
+                    Id = streamIdCompound,
+                    Name = "Wave Data Sample",
+                    TypeId = typeCompound.Id,
+                    Description = "This is a sample SdsStream for storing WaveData type measurements"
+                };
+                streamCompound = await metadataService.GetOrCreateStreamAsync(streamCompound);
+
+                // Step 19
+                // insert compound data
+                Console.WriteLine("Inserting data");
+                await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(1, 10));
+                await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(2, 2));
+                await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(3, 1));
+                await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(10, 3));
+                await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(10, 8));
+                await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(10, 10));
+
+                var latestCompound = await dataService.GetLastValueAsync<WaveDataCompound>(streamCompound.Id);
+                var firstCompound = await dataService.GetFirstValueAsync<WaveDataCompound>(streamCompound.Id);
+
+                var data = await dataService.GetWindowValuesAsync<WaveDataCompound, int, int>(streamCompound.Id, Tuple.Create(2, 1), Tuple.Create(10, 8));
+
+                Console.WriteLine($"First data: {firstCompound.ToString()}.  Latest data: {latestCompound.ToString()}.");
+
+                Console.WriteLine();
+
+                Console.WriteLine("Window Data:");
+
+                foreach (var evnt in data)
+                {
+                    Console.WriteLine(evnt.ToString());
+                }
+
+
             }
             catch (Exception ex)
             {
+                success = false;
                 Console.WriteLine(ex.Message);
+                toThrow = ex;
             }
             finally
             {
+                //step 20
                 Console.WriteLine("Cleaning up");
-                // Delete the stream, types and streamViews
+                // Delete the stream, types and streamViews making sure
                 Console.WriteLine("Deleting stream");
-                await metadataService.DeleteStreamAsync(streamId);
+                RunInTryCatch(metadataService.DeleteStreamAsync,streamId);
+                RunInTryCatch(metadataService.DeleteStreamAsync, streamIdSecondary);
+                RunInTryCatch(metadataService.DeleteStreamAsync, streamIdCompound);
                 Console.WriteLine("Deleting streamViews");
-                await metadataService.DeleteStreamViewAsync(autoStreamViewId);
-                await metadataService.DeleteStreamViewAsync(manualStreamViewId);
+                RunInTryCatch(metadataService.DeleteStreamViewAsync, autoStreamViewId);
+                RunInTryCatch(metadataService.DeleteStreamViewAsync, manualStreamViewId);
                 Console.WriteLine("Deleting types");
-                await metadataService.DeleteTypeAsync(typeId);
-                await metadataService.DeleteTypeAsync(targetTypeId);
-                await metadataService.DeleteTypeAsync(targetIntTypeId);
+                RunInTryCatch(metadataService.DeleteTypeAsync, typeId);
+                RunInTryCatch(metadataService.DeleteTypeAsync, compoundTypeId);
+                RunInTryCatch(metadataService.DeleteTypeAsync, targetTypeId);
+                RunInTryCatch(metadataService.DeleteTypeAsync, targetIntTypeId);
 
 
                 Console.WriteLine("done");
-                Console.ReadKey();
+                if(!test)
+                    Console.ReadKey();
+            }
+
+            if (test && !success)
+                throw toThrow;
+            return success;
+        }
+
+        /// <summary>
+        /// Use this to run a method that you don't want to stop the program if there is an error and you don't want to report the error
+        /// </summary>
+        /// <param name="methodToRun">The method to run.</param>
+        /// <param name="value">The value to put into the method to run</param>
+        private static async void RunInTryCatch(Func<string,Task> methodToRun, string value)
+        {
+            try
+            {
+                await methodToRun(value);
+                
+            }
+            catch (Exception ex)
+            {
+               Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
             }
         }
 
@@ -408,5 +614,26 @@ namespace SdsClientLibraries
 
             return wave;
         }
+
+
+        private static WaveDataCompound GetWaveMultiplier(int order, int multiplier)
+        {
+            var radians = order * 2 * Math.PI;
+
+            return new WaveDataCompound
+            {
+                Order = order,
+                Radians = radians,
+                Tau = radians / (2 * Math.PI),
+                Sin = multiplier * Math.Sin(radians),
+                Cos = multiplier * Math.Cos(radians),
+                Tan = multiplier * Math.Tan(radians),
+                Sinh = multiplier * Math.Sinh(radians),
+                Cosh = multiplier * Math.Cosh(radians),
+                Tanh = multiplier * Math.Tanh(radians),
+                Multiplier = multiplier
+            };
+        }
+
     }
 }
