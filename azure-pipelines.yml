@@ -53,13 +53,13 @@ jobs:
       
     - script: |
         pip install -r requirements.txt
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/basic_samples/OMF_API/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/Python3/
       displayName: 'Install requirements'
       
     - script: |
         python -m pytest ./program.py
       displayName: 'Test with pytest'
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/basic_samples/OMF_API/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/Python3/
 
 - job: OMF_APIDotNet
 
