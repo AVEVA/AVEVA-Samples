@@ -8,7 +8,10 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2018",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
     "typeRoots": [
       "node_modules/@types"
     ],

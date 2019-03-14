@@ -14,20 +14,39 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-import {ModuleWithProviders } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {ModuleWithProviders, Provider } from '@angular/core';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 import { DatasrcComponent} from './datasrc/datasrc.component';
+import { AuthenticationGuard } from './auth/authguard';
+import { OAuthLoginComponent, OAuthLogoutComponent, OAuthCallbackHandlerGuard } from '@osisoft/identity-ts';
 
-const routes: Routes = [{ path: 'datasrc', component: DatasrcComponent },
-                        {
-                            path: '',
-                            redirectTo: '/datasrc',
-                            pathMatch: 'full'
-                        }
-                       ];
+const routes: Routes = [
+    {
+        path: 'login',
+        component: DatasrcComponent,
+    },
+    {
+        path: 'logout',
+        component: OAuthLogoutComponent
+    },
+    {
+        path: 'auth-callback',
+        component: OAuthLoginComponent,
+        canActivate: [OAuthCallbackHandlerGuard]
+    },
+    {
+        path: '',
+        component: DatasrcComponent,
+        canActivate: [AuthenticationGuard]
+    },
+    {
+        path: '**',
+        redirectTo: ''
+    }
+];
 
-export const appRoutingProviders: any[] = [];
+export const appRoutingProviders: Provider[] = [];
 
 // Export routes
-export const routing: ModuleWithProviders = RouterModule.forRoot(routes);
+export const routing: ModuleWithProviders = RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules});
