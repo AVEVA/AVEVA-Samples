@@ -31,7 +31,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_config.ini
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/'
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
@@ -39,7 +39,7 @@ jobs:
 
     - script: |
         mv prod_config.ini config.ini
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
       displayName: 'rename config file'
       
 
@@ -54,13 +54,13 @@ jobs:
       
     - script: |
         pip install -r requirements.txt
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
       displayName: 'Install requirements'
       
     - script: |
         python -m pytest ./program.py
       displayName: 'Test with pytest'
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Python/SDSPy/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
 
 - job: DataviewPy
 
@@ -85,8 +85,8 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: config.ini
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/Dataviews/Python3/'
-        #cleanTargetFolder: false # Optionalbasic_samples\Dataviews\Python3
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/'
+        #cleanTargetFolder: false # Optionalocs_samples/basic_samples\Dataviews\Python3
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
@@ -102,13 +102,13 @@ jobs:
       
     - script: |
         pip install -r requirements.txt
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/Dataviews/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/
       displayName: 'Install requirements'
       
     - script: |
         python -m pytest ./program.py
       displayName: 'Test with pytest'
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/Dataviews/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/
 
 - job: OMF_APIPy
 
@@ -187,7 +187,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_config.properties
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/'
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
@@ -196,12 +196,12 @@ jobs:
 
     - script: |
         mv prod_config.properties config.properties
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/
       displayName: 'Install requirements'
       
     - task: Maven@3
       inputs:
-        mavenPomFile: '$(Build.SourcesDirectory)/basic_samples/SDS/Java/sdsjava/pom.xml'
+        mavenPomFile: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/pom.xml'
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
@@ -229,7 +229,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: config.properties
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/Dataviews/Java/dataviewjava/'
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Java/dataviewjava/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
@@ -237,7 +237,7 @@ jobs:
       
     - task: Maven@3
       inputs:
-        mavenPomFile: '$(Build.SourcesDirectory)/basic_samples/Dataviews/Java/dataviewjava/pom.xml'
+        mavenPomFile: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Java/dataviewjava/pom.xml'
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
