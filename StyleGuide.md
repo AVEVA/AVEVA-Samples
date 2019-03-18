@@ -2,9 +2,10 @@
 
 ## Sample Organization
 
-* Each sample is represented on the main landing page with an appropriate short task name, description including a link to a greater description, links to the individual samples marked by languages, and test status.
+* For each different technology (for instance OCS or PI Web API) there is a main landing page
+* Each sample is represented on the main landing page for the technology with an appropriate short task name, description including a link to a greater description, links to the individual samples marked by languages, and test status.
 * A task level description should include information that is common to all language specific examples below it, including common steps.  This should also include links back to the main page, to all languages and highlight test status of these languages.
-* A language specific readme should include information that is unique to this language.  This can include stepping over line examples from the sample.  This should also include links back to the main page, to the general task readme and the specific test status.
+* A language specific readme should include information that is unique to this language.  This can include stepping over line examples from the sample.  This should also include links back to the main technology page, to the general task readme, and the specific test status.
 
 
 ## Code expectations
