@@ -15,14 +15,16 @@
 //limitations under the License.
 // </copyright>
 
-using OSIsoft.Data;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace SdsClientLibraries
+namespace SdsRestApiCore
 {
     public class WaveData
     {
-        [SdsMember(IsKey = true)]
+        [Key]
         public int Order { get; set; }
 
         public double Tau { get; set; }
@@ -59,7 +61,7 @@ namespace SdsClientLibraries
 
     public class WaveDataTarget
     {
-        [SdsMember(IsKey = true)]
+        [Key]
         public int OrderTarget { get; set; }
 
         public double TauTarget { get; set; }
@@ -96,7 +98,7 @@ namespace SdsClientLibraries
 
     public class WaveDataInteger
     {
-        [SdsMember(IsKey = true)]
+        [Key]
         public int OrderTarget { get; set; }
 
         public int SinInt { get; set; }
@@ -118,10 +120,10 @@ namespace SdsClientLibraries
 
     public class WaveDataCompound
     {
-        [SdsMember(IsKey = true, Order = 0)]
+        [Key]
         public int Order { get; set; }
 
-        [SdsMember(IsKey = true, Order = 1)]
+        [Key]
         public int Multiplier { get; set; }
 
         public double Tau { get; set; }

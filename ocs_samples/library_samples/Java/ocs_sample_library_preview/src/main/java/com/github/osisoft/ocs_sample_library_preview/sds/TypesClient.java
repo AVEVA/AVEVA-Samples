@@ -44,7 +44,7 @@ public class TypesClient {
     // type paths
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";
-    private String getTypesPath = typesBase + "?skip={skip}&count={count}";
+    private String getTypesPath = typesBase + "?skip={skip}&count={count}&filter={filter}";
 
 
     public TypesClient(BaseClient base) {
@@ -142,15 +142,19 @@ public class TypesClient {
         return jsonResults.toString();
     }
 
-    public String getTypes(String tenantId, String namespaceId, String skip, String count) throws SdsError {
+    public String getTypes(String tenantId, String namespaceId, int skip, int count) throws SdsError {
+        return getTypes(tenantId,namespaceId,skip,count, "");
+    }
+
+    public String getTypes(String tenantId, String namespaceId, int skip, int count, String filter) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
-                    .replace("{skip}", skip).replace("{count}", count));
+            //string 
+            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{filter}", filter).replace("{skip}", String.valueOf(skip)).replace("{count}", String.valueOf(count)));
             urlConnection = baseClient.getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");

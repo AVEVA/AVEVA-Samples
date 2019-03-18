@@ -19,6 +19,7 @@ local.properties
 target/
 release.properties
 .releaseBackup
+.vscode/
 
 # External tool builders
 .externalToolBuilders/
