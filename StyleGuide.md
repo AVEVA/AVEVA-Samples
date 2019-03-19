@@ -1,6 +1,6 @@
-# Style Guide
+# General Style Guide
 
-## Sample Organization
+## Organization
 
 * For each different technology (for instance OCS, PI Web API) there is a main landing page.
 * Each sample is represented on the main landing page for the technology with an appropriate short task name, description including a link to a greater description, links to the individual samples marked by languages, and test status.
@@ -10,7 +10,8 @@
 
 ## Code expectations
 
-* Samples highlight a specific task a person can accomplish.  
+* Samples highlight a specific task a person can accomplish.  It can include multiple related tasks.
+* The sample should be self contained, setting up and cleaning up after itself as possible.  Anything that is needed in setup of the system needs to be well documented in readme and in code including how to do it.  
 * The code follows OSIsoft and industry best practices in design and code style.
 * Automated tests are included that check to ensure the sample runs as expected on a clean system, including making sure intermediate results in the sample are as expected.
 * Comments are included in the code to help developers understand any interaction that isn't otherwise documented in the code or intellisense help of functions.
