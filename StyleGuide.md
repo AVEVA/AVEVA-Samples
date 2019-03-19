@@ -2,7 +2,7 @@
 
 ## Organization
 
-* For each different technology (for instance OCS, PI Web API) there is a main landing page.
+* **--COMING SOON--** For each different technology (for instance OCS, OMF) there is a main landing page. 
 * Each sample is represented on the main landing page for the technology with an appropriate short task name, description including a link to a greater description, links to the individual samples marked by languages, and test status.
 * A task level description should include information that is common to all language specific examples below it, including common steps.  This should also include links back to the main page, to all languages and highlight test status of these languages.
 * A language specific readme should include information that is unique to this language.  This can include stepping over line examples from the sample with reference back to the general steps.  This readme should also include links back to the main technology page, to the general task readme, and the specific test status.
