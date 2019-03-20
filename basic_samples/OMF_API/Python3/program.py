@@ -20,6 +20,10 @@
 # http://omf-companion-docs.osisoft.com
 #*************************************************************************************
 
+# OMF_API_Python3
+# Version 1.0.0.1
+# 3-20-19
+
 # ************************************************************************
 # Import necessary packages
 # ************************************************************************
@@ -174,6 +178,34 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
     else:
         print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
     
+def checkValue(url):
+    # Sends the request out to the preconfigured endpoint..
+
+    global producerToken
+
+    # Assemble headers        
+    msg_headers = {
+        "Authorization": "Bearer %s" % getToken()
+    }
+    print(getToken())
+
+    # Send the request, and collect the response
+    response = requests.get(
+        url,
+        headers = msg_headers,
+        verify = VERIFY_SSL,
+        timeout = WEB_REQUEST_TIMEOUT_SECONDS
+    )
+    
+    # response code in 200s if the request was successful!
+    if response.status_code < 200 or response.status_code >= 300:
+        response.close()
+        print('Response from endpoint was bad.  "{0}"'.format(response.status_code))
+        print()
+        raise Exception("OMF message was unsuccessful. {status}:{reason}".format( status=response.status_code, reason=response.text))
+    return response.text
+    
+
 
 def getCurrentTime():
     # Returns the current time
@@ -648,6 +680,29 @@ def oneTimeSendMessages(action = 'create'):
     ],action)
 
 
+def checkSends(firstVal):    
+    global checkBase
+
+    if(sendingToOCS):
+
+        print("Checks")
+        # just getting back the type or stream means that it worked
+        json1 = checkValue(checkBase + '/Types' + '/FirstDynamicType')
+        #print(json1)
+        json1 = checkValue(checkBase + '/Streams' + '/Container1')
+        #print(json1)
+        json1 = checkValue(checkBase + '/Streams' + '/Container1'+ '/Data/first')
+
+        # just checking to make sure some data made it it, could do a more comprhensive check but this is ok...
+        assert firstVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['IntegerProperty']
+
+
+    else:
+        val = True
+
+
+
+
 def supressError(sdsCall):
     #easily call a function and not have to wrap it individually for failure
     try:
@@ -684,7 +739,7 @@ def getConfig(section, field):
 # ************************************************************************
 def main(test = False):
     # Main program.  Seperated out so that we can add a test function and call this easily
-    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret
+    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase
     success = True
     try:
         print('------------------------------------------------------------------')
@@ -711,9 +766,14 @@ def main(test = False):
 
         if sendingToOCS:
             omfEndPoint = resourceBase + '/api/' + apiversion + '/tenants/' + tenant + '/namespaces/' + namespaceId +'/omf'
+            checkBase = resourceBase + '/api/' + apiversion + '/tenants/' + tenant + '/namespaces/' + namespaceId
         else:
-            omfEndPoint = completedURL
+            omfEndPoint = resourceBase + '/omf'
+            checkBase = resourceBase 
         
+        if completedURL:
+            omfEndPoint = completedURL
+
         # Step 2
         if(sendingToOCS):
             getToken()
@@ -733,8 +793,12 @@ def main(test = False):
 
         # Step 9
         count = 0
-        while count > 0 and ((not test) and count < 2):
-            send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container1"))
+        firstVal = ''
+        while count == 0 and ((not test) and count < 2):
+            val = create_data_values_for_first_dynamic_type("Container1")
+            if count == 0:
+                firstVal = val
+            send_omf_message_to_endpoint("data", val)
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container2"))
             send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("Container3"))
             send_omf_message_to_endpoint("data", create_data_values_for_third_dynamic_type("Container4"))            
@@ -742,6 +806,7 @@ def main(test = False):
                 send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndexAndMultiIndex_type("Container5", "Container6"))
             time.sleep(1)
             count = count +1
+        checkSends(firstVal)
     except Exception as ex:
         print(("Encountered Error: {error}".format(error = ex)))
         print
