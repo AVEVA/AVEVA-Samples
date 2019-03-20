@@ -1,4 +1,21 @@
-﻿
+﻿// <copyright file="Program.cs" company="OSIsoft, LLC">
+//
+//Copyright 2019 OSIsoft, LLC
+//
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
+//
+//<http://www.apache.org/licenses/LICENSE-2.0>
+//
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+// </copyright>
+
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +48,7 @@ namespace OMF_API
         // Holders for parameters set by configuration
         static string producerToken;
         static string omfendpoint;
+        static string checkBase;
         static string resource;
         static string clientId = "";
         static string clientSecret = "";
@@ -94,6 +112,12 @@ namespace OMF_API
                 if (sendingToOCS)
                 {
                     omfendpoint = $"{resource}/api/{apiVersion}/tenants/{tenantId}/namespaces/{namespaceId}/omf";
+                    checkBase = $"{resource}/api/{apiVersion}/tenants/{tenantId}/namespaces/{namespaceId}";
+                }
+                else
+                {
+                    checkBase = resource;
+
                 }
                 if (!sendingToOCS)
                     omfVersion = "1.1";
@@ -105,10 +129,15 @@ namespace OMF_API
                 sendTypesAndContainers();
 
                 int count = 0;
+                string value ="";
                 while (count == 0  || ((!test) && count < 2))
                 {
                     //step 9 
-                    sendValue("data", create_data_values_for_first_dynamic_type("Container1"));
+                    var val = create_data_values_for_first_dynamic_type("Container1");
+                    if(count ==0)
+                       value = val;
+
+                    sendValue("data", val);
                     sendValue("data", create_data_values_for_first_dynamic_type("Container2"));
                     sendValue("data", create_data_values_for_second_dynamic_type("Container3"));
                     sendValue("data", create_data_values_for_third_dynamic_type("Container4"));
@@ -117,6 +146,8 @@ namespace OMF_API
                     Thread.Sleep(1000);
                     count = count + 1;
                 }
+                CheckValues(value);
+
             }
             catch (Exception ex)
             {
@@ -139,6 +170,27 @@ namespace OMF_API
             if (exc != null)
                 throw exc;
             return success;
+        }
+
+        private static void CheckValues(string value)
+        {
+            Console.WriteLine("Checks");
+            if (sendingToOCS)
+            {
+                // just getting back the type or stream means that it worked
+                string json1 = checkValue(checkBase + $"/Types" + $"/FirstDynamicType");
+
+                json1 = checkValue(checkBase + $"/Streams" + $"/Container1");
+                json1 = checkValue(checkBase + $"/Streams" + $"/Container1" + $"/Data/first");
+                var valueJ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<JObject>>(value);
+                var jsonJ = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(json1);
+                if (valueJ[0]["values"][0]["IntegerProperty"].ToString() != jsonJ["IntegerProperty"].ToString())
+                    throw new Exception("Returned value is not expected.");
+            }
+            else
+            {
+
+            }
         }
 
         /// <summary>
@@ -358,6 +410,23 @@ namespace OMF_API
             
             Send(request).Wait();
         }
+
+        
+        private static string checkValue(string URL)
+        {
+            HttpMethod methodTouse = HttpMethod.Get;
+            // Encoding utf8 = System.Text.Encoding.UTF8;
+            HttpRequestMessage request = new HttpRequestMessage();
+
+            request.RequestUri = new Uri(URL);
+
+            if (sendingToOCS)
+                request.Headers.Add("Authorization", "Bearer " + getToken());
+            
+
+           return Send(request).Result;
+        }
+
 
         /// <summary>
         /// Assists in zipping the message if needed
