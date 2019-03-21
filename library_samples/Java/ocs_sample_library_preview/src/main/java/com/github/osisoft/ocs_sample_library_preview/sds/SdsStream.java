@@ -28,6 +28,7 @@ public class SdsStream {
     private SdsStreamExtrapolation ExtrapolationMode;
     private List<SdsStreamPropertyOverride> PropertyOverrides;
     private List<SdsTypeProperty> Properties;
+    private List<SdsStreamIndex> Indexes;
 
     public SdsStream(String id, String typeid) {
         this.Id = id;
@@ -111,5 +112,13 @@ public class SdsStream {
 
     public void setProperties(List<SdsTypeProperty> properties) {
         this.Properties = properties;
+    }
+
+    public List<SdsStreamIndex> getIndexes() {
+        return Indexes;
+    }
+
+    public void setIndexes(List<SdsStreamIndex> indexes) {
+        this.Indexes = indexes;
     }
 }

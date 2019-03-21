@@ -45,6 +45,7 @@ public class StreamsClient {
     private String streamsBase = requestBase + "/Streams";
     private String getStreamPath = streamsBase + "/{streamId}";
     private String getStreamsPath = streamsBase + "?query={query}&skip={skip}&count={count}";
+    private String updateStreamTypePath = streamsBase + "/{streamId}/Type?streamViewId={streamViewId}";
     // StreamView paths
     private String streamViewBase = requestBase + "/StreamViews";
     private String getStreamViewPath = streamViewBase + "/{streamViewId}";
@@ -56,8 +57,9 @@ public class StreamsClient {
     private String getSingleQuery = dataBase + "?index={index}";
     private String getLastValuePath = dataBase + "/Last?";
     private String getFirstValuePath = dataBase + "/First?";
-    private String getWindowQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
-    private String getRangeQuery = dataBase + "/Transform?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}";
+    private String getWindowQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}&form={form}&filter={filter}";
+    private String getRangeQuery = dataBase + "/Transform?startIndex={startIndex}&endindex={endindex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}";
+    private String getRangeInterpolatedQuery = dataBase + "/Transform/Interpolated?startIndex={startIndex}&endindex={endindex}&count={count}";
     private String getRangeStreamViewQuery = dataBase + "/Transform?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&streamViewId={streamViewId}";
     private String updateMultiplePath = dataBase;
     private String replaceMultiplePath = dataBase + "?allowCreate=false";
@@ -713,13 +715,26 @@ public class StreamsClient {
     }
 
     public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws SdsError {
+        return getWindowValues(tenantId,namespaceId,streamId,startIndex,endIndex,"");
+    }
+    
+    public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, String filter) throws SdsError {
+        return getWindowValues(tenantId,namespaceId,streamId,startIndex,endIndex, filter, "");
+    }
+    
+
+    public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, String filter, String form) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer jsonResults = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getWindowQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endIndex}", endIndex));
+            String intermediate  = getWindowQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endIndex}", endIndex).replace("{form}", form).replace("{filter}", filter);
+            if(form.equals("")){
+                intermediate = intermediate.replace("&form=", "");
+            }
+            url = new URL(baseUrl + intermediate);
             urlConnection = baseClient.getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -755,17 +770,26 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+
     public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
+        return getRangeValues(tenantId, namespaceId, streamId, startIndex, "", skip,count, reverse, boundaryType);
+    }
+
+    public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
 
         try {
-            url = new URL(baseUrl + getRangeQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
-                    .replace("{streamId}", streamId).replace("{startIndex}", startIndex)
-                    .replace("{skip}", "" + skip).replace("{count}", "" + count)
-                    .replace("{reverse}", "" + reverse).replace("{boundaryType}", "" + boundaryType));
+            String intermediate = getRangeQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            .replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endindex}", endIndex)
+            .replace("{skip}", "" + skip).replace("{count}", "" + count)
+            .replace("{reverse}", "" + reverse).replace("{boundaryType}", "" + boundaryType);
+            if(endIndex.equals("")){
+                intermediate = intermediate.replace("&endindex=", "");
+            }
+            url = new URL(baseUrl + intermediate );
             urlConnection = baseClient.getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -798,7 +822,51 @@ public class StreamsClient {
         return response.toString();
     }
 
-    public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType, String streamViewId) throws SdsError {
+
+    
+
+    public String getRangeValuesInterpolated(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int count) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        try {
+            String intermediate = getRangeInterpolatedQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            .replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endindex}", endIndex).replace("{count}", "" + count);
+            url = new URL(baseUrl + intermediate );
+            urlConnection = baseClient.getConnection(url, "GET");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            int httpResult = urlConnection.getResponseCode();
+
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            } else {
+                throw new SdsError(urlConnection, "get range of interpolated values request failed");
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+        } catch (SdsError sdsError) {
+            sdsError.print();
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response.toString();
+    }
+    public String getRangeValuesStreamView(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType, String streamViewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -969,6 +1037,43 @@ public class StreamsClient {
             e.printStackTrace();
         }
     }
+
+	public void updateStreamType(String tenantId, String namespaceId, String streamId, String streamViewId) throws SdsError {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+
+        try {
+            url = new URL(baseUrl + updateStreamTypePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId)
+                    .replace("{namespaceId}", namespaceId).replace("{streamId}", streamId)
+                    .replace("{streamViewId}", streamViewId));
+            urlConnection = baseClient.getConnection(url, "PUT");
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String json = "";
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(out);
+            writer.write(json);
+            writer.close();
+
+            int httpResult = urlConnection.getResponseCode();
+            if (baseClient.isSuccessResponseCode(httpResult)) {
+            } else {
+                throw new SdsError(urlConnection, "replace multiple values request failed");
+            }
+        } catch (SdsError sdsError) {
+            sdsError.print();
+            throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
     
 
 
