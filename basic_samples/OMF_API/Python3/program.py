@@ -794,7 +794,7 @@ def main(test = False):
         # Step 9
         count = 0
         firstVal = ''
-        while count == 0 and ((not test) and count < 2):
+        while count == 0 or ((not test) and count < 2):
             val = create_data_values_for_first_dynamic_type("Container1")
             if count == 0:
                 firstVal = val

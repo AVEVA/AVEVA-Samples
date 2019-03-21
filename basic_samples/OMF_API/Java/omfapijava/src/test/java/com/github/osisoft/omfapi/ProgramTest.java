@@ -15,6 +15,6 @@ public class ProgramTest
     @Test
     public void shouldAnswerWithTrue()
     {
-        assertTrue( true );
+        Program.toRun( true );
     }
 }
