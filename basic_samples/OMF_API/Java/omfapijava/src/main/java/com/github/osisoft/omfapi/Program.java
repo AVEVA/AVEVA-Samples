@@ -50,10 +50,15 @@ import java.time.*;
 
 public class Program 
 {
-    static  boolean sendToOCS = true;
+    //holder used for test result
     static Boolean success = true;
+
+    //settings that aren't set by configuration 
+    static boolean sendToOCS = true;
+    static String compression = "none";
+    static String omfVersion = "1.1";
     
-    
+    // used in holding the access token 
     static String cachedAccessToken = null;
     static Date accessTokenExpiration = new Date(Long.MIN_VALUE);
     static long FIVE_SECONDS_IN_MILLISECONDS = 5000;
@@ -69,9 +74,9 @@ public class Program
     static String endPointToUse = omfEndPoint;
     static String checkBase = "";
 
-    static String compression = "none";
-    static String omfVersion = "1.1";
+    
 
+    //values used across calls of a function
     static int integer_boolean_value = 0;
     static String string_boolean_value = "True";
     static int integer_index1 = 0;
