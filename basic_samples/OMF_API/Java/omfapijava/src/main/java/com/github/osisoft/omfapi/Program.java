@@ -117,9 +117,12 @@ public class Program
             // Step 2 
             AcquireAuthToken();
 
+            
+            System.out.println("Sending Types and Containers");
             // Steps 3-8 contained in here
             oneTimeSendMessages("create");
 
+            System.out.println("Sending Data ");
             // Step 9
             int count = 0;
             String firstVal = "";
@@ -172,7 +175,7 @@ public class Program
             json1 = getValue(checkBase + "/Streams" + "/Container1");
             //System.out.println(json1);
             json1 = getValue(checkBase + "/Streams" + "/Container1"+ "/Data/first");
-            System.out.println(json1);
+            //System.out.println(json1);
 
             Gson gson = new Gson();
             Map<String, Object> mappy = gson.fromJson(json1, Map.class);
