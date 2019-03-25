@@ -30,7 +30,9 @@ Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;S
 **Sample Libraries** <img src="../miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | These sample libraries are used as the base for the other samples.  They are designed to be straightforward implementations of the REST APIs.  They are for use in the samples.  |  <a href="library_samples/Java/ocs_sample_library_preview/">Java</a><br /><a href="library_samples/Python3/">Python3</a>
 <img src="../miscellaneous/images/ctp.png" alt="ctp icon">  **Dataviews** <img src="../miscellaneous/images/app-type-getting-started.png" alt="getting-started icon"> | These samples highlight basic operations of Dataviews for OCS, including creation, updating, getting data from and deletion of dataviews.  <a href="basic_samples/Dataviews">Details</a> |  <a href="basic_samples/Dataviews/Java/dataviewjava">Java</a><br /><a href="basic_samples/Dataviews/Python3">Python3</a>|[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=DataviewJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=DataviewPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
-For sending OMF please see the OMF area: <a href="../omf_samples/">omf_samples</a> 
+For sending OMF to OCS please see the OMF area: <a href="../omf_samples/">omf_samples</a> 
+
+For the main landing page [ReadMe](../)
 
 ## Credentials 
 
