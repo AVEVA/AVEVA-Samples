@@ -75,7 +75,7 @@ endpoint. SDS REST API calls are sent to the SDS Service. The SDS REST API
 maps HTTP methods to CRUD operations as in the following table:
 
 HTTP Method |CRUD Operation|Content Found In
-----|-----------|---------|-----------
+-------|-----------|---------
 POST          | Create           | message body       
 GET           | Retrieve         | URL parameters     
 PUT           | Update           | message body       
