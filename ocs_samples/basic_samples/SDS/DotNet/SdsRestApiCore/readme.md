@@ -385,3 +385,8 @@ the corresponding Id.
 .. code:: cs
 
 	await httpClient.DeleteAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TypeId}");
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
+For the main OCS page [ReadMe](../../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
