@@ -487,3 +487,8 @@ the corresponding Id. The following calls are made in the sample code.
 *Note: Types and StreamViews cannot be deleted until any streams
 referencing them are deleted first. Their references are counted so
 deletion will fail if any streams still reference them.*
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
+For the main OCS page [ReadMe](../../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

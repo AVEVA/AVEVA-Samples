@@ -37,3 +37,9 @@ dotnet run
 
 - Follow the prompts in the web browser to log in
 - Return to the application after having been authenticated in the browser
+
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
+For the main OCS page [ReadMe](../../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

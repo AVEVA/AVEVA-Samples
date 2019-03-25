@@ -54,3 +54,8 @@ Using a command line:
    b) run "mvn package exec:java" on cmd.
 
 *Currently this project is not hosted on the central Maven repo and must be compiled and installed locally.
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../)<br />
+For the main OCS page [ReadMe](../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

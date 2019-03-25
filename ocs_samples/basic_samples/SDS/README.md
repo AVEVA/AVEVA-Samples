@@ -33,5 +33,14 @@ These steps illustrate the fundamental programming steps of SDS.  Feel free to m
 
 Step numbers are searchable in the code.  For find the relevant part of the code for filtering on types search: Step 14
 
+
+|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+------|------------
+<a href="/DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a><br /><a href="/DotNet/SdsRestApiCore">.NET*</a><br /><a href="/Java/sdsjava">JAVA</a><br /><a href="/JavaScript/Angular">Angular</a><br /><a href="/JavaScript/NodeJs">nodeJS</a><br /><a href="/Python/SDSPy/Python2">Python2</a><br /><a href="/Python/SDSPy/Python3">Python3</a> | [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNetAPI)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master&jobName=SDSJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br /> <br /> <br /> <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/Engineering%20Incubation-CI?branchName=master&jobName=SDSPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+
+
 Note: Currently the Angular, nodeJS, Pyhton2, and Python 3 examples are missing some steps, and searchability on step numbers.  This is coming soon!
 
+For the main OCS page [ReadMe](../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

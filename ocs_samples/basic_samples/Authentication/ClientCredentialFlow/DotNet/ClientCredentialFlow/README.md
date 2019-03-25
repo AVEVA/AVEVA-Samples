@@ -25,3 +25,9 @@ Replace the placeholders in the [config](./config.json) file with your TenantID,
 ```shell
 dotnet run
 ```
+
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
+For the main OCS page [ReadMe](../../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

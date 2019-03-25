@@ -14,3 +14,10 @@ The steps performed in the examples are similar and follow this general flow:
 11) Recheck the preview data (should be different then 9
 12) Recheck interpolated data using the previous session (should be the same as 10)
 13) Delete every that was created
+
+|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+------|------------
+  <a href="Java/dataviewjava">Java</a><br /><a href="Python3/">Python3</a> |[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=DataviewJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=DataviewPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+For the main OCS page [ReadMe](../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
