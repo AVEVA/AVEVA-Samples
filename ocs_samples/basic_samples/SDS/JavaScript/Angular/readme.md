@@ -74,16 +74,16 @@ The sample uses the AuthHttp class to connect to the SDS Service
 endpoint. SDS REST API calls are sent to the SDS Service. The SDS REST API
 maps HTTP methods to CRUD operations as in the following table:
 
-+---------------+------------------+--------------------+
-| HTTP Method   | CRUD Operation   | Content Found In   |
-+===============+==================+====================+
-| POST          | Create           | message body       |
-+---------------+------------------+--------------------+
-| GET           | Retrieve         | URL parameters     |
-+---------------+------------------+--------------------+
-| PUT           | Update           | message body       |
-+---------------+------------------+--------------------+
-| DELETE        | Delete           | URL parameters     |
++---------------+------------------+--------------------+<br /> 
+| HTTP Method   | CRUD Operation   | Content Found In   |<br /> 
++===============+==================+====================+<br /> 
+| POST          | Create           | message body       |<br /> 
++---------------+------------------+--------------------+<br /> 
+| GET           | Retrieve         | URL parameters     |<br /> 
++---------------+------------------+--------------------+<br /> 
+| PUT           | Update           | message body       |<br /> 
++---------------+------------------+--------------------+<br /> 
+| DELETE        | Delete           | URL parameters     |<br /> 
 +---------------+------------------+--------------------+
 
 
@@ -369,3 +369,8 @@ achieved by a DELETE REST call and passing the corresponding Id.
         `/Data?startIndex=${start}&endIndex=${end}`;
         return this.authHttp.delete(url);
     }
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../)<br />
+For the main OCS page [ReadMe](../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

@@ -44,16 +44,16 @@ HTTP method. The URL contains the server name plus the extension
 that is specific to the call. Like all REST APIs, the SDS REST API maps
 HTTP methods to CRUD operations as shown in the following table:
 
-+---------------+------------------+--------------------+
-| HTTP Method   | CRUD Operation   | Content Found In   |
-+===============+==================+====================+
-| POST          | Create           | message body       |
-+---------------+------------------+--------------------+
-| GET           | Retrieve         | URL parameters     |
-+---------------+------------------+--------------------+
-| PUT           | Update           | message body       |
-+---------------+------------------+--------------------+
-| DELETE        | Delete           | URL parameters     |
++---------------+------------------+--------------------+<br />
+| HTTP Method   | CRUD Operation   | Content Found In   |<br />
++===============+==================+====================+<br />
+| POST          | Create           | message body       |<br />
++---------------+------------------+--------------------+<br />
+| GET           | Retrieve         | URL parameters     |<br />
++---------------+------------------+--------------------+<br />
+| PUT           | Update           | message body       |<br />
++---------------+------------------+--------------------+<br />
+| DELETE        | Delete           | URL parameters     |<br />
 +---------------+------------------+--------------------+
 
 The REST calls in this sample are set up as follows:
@@ -492,3 +492,9 @@ be achieved by a DELETE REST call and passing the corresponding Id.
                 method: 'DELETE',
                 headers: this.getHeaders()
             });
+
+
+
+For the general steps or switch languages see the Task  [ReadMe](../../)<br />
+For the main OCS page [ReadMe](../../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
