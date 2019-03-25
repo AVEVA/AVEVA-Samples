@@ -33,4 +33,4 @@ NOTE: The examples for PI are not manually tested against the PI Connector Relay
 
 ----------
 
-For the main landing page [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page [ReadMe](../)
