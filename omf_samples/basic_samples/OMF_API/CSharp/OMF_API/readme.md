@@ -18,5 +18,5 @@ To Run this Sample:
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
-For the main OMF page [ReadMe](../../../)<br />
+For the main OMF page [ReadMe](../../../../)<br />
 For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
