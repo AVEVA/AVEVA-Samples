@@ -1,5 +1,7 @@
 # PI Web API Samples
 
+**This PAGE is Under Construction, as well as the samples in this area.**
+
 There are three types of samples/apps in the repo:
 
 * <img src="../miscellaneous/images/app-type-getting-started.png" alt="getting-started icon">  Getting Started - OCS focused samples for a task, usually implemented as a simple console app.  This also includes base libraries that may be used in other apps.

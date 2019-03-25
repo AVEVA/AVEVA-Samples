@@ -5,7 +5,8 @@ The JAVA OCS libraries is an introductory language-specific examples of programm
 
 The libraries are available on [Github](https://github.com/osisoft/OCS-Samples). 
 
-To install these locally run mvn install pom.xml
+To install these locally run:
+ mvn install pom.xml
 
 
 [OCS Samples](https://github.com/osisoft/ocs-samples) are licensed under the Apache 2 license.
