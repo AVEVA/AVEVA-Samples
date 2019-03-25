@@ -45,7 +45,7 @@ that is specific to the call. Like all REST APIs, the SDS REST API maps
 HTTP methods to CRUD operations as shown in the following table:
 
 HTTP Method |CRUD Operation|Content Found In
-----|-----------|---------|-----------
+-------|-----------|---------
 POST          | Create           | message body       
 GET           | Retrieve         | URL parameters     
 PUT           | Update           | message body       

@@ -8,12 +8,23 @@ This sample demonstrates how to interact with SDS using the SDS REST API. The RE
 is language independent. Objects are passed as JSON strings. The sample uses the Newtonsoft.Json 
 JSON framework, however, any method of creating a JSON representation of objects will work.
 
+Like all REST APIs, the SDS REST API maps
+HTTP methods to CRUD operations as shown in the following table:
+
+HTTP Method |CRUD Operation|Content Found In
+-------|-----------|---------
+POST          | Create           | message body       
+GET           | Retrieve         | URL parameters     
+PUT           | Update           | message body       
+DELETE        | Delete           | URL parameters     
+
 HTTP Client
 -----------
 
 The sample relies on the System.Net.Http.HttpClient to send and receive REST calls. The 
 System.Net.Http.HttpClientFactory Create method is used to attach a 
 System.Net.Http.DelegatingHandler that retrieves and attaches the authorization token to every message.
+
 
 Authorization Handler
 ---------------------

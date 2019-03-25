@@ -15,6 +15,7 @@ from https://api.nuget.org/v3/index.json . The packages used are:
 
 The libraries offer a framework of classes that make client development easier.
 
+
 Configure constants for connecting and authentication
 -----------------------------------------------------
 
