@@ -53,17 +53,12 @@ URL and HTTP method. The URL consists of the server name plus the extension that
 is specific to the call. Like all REST APIs, the SDS REST API maps HTTP
 methods to CRUD operations as shown in the following table:
 
-+---------------+------------------+--------------------+<br />
-| HTTP Method   | CRUD Operation   | Content Found In   |<br />
-+===============+==================+====================+<br />
-| POST          | Create           | Message body       |<br />
-+---------------+------------------+--------------------+<br />
-| GET           | Retrieve         | URL parameters     |<br />
-+---------------+------------------+--------------------+<br />
-| PUT           | Update           | Message body       |<br />
-+---------------+------------------+--------------------+<br />
-| DELETE        | Delete           | URL parameters     |<br />
-+---------------+------------------+--------------------+
+HTTP Method |CRUD Operation|Content Found In
+----|-----------|---------|-----------
+POST          | Create           | message body       
+GET           | Retrieve         | URL parameters     
+PUT           | Update           | message body       
+DELETE        | Delete           | URL parameters     
 
 Configure the Sample:
 -----------------------

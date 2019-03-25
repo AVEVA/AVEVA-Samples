@@ -75,17 +75,13 @@ HTTP method. The URL contains the server name plus the extension
 that is specific to the call. Like all REST APIs, the SDS REST API maps
 HTTP methods to CRUD operations as shown in the following table:
 
-+---------------+------------------+--------------------+
-| HTTP Method   | CRUD Operation   | Content Found In   |
-+===============+==================+====================+
-| POST          | Create           | Message body       |
-+---------------+------------------+--------------------+
-| GET           | Retrieve         | URL parameters     |
-+---------------+------------------+--------------------+
-| PUT           | Update           | Message body       |
-+---------------+------------------+--------------------+
-| DELETE        | Delete           | URL parameters     |
-+---------------+------------------+--------------------+
+HTTP Method |CRUD Operation|Content Found In
+----|-----------|---------|-----------
+POST          | Create           | message body       
+GET           | Retrieve         | URL parameters     
+PUT           | Update           | message body       
+DELETE        | Delete           | URL parameters     
+
 
 The constructor for the OCSClient class takes the base URL (that is, the
 protocol, server address and port number) and the api version. It also creates a new Gson
