@@ -54,7 +54,6 @@ Using a command line:
 ---------
 
 
-For the general steps or switch languages see the Task [ReadMe](https://github.com/osisoft/OCS-Samples/tree/master/basic_samples/OMF_API).
-
-For the main OMF page [ReadMe](.../)
-For the main landing page [ReadMe](..../)
+For the general steps or switch languages see the Task  [ReadMe](../../)<br />
+For the main OMF page [ReadMe](../../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

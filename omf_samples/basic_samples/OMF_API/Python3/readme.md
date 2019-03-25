@@ -17,3 +17,7 @@ To Run this Sample:
 6. Run ``program.py``
 
 
+
+For the general steps or switch languages see the Task  [ReadMe](../)<br />
+For the main OMF page [ReadMe](../../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)

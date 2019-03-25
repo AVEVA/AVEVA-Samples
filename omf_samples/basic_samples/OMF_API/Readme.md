@@ -33,5 +33,5 @@ NOTE: The examples for PI are not manually tested against the PI Connector Relay
 
 ----------
 
-For the main OMF page [ReadMe](../)
-For the main landing page [ReadMe](.../)
+For the main OMF page [ReadMe](../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
