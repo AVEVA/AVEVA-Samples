@@ -110,8 +110,10 @@ def createData(ocsClient):
     ocsClient.Streams.insertValues(namespaceId, sampleTemperatureStreamId, str(temperatureValues).replace("'",""))
 
 
-def main():
+def main(test = False):
     global namespaceId, firstData
+    success = True
+    exception = {}
 
     try:
         print("--------------------------------------------------------------------")
@@ -172,7 +174,7 @@ def main():
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
 
         #assert is added to make sure we get back what we are expecting
-        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Function": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
         assert dv.toJson() == expectedJSON, 'Dataview is different: ' + dv.toJson()
         
         
@@ -183,7 +185,7 @@ def main():
         print("Updating dataview")		
         dv = ocsClient.Dataviews.putDataview(namespaceId, dv)
             
-        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Operator": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Function": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
         assert dv.toJson() == expectedJSON, 'Dataview is different ' + dv.toJson()
     
 
@@ -254,6 +256,8 @@ def main():
         print
         traceback.print_exc()
         print
+        success = False
+        exception = ex
 
     finally:
         ######################################################################################################
@@ -285,6 +289,9 @@ def main():
             print("Deleting added Types")
             supressError(lambda: ocsClient.Types.deleteType(namespaceId, samplePressureTypeId))
             supressError(lambda: ocsClient.Types.deleteType(namespaceId, sampleTemperatureTypeId))
+        if test and not success:
+            raise exception
+
 
 
 main()
@@ -292,4 +299,4 @@ print("done")
 
 ## Straightforward test to make sure program is working using asserts in program.  Can run it yourself with pytest program.py
 def test_main():
-    main()
+    main(True)

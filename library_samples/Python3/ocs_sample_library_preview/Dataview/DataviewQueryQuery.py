@@ -19,11 +19,11 @@ import json
 class DataviewQueryQuery(object):
 
 
-    def __init__(self, resource = None, field = None, value= None, operator = None):
+    def __init__(self, resource = None, field = None, value= None, function = None):
         self.__resource = resource
         self.__field= field
         self.__value = value
-        self.__operator = operator
+        self.__function = function
 
     """Sds dataview definition"""
     @property
@@ -48,11 +48,11 @@ class DataviewQueryQuery(object):
         self.__value = value
     
     @property
-    def Operator(self):
-        return self.__operator
-    @Operator.setter
-    def Operator(self, operator):
-        self.__operator= operator
+    def Function(self):
+        return self.__function
+    @Function.setter
+    def Function(self, function):
+        self.__function= function
     
 
 
@@ -61,7 +61,7 @@ class DataviewQueryQuery(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Resource' : self.Resource,'Field' : self.Field, 'Value' : self.Value, 'Operator' : self.Operator}
+        dictionary = { 'Resource' : self.Resource,'Field' : self.Field, 'Value' : self.Value, 'Function' : self.Function}
 	
         return dictionary
 
@@ -85,8 +85,8 @@ class DataviewQueryQuery(object):
         if 'Value' in content:
             dataviewQueryQuery.Value = content['Value']
 
-        if 'Operator' in content:
-            dataviewQueryQuery.Operator = content['Operator']
+        if 'Function' in content:
+            dataviewQueryQuery.Function = content['Function']
         
 
         return dataviewQueryQuery
