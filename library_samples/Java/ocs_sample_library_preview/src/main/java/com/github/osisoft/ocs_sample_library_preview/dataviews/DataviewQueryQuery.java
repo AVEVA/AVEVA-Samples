@@ -23,18 +23,18 @@ public class DataviewQueryQuery {
     private String Resource = "";
     private String Field = "";
     private String Value = "";
-    private String Operator = "";
+    private String Function = "";
 
     public DataviewQueryQuery()
     {
     }
 
-    public DataviewQueryQuery(String resource, String field, String Value, String Operator)
+    public DataviewQueryQuery(String resource, String field, String Value, String Function)
     {
         this.Resource =resource;
         this.Field =field;
         this.Value = Value;
-        this.Operator = Operator;
+        this.Function = Function;
     }
 
     public String getResource() {
@@ -61,11 +61,11 @@ public class DataviewQueryQuery {
         this.Value = value;
     }
 
-    public String getOperator() {
-        return Operator;
+    public String getFunction() {
+        return Function;
     }
 
-    public void setOperator(String operator) {
-        this.Operator = operator;
+    public void setFunction(String function) {
+        this.Function = function;
     }
 }
