@@ -22,7 +22,7 @@ import requests
 def main():
     try:
         config = configparser.ConfigParser()
-        config.read_file("config.ini")
+        config.read_file('config.ini')
 
         client = AuthClientCredential(config.get('Access', 'Resource'), config.get('Credentials', 'ClientId'), config.get('Credentials', 'ClientSecret'))
         url = client.getBasePath()
