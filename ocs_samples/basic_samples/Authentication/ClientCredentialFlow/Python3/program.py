@@ -19,20 +19,6 @@ import configparser
 import json
 import requests
 
-# we'll use the following for cleanup, supressing errors
-def supressError(sdsCall):
-    string = ""
-    props = inspect.getmembers(type(event), isprop)
-    printOrder = [2,3,4,0,6,5,1,7,8]
-    orderedProps = [props[i] for i in printOrder]
-    for prop in orderedProps:
-        value = prop[1].fget(event)
-        if value is None:
-            string += "{name}: , ".format(name = prop[0])
-        else:
-            string += "{name}: {value}, ".format(name = prop[0], value = value)
-    return string[:-2]
-
 def main():
     try:
         config = configparser.ConfigParser()
