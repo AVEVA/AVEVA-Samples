@@ -133,7 +133,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_omf_config.ini
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/OMF_API/Python3/'
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
@@ -141,7 +141,7 @@ jobs:
 
     - script: |
         mv prod_omf_config.ini config.ini
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'rename config file'
       
 
@@ -156,13 +156,13 @@ jobs:
       
     - script: |
         pip install -r requirements.txt
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'Install requirements'
       
     - script: |
         python -m pytest ./program.py
       displayName: 'Test with pytest'
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
 
 - job: SDSJava
 
@@ -178,7 +178,7 @@ jobs:
 
       #
     - script: mvn install -f pom.xml 
-      workingDirectory: $(Build.SourcesDirectory)/library_samples/Java/ocs_sample_library_preview/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/library_samples/Java/ocs_sample_library_preview/
       displayName: install library
 
     # Copy Files
@@ -220,7 +220,7 @@ jobs:
 
       #
     - script: mvn install -f pom.xml 
-      workingDirectory: $(Build.SourcesDirectory)/library_samples/Java/ocs_sample_library_preview/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/library_samples/Java/ocs_sample_library_preview/
       displayName: install library
 
     # Copy Files
@@ -260,7 +260,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: config.properties 
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/OMF_API/Java/omfapijava/'
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
@@ -268,7 +268,7 @@ jobs:
       
     - task: Maven@3
       inputs:
-        mavenPomFile: '$(Build.SourcesDirectory)/basic_samples/OMF_API/Java/omfapijava/pom.xml'
+        mavenPomFile: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/pom.xml'
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
@@ -292,7 +292,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_appsettings.json
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/'
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/'
         #cleanTargetFolder: false # Optional  
         overWrite: true # Optional
         #flattenFolders: false # Optional 
@@ -300,13 +300,13 @@ jobs:
 
     - script: |
         mv prod_appsettings.json appsettings.json
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/
       displayName: 'rename config file'     
       
     - script: |
         dotnet restore
         dotnet test
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibrariesCoreTests/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibrariesCoreTests/
       displayName: 'Run Test'
     
 - job: OMF_APIDotNet
@@ -328,7 +328,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_omf_appsettings.json
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/OMF_API/CSharp/OMF_API/'
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/'
         #cleanTargetFolder: false # Optional  
         overWrite: true # Optional
         #flattenFolders: false # Optional 
@@ -336,13 +336,13 @@ jobs:
 
     - script: |
         mv prod_omf_appsettings.json appsettings.json
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/CSharp/OMF_API/
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/
       displayName: 'rename config file'     
       
     - script: |
         dotnet restore
         dotnet test
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/OMF_API/CSharp/OMF_APITests/
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_APITests/
       displayName: 'Run Test'
      
 - job: SDSDotNetAPI
@@ -364,7 +364,7 @@ jobs:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_appsettings.json
-        targetFolder: '$(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/'
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/'
         #cleanTargetFolder: false # Optional  
         overWrite: true # Optional
         #flattenFolders: false # Optional 
@@ -372,12 +372,12 @@ jobs:
 
     - script: |
         mv prod_appsettings.json appsettings.json
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/
       displayName: 'rename config file'         
       
     - script: |
         dotnet restore
         dotnet test
-      workingDirectory: $(Build.SourcesDirectory)/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCoreTest/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCoreTest/
       displayName: 'Run Test' 
 
