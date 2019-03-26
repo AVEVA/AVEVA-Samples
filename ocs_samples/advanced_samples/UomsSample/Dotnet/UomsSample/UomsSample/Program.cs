@@ -23,18 +23,14 @@ using OSIsoft.Data;
 using OSIsoft.Data.Reflection;
 using System.Collections.Generic;
 using OSIsoft.Identity;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace UomsSample
 {
     class Program
     {
-        private static readonly string ResourcePrefix = ConfigurationManager.AppSettings["ResourcePrefix"];
-
-        private static readonly string TypeId = $"{ResourcePrefix} Uom";
-
-        private static readonly string StreamWithPropertyOverriden = $"{ResourcePrefix} UomPropertyOverridden";
-
-        private static readonly string StreamWithoutPropertyOverriden = $"{ResourcePrefix} UomNoPropertyOverridden";
+        
 
         private static Random Random = new Random();
 
@@ -45,13 +41,26 @@ namespace UomsSample
 
         public static async Task MainAsync()
         {
-            string tenantId = ConfigurationManager.AppSettings["Tenant"];
-            string namespaceId = ConfigurationManager.AppSettings["Namespace"];
-            string resource = ConfigurationManager.AppSettings["Resource"];
-            string clientId = ConfigurationManager.AppSettings["ClientId"];
-            string clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
 
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientSecret);
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.test.json", optional: true);
+            IConfiguration configuration = builder.Build();
+
+            string tenantId = configuration["TenantId"];
+            string namespaceId = configuration["NamespaceId"];
+            string resource = configuration["Resource"];
+            string clientId = configuration["ClientId"];
+            string clientKey = configuration["ClientKey"];
+            string apiVersion = configuration["ApiVersion"];
+
+            string ResourcePrefix = "UomSample";
+            string TypeId = $"{ResourcePrefix} Uom";
+            string StreamWithPropertyOverriden = $"{ResourcePrefix} UomPropertyOverridden";
+            string StreamWithoutPropertyOverriden = $"{ResourcePrefix} UomNoPropertyOverridden";
+
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(new Uri(resource), clientId, clientKey);
             SdsService service = new SdsService(new Uri(resource), authenticationHandler);
 
             ISdsMetadataService MetadataService = service.GetMetadataService(tenantId, namespaceId);
@@ -208,5 +217,6 @@ namespace UomsSample
 
             #endregion Deletion of Streams and type
         }
+        
     }
 }
