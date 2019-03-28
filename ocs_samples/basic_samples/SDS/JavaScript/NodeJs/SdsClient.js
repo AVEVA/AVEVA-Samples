@@ -59,20 +59,36 @@ module.exports = {
         this.tokenExpires = "";
 
         // returns an access token
-        this.getToken = function (authItems) {
-            return restCall({
-                url: authItems["authority"],
-                method: 'POST',
+        this.getToken = function (clientId,clientSecret,resource) {
+
+            restCall({
+                url: resource + "/identity/.well-known/openid-configuration",
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    "Accept" : "application/json"
                 },
-                form: {
-                    'grant_type': 'client_credentials',
-                    'client_id': authItems['clientId'],
-                    'client_secret': authItems['clientSecret'],
-                    'resource': authItems['resource']
+                body: JSON.stringify(streamView).toString()
+            }).then(
+                function (res) {
+                    var obj = JSON.parse(res);
+                    authority= obj.token_endpoint;
+
+                    return restCall({
+                        url: authority,
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        form: {
+                            'grant_type': 'client_credentials',
+                            'client_id': clientId,
+                            'client_secret': clientSecret,
+                            'resource': resource
+                        }
+                    });
                 }
-            });
+            ).catch(function (err) { logError(err); });
+           
         };
 
         // create a type

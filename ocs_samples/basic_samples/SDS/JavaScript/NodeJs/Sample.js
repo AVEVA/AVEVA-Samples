@@ -19,8 +19,9 @@ var restCall = require("request-promise");
 var config = require("./config.js");
 
 // retrieve configuration
-var SdsServerUrl = config.sdsServerUrl;
-var authItems = config.authItems;
+var resource = config.resource;
+var clientId = config.clientId;
+var clientSecret = config.clientSecret;
 var tenantId = config.tenantId;
 var apiVersion = config.apiVersion;
 
@@ -142,9 +143,9 @@ http.createServer(function (request1, response) {
             cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
     });
 
-    var client = new clientObj.SdsClient(SdsServerUrl, apiVersion);
+    var client = new clientObj.SdsClient(resource, apiVersion);
 
-    var getClientToken = client.getToken(authItems)
+    var getClientToken = client.getToken(clientId,clientSecret, resource)
         .catch(function (err) { throw err });
 
     var nowSeconds = function () { return Date.now() / 1000; };
@@ -933,4 +934,4 @@ http.createServer(function (request1, response) {
 
 }).listen(8080);
 console.log("Server is listening at http://localhost:8080/");
-console.log("Sds endpoint at " + SdsServerUrl);
+console.log("Sds endpoint at " + resource);
