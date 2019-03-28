@@ -370,34 +370,34 @@ namespace SdsClientLibraries
 
                 Console.WriteLine($"The number of types returned without filtering: {types.Count()}.  With filtering {typesFiltered.Count()}.");
 
-				// Step 15
-				// tags and metadata
-				Console.WriteLine("Let's add some Tags and Metadata to our stream:");
-				var tags = new List<string> { "waves", "periodic", "2018", "validated" };
-				var metadata = new Dictionary<string, string>() { { "Region", "North America" }, { "Country", "Canada" }, { "Province", "Quebec" } };
+                // Step 15
+                // tags and metadata
+                Console.WriteLine("Let's add some Tags and Metadata to our stream:");
+                var tags = new List<string> { "waves", "periodic", "2018", "validated" };
+                var metadata = new Dictionary<string, string>() { { "Region", "North America" }, { "Country", "Canada" }, { "Province", "Quebec" } };
+                                
+                await metadataService.UpdateStreamTagsAsync(streamId, tags);
+                await metadataService.UpdateStreamMetadataAsync(streamId, metadata);
 
-				await metadataService.UpdateStreamTagsAsync(streamId, tags);
-				await metadataService.UpdateStreamMetadataAsync(streamId, metadata);
+                tags = (List<string>)await metadataService.GetStreamTagsAsync(streamId);
 
-				tags = (List<string>)await metadataService.GetStreamTagsAsync(streamId);
+                Console.WriteLine();
+                Console.WriteLine($"Tags now associated with {streamId}:");
+                foreach (var tag in tags)
+                {
+                    Console.WriteLine(tag);
+                }
+                Console.WriteLine();
+                Console.WriteLine($"Metadata now associated with {streamId}:");
+                Console.WriteLine("Metadata key Region: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Region"));
+                Console.WriteLine("Metadata key Country: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Country"));
+                Console.WriteLine("Metadata key Province: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Province"));
 
-				Console.WriteLine();
-				Console.WriteLine($"Tags now associated with {streamId}:");
-				foreach (var tag in tags)
-				{
-					Console.WriteLine(tag);
-				}
-				Console.WriteLine();
-				Console.WriteLine($"Metadata now associated with {streamId}:");
-				Console.WriteLine("Metadata key Region: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Region"));
-				Console.WriteLine("Metadata key Country: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Country"));
-				Console.WriteLine("Metadata key Province: " + await metadataService.GetStreamMetadataValueAsync(streamId, "Province"));
+                Console.WriteLine();
 
-				Console.WriteLine();
-
-				// Step 16
-				// delete values
-				Console.WriteLine("Deleting values from the SdsStream");
+                // Step 16
+                // delete values
+                Console.WriteLine("Deleting values from the SdsStream");
 
                 // delete one event
                 await dataService.RemoveValueAsync(stream.Id, 0);
