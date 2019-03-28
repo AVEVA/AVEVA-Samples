@@ -25,7 +25,7 @@ namespace UomsSample
         [SdsMember(IsKey = true)]
         public DateTime Time { get; set; }
 
-        [SdsMember(Uom = "degree_fahrenheit")]
+        [SdsMember(Uom = "degree Fahrenheit")]
         public double Temperature { get; set; }
 
         [SdsMember(Uom = "mile")]
