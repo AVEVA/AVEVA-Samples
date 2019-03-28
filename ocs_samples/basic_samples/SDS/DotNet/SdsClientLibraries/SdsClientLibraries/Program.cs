@@ -462,7 +462,7 @@ namespace SdsClientLibraries
 
                 await metadataService.CreateOrUpdateStreamAsync(secondary);
                 secondary = await metadataService.GetStreamAsync(secondary.Id);
-                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
+                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes?.Count()}. ");
                 Console.WriteLine();
 
 
