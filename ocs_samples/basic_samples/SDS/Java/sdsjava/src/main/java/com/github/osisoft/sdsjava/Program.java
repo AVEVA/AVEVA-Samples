@@ -450,7 +450,6 @@ public class Program {
 
             
             // Modifying an existing stream with a secondary index.
-            //TODO fix
             System.out.println("Modifying a stream to have a secondary index.");
 
             String streamS = ocsClient.Streams.getStream(tenantId, namespaceId, sampleStream.getId());

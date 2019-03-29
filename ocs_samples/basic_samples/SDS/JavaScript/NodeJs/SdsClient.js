@@ -49,8 +49,9 @@ module.exports = {
         this.streamViewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
         this.insertValuesBase = "/Data";
         this.getLastValueBase = "/{0}/Data/Last";
-        this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
+        this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}&filter={3}";
         this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&streamViewId={6}";
+        this.getRangeValuesInterpolatedBase = "/{0}/Data/Transform/Interpolated?startIndex={1}&endindex={2}&count={3}";
         this.updateValuesBase = "/Data";
         this.replaceValuesBase = "/Data?allowCreate=false";
         this.removeSingleValueBase = "/{0}/Data?index={1}";
@@ -61,13 +62,12 @@ module.exports = {
         // returns an access token
         this.getToken = function (clientId,clientSecret,resource) {
 
-            restCall({
+            return restCall({
                 url: resource + "/identity/.well-known/openid-configuration",
                 method: 'GET',
                 headers: {
                     "Accept" : "application/json"
-                },
-                body: JSON.stringify(streamView).toString()
+                }
             }).then(
                 function (res) {
                     var obj = JSON.parse(res);
@@ -198,9 +198,19 @@ module.exports = {
         }
 
         // retrieve a window of events
-        this.getWindowValues = function (tenantId, namespaceId, streamId, start, end) {
+        this.getWindowValues = function (tenantId, namespaceId, streamId, start, end, filter= "") {
             return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]),
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end, filter]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+        
+
+        // retrieve a window of events in table format
+        this.getWindowValuesTable = function (tenantId, namespaceId, streamId, start, end) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]) +"&form=tableh",
                 method: 'GET',
                 headers: this.getHeaders()
             });
@@ -210,6 +220,15 @@ module.exports = {
         this.getRangeValues = function (tenantId, namespaceId, streamId, start, skip, count, reverse, boundaryType, streamView ="") {            
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesBase.format([streamId, start, skip, count, reverse, boundaryType, streamView]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // retrieve a range of value based on boundary type
+        this.getRangeValuesInterpolated = function (tenantId, namespaceId, streamId, start, end, count) {            
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesInterpolatedBase.format([streamId, start, end, count]),
                 method: 'GET',
                 headers: this.getHeaders()
             });
