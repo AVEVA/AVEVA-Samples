@@ -24,6 +24,9 @@ var clientId = config.clientId;
 var clientSecret = config.clientSecret;
 var tenantId = config.tenantId;
 var apiVersion = config.apiVersion;
+var success = true;
+var errorCap = {};
+
 
 var checkTokenExpired = function (client) {
     return client.getToken(authItems)
@@ -77,7 +80,9 @@ var dumpStreamViewMap = function (obj) {
     });
 };
 
-var logError = function (err) {
+var logError = function (err) {    
+    success = false;
+    errorCap = err;
     if  (typeof (err.statusCode) !== "undefined" && err.statusCode === 302) {
         console.log("Sds Object already present in the Service\n");
         console.trace();
@@ -1338,10 +1343,14 @@ var app = function (request1, response)
             }
     }).then(
         function () {
+            if(!success){
+                throw errorCap;
+            }
             console.log("done");
     }).catch(
         // log the call that failed
         function (err) {
+            throw err;
             console.log("An error occured!\n" + err);
     });
     
