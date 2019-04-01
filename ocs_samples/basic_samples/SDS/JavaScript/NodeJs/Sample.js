@@ -1348,6 +1348,7 @@ var app = function (request1, response)
     if(request1 != null){
         response.end();
     }
+    return getClientToken;
 };
 
 var toRun =  function() {
