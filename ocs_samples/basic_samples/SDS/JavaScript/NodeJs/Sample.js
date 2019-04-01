@@ -90,22 +90,25 @@ var logError = function (err) {
     }
 };
 
-http.createServer(function (request1, response) {
-    if (request1.url === '/favicon.ico') {
-        return;
-    }
-    response.writeHead(200, { "Content-Type": "text/plain" });
+var app = function (request1, response)
+{
+    if(request1 != null){
+        if (request1.url === '/favicon.ico') {
+            return;
+        }
+        response.writeHead(200, { "Content-Type": "text/plain" });
 
-    response.write("------------------------------------------------------------------------------------\n");
-    response.write("  _________    .___      _______             .___               __        \n");
-    response.write(" /   _____/  __| _/______\\      \\   ____   __| _/____          |__| ______\n");
-    response.write(" \\_____  \\  / __ |/  ___//   |   \\ /  _ \\ / __ |/ __ \\         |  |/  ___/\n");
-    response.write(" /        \\/ /_/ |\\___ \\/    |    (  <_> ) /_/ \\  ___/         |  |\\___ \\ \n");
-    response.write("/_______  /\\____ /____  >____|__  /\\____/\\____ |\\___  > /\\ /\\__|  /____  >\n");
-    response.write("        \\/      \\/    \\/        \\/            \\/    \\/  \\/ \\______|    \\/ \n");
-    response.write("------------------------------------------------------------------------------------\n");
-    response.write("Sds Service Operations Begun!\n");
-    response.write("Check the console for updates")
+        response.write("------------------------------------------------------------------------------------\n");
+        response.write("  _________    .___      _______             .___               __        \n");
+        response.write(" /   _____/  __| _/______\\      \\   ____   __| _/____          |__| ______\n");
+        response.write(" \\_____  \\  / __ |/  ___//   |   \\ /  _ \\ / __ |/ __ \\         |  |/  ___/\n");
+        response.write(" /        \\/ /_/ |\\___ \\/    |    (  <_> ) /_/ \\  ___/         |  |\\___ \\ \n");
+        response.write("/_______  /\\____ /____  >____|__  /\\____/\\____ |\\___  > /\\ /\\__|  /____  >\n");
+        response.write("        \\/      \\/    \\/        \\/            \\/    \\/  \\/ \\______|    \\/ \n");
+        response.write("------------------------------------------------------------------------------------\n");
+        response.write("Sds Service Operations Begun!\n");
+        response.write("Check the console for updates")
+    }
 
     var sdsObjs = require("./SdsObjects.js");
     var clientObj = require("./SdsClient.js");
@@ -113,7 +116,10 @@ http.createServer(function (request1, response) {
 
     var sampleNamespaceId = config.namespaceId;
     var sampleTypeId = "WaveData_SampleType";
+    var compoundTypeId = "SampleType_Compound";
     var sampleStreamId = "WaveData_SampleStream";
+    var sampleStreamSecondaryId = "SampleStream_Secondary";
+    var sampleStreamIdCompound = "SampleStream_Compound";
     var sampleStreamViewId = "WaveData_SampleStreamView"
     var targetTypeId = "targetTypeId";
     var targetIntegerTypeId = "targetIntegerTypeId"
@@ -137,6 +143,9 @@ http.createServer(function (request1, response) {
     var sinhProperty = new sdsObjs.SdsTypeProperty({ "Id": "Sinh", "SdsType": doubleType });
     var coshProperty = new sdsObjs.SdsTypeProperty({ "Id": "Cosh", "SdsType": doubleType });
     var tanhProperty = new sdsObjs.SdsTypeProperty({ "Id": "Tanh", "SdsType": doubleType });
+    
+    var orderPropertyCompound = new sdsObjs.SdsTypeProperty({ "Id": "Order", "SdsType": intType, "IsKey": true, "Order":1});
+    var multiplierProperty = new sdsObjs.SdsTypeProperty({ "Id": "Multiplier", "SdsType": intType, "IsKey": true, "Order":2 });
 
     //create an SdsType for WaveData Class
     var sampleType = new sdsObjs.SdsType({
@@ -144,6 +153,15 @@ http.createServer(function (request1, response) {
         "Description": "This is a sample Sds type for storing WaveData type events",
         "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
         "Properties": [orderProperty, tauProperty, radiansProperty, sinProperty,
+            cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
+    });
+
+    //create an SdsType for WaveData Class using a compound index
+    var compoundType = new sdsObjs.SdsType({
+        "Id": compoundTypeId, "Name": compoundTypeId,
+        "Description": "This is a sample Sds type for storing WaveData type events",
+        "SdsTypeCode" : sdsObjs.sdsTypeCode.Object,
+        "Properties": [orderPropertyCompound, multiplierProperty, tauProperty, radiansProperty, sinProperty,
             cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty]
     });
 
@@ -156,10 +174,10 @@ http.createServer(function (request1, response) {
     var nowSeconds = function () { return Date.now() / 1000; };
 
     // create an SdsType
-    console.log("\nCreating an SdsType")
     var createType = getClientToken.then(
         // Step 2
         function (res) {
+            console.log("\nCreating an SdsType")
             refreshToken(res, client);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -174,7 +192,6 @@ http.createServer(function (request1, response) {
     ).catch(function (err) { logError(err); });
 
     //create an SdsStream
-    console.log("Creating an SdsStream")
     var sampleStream = new sdsObjs.SdsStream({
         "Id": sampleStreamId, "Name": "WaveStreamJs",
         "Description": "A Stream to store the WaveDatan Sds types events",
@@ -184,6 +201,7 @@ http.createServer(function (request1, response) {
     var createStream = createType.then(
         // Step 3
         function (res) {
+            console.log("Creating an SdsStream")
             // create SdsStream
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -197,7 +215,6 @@ http.createServer(function (request1, response) {
     }).catch(function (err) { logError(err); });
 
     // insert data
-    console.log("Inserting data")
     var event = [];
     var interval = new Date();
     interval.setHours(0, 1, 0, 0);
@@ -207,6 +224,7 @@ http.createServer(function (request1, response) {
     var insertValue = createStream.then(
         // Step 4
         function (res) {
+            console.log("Inserting data")
             evt = waveDataObj.NextWave(interval, 2.0, 0);
             event.push(evt);
             if (client.tokenExpires < nowSeconds) {
@@ -333,8 +351,8 @@ http.createServer(function (request1, response) {
     var printWindowEventsTable = getWindowEventsTable.then(
         function(res){
             var allEvents = JSON.parse(res)
-            Console.log("Values in table format")
-            dumpEvents(allEvents)
+            console.log("Values in table format")
+            console.log(JSON.stringify(allEvents))
             return allEvents
         }
     ).catch(function (err) { logError(err); });
@@ -510,7 +528,7 @@ http.createServer(function (request1, response) {
     var printInterpolatedEvents = getInterpolatedEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
-            Console.log("Interpolated events");
+            console.log("Interpolated events");
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
@@ -538,7 +556,7 @@ http.createServer(function (request1, response) {
     var printFilteredEvents = getFilteredEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
-            Console.log("Filtered events");
+            console.log("Filtered events");
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
@@ -965,16 +983,302 @@ http.createServer(function (request1, response) {
             }
         }
     ).catch(function (err) { logError(err); });
-    // Step 17 Missing TODO
+
+    //create an SdsStream with secondary index
+    var sampleStreamWithSecondaryIndex = new sdsObjs.SdsStream({
+        "Id": sampleStreamSecondaryId, "Name": sampleStreamSecondaryId,
+        "Description": "A Stream to store the WaveDatan Sds types events",
+        "TypeId": sampleTypeId,
+        "Indexes": [   {  
+            "SdsTypePropertyId":"Radians"
+         }]
+        });
+
+    var createSecondaryStream = deleteWindowEvents.then(
+        // Step 17 
+        function (res) {
+            console.log("Creating an SdsStream")
+            // create SdsStream
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.createStream(tenantId, sampleNamespaceId, sampleStreamWithSecondaryIndex);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.createStream(tenantId, sampleNamespaceId, sampleStreamWithSecondaryIndex);
+            }
+    }).catch(function (err) { logError(err); });
+
+
+    // get metadata
+    var getSecondaryStream = createSecondaryStream.then( 
+        function(res) {
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
+            }
+        }
+    ).catch(function (err) { logError(err); });
 
     
-    // Step 18 Missing TODO
+    var printSecondaryStream = getSecondaryStream.then(
+        function (res) {
+            var obj = JSON.stringify(res);
+            console.log("\nStream with secondary index:");
+            console.log(obj);
+        }
+    ).catch(function (err) { logError(err);});  
+
+    // Modifying an existing stream with a secondary index.
+
+    
+    var getOriginalStream = printSecondaryStream.then( 
+        function(res) {
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamId);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getStream(tenantId, sampleNamespaceId, sampleStreamId);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    var updateOriginalStream = getOriginalStream.then( 
+        function(res) {
+            var stream = JSON.parse(res);
+            stream["Index"] = ["RadiansTarget"];
+            if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.updateStream(tenantId, sampleNamespaceId, stream);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.updateStream(tenantId, sampleNamespaceId, stream);
+                }
+        }
+    ).catch(function (err) { logError(err); });
+    
+    var getOriginalStream2 = updateOriginalStream.then( 
+        function(res) {
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamId);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getStream(tenantId, sampleNamespaceId, sampleStreamId);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+    
+    var printOriginalStream = getOriginalStream2.then(
+        function (res) {
+            var obj = JSON.stringify(res);
+            console.log("\nOriginal Stream with secondary index:");
+            console.log(obj);
+        }
+    ).catch(function (err) { logError(err);});  
+
+    var getSecondaryStreamAgain = printOriginalStream.then( 
+        function(res) {
+           if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+    
+    var updateSecondaryStream = getSecondaryStreamAgain.then( 
+        function(res) {
+            var stream = JSON.parse(res);
+            stream["Index"] = [];
+            if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.updateStream(tenantId, sampleNamespaceId, stream);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.updateStream(tenantId, sampleNamespaceId, stream);
+                }
+        }
+    ).catch(function (err) { logError(err); });
+
+    
+    var printSecondaryStreamAfterUpdate = updateSecondaryStream.then(
+        function (res) {
+            var obj = JSON.stringify(res);
+            console.log("\nSecondary Stream with no secondary index:");
+            console.log(obj);
+        }
+    ).catch(function (err) { logError(err);});  
+
+
+            // Adding Compound Index Type
+       
+
+    var createCompoundType = printSecondaryStreamAfterUpdate.then( 
+        function(res) {
+            console.log("Creating an SdsType with a compound index");
+            if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.createType(tenantId, sampleNamespaceId, compoundType);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.createType(tenantId, sampleNamespaceId, compoundType);
+                }
+        }
+    ).catch(function (err) { logError(err); });
+
+    //create an SdsStream
+    var sampleStreamCompoundIndex = new sdsObjs.SdsStream({
+        "Id": sampleStreamIdCompound, "Name": sampleStreamIdCompound,
+        "Description": "A Stream to store the WaveDatan Sds types events",
+        "TypeId": compoundTypeId
+        });
+
+    var createCompoundStreamFromType = createCompoundType.then( 
+        function(res) {
+            console.log("Creating an SdsStream from Type with a compound index");
+            if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.createStream(tenantId, sampleNamespaceId, sampleStreamCompoundIndex);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.createStream(tenantId, sampleNamespaceId, sampleStreamCompoundIndex);
+                }
+        }
+    ).catch(function (err) { logError(err); });
+
     // Step 19 Missing TODO
+    
+    var event2 = [];
+
+    var insertValue1 = createCompoundStreamFromType.then(
+        function (res) {
+            console.log("Inserting data")
+            evt = waveDataObj.NextWaveCompound( 1, 10);
+            event2.push(evt);
+            evt = waveDataObj.NextWaveCompound( 2, 2);
+            event2.push(evt);
+            evt = waveDataObj.NextWaveCompound( 3, 1);
+            event2.push(evt);
+            evt = waveDataObj.NextWaveCompound( 10, 3);
+            event2.push(evt);
+            evt = waveDataObj.NextWaveCompound( 10, 8);
+            event2.push(evt);
+            evt = waveDataObj.NextWaveCompound( 10, 10);
+            event2.push(evt);
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamIdCompound, event2);
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.insertEvents(tenantId, sampleNamespaceId, sampleStreamIdCompound, event2);
+            }
+        }
+    ).catch(function (err) { logError(err); });
+    
+    
+    // get last event 
+    var getLastValue2 = insertValue1.then(
+        function(res) {
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function(res) {
+                        refreshToken(res, client);
+                        console.log("Getting latest event")
+                        return client.getLastValue(tenantId, sampleNamespaceId, sampleStreamIdCompound);
+                    }).catch(function(err) { logError(err); });
+            } else {
+                return client.getLastValue(tenantId, sampleNamespaceId, sampleStreamIdCompound);
+            }
+        }
+    ).catch(function(err) { logError(err); });
+    
+    var printLastValue2 = getLastValue2.then(
+        function (res) {
+            var obj = JSON.stringify(res);
+            console.log("\nLastValue:");
+            console.log(obj);
+        }
+    ).catch(function (err) { logError(err);});  
+    
+    var getFirstValue = printLastValue2.then(
+        function(res) {
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function(res) {
+                        refreshToken(res, client);
+                        console.log("Getting first event")
+                        return client.getFirstValue(tenantId, sampleNamespaceId, sampleStreamIdCompound);
+                    }).catch(function(err) { logError(err); });
+            } else {
+                return client.getFirstValue(tenantId, sampleNamespaceId, sampleStreamIdCompound);
+            }
+        }
+    ).catch(function(err) { logError(err); });
+    
+    var printFirstValue = getFirstValue.then(
+        function (res) {
+            var obj = JSON.stringify(res);
+            console.log("\nFirstValue:");
+            console.log(obj);
+        }
+    ).catch(function (err) { logError(err);});  
+
+    
+    // get all events
+    var getWindowEvents2 = printFirstValue.then(
+        // Step 5
+        function (res) {
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        console.log("\nGetting all events")
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamIdCompound, "2|1", "10|8");
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamIdCompound, "2|1", "10|8");
+            }
+        }
+    ).catch(function (err) { logError(err); });
+    
+    var printWindowEvents2 = getWindowEvents2.then(
+        function (res) {
+            var obj = JSON.stringify(res);
+            console.log("\nWindow Value:");
+            console.log(obj);
+        }
+    ).catch(function (err) { logError(err);});  
 
     // One catch to rule all the errors
-    var testFinished = deleteWindowEvents.then(
+    var testFinished = printWindowEvents2.then(
         function (res) {
-            console.log("All values deleted successfully!");
+            //console.log("All values deleted successfully!");
         }
     ).catch(function (err) { logError(err) });
 
@@ -990,9 +1294,13 @@ http.createServer(function (request1, response) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
+                        client.deleteStream(tenantId, sampleNamespaceId, sampleStreamIdCompound);
+                        client.deleteStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
                         return client.deleteStream(tenantId, sampleNamespaceId, sampleStreamId);
                     }).catch(function (err) { logError(err); });
             } else {
+                client.deleteStream(tenantId, sampleNamespaceId, sampleStreamIdCompound);
+                client.deleteStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
                 return client.deleteStream(tenantId, sampleNamespaceId, sampleStreamId);
             }
     }).finally( 
@@ -1017,11 +1325,13 @@ http.createServer(function (request1, response) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
+                        client.deleteType(tenantId, sampleNamespaceId, compoundTypeId);
                         client.deleteType(tenantId, sampleNamespaceId, targetIntegerTypeId);
                         client.deleteType(tenantId, sampleNamespaceId, targetTypeId);
                         return client.deleteType(tenantId, sampleNamespaceId, sampleTypeId);
                     }).catch(function (err) { logError(err); });
             } else {
+                client.deleteType(tenantId, sampleNamespaceId, compoundTypeId);
                 client.deleteType(tenantId, sampleNamespaceId, targetIntegerTypeId);
                 client.deleteType(tenantId, sampleNamespaceId, targetTypeId);
                 return client.deleteType(tenantId, sampleNamespaceId, sampleTypeId);
@@ -1035,8 +1345,17 @@ http.createServer(function (request1, response) {
             console.log("An error occured!\n" + err);
     });
     
-    response.end();
+    if(request1 != null){
+        response.end();
+    }
+};
 
-}).listen(8080);
+var toRun =  function() {
+    http.createServer(app).listen(8080);
+}
+
+app();
 console.log("Server is listening at http://localhost:8080/");
 console.log("Sds endpoint at " + resource);
+
+module.exports = app;

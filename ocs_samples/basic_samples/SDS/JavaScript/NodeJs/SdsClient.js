@@ -49,6 +49,7 @@ module.exports = {
         this.streamViewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
         this.insertValuesBase = "/Data";
         this.getLastValueBase = "/{0}/Data/Last";
+        this.getFirstValueBase = "/{0}/Data/First";
         this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}&filter={3}";
         this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&streamViewId={6}";
         this.getRangeValuesInterpolatedBase = "/{0}/Data/Transform/Interpolated?startIndex={1}&endindex={2}&count={3}";
@@ -115,6 +116,15 @@ module.exports = {
         this.getStreams = function (tenantId, namespaceId, queryString, skip, count) {
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString,
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // get stream from the Sds Service
+        this.getStream = function (tenantId, namespaceId, streamId) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
                 method: 'GET',
                 headers: this.getHeaders()
             });
@@ -197,6 +207,15 @@ module.exports = {
             });
         }
 
+        // get last value added to stream
+        this.getFirstValue = function(tenantId, namespaceId, streamId) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getFirstValueBase.format([streamId]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        }
+
         // retrieve a window of events
         this.getWindowValues = function (tenantId, namespaceId, streamId, start, end, filter= "") {
             return restCall({
@@ -210,7 +229,7 @@ module.exports = {
         // retrieve a window of events in table format
         this.getWindowValuesTable = function (tenantId, namespaceId, streamId, start, end) {
             return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]) +"&form=tableh",
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end,""]) +"&form=tableh",
                 method: 'GET',
                 headers: this.getHeaders()
             });

@@ -495,7 +495,6 @@ public class Program {
 
             
             // Step 19
-            //TODO
 
             System.out.println("Inserting data");
             String dataIn = ocsClient.mGson.toJson(WaveDataCompound.next(1, 10));
