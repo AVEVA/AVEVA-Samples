@@ -52,4 +52,3 @@ jobs:
         node Sample.js
       displayName: 'Test that the app runs'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/
-	 
