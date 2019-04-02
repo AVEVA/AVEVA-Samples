@@ -121,6 +121,15 @@ module.exports = {
             });
         };
 
+        // get streams from the Sds Service
+        this.getTypes = function (tenantId, namespaceId, queryString, skip, count) {
+            return restCall({
+                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString + "&skip=" + skip + "&count=" + count  ,
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
         // get stream from the Sds Service
         this.getStream = function (tenantId, namespaceId, streamId) {
             return restCall({
@@ -145,6 +154,15 @@ module.exports = {
             return restCall({
                 url: this.url + this.streamViewsBase.format([tenantId, namespaceId]) + "/" + streamViewId + "/Map",
                 method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // create tags
+        this.updateStreamType = function (tenantId, namespaceId, streamId, streamViewId) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId + "/Type?streamViewId=" + streamViewId,
+                method: 'PUT',
                 headers: this.getHeaders()
             });
         };

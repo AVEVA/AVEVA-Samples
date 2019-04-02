@@ -366,7 +366,6 @@ public class Program {
             System.out.println("The new type value " + firstVal + " compared to the original one " + newStreamString);
             
             // Step 14 
-            // TODO4
 
             String types = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100);
             String typesFiltered = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100, "contains(Id,'Target')");
