@@ -149,7 +149,13 @@ jobs:
     - script: |
         mv prod_appsettings.json appsettings.json
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow/
-      displayName: 'rename config file'         
+      displayName: 'rename config file'        
+      
+    - script: |
+        dotnet restore
+        dotnet build
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlowTest/
+      displayName: 'Run Test'  
       
     - script: |
         dotnet restore
