@@ -78,11 +78,9 @@ jobs:
         azureContainerName: 'jdk1-8-0-181'
         azureCommonVirtualFile: 'server-jre-8u181-windows-x64.tar.gz'
         jdkDestinationDirectory: '$(Agent.WorkFolder)\Java'
-        #Your build pipeline references an undefined variable named ‘SourcePath’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-
-    steps:
+     
     - task: black-duck-software.detect-for-tfs.hub.detect.task.BlackDuckDetect@1
       displayName: 'Run Black Duck Detect for your build '
       inputs:
         BlackDuckHubService: 'Black Duck'
-        DetectArguments: '--detect.project.name="Engineering Incubation" --detect.project.version.name="0.0.0.1" --detect.source.path=$(SourcePath)'
+        DetectArguments: '--detect.project.name="Engineering Incubation" --detect.project.version.name="0.0.0.1" --detect.source.path=$(Build.SourcesDirectory)'
