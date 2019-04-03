@@ -1514,28 +1514,33 @@ var app = function (request1, response)
     }).then(
         function () {
             if(!success){
-                throw errorCap;
+                console.log("An error occured!\n" + errorCap);
+                process.exit(1);
             }
             console.log("done");
     }).catch(
         // log the call that failed
         function (err) {
-            throw err;
             console.log("An error occured!\n" + err);
+            process.exit(1);
     });
     
     if(request1 != null){
         response.end();
     }
+    
+    if(!success){
+        throw errorCap;
+    }
+
     return getClientToken;
 };
 
+//if you want to run a server
 var toRun =  function() {
     http.createServer(app).listen(8080);
 }
 
 app();
-console.log("Server is listening at http://localhost:8080/");
-console.log("Sds endpoint at " + resource);
-
-module.exports = app;
+//console.log("Server is listening at http://localhost:8080/");
+//console.log("Sds endpoint at " + resource);
