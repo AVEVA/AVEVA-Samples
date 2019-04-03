@@ -1,4 +1,11 @@
-﻿SDS JavaScript Example using Angular
+﻿**This sample is currently not working**
+===================================
+
+
+
+
+
+SDS JavaScript Example using Angular
 ===================================
 
 Building a client to make REST API calls to the SDS Service
