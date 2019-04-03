@@ -251,6 +251,26 @@ class Streams(object):
                           format(stream_id=stream.Id, status=response.status_code, reason=response.text))
 
         response.close()
+        
+
+    def updateStreamType(self, namespace_id, streamId, streamViewId):
+        """Tells Sds Service to create a stream based on the local 'stream' SdsStream object"""
+        if namespace_id is None:
+            raise TypeError
+        if streamId is None:
+            raise TypeError
+        if streamViewId is None:
+            raise TypeError
+
+        response = requests.put(
+            self.__uri_API + self.__updateStreamTypePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, streamId=streamId, streamViewId=streamViewId),
+            headers=self.__baseClient.sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to update SdsStream type, {stream_id}. {status}:{reason}".
+                          format(stream_id=streamId, status=response.status_code, reason=response.text))
+
+        response.close()
 
     def deleteStream(self, namespace_id, stream_id):
         """Tells Sds Service to delete the stream speficied by 'stream_id'"""
@@ -400,7 +420,7 @@ class Streams(object):
             return content
         return value_class.fromJson(content)
 
-    def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
+    def getWindowValues(self, namespace_id, stream_id, value_class, start, end, filter = ""):
         """Retrieves JSON object representing a window of values from the stream specified by 'stream_id'"""
         if namespace_id is None:
             raise TypeError
@@ -413,7 +433,37 @@ class Streams(object):
 
         response = requests.get(
             self.__uri_API + self.__getWindowValues.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end),
+                                                       stream_id=stream_id, start=start, end=end, filter= filter),
+            headers=self.__baseClient.sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get window values for SdsStream {stream_id}. {status}:{reason}".
+                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+
+        content = json.loads(response.content.decode('utf-8'))
+        response.close()
+        if value_class is None:
+            return content
+
+        values = []
+        for c in content:
+            values.append(value_class.fromDictionary(c))
+        return values
+        
+    def getWindowValuesForm(self, namespace_id, stream_id, value_class, start, end, form = ""):
+        """Retrieves JSON object representing a window of values from the stream specified by 'stream_id'"""
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__uri_API + self._Streams__getWindowValuesform.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id, start=start, end=end, form=form),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -453,6 +503,39 @@ class Streams(object):
                                                            reverse=reverse, boundary_type=boundary_type.value,
                                                            streamView_id=streamView_id),
            headers=self.__baseClient.sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get range of values from SdsStream, {stream_id}. {status}:{reason}".
+                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+
+        content = json.loads(response.content.decode('utf-8'))
+        response.close()
+        if value_class is None:
+            return content
+        values = []
+        for c in content:
+            values.append(value_class.fromJson(c))
+        return values
+        
+    def getRangeValuesInterpolated(self, namespace_id, stream_id, value_class, start, end, count):
+        """Retrieves JSON object representing a range of values from the stream specified by 'stream_id'"""
+        
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
+        if count is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__uri_API + self.__getRangeInterpolatedQuery.format( tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                           stream_id=stream_id, start=start, end=end, count=count),
+           headers=self.__baseClient.sdsHeaders())
+
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to get range of values from SdsStream, {stream_id}. {status}:{reason}".
@@ -598,13 +681,16 @@ class Streams(object):
         self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
         self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
         self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
+        self.__updateStreamTypePath = self.__basePath + "/Streams/{streamId}/Type?streamViewId={streamViewId}";
 
         self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
         self.__getValueQuery = self.__dataPath + "?index={index}"
         self.__getFirstValue = self.__dataPath + "/First?"
         self.__getLastValue = self.__dataPath + "/Last?"
-        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"
+        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}&filter={filter}"
+        self.__getWindowValuesform = self.__dataPath + "?startIndex={start}&endIndex={end}&form={form}"
         self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
+        self.__getRangeInterpolatedQuery = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}"
 
         self.__insertValuesPath = self.__dataPath
         self.__updateValuesPath = self.__dataPath

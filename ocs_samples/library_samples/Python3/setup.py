@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ocs_sample_library_preview",
-    version="0.0.10_preview",
+    version="0.0.11_preview",
     author="OSIsoft",
     license="Apache 2.0",
     author_email="dendres@osisoft.com",

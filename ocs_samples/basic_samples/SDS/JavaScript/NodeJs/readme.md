@@ -15,12 +15,13 @@ Sample Setup
 
 1. Make a local copy of the git repo
 2. Install node.js
-3. Install request-promise, using the following command. Add a ``-g``
+3. Install rquest and request-promise, using the following command. Add a ``-g``
    option to make the module available globally, install in the same
    folder as the other js files:
 
    .. code:: javascript
 
+       npm install request
        npm install request-promise
 
 4. Open Command Prompt in Windows

@@ -170,6 +170,9 @@ module.exports = {
         if (sdsTypeProperty.IsKey) {
             this.IsKey = sdsTypeProperty.IsKey;
         }
+        if (sdsTypeProperty.Order) {
+            this.Order = sdsTypeProperty.Order;
+        }
     },
 
 
@@ -181,6 +184,9 @@ module.exports = {
         this.TypeId = sdsStream.TypeId;
         if (sdsStream.SdsPropertyOverride) {
             this.SdsPropertyOverride = sdsStream.SdsPropertyOverride;
+        }
+        if (sdsStream.Indexes) {
+            this.Indexes = sdsStream.Indexes;
         }
     },
 

@@ -1,6 +1,6 @@
 # Setup
 
-1. Replace the placeholders in the [config](./config.json) file with your TenantID, ClientID and ClientSecret
+1. Replace the placeholders in the [appsettings](./appsettings.json) file with your TenantID, ClientID and ClientSecret
 2. Ensure that this client was created to allow Refresh Tokens
   - If this client does not allow refresh tokens, no refresh token will be issued upon authentication
 3. Ensure that the client contains $"{RedirectHost}:{RedirectPort}/{RedirectPath}" in the list of RedirectUris
@@ -17,14 +17,13 @@
 
 ### Using Visual Studio
 
-1. Load the solution from the directory above this in Visual Studio
+1. Load the .csproj
 2. Rebuild solution
-3. Select HybridFlow project
-4. Run it
+3. Run it
   - If you want to see the token and other outputs from the program, put a breakpoint at the end of the main method and run in debug mode
-5. Follow the prompts in the web browser to log in
+4. Follow the prompts in the web browser to log in
   - Keep in mind that if you are already logged in with the same Account in the browser, you will not have to log in again
-6. Return to the application after having been authenticated in the browser
+5. Return to the application after having been authenticated in the browser
 
 ### Command Line
 

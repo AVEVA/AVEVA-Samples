@@ -1,18 +1,18 @@
 // sds.rest.service.ts
 //
-//Copyright 2019 OSIsoft, LLC
+// Copyright 2019 OSIsoft, LLC
 //
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//<http://www.apache.org/licenses/LICENSE-2.0>
+// <http://www.apache.org/licenses/LICENSE-2.0>
 //
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -20,7 +20,7 @@ import 'rxjs/Rx';
 
 import { AuthHttp } from './adal/authHttp.service';
 import { ConfigurationService } from './osiconfiguration.service';
-import {HttpHeaders} from "@angular/common/http";
+import {HttpHeaders} from '@angular/common/http';
 
 
 export class SdsStream {
@@ -125,8 +125,8 @@ export class SdsRestService {
   constructor(private authHttp: AuthHttp,
               private configService: ConfigurationService
               ) {
-    this.sdsUrl = configService.AmbientConfiguration.SdsEndPoint;
-    this.sdsResource = configService.AmbientConfiguration.SdsResourceURI;
+    this.sdsUrl = configService.AmbientConfiguration.Resource;
+    this.sdsResource = configService.AmbientConfiguration.Resource + '/identity/connect/token';
     this.tenantId = configService.AmbientConfiguration.TenantId;
     this.namespaceId = configService.AmbientConfiguration.NamespaceId;
     this.apiVersion = configService.AmbientConfiguration.ApiVersion;
@@ -159,6 +159,7 @@ export class SdsRestService {
   }
 
   createMetadata(streamId: string, metadata: object): Observable<any> {
+    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
     return this.authHttp.put(url, JSON.stringify(metadata).toString());
   }
@@ -186,7 +187,7 @@ export class SdsRestService {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/Transform?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
-    return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control','no-cache')});
+    return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control', 'no-cache')});
   }
 
   createType(sdsType: SdsType): Observable<any> {
@@ -210,11 +211,13 @@ export class SdsRestService {
   }
 
   replaceValues(streamId: string, events: Array<any>) {
+    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?allowCreate=false`;
     return this.authHttp.put(url, JSON.stringify(events).toString());
   }
 
   createStreamView(sdsStreamView: SdsStreamView): Observable<any> {
+    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${sdsStreamView.Id}`;
     return this.authHttp.post(url, JSON.stringify(sdsStreamView).toString());
   }
@@ -225,16 +228,18 @@ export class SdsRestService {
   }
 
   getStreamViewMap(streamViewId: string): Observable<any> {
+    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}/Map`;
     return this.authHttp.get(url);
   }
 
   deleteValue(streamId: string, index): Observable<any> {
+    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?index=${index}`;
     return this.authHttp.delete(url);
   }
 
-  deleteWindowValues(streamId: string, start, end):Observable<any> {
+  deleteWindowValues(streamId: string, start, end): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data?startIndex=${start}&endIndex=${end}`;

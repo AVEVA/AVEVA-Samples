@@ -75,13 +75,13 @@ class Types(object):
         response.close()
         return int(count)
 
-    def getTypes(self, namespace_id, skip=0, count=100):
+    def getTypes(self, namespace_id, skip=0, count=100, filter = ""):
         """Retrieves a list of types associated with the specified 'namespace_id' under the current tenant"""
         if namespace_id is None:
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getTypesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__url + self.__getTypesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count, filter = filter),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -156,7 +156,7 @@ class Types(object):
     def __setPathAndQueryTemplates(self):
         self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
-        self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
+        self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}&filter={filter}"
         self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
         self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
         self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
