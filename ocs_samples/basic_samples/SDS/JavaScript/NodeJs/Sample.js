@@ -1514,26 +1514,15 @@ var app = function (request1, response)
     }).then(
         function () {
             if(!success){
-                console.log("ERRRORRS!!!!!!!!!");
-                console.log("ERRRORRS!!!!!!!!!");
-                console.log("ERRRORRS!!!!!!!!!");
-                console.log("ERRRORRS!!!!!!!!!");
-                console.log("ERRRORRS!!!!!!!!!");
+                console.log("An error occured!\n" + errorCap);
                 process.exit(1);
-                throw errorCap;
             }
             console.log("done");
     }).catch(
         // log the call that failed
         function (err) {
-            console.log("arrows!!!!!!!!!");
-            console.log("arrows!!!!!!!!!");
-            console.log("arrows!!!!!!!!!");
-            console.log("arrows!!!!!!!!!");
-            console.log("arrows!!!!!!!!!");
-            process.exit(1);
-            throw err;
             console.log("An error occured!\n" + err);
+            process.exit(1);
     });
     
     if(request1 != null){
