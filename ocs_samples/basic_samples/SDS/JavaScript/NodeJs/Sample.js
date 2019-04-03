@@ -1514,12 +1514,24 @@ var app = function (request1, response)
     }).then(
         function () {
             if(!success){
+                console.log("ERRRORRS!!!!!!!!!");
+                console.log("ERRRORRS!!!!!!!!!");
+                console.log("ERRRORRS!!!!!!!!!");
+                console.log("ERRRORRS!!!!!!!!!");
+                console.log("ERRRORRS!!!!!!!!!");
+                process.exit(1);
                 throw errorCap;
             }
             console.log("done");
     }).catch(
         // log the call that failed
         function (err) {
+            console.log("arrows!!!!!!!!!");
+            console.log("arrows!!!!!!!!!");
+            console.log("arrows!!!!!!!!!");
+            console.log("arrows!!!!!!!!!");
+            console.log("arrows!!!!!!!!!");
+            process.exit(1);
             throw err;
             console.log("An error occured!\n" + err);
     });
@@ -1527,15 +1539,19 @@ var app = function (request1, response)
     if(request1 != null){
         response.end();
     }
+    
+    if(!success){
+        throw errorCap;
+    }
+
     return getClientToken;
 };
 
+//if you want to run a server
 var toRun =  function() {
     http.createServer(app).listen(8080);
 }
 
 app();
-console.log("Server is listening at http://localhost:8080/");
-console.log("Sds endpoint at " + resource);
-
-module.exports = app;
+//console.log("Server is listening at http://localhost:8080/");
+//console.log("Sds endpoint at " + resource);
