@@ -30,8 +30,8 @@ replace the placeholders with the authentication-related values you received fro
 
 
 
-The authentication values are provided to the ``OSIsoft.Http.Security.SdsSecurityHandler``. 
-The SdsSecurityHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
+The authentication values are provided to the ``OSIsoft.Identity.AuthenticationHandler``. 
+The AuthenticationHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
 
 Set up SDS clients
 -----------------
