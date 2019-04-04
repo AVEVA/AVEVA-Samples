@@ -71,9 +71,9 @@ class Types(object):
             raise SdsError("Failed to get SdsType reference count, {type_id}. {status}:{reason}".
                           format(type_id=type_id, status=response.status_code, reason=response.text))
         
-        count = json.loads(response.content)
+        counts = json.loads(response.content)
         response.close()
-        return int(count)
+        return counts
 
     def getTypes(self, namespace_id, skip=0, count=100, filter = ""):
         """Retrieves a list of types associated with the specified 'namespace_id' under the current tenant"""
