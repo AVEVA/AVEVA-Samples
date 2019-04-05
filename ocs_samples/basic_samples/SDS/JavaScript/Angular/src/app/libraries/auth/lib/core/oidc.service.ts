@@ -1,4 +1,4 @@
-// adal.service.ts
+// oidc.service.ts
 //
 // Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 //

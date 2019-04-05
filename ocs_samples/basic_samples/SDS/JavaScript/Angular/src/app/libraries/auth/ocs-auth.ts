@@ -1,4 +1,4 @@
-// index.ts
+// ocs-auth.ts
 //
 // Copyright (C) 2018 OSIsoft, LLC. All rights reserved.
 //

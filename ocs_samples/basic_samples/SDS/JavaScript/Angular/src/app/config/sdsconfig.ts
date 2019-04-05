@@ -1,4 +1,4 @@
-// ISdsConfigSet.ts
+// sdsconfig.ts
 //
 //Copyright 2019 OSIsoft, LLC
 //
