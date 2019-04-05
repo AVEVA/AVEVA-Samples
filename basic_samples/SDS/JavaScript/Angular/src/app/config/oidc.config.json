@@ -1,7 +1,7 @@
 {
-    "authority": "https://staging.osipi.com/identity",
-    "redirect_uri": "http://localhost:4200/auth-callback/",
-    "post_logout_redirect_uri": "http://localhost:4200/",
-    "silent_redirect_uri": "http://localhost:4200/auth-callback/",
-    "client_id": "87e9c4de-37c8-4d76-b569-4aec45cd3ef6"
+    "authority": "SPECIFY",
+    "redirect_uri": "SPECIFY",
+    "post_logout_redirect_uri": "SPECIFY",
+    "silent_redirect_uri": "SPECIFY",
+    "client_id": "SPECIFY"
 }

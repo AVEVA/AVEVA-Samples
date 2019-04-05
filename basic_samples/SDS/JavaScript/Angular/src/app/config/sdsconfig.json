@@ -1,6 +1,6 @@
 {
-    "serviceBaseUri": "https://staging.osipi.com",
-    "tenantId": "efe27258-f6d5-4ea6-a001-3e4a82777710",
-    "namespaceId": "qitesting",
+    "serviceBaseUri": "SPECIFY",
+    "tenantId": "SPECIFY",
+    "namespaceId": "SPECIFY",
     "apiVersion": "v1-preview"
 }
