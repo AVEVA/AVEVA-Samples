@@ -16,7 +16,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {OidcService} from '@osisoft/identity-ts'
+import {OidcService} from './libraries/auth/ocs-auth'
 import {UserManagerSettings, WebStorageStateStore} from 'oidc-client'
 import oidcConfigJson from './config/oidc.config.json';
 import sdsConfig from './config/sdsconfig.json';

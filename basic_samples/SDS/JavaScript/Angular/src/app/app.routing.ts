@@ -18,8 +18,8 @@ import {ModuleWithProviders, Provider } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 import { DatasrcComponent} from './datasrc/datasrc.component';
-import { AuthenticationGuard } from './auth/authguard';
-import { OAuthLoginComponent, OAuthLogoutComponent, OAuthCallbackHandlerGuard } from '@osisoft/identity-ts';
+import { OAuthLoginComponent, OAuthLogoutComponent, OAuthCallbackHandlerGuard } from '../app/libraries/auth/ocs-auth';
+import {AuthenticationGuard} from 'app/libraries/auth/extra/authguard'
 
 const routes: Routes = [
     {

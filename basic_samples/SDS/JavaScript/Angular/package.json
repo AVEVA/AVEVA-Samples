@@ -23,7 +23,6 @@
     "@angular/platform-browser-dynamic": "^7.2.9",
     "@angular/router": "^7.2.9",
     "@ng-bootstrap/ng-bootstrap": "^4.1.0",
-    "@osisoft/identity-ts": "^1.0.0-alpha.5",
     "bluebird": "^3.5.3",
     "core-js": "^2.6.5",
     "moment": "^2.24.0",

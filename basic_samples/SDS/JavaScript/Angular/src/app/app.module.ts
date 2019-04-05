@@ -22,9 +22,9 @@ import { SdsRestService } from './sds/sds.rest.service';
 import { DatasrcComponent } from './datasrc/datasrc.component';
 import { routing, appRoutingProviders  } from './app.routing';
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
-import { OidcService, OAuthLoginComponent, OAuthLogoutComponent, OAuthCallbackHandlerGuard } from '@osisoft/identity-ts';
-import { AuthenticationGuard } from './auth/authguard';
-import { AuthInterceptor } from './auth/authentication.interceptor';
+import { OidcService, OAuthLoginComponent, OAuthLogoutComponent, OAuthCallbackHandlerGuard } from '../app/libraries/auth/ocs-auth';
+import { AuthenticationGuard } from '../app/libraries/auth/extra/authguard';
+import { AuthInterceptor } from '../app/libraries/auth/extra/authentication.interceptor';
 
 @NgModule({
   declarations: [

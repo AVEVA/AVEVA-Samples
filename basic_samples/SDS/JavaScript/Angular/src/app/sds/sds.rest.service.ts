@@ -17,8 +17,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/Rx';
-
 import {HttpHeaders, HttpClient} from "@angular/common/http";
+import sdsConfig from '../config/sdsconfig.json';
+import { SdsConfig } from '../config/sdsconfig.js';
 
 
 export class SdsStream {
@@ -121,10 +122,11 @@ export class SdsRestService {
   options: any
 
   constructor(private authHttp: HttpClient) {
-    this.sdsUrl = 'https://staging.osipi.com'
-    this.tenantId = 'efe27258-f6d5-4ea6-a001-3e4a82777710'
-    this.namespaceId = 'qitesting'
-    this.apiVersion = 'v1-preview';
+    const config = sdsConfig as SdsConfig;
+    this.sdsUrl = config.serviceBaseUri;
+    this.tenantId = config.tenantId;
+    this.namespaceId = config.namespaceId;
+    this.apiVersion = config.apiVersion;
     this.options = {
       observe: 'response',
       headers: new HttpHeaders({

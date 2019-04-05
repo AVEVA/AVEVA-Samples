@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CanActivate, RouterStateSnapshot, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs";
-import { OidcService } from "@osisoft/identity-ts";
+import { OidcService } from '../ocs-auth'
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
