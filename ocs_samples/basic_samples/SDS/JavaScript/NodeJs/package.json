@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "test": "jasmine"
+  },
+  "requires": true,
+  "dependencies": {
+    "request-promise": "4.2.4"
+  },
+  "devDependencies": {
+    "jasmine": "3.3.1",
+    "request": "2.88.0",
+    "request-promise": "4.2.4"
+  },
+  "name": "sdsnodejs",
+  "description": "JavaScript Samples: Building a Client to make REST API Calls to the SDS Service.\r ===============================================================================",
+  "version": "0.0.2",
+  "main": "Sample.js",
+  "keywords": [],
+  "author": "OSIsoft",
+  "license": "Apahce 2.0"
+}
