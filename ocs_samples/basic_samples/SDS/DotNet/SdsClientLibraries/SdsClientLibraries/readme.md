@@ -1,19 +1,12 @@
 .NET Samples 
 ============
 
-Building a Client with the SDS Client Libraries
+Building a Client with the OCS Client Libraries
 ----------------------------------------------
 
-The sample described in this section makes use of the OSIsoft SDS Client Libraries. When working in .NET, 
-it is recommended that you use these libraries. The libraries are available as NuGet packages 
-from https://api.nuget.org/v3/index.json . The packages used are:
-
-* OSIsoft.Contracts
-* OSIsoft.Models
-* OSIsoft.Http.Client  
-* OSIsoft.Http.Security 
-
-The libraries offer a framework of classes that make client development easier.
+The sample described in this section makes use of the OSIsoft Cloud Services Client Libraries. When working in .NET, 
+it is recommended that you use the OCS Client Libraries metapackage, OSIsoft.OCSClients. The metapackage is a NuGet package available 
+from https://api.nuget.org/v3/index.json. The libraries offer a framework of classes that make client development easier.
 
 
 Configure constants for connecting and authentication
@@ -37,8 +30,8 @@ replace the placeholders with the authentication-related values you received fro
 
 
 
-The authentication values are provided to the ``OSIsoft.Http.Security.SdsSecurityHandler``. 
-The SdsSecurityHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
+The authentication values are provided to the ``OSIsoft.Identity.AuthenticationHandler``. 
+The AuthenticationHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
 
 Set up SDS clients
 -----------------

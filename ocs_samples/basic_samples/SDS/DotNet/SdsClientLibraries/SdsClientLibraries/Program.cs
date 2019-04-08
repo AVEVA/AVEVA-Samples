@@ -22,10 +22,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OSIsoft.Data;
-//using OSIsoft.Data.Http.Security;
 using OSIsoft.Data.Reflection;
 using OSIsoft.Identity; 
-//using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SdsClientLibraries
 {
