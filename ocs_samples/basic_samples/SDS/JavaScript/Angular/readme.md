@@ -58,6 +58,10 @@ to troubleshoot any issues with authentication.
 Running the example
 ------------------------------
 
+Install dependencies using ``npm install`` from within the Angular folder, then run the sample using ``npm start``
+
+Login using the button in the webpage header
+
 The SDS Services page contains several buttons that demonstrate the main functionality of SDS:
 
 ::
@@ -78,7 +82,7 @@ The rest of the sections in this document outline the operation of SDS and the u
 How the example works
 ----------------------
 
-The sample uses the AuthHttp class to connect to the SDS Service
+The sample uses the HttpClient class with an Authentication Interceptor to connect to the SDS Service
 endpoint. SDS REST API calls are sent to the SDS Service. The SDS REST API
 maps HTTP methods to CRUD operations as in the following table:
 
