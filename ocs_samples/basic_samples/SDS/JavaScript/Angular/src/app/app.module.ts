@@ -17,21 +17,21 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ConfigurationService } from './osiconfiguration.service';
-import { AdalService } from './adal/adal.service';
 import { AppComponent } from './app.component';
-import { SdsRestService } from './sds.rest.service';
-import { AuthHttp } from './adal/authHttp.service';
+import { SdsRestService } from './sds/sds.rest.service';
 import { DatasrcComponent } from './datasrc/datasrc.component';
 import { routing, appRoutingProviders  } from './app.routing';
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
-import {AuthInterceptor} from "./adal/authInterceptor";
-import {OptionInterceptor} from "./adal/optionInterceptor";
+import { OidcService, OAuthLoginComponent, OAuthLogoutComponent, OAuthCallbackHandlerGuard } from '../app/libraries/auth/ocs-auth';
+import { AuthenticationGuard } from '../app/libraries/auth/extra/authguard';
+import { AuthInterceptor } from '../app/libraries/auth/extra/authentication.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DatasrcComponent
+    DatasrcComponent,
+    OAuthLoginComponent,
+    OAuthLogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -40,22 +40,16 @@ import {OptionInterceptor} from "./adal/optionInterceptor";
     HttpClientModule
   ],
   providers: [
-    ConfigurationService,
     appRoutingProviders,
-    AdalService,
     SdsRestService,
-    AuthHttp,
-    {
-        provide: HTTP_INTERCEPTORS,
-        useClass: OptionInterceptor,
-        multi: true
-    },
+    OidcService,
+    AuthenticationGuard,
+    OAuthCallbackHandlerGuard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     }
-
   ],
   bootstrap: [AppComponent]
 })

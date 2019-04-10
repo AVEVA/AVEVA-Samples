@@ -1,26 +1,25 @@
 // sds.rest.service.ts
 //
-// Copyright 2019 OSIsoft, LLC
+//Copyright 2019 OSIsoft, LLC
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
 //
-// <http://www.apache.org/licenses/LICENSE-2.0>
+//<http://www.apache.org/licenses/LICENSE-2.0>
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/Rx';
-
-import { AuthHttp } from './adal/authHttp.service';
-import { ConfigurationService } from './osiconfiguration.service';
-import {HttpHeaders} from '@angular/common/http';
+import {HttpHeaders, HttpClient} from "@angular/common/http";
+import sdsConfig from '../config/sdsconfig.json';
+import { SdsConfig } from '../config/sdsconfig.js';
 
 
 export class SdsStream {
@@ -117,132 +116,133 @@ export class SdsStreamViewMap {
 @Injectable()
 export class SdsRestService {
   sdsUrl: string;
-  sdsResource: string;
   tenantId: string;
   namespaceId: string;
   apiVersion: string;
+  options: any
 
-  constructor(private authHttp: AuthHttp,
-              private configService: ConfigurationService
-              ) {
-    this.sdsUrl = configService.AmbientConfiguration.Resource;
-    this.sdsResource = configService.AmbientConfiguration.Resource + '/identity/connect/token';
-    this.tenantId = configService.AmbientConfiguration.TenantId;
-    this.namespaceId = configService.AmbientConfiguration.NamespaceId;
-    this.apiVersion = configService.AmbientConfiguration.ApiVersion;
+  constructor(private authHttp: HttpClient) {
+    const config = sdsConfig as SdsConfig;
+    this.sdsUrl = config.serviceBaseUri;
+    this.tenantId = config.tenantId;
+    this.namespaceId = config.namespaceId;
+    this.apiVersion = config.apiVersion;
+    this.options = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+        'Accept': 'applications/json'
+      })
+    };
   }
 
   createStream(sdsStream: SdsStream): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
-    return this.authHttp.post(url, JSON.stringify(sdsStream).toString());
+    return this.authHttp.post(url, JSON.stringify(sdsStream).toString(), this.options);
   }
 
   updateStream(sdsStream: SdsStream): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${sdsStream.Id}`;
-    return this.authHttp.put(url, JSON.stringify(sdsStream).toString());
+    return this.authHttp.put(url, JSON.stringify(sdsStream).toString(), this.options);
   }
 
   getStreams(query: string): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
-    return this.authHttp.get(url);
+    return this.authHttp.get(url, this.options);
   }
 
 
   deleteStream(streamId: string): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
-    return this.authHttp.delete(url);
+    return this.authHttp.delete(url, this.options);
   }
 
   createTags(streamId: string, tags: string[]): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Tags`;
-    return this.authHttp.put(url, JSON.stringify(tags).toString());
+    return this.authHttp.put(url, JSON.stringify(tags).toString(), this.options);
   }
 
   createMetadata(streamId: string, metadata: object): Observable<any> {
-    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Metadata`;
-    return this.authHttp.put(url, JSON.stringify(metadata).toString());
+    return this.authHttp.put(url, JSON.stringify(metadata).toString(), this.options);
   }
 
   getTags(streamId: string): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Tags`;
-    return this.authHttp.get(url);
+    return this.authHttp.get(url, this.options);
   }
 
   getMetadata(streamId: string): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` + `/Metadata`;
-    return this.authHttp.get(url);
+    return this.authHttp.get(url, this.options);
   }
 
   getLastValue(streamId: string): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/Last`;
-    return this.authHttp.get(url);
+    return this.authHttp.get(url, this.options);
   }
 
   getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data/Transform?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}`;
-    return this.authHttp.get(url, {observe: 'response', headers: new HttpHeaders().set('Cache-Control', 'no-cache')});
+    return this.authHttp.get(url, this.options);
   }
 
   createType(sdsType: SdsType): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${sdsType.Id}`;
-    return this.authHttp.post(url, JSON.stringify(sdsType).toString());
+    return this.authHttp.post(url, sdsType, this.options);
   }
 
   deleteType(typeId: string): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${typeId}`;
-    return this.authHttp.delete(url);
+    return this.authHttp.delete(url, this.options);
   }
 
-  insertValues(streamId: string, events: Array<any>) {
+  insertValues(streamId: string, events: Array<any>): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
-    return this.authHttp.post(url, JSON.stringify(events).toString());
+    return this.authHttp.post(url, JSON.stringify(events).toString(),this.options);
   }
 
-  updateValues(streamId: string, events: Array<any>) {
+  updateValues(streamId: string, events: Array<any>): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data`;
-    return this.authHttp.put(url, JSON.stringify(events).toString());
+    return this.authHttp.put(url, JSON.stringify(events).toString(), this.options);
   }
 
-  replaceValues(streamId: string, events: Array<any>) {
-    // tslint:disable-next-line:max-line-length
+  replaceValues(streamId: string, events: Array<any>): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?allowCreate=false`;
-    return this.authHttp.put(url, JSON.stringify(events).toString());
+    return this.authHttp.put(url, JSON.stringify(events).toString(), this.options);
   }
 
   createStreamView(sdsStreamView: SdsStreamView): Observable<any> {
-    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${sdsStreamView.Id}`;
-    return this.authHttp.post(url, JSON.stringify(sdsStreamView).toString());
+    return this.authHttp.post(url, JSON.stringify(sdsStreamView).toString(), this.options);
   }
 
   deleteStreamView(streamViewId: string): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}`;
-    return this.authHttp.delete(url);
+    return this.authHttp.delete(url, this.options);
   }
 
   getStreamViewMap(streamViewId: string): Observable<any> {
-    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/StreamViews/${streamViewId}/Map`;
-    return this.authHttp.get(url);
+    return this.authHttp.get(url, this.options);
   }
 
   deleteValue(streamId: string, index): Observable<any> {
-    // tslint:disable-next-line:max-line-length
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Data?index=${index}`;
-    return this.authHttp.delete(url);
+    return this.authHttp.delete(url, this.options);
   }
 
   deleteWindowValues(streamId: string, start, end): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
       `/Data?startIndex=${start}&endIndex=${end}`;
-    return this.authHttp.delete(url);
+    return this.authHttp.delete(url, this.options);
   }
 }

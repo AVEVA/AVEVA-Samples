@@ -16,9 +16,9 @@
 
 import { Component } from '@angular/core';
 
-import { SdsBoundaryType, SdsRestService, SdsStreamPropertyOverride } from '../sds.rest.service'
+import { SdsBoundaryType, SdsRestService, SdsStreamPropertyOverride } from '../sds/sds.rest.service'
 import { SdsType, SdsStream, SdsTypeProperty, SdsTypeCode,
-  SdsStreamMode, SdsStreamView, SdsStreamViewProperty, SdsStreamViewMap} from '../sds.rest.service'
+  SdsStreamMode, SdsStreamView, SdsStreamViewProperty, SdsStreamViewMap} from '../sds/sds.rest.service'
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 
 const streamId = 'WaveDataStream';
@@ -306,6 +306,7 @@ export class DatasrcComponent {
 
   createType() {
     const type = this.buildWaveDataType();
+    console.log(type);
     this.sdsService.createType(type).subscribe(res => {
       this.button1Message = this.healthyResponseMessage(res);
     },
@@ -550,10 +551,12 @@ export class DatasrcComponent {
   }
 
   healthyResponseMessage(res: HttpResponse<any>) {
+    console.log(res);
     return `${res.status} (${res.statusText})`;
   }
 
   unhealthyResponseMessage(err: HttpErrorResponse) {
-      return `${err.status} (${err.statusText}) [${err.error ? err.error.Message: 'No error message'}]`;
+    console.log(err);
+    return `${err.status} (${err.statusText}) [${err.error ? err.error.Reason: 'No error message'}]`;
   }
 }

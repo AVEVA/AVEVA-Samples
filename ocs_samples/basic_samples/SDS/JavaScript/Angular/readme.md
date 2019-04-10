@@ -1,24 +1,17 @@
-﻿**This sample is currently not working**
-===================================
-
-
-
-
-
-SDS JavaScript Example using Angular
+﻿SDS JavaScript Example using Angular
 ===================================
 
 Building a client to make REST API calls to the SDS Service
 ----------------------------------------------------------
 
-This example demonstrates how SDS REST APIs are invoked using Angular 6. Although this example uses Angular, other javascript frameworks should also work.
+This example demonstrates how SDS REST APIs are invoked using Angular 7. Although this example uses Angular, other javascript frameworks should also work.
 
 
 Prerequisites
 -------------
 
 You must have the following software installed on your computer:
- - Angular version 6 (available on GitHub)
+ - Angular version 7 (available on GitHub/npm)
  - Angular CLI
  - A modern browser (OSIsoft recommends Google Chrome or Mozilla Firefox)
 
@@ -26,26 +19,34 @@ You must have the following software installed on your computer:
 Preparation
 -----------
 
-The SDS Service is secured by obtaining tokens from an Azure Active
-Directory instance. This example uses ADAL (Active Directory Authentication Library) 
+The SDS Service is secured by obtaining tokens from our OAuth2 identity provider
 to authenticate clients against the SDS server. Contact OSIsoft support
 to obtain a tenant for use with SDS. 
 
 The sample code includes several placeholder strings that must be modified 
 with values you received from OSIsoft. 
 
-Edit the following values in the src/app/app.component.ts file:
-
+Edit the following values in the src/app/config/oidc.config.json file:
 :: 
 
-        const config: ISdsConfigSet = {
-            ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
-            SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL',
-            SdsResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
-            TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
-            NamespaceId: 'REPLACE_WITH_NAMESPACE',
-            ApiVersion: 'v1-preview'
-        };
+	{
+	    "authority": "https://dat-b.osisoft.com/identity",
+	    "redirect_uri": "http://localhost:4200/auth-callback/",
+	    "post_logout_redirect_uri": "http://localhost:4200/",
+	    "silent_redirect_uri": "http://localhost:4200/auth-callback/",
+	    "client_id": "SPECIFY"
+	}
+
+Be sure to also configure your Implicit Client with the appropriate redirect URLs via the OCS portal
+
+Also edit the following values in the src/app/config/sdsconfig.json:
+
+	{
+	    "serviceBaseUri": "https://dat-b.osisoft.com",
+	    "tenantId": "SPECIFY",
+	    "namespaceId": "SPECIFY",
+	    "apiVersion": "v1-preview"
+	}
 
 
 The application relies on the OAuth2 implicit grant flow.  Upon navigating to the webpage, users will be prompted to login to Azure Active Directory. 
@@ -56,6 +57,10 @@ to troubleshoot any issues with authentication.
 
 Running the example
 ------------------------------
+
+Install dependencies using ``npm install`` from within the Angular folder, then run the sample using ``npm start``
+
+Login using the button in the webpage header
 
 The SDS Services page contains several buttons that demonstrate the main functionality of SDS:
 
@@ -77,7 +82,7 @@ The rest of the sections in this document outline the operation of SDS and the u
 How the example works
 ----------------------
 
-The sample uses the AuthHttp class to connect to the SDS Service
+The sample uses the HttpClient class with an Authentication Interceptor to connect to the SDS Service
 endpoint. SDS REST API calls are sent to the SDS Service. The SDS REST API
 maps HTTP methods to CRUD operations as in the following table:
 
