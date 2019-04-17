@@ -1158,7 +1158,7 @@ var app = function (request1, response)
     var createSecondaryStream = deleteWindowEvents.then(
         // Step 17 
         function (res) {
-            console.log("Creating an SdsStream")
+            console.log("Creating an SdsStream with a secondary stream")
             // create SdsStream
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -1179,10 +1179,10 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
+                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamWithSecondaryIndex);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
+                return client.getStream(tenantId, sampleNamespaceId, sampleStreamWithSecondaryIndex);
             }
         }
     ).catch(function (err) { logError(err); });

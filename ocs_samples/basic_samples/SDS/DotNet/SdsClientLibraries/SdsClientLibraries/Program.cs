@@ -29,6 +29,9 @@ namespace SdsClientLibraries
 {
     public class Program
     {
+        public static Exception toThrow = null;
+        public static bool success = true;
+
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
         public static async Task<bool> MainAsync(bool test = false)
@@ -548,20 +551,25 @@ namespace SdsClientLibraries
         }
 
         /// <summary>
-        /// Use this to run a method that you don't want to stop the program if there is an error and you don't want to report the error
+        /// Use this to run a method that you don't want to stop the program if there is an error
         /// </summary>
         /// <param name="methodToRun">The method to run.</param>
         /// <param name="value">The value to put into the method to run</param>
-        private static async void RunInTryCatch(Func<string,Task> methodToRun, string value)
+        private static void RunInTryCatch(Func<string, Task> methodToRun, string value)
         {
             try
             {
-                await methodToRun(value);
-                
+                methodToRun(value).Wait();
+
             }
             catch (Exception ex)
             {
-               Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
+                Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
+                if (toThrow == null)
+                {
+                    success = false;
+                    toThrow = ex;
+                }
             }
         }
 

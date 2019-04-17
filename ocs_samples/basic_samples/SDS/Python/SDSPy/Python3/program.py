@@ -717,7 +717,16 @@ def main():
         ocsClient.Streams.createOrUpdateStream(namespaceId, secondary)
         
         secondary = ocsClient.Streams.getStream(namespaceId, secondary.Id)
-        print("Secondary indexes on streams original:" +  str(len(stream.Indexes)) + ". New one:  " + str(len(secondary.Indexes)))
+
+        originalLength = "0"
+        if stream.Indexes:
+            originalLength = str(len(stream.Indexes))
+            
+        secondaryLength = "0"
+        if secondary.Indexes:
+            secondaryLength = str(len(secondary.Indexes))
+
+        print("Secondary indexes on streams original:" +  originalLength + ". New one:  " + secondaryLength)
     
         # Step 18
         # Adding Compound Index Type
