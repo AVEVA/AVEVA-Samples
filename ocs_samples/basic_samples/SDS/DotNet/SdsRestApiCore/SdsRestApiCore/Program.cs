@@ -755,8 +755,7 @@ namespace SdsRestApiCore
         {
             try
             {
-                methodToRun(value).Wait();
-
+                methodToRun(value).Wait(10000);
             }
             catch (Exception ex)
             {
