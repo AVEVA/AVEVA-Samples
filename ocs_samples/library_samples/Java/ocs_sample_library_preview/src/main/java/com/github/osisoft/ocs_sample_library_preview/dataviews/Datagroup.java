@@ -20,23 +20,23 @@ import java.util.Map;
 
 public class Datagroup {
     
-    private Map<String,Map<String,String>> Tokens;
-    private Map<String,Map<String,Object>> DataItems;
+    private Map<String,Object> Tokens;
+    private Map<String,Object> DataItems;
 
-    public Map<String,Map<String,String>>  getTokens() {
+    public Map<String,Object>  getTokens() {
         return Tokens;
     }
 
-    public void setTokens(Map<String,Map<String,String>> tokens) {
+    public void setTokens(Map<String,Object> tokens) {
         this.Tokens = tokens;
     }
     
 
-    public Map<String,Map<String,Object>> getDataItems() {
+    public Map<String,Object> getDataItems() {
         return DataItems;
     }
 
-    public void setDataItems(Map<String,Map<String,Object>> dataItems) {
+    public void setDataItems(Map<String,Object> dataItems) {
         this.DataItems = dataItems;
     }
 }
