@@ -29,7 +29,7 @@ namespace SdsRestApiCore
     public class Program
     {
         public static Exception toThrow = null;
-        public static bool success = true
+        public static bool success = true;
 
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
