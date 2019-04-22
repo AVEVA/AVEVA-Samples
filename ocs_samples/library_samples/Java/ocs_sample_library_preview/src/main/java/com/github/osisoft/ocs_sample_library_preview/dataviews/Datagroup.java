@@ -21,7 +21,7 @@ import java.util.Map;
 public class Datagroup {
     
     private Map<String,Object> Tokens;
-    private Map<String,Object> DataItems;
+    private Object DataItems;
 
     public Map<String,Object>  getTokens() {
         return Tokens;
@@ -32,11 +32,11 @@ public class Datagroup {
     }
     
 
-    public Map<String,Object> getDataItems() {
+    public Object getDataItems() {
         return DataItems;
     }
 
-    public void setDataItems(Map<String,Object> dataItems) {
+    public void setDataItems(Object dataItems) {
         this.DataItems = dataItems;
     }
 }

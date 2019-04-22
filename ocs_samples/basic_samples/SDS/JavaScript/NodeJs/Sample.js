@@ -1158,7 +1158,7 @@ var app = function (request1, response)
     var createSecondaryStream = deleteWindowEvents.then(
         // Step 17 
         function (res) {
-            console.log("Creating an SdsStream with a secondary stream")
+            console.log("Creating an SdsStream with a secondary index")
             // create SdsStream
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -1179,10 +1179,10 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamWithSecondaryIndex);
+                        return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getStream(tenantId, sampleNamespaceId, sampleStreamWithSecondaryIndex);
+                return client.getStream(tenantId, sampleNamespaceId, sampleStreamSecondaryId);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -1216,7 +1216,7 @@ var app = function (request1, response)
         function(res) {
             var stream = JSON.parse(res);
             stream["Indexes"] = [{ "SdsTypePropertyId":"RadiansTarget"}];
-            console.log("\nNew original Stream:");
+            console.log("\n New original Stream:");
             console.log(JSON.stringify(stream));
             if (client.tokenExpires < nowSeconds) {
                     return checkTokenExpired(client).then(

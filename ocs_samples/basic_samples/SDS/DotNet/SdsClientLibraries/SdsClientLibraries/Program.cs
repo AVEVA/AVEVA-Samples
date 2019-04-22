@@ -559,8 +559,7 @@ namespace SdsClientLibraries
         {
             try
             {
-                methodToRun(value).Wait();
-
+                methodToRun(value).Wait(100);
             }
             catch (Exception ex)
             {
