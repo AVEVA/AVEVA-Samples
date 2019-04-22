@@ -98,10 +98,12 @@ jobs:
     - script: |
        npx webdriver-manager update
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
-      displayName: 'Install tools'     
+      displayName: 'Install tools'    
+
 
     - script: |
        npm install 
+       npm run webdriver-update
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
       displayName: 'Install tools'   
 
