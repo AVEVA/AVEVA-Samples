@@ -7,78 +7,6 @@
   
 jobs:      
 
-- job: SDSDotNet
-
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  steps :
-
-    # Download Secure File
-    # Download a secure file to a temporary location on the build or release agent
-    - task: DownloadSecureFile@1
-      inputs:
-        secureFile: prod_appsettings.json
-
-
-    # Copy Files
-    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: $(Agent.TempDirectory)
-        contents: prod_appsettings.json
-        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/'
-        #cleanTargetFolder: false # Optional  
-        overWrite: true # Optional
-        #flattenFolders: false # Optional 
-      displayName: copy file
-
-    - script: |
-        mv prod_appsettings.json appsettings.json
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/
-      displayName: 'rename config file'     
-      
-    - script: |
-        dotnet restore
-        dotnet test
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibrariesCoreTests/
-      displayName: 'Run Test'
-    
-- job: SDSDotNetAPI
-
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  steps :
-
-    # Download Secure File
-    # Download a secure file to a temporary location on the build or release agent
-    - task: DownloadSecureFile@1
-      inputs:
-        secureFile: prod_appsettings.json
-
-
-    # Copy Files
-    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: $(Agent.TempDirectory)
-        contents: prod_appsettings.json
-        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/'
-        #cleanTargetFolder: false # Optional  
-        overWrite: true # Optional
-        #flattenFolders: false # Optional 
-      displayName: copy file
-
-    - script: |
-        mv prod_appsettings.json appsettings.json
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/
-      displayName: 'rename config file'         
-      
-    - script: |
-        dotnet restore
-        dotnet test
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCoreTest/
-      displayName: 'Run Test' 
-
 - job: SDSangJS
 
   pool:
@@ -163,11 +91,20 @@ jobs:
       
     - script: |
        npm install -g @angular/cli
-       npx webdriver-manager update
-       npm install
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
       displayName: 'Install tools'      
       
+      
+    - script: |
+       npx webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools'     
+
+    - script: |
+       npm install 
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools'   
+
     - script: |
         ng e2e
       displayName: 'Test that the app runs'
