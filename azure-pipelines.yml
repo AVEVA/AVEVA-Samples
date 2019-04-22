@@ -179,20 +179,20 @@ jobs:
 
     # Download Secure File
     # Download a secure file to a temporary location on the build or release agent
-    - task: DownloadSecureFile@2
+    - task: DownloadSecureFile@1
       inputs:
         secureFile: prod_sdsconfig.json
         
     # Download Secure File
     # Download a secure file to a temporary location on the build or release agent
-    - task: DownloadSecureFile@3
+    - task: DownloadSecureFile@1
       inputs:
         secureFile: prod_config.json
 
 
     # Copy Files  
     # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-    - task: CopyFiles@4
+    - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_oidc.config.json
@@ -205,7 +205,7 @@ jobs:
 
     # Copy Files 
     # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-    - task: CopyFiles@5
+    - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_sdsconfig.json
@@ -217,7 +217,7 @@ jobs:
 
     # Copy Files   ocs_samples\basic_samples\SDS\JavaScript\Angular\e2e\src\config.json
     # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
-    - task: CopyFiles@6
+    - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         contents: prod_config.json
