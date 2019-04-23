@@ -18,6 +18,7 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark">
   <div class="navbar-nav">
       <a class="nav-item nav-link" routerLink="/">Home</a>
+      <!-- Step 1 -->
       <a *ngIf="!loggedIn" class="nav-item nav-link" (click)="login()">Login</a>
       <a *ngIf="loggedIn" class="nav-item nav-link" (click)="logout()">Logout</a>
       
