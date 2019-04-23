@@ -29,7 +29,11 @@ export class AppPage {
             });
             */
     }
-    createType(): any {
+    createType(): any {        
+        console.log('yarr');
+        element(by.xpath('/html')).getText().then((res) => {
+            console.log(res);
+        })
         return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/button')).click()
         .then((res) => {
             browser.driver.sleep(2000);
