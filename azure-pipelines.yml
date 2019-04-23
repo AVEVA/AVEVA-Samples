@@ -110,14 +110,9 @@ jobs:
        npx webdriver-manager update
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
       displayName: 'Install tools5'
-      
-    - script: |
-       node node_modules\protractor\bin\webdriver-manager update
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
-      displayName: 'Install tools6'
 
     - script: |
-        ng e2e
+        ng e2e --webdriver-update=false
       displayName: 'Test that the app runs'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
 
