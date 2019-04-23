@@ -108,11 +108,19 @@ jobs:
 
     - script: |
        npm install protractor
-       npx webdriver-manager update
        node node_modules\protractor\bin\webdriver-manager update
-
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
-      displayName: 'Install tools3'
+      displayName: 'Install tools4'
+      
+    - script: |
+       npx webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools5'
+      
+    - script: |
+       node node_modules\protractor\bin\webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools6'
 
     - script: |
         ng e2e
