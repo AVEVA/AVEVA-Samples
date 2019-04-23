@@ -107,7 +107,7 @@ jobs:
       displayName: 'Install tools3'   
 
     - script: |
-       npm install protractor
+       npm install -g protractor
        node node_modules\protractor\bin\webdriver-manager update
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
       displayName: 'Install tools4'
