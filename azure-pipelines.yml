@@ -33,7 +33,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: prod_config.json
+        secureFile: prod_cred.json
 
 
     # Copy Files  
@@ -66,7 +66,7 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: prod_config.json
+        contents: prod_cred.json
         targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/' 
         #cleanTargetFolder: false # Optional 
         overWrite: true # Optional
@@ -84,7 +84,7 @@ jobs:
       displayName: 'rename config file2'
 
     - script: |
-        mv prod_config.json config.json
+        mv prod_cred.json cred.json
       workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
       displayName: 'rename config file3'
       
@@ -92,19 +92,19 @@ jobs:
     - script: |
        npm install -g @angular/cli
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
-      displayName: 'Install tools'      
+      displayName: 'Install tools1'      
       
       
     - script: |
        npx webdriver-manager update
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
-      displayName: 'Install tools'    
+      displayName: 'Install tools2'    
 
 
     - script: |
        npm install 
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
-      displayName: 'Install tools'   
+      displayName: 'Install tools3'   
 
     - script: |
         ng e2e
