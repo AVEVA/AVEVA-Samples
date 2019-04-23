@@ -30,7 +30,7 @@ export class AppPage {
             */
     }
     createType(): any {        
-        console.log('yarr');
+        console.log('create type');
         element(by.xpath('/html')).getText().then((res) => {
             console.log(res);
         })
@@ -203,11 +203,19 @@ export class AppPage {
   }
 
     login2() {
-
+   
+        element(by.xpath('/html')).getText().then((res) => {
+            console.log('login');
+            console.log(res);
+        })
         return element(by.xpath('/html/body/app-root/nav/div/a[2]')).click()
             .then((res) => {
                 browser.driver.sleep(3000)
                     .then((res) => {
+                        element(by.xpath('/html')).getText().then((res) => {
+                            console.log('choices');
+                            console.log(res);
+                        })
                         browser.driver.findElement(by.xpath('/html/body/div[3]/div/div[2]/a[1]'))
                             .then((ele) => {
                                 ele.click()
@@ -231,11 +239,19 @@ export class AppPage {
  loginWithGoogle (username, passphrase) {
     return this.selectWindow(0).then(() => {
         return browser.driver.findElement(by.css('[type="email"]'))
-            .then((el) => {
+            .then((el) => {                
+                element(by.xpath('/html')).getText().then((res) => {
+                    console.log('email');
+                    console.log(res);
+                })
                 el.sendKeys(username + protractor.Key.ENTER) ;
             }).then(() => {
                 browser.driver.sleep(4000);
-            }).then(() => {
+            }).then(() => {        
+                element(by.xpath('/html')).getText().then((res) => {
+                    console.log('password');
+                    console.log(res);
+                })
                 browser.actions().sendKeys(passphrase + protractor.Key.ENTER).perform();
             });
     })
