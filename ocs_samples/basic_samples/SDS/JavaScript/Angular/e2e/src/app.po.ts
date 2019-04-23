@@ -1,12 +1,24 @@
 import { browser, by, element, protractor } from 'protractor';
-//import { Cred } from './app.cred';
 import cred from './cred.json';
 
 export class AppPage {
-    
+    writeScreenShot(data, filename) {
+        const fs = require('fs');
+        const stream = fs.createWriteStream(filename);
+        stream.write(new Buffer(data, 'base64'));
+        stream.end();
+    }
 
     helper(path: string, expectation: string): any {
-
+        return element(by.id(path)).click()
+            .then((res) => {
+                browser.driver.sleep(2000);
+                element(by.id(path + 'Message')).getText()
+                    .then((txt) => {
+                        expect(txt).toContain(expectation);
+                    });
+            });
+/*#createType
         return element(by.xpath('//*[@id="' + path + '"]')).click()
             .then((res) => {
                 browser.driver.sleep(2000);
@@ -15,9 +27,18 @@ export class AppPage {
                         expect(txt).toContain(expectation);
                     });
             });
+            */
     }
     createType(): any {
-        return this.helper('createType', '201');
+        return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/button')).click()
+        .then((res) => {
+            browser.driver.sleep(2000);
+            element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/span')).getText()
+                .then((txt) => {
+                    expect(txt).toContain("201");
+                });
+        });
+        // return this.helper('createType', '201');
     }
 
     createStream(): any {
@@ -186,9 +207,12 @@ export class AppPage {
                         browser.driver.findElement(by.xpath('/html/body/div[3]/div/div[2]/a[1]'))
                             .then((ele) => {
                                 ele.click()
+                                .then((res) => {
+                                    browser.driver.sleep(3000)
                                     .then((res) => {
                                         this.loginWithGoogle(cred.login, cred.pass);
                                     });
+                                });
                             });
                     });
             });
@@ -206,7 +230,7 @@ export class AppPage {
             .then((el) => {
                 el.sendKeys(username + protractor.Key.ENTER) ;
             }).then(() => {
-                browser.driver.sleep(3000);
+                browser.driver.sleep(4000);
             }).then(() => {
                 browser.actions().sendKeys(passphrase + protractor.Key.ENTER).perform();
             });

@@ -1,9 +1,17 @@
 import { AppPage } from './app.po';
 import { browser, logging } from 'protractor';
 
+const fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    const stream = fs.createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
+
 describe('workspace-project App', () => {
     let page: AppPage;
-    var originalTimeout;
+    let originalTimeout;
 
     beforeEach((done) => {
       originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -18,7 +26,7 @@ describe('workspace-project App', () => {
           .then((res) => {
         page.login2()
             .then((res) => {
-        browser.driver.sleep(10000)
+        browser.driver.sleep(15000)
             .then((res) => {
         page.createType()
             .then((res) => {
@@ -107,6 +115,9 @@ describe('workspace-project App', () => {
 
     afterEach((done) => {
 
+        browser.takeScreenshot().then(function (png) {
+            writeScreenShot(png, 'exception2.png');
+        });
         // page.deleteRest();
     // Assert that there are no errors emitted from the browser
     /*
@@ -121,6 +132,9 @@ describe('workspace-project App', () => {
 
     afterAll((done) => {
 
+        browser.takeScreenshot().then(function (png) {
+            writeScreenShot(png, 'exception.png');
+        });
         page.deleteRest();
         done();
     });
