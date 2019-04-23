@@ -10,7 +10,7 @@ jobs:
 - job: SDSangJS
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'Hosted VS2017'
     
   steps :
     - task: NodeTool@0 
