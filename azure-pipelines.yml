@@ -10,7 +10,7 @@ jobs:
 - job: SDSangJS
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'vs2017-win2016'
     
   steps :
     - task: NodeTool@0 
@@ -116,4 +116,18 @@ jobs:
       displayName: 'Test that the app runs'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
 
+
+    # Publish Test Results
+    # Publish Test Results to Azure Pipelines/TFS
+    - task: PublishTestResults@2
+      inputs:
+        #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/ex*.png' 
+        #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+        #mergeTestResults: false # Optional
+        #failTaskOnFailedTests: false # Optional
+        #testRunTitle: # Optional
+        #buildPlatform: # Optional
+        #buildConfiguration: # Optional
+        #publishRunAttachments: true # Optional
 
