@@ -30,8 +30,8 @@ export class AppPage {
             */
     }
     createType(): any {        
-        console.log('create type');
         element(by.xpath('/html')).getText().then((res) => {
+            console.log('!!create type');
             console.log(res);
         })
         return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/button')).click()
@@ -250,7 +250,7 @@ export class AppPage {
                 browser.driver.sleep(4000);
             }).then(() => {        
                 element(by.xpath('/html')).getText().then((res) => {
-                    console.log('password');
+                    console.log('!!password');
                     console.log(res);
                 })
                 browser.actions().sendKeys(passphrase + protractor.Key.ENTER).perform();

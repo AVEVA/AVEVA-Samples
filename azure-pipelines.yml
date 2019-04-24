@@ -87,7 +87,23 @@ jobs:
         mv prod_cred.json cred.json
       workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
       displayName: 'rename config file3'
+
+    - script: |
+        cat cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file3'
+
+    - script: |
+        del cred.json
+        rename prod_cred.json cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file3'
       
+
+    - script: |
+        cat cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file3'
       
     - script: |
        npm install -g @angular/cli
