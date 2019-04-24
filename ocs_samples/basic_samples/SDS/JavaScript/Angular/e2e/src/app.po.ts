@@ -205,7 +205,7 @@ export class AppPage {
     login2() {
    
         element(by.xpath('/html')).getText().then((res) => {
-            console.log('login');
+            console.log('!!login');
             console.log(res);
         })
         return element(by.xpath('/html/body/app-root/nav/div/a[2]')).click()
@@ -213,7 +213,7 @@ export class AppPage {
                 browser.driver.sleep(3000)
                     .then((res) => {
                         element(by.xpath('/html')).getText().then((res) => {
-                            console.log('choices');
+                            console.log('!!choices');
                             console.log(res);
                         })
                         browser.driver.findElement(by.xpath('/html/body/div[3]/div/div[2]/a[1]'))
@@ -241,8 +241,9 @@ export class AppPage {
         return browser.driver.findElement(by.css('[type="email"]'))
             .then((el) => {                
                 element(by.xpath('/html')).getText().then((res) => {
-                    console.log('email');
+                    console.log('!!email');
                     console.log(res);
+                    console.log('!!' + username);
                 })
                 el.sendKeys(username + protractor.Key.ENTER) ;
             }).then(() => {
