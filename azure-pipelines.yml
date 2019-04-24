@@ -74,36 +74,30 @@ jobs:
       displayName: copy file 3
 
     - script: |
-        mv prod_oidc.config.json oidc.config.json
-      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/'
-      displayName: 'rename config file'
-
-    - script: |
-        mv prod_sdsconfig.json sdsconfig.json
-      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/'
-      displayName: 'rename config file2'
-
-    - script: |
-        mv prod_cred.json cred.json
-      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
-      displayName: 'rename config file3'
-
-    - script: |
         cat cred.json
       workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
       displayName: 'rename config file3'
 
     - script: |
         del cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file4'
+      
+
+    - script: |
+        cat prod_cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file5'
+
+    - script: |
         rename prod_cred.json cred.json
       workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
-      displayName: 'rename config file3'
-      
+      displayName: 'rename config file6'
 
     - script: |
         cat cred.json
       workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
-      displayName: 'rename config file3'
+      displayName: 'rename config file7'
       
     - script: |
        npm install -g @angular/cli
