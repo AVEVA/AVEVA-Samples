@@ -74,6 +74,12 @@ jobs:
       displayName: copy file 3
 
     - script: |
+        cat prod_cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file2'
+
+
+    - script: |
         cat cred.json
       workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
       displayName: 'rename config file3'
