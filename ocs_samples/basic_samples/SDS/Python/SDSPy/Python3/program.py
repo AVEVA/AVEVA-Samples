@@ -13,6 +13,7 @@
 #
 # OSIsoft, LLC
 # 1600 Alvarado St, San Leandro, CA 94577
+# version 0.0.1
 
 from ocs_sample_library_preview import *
 from WaveData import WaveData, WaveDataInteger, WaveDataTarget, WaveDataCompound
