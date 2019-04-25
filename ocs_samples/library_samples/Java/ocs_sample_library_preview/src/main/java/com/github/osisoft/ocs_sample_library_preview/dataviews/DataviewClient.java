@@ -334,8 +334,14 @@ public class DataviewClient {
             e.printStackTrace();
         }
 
-        Datagroups results = mGson.fromJson(response.toString(), new TypeToken<Datagroups>(){}.getType());
-        return results;
+        try
+        {
+            Datagroups results = mGson.fromJson(response.toString(), new TypeToken<Datagroups>(){}.getType());
+            return results;        
+        } catch (Exception e) {
+            response.toString();
+            throw e;
+        }
        // return response.toString();
     }
 
