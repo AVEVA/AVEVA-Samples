@@ -12,6 +12,9 @@
 # OSIsoft, LLC
 # 1600 Alvarado St, San Leandro, CA 94577
 
+
+# version 0.0.1
+
 from ocs_sample_library_preview import *
 import configparser
 import datetime
@@ -201,6 +204,7 @@ def main(test = False):
         #Getting the datagroups of the defined dataview.  The datgroup lets you see what is returned by the Dataview Query.
         print
         print("Getting Datagroups")		
+        time.sleep(10) #a sleep to make sure that things are
         datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId)
         for key, datagroup in datagroups['DataGroups'].items():
             print('datagroup')
