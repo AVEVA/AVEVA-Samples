@@ -28,6 +28,7 @@ export class SdsStream {
   Description: string;
   TypeId: string;
   PropertyOverrides: SdsStreamPropertyOverride[];
+  Indexes: SdsStreamIndex[];
 }
 
 export class SdsType {
@@ -76,6 +77,10 @@ export class SdsStreamPropertyOverride {
   InterpolationMode: SdsStreamMode;
 }
 
+export class SdsStreamIndex {
+  SdsTypePropertyId: string;
+}
+
 
 export class SdsTypeProperty {
   Id: string;
@@ -83,6 +88,7 @@ export class SdsTypeProperty {
   Description: string;
   SdsType: SdsType;
   IsKey: boolean;
+  Order: number;
 }
 
 export enum SdsBoundaryType {
@@ -147,6 +153,12 @@ export class SdsRestService {
     return this.authHttp.put(url, JSON.stringify(sdsStream).toString(), this.options);
   }
 
+  getStream(streamId: string): Observable<any> {
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}`;
+    return this.authHttp.get(url, this.options);
+  }
+
+
   getStreams(query: string): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams?query=${query}`;
     return this.authHttp.get(url, this.options);
@@ -187,6 +199,20 @@ export class SdsRestService {
     return this.authHttp.get(url, this.options);
   }
 
+  getWindowValues (streamId: string, start, end, filter: string = ''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data?startIndex=${start}&endIndex=${end}&filter=${filter}`;
+    return this.authHttp.get(url, this.options);
+  }
+
+  getWindowValuesInterpolated (streamId: string, start, end, count: number): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data/Transform/Interpolated?startIndex=${start}&endIndex=${end}&count=${count}`;
+    return this.authHttp.get(url, this.options);
+  }
+
   getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
@@ -194,9 +220,27 @@ export class SdsRestService {
     return this.authHttp.get(url, this.options);
   }
 
+  getRangeValuesHeaders(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data/Transform?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}&form=tableh`;
+    return this.authHttp.get(url, this.options);
+  }
+
+  getTypes(skip: number, count: number, filter: string = ''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types?skip=${skip}&count=${count}&filter=${filter}`;
+    return this.authHttp.get(url, this.options);
+  }
+
   createType(sdsType: SdsType): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${sdsType.Id}`;
     return this.authHttp.post(url, sdsType, this.options);
+  }
+  
+  updateStreamType(streamId: string, streamViewId: string): Observable<any> {
+    const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}/Type?streamViewId=${streamViewId}`;
+    return this.authHttp.put(url, '', this.options);
   }
 
   deleteType(typeId: string): Observable<any> {

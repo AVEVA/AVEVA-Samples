@@ -31,6 +31,8 @@ namespace UomsSample
     public class Program
     {
 
+        static bool success = true;
+        static Exception toThrow = null;
 
         private static Random Random = new Random();
 
@@ -41,8 +43,6 @@ namespace UomsSample
 
         public static async Task<bool> MainAsync(bool test = false)
         {
-            bool success = true;
-            Exception toThrow = null;
 
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -241,16 +241,21 @@ namespace UomsSample
         /// </summary>
         /// <param name="methodToRun">The method to run.</param>
         /// <param name="value">The value to put into the method to run</param>
-        private static async void RunInTryCatch(Func<string, Task> methodToRun, string value)
+        private static void RunInTryCatch(Func<string, Task> methodToRun, string value)
         {
             try
             {
-                await methodToRun(value);
-
+                methodToRun(value).Wait(100);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
+                success = false;
+                if(toThrow == null)
+                {
+                    toThrow = ex;
+                }
+                    
             }
         }
     }

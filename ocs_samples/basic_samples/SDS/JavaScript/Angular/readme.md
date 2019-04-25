@@ -55,6 +55,11 @@ correctly set up, the application will retrieve a bearer token and pass this tok
 is not present, the SDS Service will return 401 Unauthorized for every request.  Users are encouraged to use their browser's development tools
 to troubleshoot any issues with authentication.
 
+
+To run the test please update e2e\src\cred.json with appropriate values.  Note this script may run into problems if you have never logged in from the device before to the account you are using.  
+
+To run the test use ng e2e --webdriver-update=false.
+
 Running the example
 ------------------------------
 

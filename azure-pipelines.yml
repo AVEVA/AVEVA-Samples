@@ -507,3 +507,143 @@ jobs:
         node Sample.js
       displayName: 'Test that the app runs'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/
+
+
+- job: SDSangJS
+
+  pool:
+    vmImage: 'vs2017-win2016'
+    
+  steps :
+    - task: NodeTool@0 
+      inputs:
+        versionSpec: '8.x' # replace this value with the version that you need for your project
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_oidc.config.json
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_sdsconfig.json
+        
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_cred.json
+
+
+    # Copy Files  
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_oidc.config.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file 1
+      
+
+    # Copy Files 
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_sdsconfig.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file 2
+
+    # Copy Files   ocs_samples\basic_samples\SDS\JavaScript\Angular\e2e\src\config.json
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_cred.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/' 
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file 3
+
+    - script: |
+        del oidc.config.json
+      workingDirectory:  '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file1'
+
+    - script: |
+        rename prod_oidc.config.json oidc.config.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file2'
+
+    - script: |
+        del sdsconfig.json
+      workingDirectory:  '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file3'
+
+    - script: |
+        rename prod_sdsconfig.json sdsconfig.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file4'
+
+    - script: |
+        del cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file5'
+
+    - script: |
+        rename prod_cred.json cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file6'
+      
+    - script: |
+       npm install -g @angular/cli
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools1'      
+      
+      
+    - script: |
+       npx webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools2'    
+
+
+    - script: |
+       npm install 
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools3'   
+      
+    - script: |
+       npx webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools5'
+
+    - script: |
+        ng e2e --webdriver-update=false
+      displayName: 'Test that the app runs'
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+
+
+    # Publish Test Results
+    # Publish Test Results to Azure Pipelines/TFS
+    - task: PublishTestResults@2
+      inputs:
+        #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/ex*.png' 
+        #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+        #mergeTestResults: false # Optional
+        #failTaskOnFailedTests: false # Optional
+        #testRunTitle: # Optional
+        #buildPlatform: # Optional
+        #buildConfiguration: # Optional
+        #publishRunAttachments: true # Optional
+
