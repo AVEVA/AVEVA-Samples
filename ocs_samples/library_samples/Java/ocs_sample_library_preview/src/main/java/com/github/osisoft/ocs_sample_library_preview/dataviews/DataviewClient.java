@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xpath.internal.functions.FuncFalse;
 
 import java.io.*;
 import java.net.*;
@@ -296,6 +297,10 @@ public class DataviewClient {
     }
 
     public Datagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count) throws SdsError {
+        getDatagroups(tenantId, namespaceId, dataviewId, skip, count, false);
+    }
+    
+    public Datagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count, Boolean returnString) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -334,16 +339,21 @@ public class DataviewClient {
             e.printStackTrace();
         }
 
+        if(returnString){
+            return response.toString();
+        }
+
         try
         {
             Datagroups results = mGson.fromJson(response.toString(), new TypeToken<Datagroups>(){}.getType());
             return results;        
         } catch (Exception e) {
-            response.toString();
+            System.out.println("DataGroupDef");
+            System.out.println(response.toString());
             throw e;
         }
-       // return response.toString();
     }
+
 
     public Datagroup getDatagroup(String tenantId, String namespaceId, String dataviewId, String datagroupId) throws SdsError {
         URL url = null;
