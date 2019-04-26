@@ -19,66 +19,84 @@ import urllib.request, urllib.parse, urllib.error
 import http.client as http
 import json
 
-from .SdsError import SdsError 
+from .SdsError import SdsError
 
 import requests
 import time
 
 
 class BaseClient(object):
-    """Handles communication with Sds Service"""
+    """Handles communication with Sds Service.  Internal Use"""
 
     def __init__(self, apiversion, tenant, url, clientId, clientSecret):
         self.__apiversion = apiversion
         self.__tenant = tenant
         self.__clientId = clientId
         self.__clientSecret = clientSecret
-        self.__url = url # if resource.endswith("/")  else resource + "/" 
+        self.__url = url  # if resource.endswith("/")  else resource + "/" 
 
         self.__token = ""
         self.__expiration = 0
         self.__getToken()
 
-        self.__uri_API =  url + '/api/' + apiversion
+        self.__uri_API = url + '/api/' + apiversion
 
-    
     @property
     def uri(self):
+        """
+        Get the base uri with nothing added to it
+        :return: uri as string
+        """
         return self.__url
 
-        
     @property
     def uri_API(self):
+        """
+        Get the uri with api version added for you
+        :return: uri as string
+        """
         return self.__uri_API
-    
+
     @property
     def api_version(self):
+        """
+        Get the API Version on its own
+        :return: API Version as a string
+        """
         return self.__apiversion
-        
+
     @property
     def tenant(self):
+        """
+        Get the tenant that this client is against
+        :return: tenant id as string
+        """
         return self.__tenant
 
     def __getToken(self):
+        """
+        Helper method to get the Auth token using the URI
+        :return: the access token as string
+        """
         if ((self.__expiration - time.time()) > 5 * 60):
             return self.__token
 
         discoveryUrl = requests.get(
             self.__url + "/identity/.well-known/openid-configuration",
-            headers= {"Accept" : "application/json"})
+            headers={"Accept": "application/json"})
 
         if discoveryUrl.status_code < 200 or discoveryUrl.status_code >= 300:
             discoveryUrl.close()
             raise SdsError("Failed to get access token endpoint from discovery URL: {status}:{reason}".
-                            format(status=discoveryUrl.status_code, reason=discoveryUrl.text))
+                           format(status=discoveryUrl.status_code, reason=discoveryUrl.text))
 
         tokenEndpoint = json.loads(discoveryUrl.content)["token_endpoint"]
 
         tokenInformation = requests.post(
             tokenEndpoint,
-            data = {"client_id" : self.__clientId,
-                    "client_secret" : self.__clientSecret,
-                    "grant_type" : "client_credentials"})
+            data={"client_id": self.__clientId,
+                  "client_secret": self.__clientSecret,
+                  "grant_type": "client_credentials"})
 
         token = json.loads(tokenInformation.content)
 
@@ -90,6 +108,10 @@ class BaseClient(object):
         return self.__token
 
     def sdsHeaders(self):
+        """
+        Returns the headers needed for a HTTP call
+        :return: Dict of headers
+        """
         return {"Authorization": "Bearer %s" % self.__getToken(),
                 "Content-type": "application/json",
                 "Accept": "*/*; q=1"

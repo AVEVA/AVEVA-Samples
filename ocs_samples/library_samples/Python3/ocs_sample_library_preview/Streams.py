@@ -30,9 +30,14 @@ import requests
 
 
 class Streams(object):
-    """Handles communication with Sds Service"""
+    """
+    Client for interacting with Streams
+    """
 
     def __init__(self, client):
+        """
+        :param client: base client that handles auth and base routing
+        """
         self.__apiVersion = client.api_version
         self.__tenant = client.tenant
         self.__uri_API = client.uri_API
@@ -41,7 +46,12 @@ class Streams(object):
         self.__setPathAndQueryTemplates()
 
     def getStreamView(self, namespace_id, streamView_id):
-        """Retrieves the streamView specified by 'streamView_id' from Sds Service"""
+        """
+        Retrieves the streamView specified by 'streamView_id' from Sds Service
+        :param namespace_id: namespace to work against
+        :param streamView_id: streamview id to get
+        :return: Streamview
+        """
         if namespace_id is None:
             raise TypeError
         if streamView_id is None:
@@ -61,14 +71,19 @@ class Streams(object):
         return streamView
 
     def getStreamViewMap(self, namespace_id, streamView_id):
-        """Retrieves the streamView map specified by 'streamView_id' from Sds Service"""
+        """
+        Retrieves the streamView map specified by 'streamView_id' from Sds Service
+        :param namespace_id: namespace to work against
+        :param streamView_id:  streamview map to get
+        :return:
+        """
         if namespace_id is None:
             raise TypeError
         if streamView_id is None:
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id) + "/Map", 
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id) + "/Map",
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -80,7 +95,13 @@ class Streams(object):
         return streamViewMap
 
     def getStreamViews(self, namespace_id, skip=0, count=100):
-        """Retrieves a list of streamViews associated with the specified 'namespace_id' under the current tenant"""
+        """
+        Retrieves a list of streamViews associated with the specified 'namespace_id' under the current tenant
+        :param namespace_id: namespace to work against
+        :param skip: number of streamviews to skip for paging
+        :param count: number streamviews in a page
+        :return: array of streamviews
+        """
         if namespace_id is None:
             raise TypeError
 
@@ -100,7 +121,12 @@ class Streams(object):
         return results
 
     def getOrCreateStreamView(self, namespace_id, streamView):
-        """Tells Sds Service to create a streamView based on a local SdsStreamView object"""
+        """
+        Tells Sds Service to create a streamView based on a local SdsStreamView object
+        :param namespace_id: namespace to work against
+        :param streamView: Streamview object to create in OCS
+        :return: created Streamview
+        """
         if namespace_id is None:
             raise TypeError
         if streamView is None or not isinstance(streamView, SdsStreamView):
@@ -120,7 +146,12 @@ class Streams(object):
         return streamView
 
     def createOrUpdateStreamView(self, namespace_id, streamView):
-        """Tells Sds Service to create a streamView based on a local SdsStreamView object"""
+        """
+        Tells Sds Service to create a streamView based on a local SdsStreamView object
+        :param namespace_id: namespace to work against
+        :param streamView: Streamview object to create or update in OCS
+        :return: created Streamview
+        """
         if namespace_id is None:
             raise TypeError
         if streamView is None or not isinstance(streamView, SdsStreamView):
@@ -138,7 +169,12 @@ class Streams(object):
         response.close()
 
     def deleteStreamView(self, namespace_id, streamView_id):
-        """Tells Sds Service to delete the streamView with the specified 'streamView_id'"""
+        """
+        Tells Sds Service to delete the streamView with the specified 'streamView_id'
+        :param namespace_id: namespace to work against
+        :param streamView_id: id of streamview to delete
+        :return:
+        """
         if namespace_id is None:
             raise TypeError
         if streamView_id is None:
@@ -155,7 +191,12 @@ class Streams(object):
         response.close()
 
     def getStream(self, namespace_id, stream_id):
-        """Retrieves a stream specified by 'stream_id' from the Sds Service"""
+        """
+        Retrieves a stream specified by 'stream_id' from the Sds Service
+        :param namespace_id: namespace to work against
+        :param stream_id: id of the stream
+        :return:the Stream
+        """
         if namespace_id is None:
             raise TypeError
         if stream_id is None:
