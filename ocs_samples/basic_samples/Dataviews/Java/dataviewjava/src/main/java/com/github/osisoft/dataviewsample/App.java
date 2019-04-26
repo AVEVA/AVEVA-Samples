@@ -122,7 +122,7 @@ public class App {
             System.out.println("Getting datagroups");
 
             //This works in automated envrionment, but the below code works locally and gives you the datagroup back as an object
-            String dataGroups = ocsClient.Dataviews.getDatagroups(tenantId, namespaceId, sampleDataviewId, 0, 100, true);
+            String dataGroups = ocsClient.Dataviews.getDatagroupsString(tenantId, namespaceId, sampleDataviewId, 0, 100);
             System.out.println("Datagroups");
             System.out.println(dataGroups);
 
