@@ -13,7 +13,7 @@
 # 1600 Alvarado St, San Leandro, CA 94577
 
 
-# version 0.0.1
+# version 0.0.2
 
 from ocs_sample_library_preview import *
 import configparser
@@ -204,11 +204,18 @@ def main(test = False):
         #Getting the datagroups of the defined dataview.  The datgroup lets you see what is returned by the Dataview Query.
         print
         print("Getting Datagroups")		
-        time.sleep(10) #a sleep to make sure that things are
-        datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId)
-        for key, datagroup in datagroups['DataGroups'].items():
-            print('datagroup')
-            print(datagroup.toJson())	 
+ 
+        # This works for the automated test.  You can use this or the below.
+        datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId, 0, 100, True)
+        print('datagroups')
+        print(datagroups)	 
+        
+        # This works locally,  but fails during automated tests for some reason
+
+        #datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId)
+        #for key, datagroup in datagroups['DataGroups'].items():
+        #    print('datagroup')
+        #    print(datagroup.toJson())	 
             
 
         #By default the preview get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
