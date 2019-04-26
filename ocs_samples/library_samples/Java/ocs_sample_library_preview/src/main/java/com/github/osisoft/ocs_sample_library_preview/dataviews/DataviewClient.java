@@ -297,10 +297,20 @@ public class DataviewClient {
     }
 
     public Datagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count) throws SdsError {
-        getDatagroups(tenantId, namespaceId, dataviewId, skip, count, false);
+        String response = getDatagroupsString(tenantId, namespaceId, dataviewId, skip, count) ;
+        try
+        {
+            Datagroups results = mGson.fromJson(response.toString(), new TypeToken<Datagroups>(){}.getType());
+            return results;        
+        } catch (Exception e) {
+            System.out.println("DataGroupDef");
+            System.out.println(response.toString());
+            throw e;
+        }
     }
     
-    public Datagroups getDatagroups(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count, Boolean returnString) throws SdsError {
+    public String getDatagroupsString(String tenantId, String namespaceId, String dataviewId, Integer skip, Integer count) throws SdsError {
+        
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -339,19 +349,8 @@ public class DataviewClient {
             e.printStackTrace();
         }
 
-        if(returnString){
-            return response.toString();
-        }
+        return response.toString();
 
-        try
-        {
-            Datagroups results = mGson.fromJson(response.toString(), new TypeToken<Datagroups>(){}.getType());
-            return results;        
-        } catch (Exception e) {
-            System.out.println("DataGroupDef");
-            System.out.println(response.toString());
-            throw e;
-        }
     }
 
 

@@ -35,6 +35,7 @@ DataviewJava
 Version | Date |  Notes
 ----|-----------| --------
 0.0.2 | 4-25-19 | This version was out earlier too.  
+0.0.3 | 4-25-19 | Datagroup definition failed test.  Updated to fix that. 
 
 
 OMF_APIJava
@@ -84,3 +85,17 @@ SDSnodeJS
 Version | Date |  Notes
 ----|-----------| --------
 0.0.1 | 4-25-19 | This version was out earlier too.
+
+
+Lib_Py
+
+Version | Date |  Notes
+----|-----------| --------
+0.0.12 | 4-25-19 | 
+
+
+Lib_Java
+
+Version | Date |  Notes
+----|-----------| --------
+0.0.7 | 4-26-19 | 
