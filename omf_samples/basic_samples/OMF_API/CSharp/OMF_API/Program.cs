@@ -178,7 +178,7 @@ namespace OMF_API
             if (sendingToOCS)
             {
                 //give a little bit of time for the OMF information to propogate
-                Thread.Sleep(5000);
+                Thread.Sleep(15000);
                 // just getting back the type or stream means that it worked
                 string json1 = checkValue(checkBase + $"/Types" + $"/FirstDynamicType");
 
