@@ -9,7 +9,6 @@ jobs:
 
 
 - job: SDSPy
-
   pool:
     name: 00-OSIManaged-Build
   steps :
