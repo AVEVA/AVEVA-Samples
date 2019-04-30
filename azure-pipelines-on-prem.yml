@@ -1,0 +1,63 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+  
+jobs:      
+
+
+- job: SDSPy
+
+pool:
+  name: 00-OSIManaged-Build
+  steps :
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        architecture: 'x64'
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_config.ini
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_config.ini
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+
+    - script: |
+        mv prod_config.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'rename config file'
+      
+
+      
+    - script: |
+        pip install setuptools wheel
+        pip install unittest-xml-reporting    
+        pip install pytest
+        pip install pytest-cov
+      displayName: 'Install tools'
+      
+      
+    - script: |
+        pip install -r requirements.txt
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'Install requirements'
+      
+    - script: |
+        python -m pytest ./program.py
+      displayName: 'Test with pytest'
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
