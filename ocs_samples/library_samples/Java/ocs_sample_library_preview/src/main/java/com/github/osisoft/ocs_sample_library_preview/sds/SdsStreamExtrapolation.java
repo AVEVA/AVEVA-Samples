@@ -17,6 +17,9 @@
 
 package  com.github.osisoft.ocs_sample_library_preview.sds;
 
+/** 
+ * SdsStreamExtrapolation 0-3
+ */
 public enum SdsStreamExtrapolation {
 
     All(0),
@@ -30,6 +33,10 @@ public enum SdsStreamExtrapolation {
         this.SdsStreamExtrapolation = id;
     }
 
+    /**
+     * gets the value
+     * @return
+     */
     int getValue() {
         return SdsStreamExtrapolation;
     }

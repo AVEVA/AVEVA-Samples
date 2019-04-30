@@ -17,7 +17,9 @@
 import json
 
 class SdsNamespace(object):
-    """description of class"""
+    """
+    definition of SdsNamespace
+    """
 
     @property
     def Id(self):

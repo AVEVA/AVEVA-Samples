@@ -27,7 +27,9 @@ import requests
 
 
 class Types(object):
-    """Handles communication with Sds Service"""
+    """
+    Handles communication with Sds Service
+    """
 
     def __init__(self, client):
         self.__apiVersion = client.api_version
@@ -38,7 +40,12 @@ class Types(object):
         self.__setPathAndQueryTemplates()
 
     def getType(self, namespace_id, type_id):
-        """Retrieves the type specified by 'type_id' from Sds Service"""
+        """
+        Retrieves the type specified by 'type_id' from Sds Service
+        :param namespace_id: id of namespace to work against
+        :param type_id: id of the type to get
+        :return:the type as an SdsType
+        """
         if namespace_id is None:
             raise TypeError
         if type_id is None:
@@ -57,7 +64,12 @@ class Types(object):
         return type
 
     def getTypeReferenceCount(self, namespace_id, type_id):
-        """Retrieves the number of times the type is referenced"""
+        """
+        Retrieves the number of times the type is referenced
+        :param namespace_id: id of namespace to work against
+        :param type_id: id of the type to get references of
+        :return: reference count python dynamic object
+        """
         if namespace_id is None:
             raise TypeError
         if type_id is None:
@@ -76,7 +88,14 @@ class Types(object):
         return counts
 
     def getTypes(self, namespace_id, skip=0, count=100, filter = ""):
-        """Retrieves a list of types associated with the specified 'namespace_id' under the current tenant"""
+        """
+        Retrieves a list of types associated with the specified 'namespace_id' under the current tenant
+        :param namespace_id: id of namespace to work against
+        :param skip: number of types to skip, used for paging
+        :param count: number of types to retrieve
+        :param filter: optional filter.  Default is ""
+        :return: array of types as SdsType
+        """
         if namespace_id is None:
             raise TypeError
 
@@ -96,7 +115,13 @@ class Types(object):
         return results
 
     def getOrCreateType(self, namespace_id, type):
-        """Tells Sds Service to create a type based on local 'type' or get if existing type matches"""
+        """
+        Tells Sds Service to create or get a type based on local 'type' or get if existing type matches
+
+        :param namespace_id: id of namespace to work against
+        :param type:  the SdsType to create or get
+        :return:  the created or retreived SdsType
+        """
         if namespace_id is None:
             raise TypeError
         if type is None or not isinstance(type, SdsType):
@@ -115,7 +140,13 @@ class Types(object):
         return type
 
     def createOrUpdateType(self, namespace_id, type):
-        """Tells Sds Service to create a type based on local 'type' object"""
+        """
+        Tells Sds Service to create or update a type based on local 'type' object
+
+        :param namespace_id: id of namespace to work against
+        :param type:  the SdsType to create or update
+        :return:  the created or updated SdsType
+        """
         if namespace_id is None:
             raise TypeError
         if type is None or not isinstance(type, SdsType):
@@ -132,7 +163,13 @@ class Types(object):
         response.close()
 
     def deleteType(self, namespace_id, type_id):
-        """Tells Sds Service to delete the type specified by 'type_id'"""
+        """
+        Tells Sds Service to delete the type specified by 'type_id'
+
+        :param namespace_id: id of namespace to work against
+        :param type_id:  id of the type to delete
+        :return:
+        """
         if namespace_id is None:
             raise TypeError
         if type_id is None:
@@ -154,6 +191,10 @@ class Types(object):
 
 
     def __setPathAndQueryTemplates(self):
+        """
+        used to create needed URI for the other calls
+        :return:
+        """
         self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
         self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}&filter={filter}"

@@ -17,6 +17,9 @@
 
 package  com.github.osisoft.ocs_sample_library_preview.sds;
 
+/** 
+ * SdsTypeCode 0-22 not inclusive
+ */
 public enum SdsTypeCode {
     Empty(0),
     Object(2),
@@ -42,6 +45,10 @@ public enum SdsTypeCode {
         this.SdsTypeCode = id;
     }
 
+    /**
+     * gets integer Value
+     * @return
+     */
     public int getValue() {
         return SdsTypeCode;
     }

@@ -17,13 +17,24 @@
 import json
 
 class SdsStreamIndex(object):
-    """Sds Stream Index definitions"""
+    """
+    Sds Stream Index definitions
+    """
 
     @property
     def SdsTypePropertyId(self):
+        """
+        id of property   required
+        :return:
+        """
         return self.__sdsTypePropertyId
     @SdsTypePropertyId.setter
     def SdsTypePropertyId(self, sdsTypePropertyId):
+        """
+        id of property   required
+        :param sdsTypePropertyId:
+        :return:
+        """
         self.__sdsTypePropertyId = sdsTypePropertyId
 
     def toJson(self):
