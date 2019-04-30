@@ -17,9 +17,9 @@ and the other targets those running Python 3.x.  Please use the sample that is a
 for your environment.  You can determine which version of Python you are running by typing 
 the following at the command line:
 
-.. code::
-
+```
 	python -V
+```
 
 The samples were built and tested against Python 3.6.4 and Python 2.7.14.  If you are using 
 a different version you might encounter errors or unexepected behavior.    
@@ -40,9 +40,10 @@ exposes simple methods for specifying request types to a given
 destination address. The client calls the requests method by passing a destination
 URL, payload, and headers. The server's response is stored.
 
-.. code:: python
+```python
+response = requests.post(url, data=payload, headers=client_headers)
+```
 
-    response = requests.post(url, data=payload, headers=client_headers)
 
 -  *url* is the service endpoint (for example:
    ``https://dat-a.osisoft.com``). The connection is used by the
@@ -99,19 +100,19 @@ used in the sample.
 
 The values to be replaced are in ``config.ini``:
 
-.. code:: python
+```ini
+[Configurations]
+Namespace = Samples
 
-	[Configurations]
-	Namespace = Samples
+[Access]
+Resource = https://dat-b.osisoft.com
+Tenant = REPLACE_WITH_TENANT_ID
+ApiVersion = v1-preview
 
-	[Access]
-	Resource = https://dat-b.osisoft.com
-	Tenant = REPLACE_WITH_TENANT_ID
-	ApiVersion = v1-preview
-
-	[Credentials]
-	ClientId = REPLACE_WITH_APPLICATION_IDENTIFIER
-	ClientSecret = REPLACE_WITH_APPLICATION_SECRET
+[Credentials]
+ClientId = REPLACE_WITH_APPLICATION_IDENTIFIER
+ClientSecret = REPLACE_WITH_APPLICATION_SECRET
+```
 
 Obtain an Authentication Token
 ------------------------------
@@ -120,15 +121,16 @@ Within each request to SDS, the headers are provided by a function that is also
 responsible for refreshing the token. An authentication context is created 
 and a token is acquired from that context.
 
-.. code:: python
+```python
+tokenInformation = requests.post(
+tokenEndpoint,
+data = {"client_id" : self.clientId,
+        "client_secret" : self.clientSecret,
+        "grant_type" : "client_credentials"})
 
-           tokenInformation = requests.post(
-            tokenEndpoint,
-            data = {"client_id" : self.clientId,
-                    "client_secret" : self.clientSecret,
-                    "grant_type" : "client_credentials"})
+token = json.loads(tokenInformation.content)
+```
 
-        token = json.loads(tokenInformation.content)
 
 Acquire an SdsNamespace
 ---------------------
@@ -145,7 +147,7 @@ function properly.
 Each SdsClient is associated with the tenant passed as an argument to the
 constructor. There is a one-to-one correspondence between them. However,
 multiple namespaces may be allocated to a single tenant, so you will see
-that each function in ``SdsClient.py`` takes in a namespace ID as an
+that each function in the library takes in a namespace ID as an
 argument.
 
 Create an SdsType
@@ -163,45 +165,44 @@ In the sample code, the SdsType representing WaveData is defined in the
 of integer and double atomic types. The function begins by defining a
 base SdsType for each atomic type.
 
-.. code:: python
-
-    intType = SdsType()
-    intType.Id = "intType"
-    intType.SdsTypeCode = SdsTypeCode.Int32
+```python
+intType = SdsType()
+intType.Id = "intType"
+intType.SdsTypeCode = SdsTypeCode.Int32
+```
 
 Next, the WaveData properties are each represented by an SdsTypeProperty.
 Each SdsType field in SdsTypeProperty is assigned an integer or double
 SdsType. The WaveData Order property represents the type’s key, and its
 IsKey property is set to true.
 
-.. code:: python
-
-    orderProperty = SdsTypeProperty()
-    orderProperty.Id = "Order"
-    orderProperty.SdsType = intType
-    orderProperty.IsKey = True
+```python
+orderProperty = SdsTypeProperty()
+orderProperty.Id = "Order"
+orderProperty.SdsType = intType
+orderProperty.IsKey = True
+```
 
 The WaveDatan SdsType is defined as a collection of the SdsTypeProperties.
 
-.. code:: python
+```python
+#create an SdsType for WaveData Class
+wave = SdsType()
+wave.Id = sampleTypeId
+wave.Name = "WaveDataPySample"
+wave.Description = "This is a sample SDS type for storing WaveData type events"
+wave.SdsTypeCode = SdsTypeCode.Object
+wave.Properties = [orderProperty, tauProperty, radiansProperty, 
+                    sinProperty, cosProperty, tanProperty, sinhProperty, 
+                    coshProperty, tanhProperty]
+```
 
-    #create an SdsType for WaveData Class
-    wave = SdsType()
-    wave.Id = sampleTypeId
-    wave.Name = "WaveDataPySample"
-    wave.Description = "This is a sample SDS type for storing WaveData type events"
-    wave.SdsTypeCode = SdsTypeCode.Object
-    wave.Properties = [orderProperty, tauProperty, radiansProperty, 
-                       sinProperty, cosProperty, tanProperty, sinhProperty, 
-                       coshProperty, tanhProperty]
+The WaveData type is created in SDS using the ``createType`` method.
 
-The WaveData type is created in SDS using the ``createType`` method in
-SdsClient.py.
-
-.. code:: python
-
-    type = getWaveDataType(sampleTypeId)
-    type = client.createType(namespaceId, type)
+```python
+type = getWaveDataType(sampleTypeId)
+type = client.createType(namespaceId, type)
+```
 
 All SdsTypes are constructed in a similar manner. Basic SdsTypes form the basis for
 SdsTypeProperties, which are then assigned to a complex user-defined
@@ -217,30 +218,29 @@ submit it to the SDS service. The ``createStream`` method of SdsClient is
 similar to createType, except that it uses a different URL. Here is how
 it is called from the main program:
 
-.. code:: python
-
-    stream = SdsStream()
-    stream.Id = sampleStreamId
-    stream.Name = "WaveStreamPySample"
-    stream.Description = "A stream to store the WaveData events"
-    stream.TypeId = type.Id
-    stream = client.createStream(namespaceId, stream)
+```python
+stream = SdsStream()
+stream.Id = sampleStreamId
+stream.Name = "WaveStreamPySample"
+stream.Description = "A stream to store the WaveData events"
+stream.TypeId = type.Id
+stream = client.createStream(namespaceId, stream)
+```
 
 Create and Insert Values into the Stream
 ----------------------------------------
 
 A single SdsValue is a data point in the stream. It cannot be
 empty and must have at least the key value of the SdsType for the
-event. Events are passed in JSON format and are serialized in
-``SdsClient.py``, which is then sent along with a POST request.
+event. Events are passed in JSON format and are serialized in which is then sent along with a POST request.
 
-.. code:: python
-
-        payload = json.dumps(events)
-        response = requests.post(
-            self.__url + self.__insertValuesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
-            data=payload, 
-            headers=self.__sdsHeaders())
+```python
+payload = json.dumps(events)
+response = requests.post(
+    self.__url + self.__insertValuesPath.format(api_version=self.__apiVersion, tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+    data=payload, 
+    headers=self.__sdsHeaders())
+```
 
 When inserting single or multiple values, the payload has to be a
 collection of events. See the sample code for an example.
@@ -261,43 +261,42 @@ events from a starting index.
 
 Here is how to use ``getWindowValues``:
 
-.. code:: python
-
-    def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
+```python
+def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
+```
 
 *start* and *end* (inclusive) represent the starting and ending indices for the
 retrieval. Additionally, the namespace ID and stream ID must
 be provided to the function call. A JSON object containing a list of the
 found values is returned. In the sample the call is:
 
-.. code:: python
-
-    waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
+```python
+waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
+```
 
 Optionally, you can retrieve a range of values from a start index using the
 ``getRangeValues`` method in ``SdsClient``. The starting index is the ID
 of the ``SdsTypeProperty`` that corresponds to the key value of the
 WaveData type. In this case, it is ``Order``. Following is the
-declaration of getRangeValues in SdsClient.py:
+declaration of getRangeValues:
 
-.. code:: python
-
-    def getRangeValues(self, namespace_id, stream_id, value_class, start, skip, count, reverse, boundary_type, streamView_id=""):
+```python
+def getRangeValues(self, namespace_id, stream_id, value_class, start, skip, count, reverse, boundary_type, streamView_id=""):
+```
 
 *skip* is the increment by which the retrieval will happen. *count* is
 how many values you wish to have returned. *reverse* is a boolean that
 when ``true`` causes the retrieval to work backwards from the starting
 point. Finally, *boundary\_type* is a ``SdsBoundaryType`` value that
 determines the behavior if the starting index cannot be found. Refer the
-to the `SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__
+to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 for more information about SdsBoundaryTypes.
 
-The ``getRangeValues`` method is called as shown here in
-program.py:
+The ``getRangeValues`` method is called as shown :
 
-.. code:: python
-
-    waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
+```python
+waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
+```
 
 Updating and Replacing Values
 -----------------------------
@@ -314,31 +313,31 @@ Here are the calls that accomplish these steps:
 
 Update values:
 
-.. code:: python
-
-    # update one value
-    event = nextWave(start, span, 4.0, 0)
-    client.updateValues(namespaceId, stream.Id, [event])
-    # update multiple values
-    updatedEvents = []
-    for i in range(2, 40, 2):
-        event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 4.0, i)
-        updatedEvents.append(event)
-    client.updateValues(namespaceId, stream.Id, updatedEvents)
+```python
+# update one value
+event = nextWave(start, span, 4.0, 0)
+client.updateValues(namespaceId, stream.Id, [event])
+# update multiple values
+updatedEvents = []
+for i in range(2, 40, 2):
+    event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 4.0, i)
+    updatedEvents.append(event)
+client.updateValues(namespaceId, stream.Id, updatedEvents)
+```
 
 Replace values:
 
-.. code:: python
-
-    # replace one value
-    event = nextWave(start, span, 10.0, 0)
-    client.replaceValues(namespaceId, stream.Id, [event])
-    # replace multiple values
-    replacedEvents = []
-    for i in range(2, 40, 2):
-        event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 10.0, i)
-        replacedEvents.append(event)
-    client.replaceValues(namespaceId, stream.Id, replacedEvents)
+```python
+# replace one value
+event = nextWave(start, span, 10.0, 0)
+client.replaceValues(namespaceId, stream.Id, [event])
+# replace multiple values
+replacedEvents = []
+for i in range(2, 40, 2):
+    event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 10.0, i)
+    replacedEvents.append(event)
+client.replaceValues(namespaceId, stream.Id, replacedEvents)
+```
 
 Property Overrides
 ------------------
@@ -352,22 +351,22 @@ Now if a requested index does not correspond to a real value in the stream then 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
-.. code:: python
+```python
+# Create a Discrete stream PropertyOverride indicating that we do not want SDS to calculate a value for Radians and update our stream 
+propertyOverride = SdsStreamPropertyOverride()
+propertyOverride.SdsTypePropertyId = 'Radians'
+propertyOverride.InterpolationMode = 3
 
-    # Create a Discrete stream PropertyOverride indicating that we do not want SDS to calculate a value for Radians and update our stream 
-    propertyOverride = SdsStreamPropertyOverride()
-    propertyOverride.SdsTypePropertyId = 'Radians'
-    propertyOverride.InterpolationMode = 3
-
-	# update the stream
-    props = [propertyOverride]
-    stream.PropertyOverrides = props	
-    client.createOrUpdateStream(namespaceId, stream)
+# update the stream
+props = [propertyOverride]
+stream.PropertyOverrides = props	
+client.createOrUpdateStream(namespaceId, stream)
+```
 
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
 before and after updating the stream to show that it has changed. See
-the `SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for
+the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for
 more information about SDS Property Overrides.
 
 SdsStreamViews
@@ -382,25 +381,25 @@ destination. When the mapping is straightforward, such as when
 the properties are in the same position and of the same data type, 
 or when the properties have the same name, SDS will map the properties automatically.
 
-.. code:: python
-
-        rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
+```python
+rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
+```
 
 To map a property that is beyond the ability of SDS to map on its own, 
 you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
-.. code:: python
-
-        vp2 = SdsStreamViewProperty()
-        vp2.SourceId = "Sin"
-        vp2.TargetId = "SinInt"
-        ...
-        manualStreamView = SdsStreamView()
-        manualStreamView.Id = sampleStreamViewIntId
-        manualStreamView.Name = "SampleIntStreamView"
-        manualStreamView.TargetTypeId = waveIntegerType.Id
-        manualStreamView.SourceTypeId = waveType.Id
-        manualStreamView.Properties = [vp1, vp2, vp3, vp4]
+```python
+vp2 = SdsStreamViewProperty()
+vp2.SourceId = "Sin"
+vp2.TargetId = "SinInt"
+...
+manualStreamView = SdsStreamView()
+manualStreamView.Id = sampleStreamViewIntId
+manualStreamView.Name = "SampleIntStreamView"
+manualStreamView.TargetTypeId = waveIntegerType.Id
+manualStreamView.SourceTypeId = waveType.Id
+manualStreamView.Properties = [vp1, vp2, vp3, vp4]
+```
 
 SdsStreamViewMap
 ---------
@@ -409,9 +408,9 @@ When an SdsStreamView is added, SDS defines a plan mapping. Plan details are ret
 The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
 The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
-.. code:: python
-
-        streamViewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
+```python
+streamViewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
+```
 
 
 Deleting Values from a Stream
@@ -424,19 +423,19 @@ Removing values depends on the value's key type ID value. If a match is
 found within the stream, then that value will be removed. Below are the
 declarations of both functions:
 
-.. code:: python
-
-    # remove a single value from the stream
-    def removeValue(self, namespaceId, stream_id, index):
-    # remove multiple values from the stream
-    def removeWindowValues(self, namespaceId, stream_id, index):
+```python
+# remove a single value from the stream
+def removeValue(self, namespaceId, stream_id, index):
+# remove multiple values from the stream
+def removeWindowValues(self, namespaceId, stream_id, index):
+```
 
 Here is how the methods are used in the sample:
 
-.. code:: python
-
-    client.removeValue(namespaceId, stream.Id, 0)
-    client.removeWindowValues(namespaceId, stream.Id, 0, 40)
+```python
+client.removeValue(namespaceId, stream.Id, 0)
+client.removeWindowValues(namespaceId, stream.Id, 0, 40)
+```
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to Order=0 and Order=40
@@ -451,15 +450,14 @@ document, including get methods for types, and streams.
 Each has both a single get method and a multiple get method, which
 reflect the data retrieval methods covered above. Below are the function declarations:
 
-.. code:: python
+```python
+def getType(self, namespaceId, type_id):
+def getTypes(self, namespaceId):
+def getStream(self, namespaceId, stream_id):
+def getStreams(self, namespaceId, query, skip, count):
+```
 
-    def getType(self, namespaceId, type_id):
-    def getTypes(self, namespaceId):
-    def getStream(self, namespaceId, stream_id):
-    def getStreams(self, namespaceId, query, skip, count):
-
-For a complete list of HTTP request URLs refer to the `SDS
-documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
+For a complete list of HTTP request URLs refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html).
 
 Cleanup: Deleting Types, Stream Views and Streams
 -----------------------------------------------
@@ -468,11 +466,11 @@ In order for the program to run repeatedly without collisions, the sample
 performs some cleanup before exiting. Deleting streams, stream views and types can be achieved by a DELETE REST call and passing
 the corresponding Id. The following calls are made in the sample code.
 
-.. code:: python
-
-    client.deleteStream(namespaceId, sampleStreamId)
-    client.deleteType(namespaceId, sampleTypeId)
-    client.deleteStreamView(namespaceId, sampleStreamViewId)
+```python
+client.deleteStream(namespaceId, sampleStreamId)
+client.deleteType(namespaceId, sampleTypeId)
+client.deleteStreamView(namespaceId, sampleStreamViewId)
+```
 
 *Note: Types and Stream Views cannot be deleted until any streams
 referencing them are deleted first. Their references are counted so

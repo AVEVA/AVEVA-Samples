@@ -4,10 +4,11 @@
 Building a Client with the OCS Client Libraries
 ----------------------------------------------
 
-The sample described in this section makes use of the OSIsoft Cloud Services Client Libraries. When working in .NET, 
+The sample described in this section makes use of the OSIsoft Cloud Services Client Libraries.   When working in .NET, 
 it is recommended that you use the OCS Client Libraries metapackage, OSIsoft.OCSClients. The metapackage is a NuGet package available 
 from https://api.nuget.org/v3/index.json. The libraries offer a framework of classes that make client development easier.
 
+[SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
 Configure constants for connecting and authentication
 -----------------------------------------------------
@@ -18,15 +19,15 @@ authenticated against the directory. The sample includes an appsettings.json con
 file to hold configuration strings, including the authentication strings. You must 
 replace the placeholders with the authentication-related values you received from OSIsoft. 
 
-::
-
-	{
-		  "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		  "TenantId": "REPLACE_WITH_TENANT_ID",
-		  "Resource": "https://dat-b.osisoft.com",
-		  "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		  "ClientKey": "REPLACE_WITH_CLIENT_SECRET"
-	}
+```json
+{
+"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
+"TenantId": "REPLACE_WITH_TENANT_ID",
+"Resource": "https://dat-b.osisoft.com",
+"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+"ClientKey": "REPLACE_WITH_CLIENT_SECRET"
+}
+```
 
 
 
@@ -43,14 +44,13 @@ The client example works through two client interfaces:
 
 The following code block illustrates how to configure clients to use throughout the sample:
 
-.. code:: cs
+```C#
+AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
 
-            AuthenticationHandler authenticationHandler = new AuthenticationHandler(resource, clientId, clientKey);
-
-            SdsService sdsService = new SdsService(new Uri(resource), authenticationHandler);
-            var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
-            var dataService = sdsService.GetDataService(tenantId, namespaceId);
-  
+SdsService sdsService = new SdsService(new Uri(resource), authenticationHandler);
+var metadataService = sdsService.GetMetadataService(tenantId, namespaceId);
+var dataService = sdsService.GetDataService(tenantId, namespaceId);
+```
   
 
 Create an SdsType
@@ -68,39 +68,39 @@ SdsTypeBuilder. SdsTypeBuilder uses reflection to build SdsTypes. The SdsTypeBui
 a number of methods for manipulating types. One of the simplest ways to create a type 
 is to use one of its static methods:
 
-.. code:: cs
+```c#
+SdsType type = SdsTypeBuilder.CreateSdsType<WaveData>();
 
-	SdsType type = SdsTypeBuilder.CreateSdsType<WaveData>();
- 
-	// When defining the type, specify the key as follows:
-	public class WaveData 
-	{
-		[SdsMember(IsKey = true)]
-		public int Order { get; set; }
-		public double Tau { get; set; }
-		public double Radians { get; set; }
-		...
-	}
+// When defining the type, specify the key as follows:
+public class WaveData 
+{
+	[SdsMember(IsKey = true)]
+	public int Order { get; set; }
+	public double Tau { get; set; }
+	public double Radians { get; set; }
+	...
+}
+```
     
 To define the SdsType in Sds, use the metadata client as follows:
 
-.. code:: cs
-
-	SdsType type = config.GetOrCreateTypeAsync(type).GetAwaiter().GetResult();
+```c#
+SdsType type = config.GetOrCreateTypeAsync(type).GetAwaiter().GetResult();
+```
 
 To Create a type with a compound index we create a new type specifying 2 keys and an order for them:
 
-.. code:: cs
-    public class WaveDataCompound
-    {
-        [SdsMember(IsKey = true, Order = 0)]
-        public int Order { get; set; }
+```C#
+public class WaveDataCompound
+{
+		[SdsMember(IsKey = true, Order = 0)]
+		public int Order { get; set; }
 
-        [SdsMember(IsKey = true, Order = 1)]
-        public int Multiplier { get; set; }
+		[SdsMember(IsKey = true, Order = 1)]
+		public int Multiplier { get; set; }
 
-        public double Tau { get; set; }
-
+		public double Tau { get; set; }
+```
 
 
 Create an SdsStream
@@ -111,41 +111,42 @@ is create a local SdsStream instance, give it an Id, assign it a type,
 and submit it to the SDS Service. The value of the ``TypeId`` property is
 the value of the SdsType ``Id`` property.
 
-.. code:: cs
-
-      Console.WriteLine("Creating an SdsStream");
-      var stream = new SdsStream
-      {
-        Id = streamId,
-        Name = "Wave Data Sample",
-        TypeId = type.Id,
-        Description = "This is a sample SdsStream for storing WaveData type measurements"
-      };
+```C#
+Console.WriteLine("Creating an SdsStream");
+var stream = new SdsStream
+{
+	Id = streamId,
+	Name = "Wave Data Sample",
+	TypeId = type.Id,
+	Description = "This is a sample SdsStream for storing WaveData type measurements"
+};
+```
 
 
 As with the SdsType, once an SdsStream is created locally, use the metadata client 
 to submit it to the SDS Service:
 
-.. code:: cs
-
-	stream = await metadataService.GetOrCreateStreamAsync(stream);
+```C#
+stream = await metadataService.GetOrCreateStreamAsync(stream);
+```
 
 To create an SdsStream with a secondary index we define this when creating the stream.  In the snippet below we find the property that we are making a secondary index and then we assign it:
 
-.. code:: cs
-		SdsStreamIndex measurementIndex = new SdsStreamIndex()
-		{
-			SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("Radians")).Id
-		};
-		SdsStream secondary = new SdsStream()
-		{
-			Id = streamIdSecondary,
-			TypeId = type.Id,
-			Indexes = new List<SdsStreamIndex>()
-			{
-				measurementIndex
-			}
-		};
+```C#
+SdsStreamIndex measurementIndex = new SdsStreamIndex()
+{
+	SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("Radians")).Id
+};
+SdsStream secondary = new SdsStream()
+{
+	Id = streamIdSecondary,
+	TypeId = type.Id,
+	Indexes = new List<SdsStreamIndex>()
+	{
+		measurementIndex
+	}
+};
+```
 
 Create and Insert Values into the Stream
 ----------------------------------------
@@ -155,38 +156,38 @@ empty and should have at least the key value of the SDS type for the
 event.  First the event is created locally by instantiating a new WaveData 
 object:
 
-.. code:: cs
-
-	return new WaveData
-		{
-		Order = order,
-		Radians = radians,
-		Tau = radians / (2 * Math.PI),
-		Sin = multiplier * Math.Sin(radians),
-		Cos = multiplier * Math.Cos(radians),
-		Tan = multiplier * Math.Tan(radians),
-		Sinh = multiplier * Math.Sinh(radians),
-		Cosh = multiplier * Math.Cosh(radians),
-		Tanh = multiplier * Math.Tanh(radians)
-		};
+```C#
+return new WaveData
+	{
+	Order = order,
+	Radians = radians,
+	Tau = radians / (2 * Math.PI),
+	Sin = multiplier * Math.Sin(radians),
+	Cos = multiplier * Math.Cos(radians),
+	Tan = multiplier * Math.Tan(radians),
+	Sinh = multiplier * Math.Sinh(radians),
+	Cosh = multiplier * Math.Cosh(radians),
+	Tanh = multiplier * Math.Tanh(radians)
+	};
+```
 
 Then use the data service client to submit the event using the InsertValueAsync method:
 
-.. code:: cs
-
- await dataService.InsertValueAsync(stream.Id, wave);
+```C#
+await dataService.InsertValueAsync(stream.Id, wave);
+```
 
 Similarly, we can build a list of objects and insert them in bulk by calling 
 InsertValuesAsync:
 
-.. code:: cs
-
-	var waves = new List<WaveData>();
-	for (var i = 2; i <= 18; i += 2)
-	{
-		waves.Add(GetWave(i, 200, 2));
-	}
-	await dataService.InsertValuesAsync(stream.Id, waves);
+```C#
+var waves = new List<WaveData>();
+for (var i = 2; i <= 18; i += 2)
+{
+	waves.Add(GetWave(i, 200, 2));
+}
+await dataService.InsertValuesAsync(stream.Id, waves);
+```
 
 
 Retrieve Values from a Stream
@@ -198,32 +199,29 @@ end values; in our case, these are the start and end ordinal indices
 expressed as strings. The index values must
 capable of conversion to the type of the index assigned in the SdsType.
 
-.. code:: cs
-
-  IEnumerable<WaveData> retrieved = 
-     client.GetWindowValuesAsync<WaveData>(stream.Id, "0", "20").GetAwaiter().GetResult();
+```C#
+IEnumerable<WaveData> retrieved = 
+		client.GetWindowValuesAsync<WaveData>(stream.Id, "0", "20").GetAwaiter().GetResult();
+```
 	
 You can retreive the values in the form of a table (in this case with headers)
 
-.. code:: cs
-
-	SdsTable tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
-
+```C#
+SdsTable tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
+```
 	
 	
 You can retreive interpolated values.  In this case we are asking for values at 5, 14, 23, and 32.  We onlt have values stored at the even numbers, so the odd numbers will be interpolated for.
 
-.. code:: cs
-
-	IEnumerable<WaveData> retrievedInterpolated = await dataService.GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
-	
+```C#
+IEnumerable<WaveData> retrievedInterpolated = await dataService.GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
+```
 	
 When retreiving events you can also filter on what is being returned, so you only get the events you are interested in.
 
-.. code:: cs
-
-	IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
-
+```C#
+IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
+```
 
 
 Update Events and Replacing Values
@@ -231,20 +229,20 @@ Update Events and Replacing Values
 
 Updating events is handled using the data service client as follows:
 
-.. code:: cs
-
-	await dataService.UpdateValueAsync(stream.Id, updatedWave);
+```C#
+await dataService.UpdateValueAsync(stream.Id, updatedWave);
+```
 
 Updates can be made in bulk by passing a collection of WaveData objects:
 
-.. code:: cs
-
-	var updatedCollection = new List<WaveData>();
-	for (int i = 2; i < 40; i = i+2)
-	{
-		updatedCollection.Add(GetWave(i, 400, 4));
-	}
-	await dataService.UpdateValuesAsync(stream.Id, updatedCollection);
+```C#
+var updatedCollection = new List<WaveData>();
+for (int i = 2; i < 40; i = i+2)
+{
+	updatedCollection.Add(GetWave(i, 400, 4));
+}
+await dataService.UpdateValuesAsync(stream.Id, updatedCollection);
+```
 
 If you attempt to update values that do not exist they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
@@ -255,11 +253,11 @@ values and will not insert any new values into the stream. The sample
 program demonstrates this by replacing all twenty values. The calling conventions are
 identical to ``updateValue`` and ``updateValues``:
 
-.. code:: cs
+```C#
+await dataService.ReplaceValueAsync<WaveData>(streamId, replaceEvent);	
 
-	await dataService.ReplaceValueAsync<WaveData>(streamId, replaceEvent);	
-
-	await dataService.ReplaceValuesAsync<WaveData>(streamId, allEvents);
+await dataService.ReplaceValuesAsync<WaveData>(streamId, allEvents);
+```
 
 Property Overrides
 ------------------
@@ -273,24 +271,24 @@ Now if a requested index does not correspond to a real value in the stream then 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
-.. code:: cs
-                
-	// create a Discrete stream PropertyOverride indicating that we do not want SDS to calculate a value for Radians and update our stream 
-	var propertyOverride = new SdsStreamPropertyOverride()
-		{
-		SdsTypePropertyId = "Radians",
-		InterpolationMode = SdsInterpolationMode.Discrete
-		};
-	var propertyOverrides = new List<SdsStreamPropertyOverride>() {propertyOverride};
+```C#            
+// create a Discrete stream PropertyOverride indicating that we do not want SDS to calculate a value for Radians and update our stream 
+var propertyOverride = new SdsStreamPropertyOverride()
+	{
+	SdsTypePropertyId = "Radians",
+	InterpolationMode = SdsInterpolationMode.Discrete
+	};
+var propertyOverrides = new List<SdsStreamPropertyOverride>() {propertyOverride};
 
-	// update the stream
-	stream.PropertyOverrides = propertyOverrides;
-	await metadataService.CreateOrUpdateStreamAsync(stream);
+// update the stream
+stream.PropertyOverrides = propertyOverrides;
+await metadataService.CreateOrUpdateStreamAsync(stream);
+```
 
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
 before and after updating the stream to show that it has changed. See
-the `SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for
+the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for
 more information about SDS Property Overrides.
 
 SdsStreamViews
@@ -305,36 +303,37 @@ destination. When the mapping is straightforward, such as when
 the properties are in the same position and of the same data type, 
 or when the properties have the same name, SDS will map the properties automatically.
 
-.. code:: cs
-
-      var autoStreamViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, autoStreamViewId);
+```C#
+var autoStreamViewData = await dataService.GetRangeValuesAsync<WaveDataTarget>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated, autoStreamViewId);
+```
 
 To map a property that is beyond the ability of SDS to map on its own, 
 you should define an SdsStreamViewProperty and add it to the SdsStreamView's Properties collection.
 
-.. code:: cs
+```C#
+// create explicit mappings 
+var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
+var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
+var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
+var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
 
-	// create explicit mappings 
-	var vp1 = new SdsStreamViewProperty() { SourceId = "Order", TargetId = "OrderTarget" };
-	var vp2 = new SdsStreamViewProperty() { SourceId = "Sin", TargetId = "SinInt" };
-	var vp3 = new SdsStreamViewProperty() { SourceId = "Cos", TargetId = "CosInt" };
-	var vp4 = new SdsStreamViewProperty() { SourceId = "Tan", TargetId = "TanInt" };
+var manualStreamView = new SdsStreamView()
+{
+	Id = manualStreamViewId,
+	SourceTypeId = typeId,
+	TargetTypeId = targetIntTypeId,
+	Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
+};
 
-	var manualStreamView = new SdsStreamView()
-	{
-		Id = manualStreamViewId,
-		SourceTypeId = typeId,
-		TargetTypeId = targetIntTypeId,
-		Properties = new List<SdsStreamViewProperty>() { vp1, vp2, vp3, vp4 }
-	};
-
-	await metadataService.CreateOrUpdateStreamViewAsync(manualStreamView);
+await metadataService.CreateOrUpdateStreamViewAsync(manualStreamView);
+```
 
 You can also use a streamview to change a Stream's type.
 
 
-.. code:: cs
-         await metadataService.UpdateStreamTypeAsync(stream.Id, manualStreamView);
+```C#
+await metadataService.UpdateStreamTypeAsync(stream.Id, manualStreamView);
+```
 
 SdsStreamViewMap
 ---------
@@ -343,9 +342,9 @@ When an SdsStreamView is added, SDS defines a plan mapping. Plan details are ret
 The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
 The SdsStreamViewMap cannot be written, it can only be retrieved from SDS. 
 
-.. code:: cs
-
-	var manualStreamViewMap = await metadataService.GetStreamViewMapAsync(manualStreamViewId);
+```C#
+var manualStreamViewMap = await metadataService.GetStreamViewMapAsync(manualStreamViewId);
+```
 
 Delete Values from a Stream
 ---------------------------
@@ -357,12 +356,11 @@ Removing values depends on the value's key type ID value. If a match is
 found within the stream, then that value will be removed. Code from both functions
 is shown below:
 
-.. code:: cs
+```C#
+await dataService.RemoveValueAsync(stream.Id, 0);
 
-	await dataService.RemoveValueAsync(stream.Id, 0);
-
-	await dataService.RemoveWindowValuesAsync(stream.Id, 1, 40);
-
+await dataService.RemoveWindowValuesAsync(stream.Id, 1, 40);
+```
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to '1' and '40'
@@ -376,10 +374,10 @@ performs some cleanup before exiting. Deleting streams, stream views and
 types can be achieved using the metadata client and passing the corresponding 
 object Id:
 
-.. code:: cs
-
-	await metadataService.DeleteStreamAsync(streamId);
-	await metadataService.DeleteTypeAsync(typeId);
+```C#
+await metadataService.DeleteStreamAsync(streamId);
+await metadataService.DeleteTypeAsync(typeId);
+```
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />

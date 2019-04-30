@@ -343,7 +343,7 @@ public class Program {
             System.out.println();
 
             System.out.println(
-                    "Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
+                    "Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
             sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {
             }.getType();
             jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleManualStreamViewId);
