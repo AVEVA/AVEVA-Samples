@@ -10,8 +10,8 @@ jobs:
 
 - job: SDSPy
 
-pool:
-  name: 00-OSIManaged-Build
+  pool:
+    name: 00-OSIManaged-Build
   steps :
     - task: UsePythonVersion@0
       inputs:
