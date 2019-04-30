@@ -92,6 +92,7 @@ Lib_Py
 Version | Date |  Notes
 ----|-----------| --------
 0.0.12 | 4-25-19 | 
+0.0.13 | 4-30-19 | updating documentation non-breaking
 
 
 Lib_Java
@@ -99,3 +100,4 @@ Lib_Java
 Version | Date |  Notes
 ----|-----------| --------
 0.0.7 | 4-26-19 | 
+0.0.8 | 4-30-19 | updating documentation non-breaking
