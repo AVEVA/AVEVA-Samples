@@ -108,22 +108,42 @@ public class SdsType {
         return Description;
     }
 
+    /**
+     * sets description
+     * @param description
+     */
     public void setDescription(String description) {
         this.Description = description;
     }
 
+    /**
+     * gets SdsTypeCode
+     * @return  
+     */
     public SdsTypeCode getSdsTypeCode() {
         return SdsTypeCode;
     }
 
+    /**
+     *  sets SdsTypeCode
+     * @param sdsTypeCode
+     */
     public void setSdsTypeCode(SdsTypeCode sdsTypeCode) {
         this.SdsTypeCode = sdsTypeCode;
     }
 
+    /**
+     * gets properties
+     * @return
+     */
     public SdsTypeProperty[] getProperties() {
         return Properties;
     }
 
+    /**
+     * sets properties
+     * @param properties
+     */
     public void setProperties(SdsTypeProperty[] properties) {
         this.Properties = properties;
     }
