@@ -17,40 +17,72 @@
 import json
 
 class DataviewIndexConfig(object):
-    """Sds dataview definition"""
-    @property
-    def IsDefault(self):
-        return self.__isDefault
-    @IsDefault.setter
-    def IsDefault(self, isDefault):
-        self.__isDefault = isDefault
+    """
+    DataviewIndexConfig
+    """
     
     @property
     def StartIndex(self):
+        """
+        start index in ISO 8601 format   required
+        :return:
+        """
         return self.__startIndex
     @StartIndex.setter
     def StartIndex(self, startIndex ):
+        """
+        start index in ISO 8601 format   required
+        :param startIndex:
+        :return:
+        """
         self.__startIndex = startIndex    
     
     @property
     def EndIndex(self):
+        """
+        end index in  ISO 8601 format   required
+        :return:
+        """
         return self.__endIndex
     @EndIndex.setter
     def EndIndex(self, endIndex ):
+        """
+        end index in  ISO 8601 format   required
+        :param endIndex:
+        :return:
+        """
         self.__endIndex = endIndex    
 		
     @property
     def Mode(self):
+        """
+        data retrieval mode, for example: Interpolated  required
+        :return:
+        """
         return self.__mode
     @Mode.setter
     def Mode(self, mode ):
+        """
+        data retrieval mode, for example: Interpolated  required
+        :param mode:
+        :return:
+        """
         self.__mode = mode 
 		
     @property
     def Interval(self):
+        """
+        data retrieval interval   required
+        :return:
+        """
         return self.__interval
     @Interval.setter
     def Interval(self, interval ):
+        """
+        data retrieval interval   required
+        :param interval:
+        :return:
+        """
         self.__interval = interval 
 
 

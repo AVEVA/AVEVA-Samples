@@ -26,7 +26,7 @@ import time
 
 
 class BaseClient(object):
-    """Handles communication with Sds Service"""
+    """Handles communication with Sds Service.  Internal Use"""
 
     def __init__(self, apiversion, tenant, url, clientId, clientSecret):
         self.__apiversion = apiversion
@@ -44,22 +44,42 @@ class BaseClient(object):
     
     @property
     def uri(self):
+        """
+        Gets the base url
+        :return:
+        """
         return self.__url
 
         
     @property
     def uri_API(self):
+        """
+        Returns the base URL plus api versioning information
+        :return:
+        """
         return self.__uri_API
     
     @property
     def api_version(self):
+        """
+        Returns just the base api versioning information
+        :return:
+        """
         return self.__apiversion
         
     @property
     def tenant(self):
+        """
+        Returns the tenant ID
+        :return:
+        """
         return self.__tenant
 
     def __getToken(self):
+        """
+        Gets the bearer token
+        :return:
+        """
         if ((self.__expiration - time.time()) > 5 * 60):
             return self.__token
 
@@ -90,6 +110,10 @@ class BaseClient(object):
         return self.__token
 
     def sdsHeaders(self):
+        """
+        Gets the base headers needed for OCS call
+        :return:
+        """
         return {"Authorization": "Bearer %s" % self.__getToken(),
                 "Content-type": "application/json",
                 "Accept": "*/*; q=1"

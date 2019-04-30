@@ -15,13 +15,13 @@ the pom.xml file.
 
 Summary of steps to run the Java demo
 --------------------------------------
-Using Eclipse or any IDE:
+Using VSCode, Eclipse or any IDE:
 
 1. Clone a local copy of the GitHub repository.
 
 2. Install Maven.
 
-3. *Install the ocs_sample_library_preview to your local Maven repo using run mvn install pom.xml from \\library_samples\\Java\\ocs_sample_library_preview\\
+3. *Install the ocs_sample_library_preview to your local Maven repo using "mvn install" from \\library_samples\\Java\\ocs_sample_library_preview\\
 
 4. If you are using Eclipse, select ``File`` > ``Import`` >
    ``Maven``> ``Existing maven project`` and then select the local
@@ -50,11 +50,13 @@ Using a command line:
 
       and, also add ~\apache-maven-x.x.x\bin path to the Path variable in System variables.
 
-4. *Install the  ocs_sample_library_preview to your local Maven repo using run mvn install pom.xml from \library_samples\Java\ocs_sample_library_preview\
+4. *Install the  ocs_sample_library_preview to your local Maven repo using: "mvn install" from \library_samples\Java\ocs_sample_library_preview\
 
-5. Building and running the project.
+5. Replace the configuration strings in ``config.properties``
+
+. Building and running the project.
    a) cd to your project location.
-   b) run "mvn package exec:java" on cmd.
+   b) run "mvn package exec:java" on cmd. or "mvn test" to run the test
 
 *Currently this project is not hosted on the central Maven repo and must be compiled and installed locally.
 

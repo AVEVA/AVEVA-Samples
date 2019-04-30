@@ -20,23 +20,50 @@ class SdsStreamViewProperty(object):
     """Sds StreamView Property definition"""
     @property
     def SourceId(self):
+        """
+        required
+        :return:
+        """
         return self.__sourceId
     @SourceId.setter
     def SourceId(self, id):
+        """
+        required
+        :param id:
+        :return:
+        """
         self.__sourceId = id
     
     @property
     def TargetId(self):
+        """
+        required
+        :return:
+        """
         return self.__targetId
     @TargetId.setter
     def TargetId(self, name):
+        """
+        required
+        :param name:
+        :return:
+        """
         self.__targetId = name
     
     @property
     def SdsStreamView(self):
+        """
+        SdsStreamView   not required
+        :return:
+        """
         return self.__sdsStreamView
     @SdsStreamView.setter
     def SdsStreamView(self, description):
+        """
+        SdsStreamView   not required
+        :param description:
+        :return:
+        """
         self.__sdsStreamView = description
         
     def toJson(self):

@@ -19,47 +19,104 @@ import inspect
 from .SdsStreamViewProperty import SdsStreamViewProperty
 
 class SdsStreamView(object):
-    """Sds StreamView definitions"""
+    """
+    Sds StreamView definitions
+    """
+
     @property
     def Id(self):
+        """
+        required
+        :return:
+        """
         return self.__id
     @Id.setter
     def Id(self, id):
+        """
+        required
+        :param id:
+        :return:
+        """
         self.__id = id
     
     @property
     def Name(self):
+        """
+        not required
+        :return:
+        """
         return self.__name
     @Name.setter
     def Name(self, name):
+        """
+        not required
+        :param name:
+        :return:
+        """
         self.__name = name
     
     @property
     def Description(self):
+        """
+        not required
+        :return:
+        """
         return self.__description
     @Description.setter
     def Description(self, description):
+        """
+        not required
+        :param description:
+        :return:
+        """
         self.__description = description
 
     @property
     def SourceTypeId(self):
+        """
+        required
+        :return:
+        """
         return self.__sourceTypeId
     @SourceTypeId.setter
     def SourceTypeId(self, baseType):
+        """
+        required
+        :param baseType:
+        :return:
+        """
         self.__sourceTypeId = baseType
     
     @property
     def TargetTypeId(self):
+        """
+        required
+        :return:
+        """
         return self.__targetTypeId
     @TargetTypeId.setter
     def TargetTypeId(self, typeCode):
+        """
+        required
+        :param typeCode:
+        :return:
+        """
         self.__targetTypeId = typeCode
 
     @property
     def Properties(self):
+        """
+        array of SdsStreamViewProperty   not required
+        :return:
+        """
         return self.__properties
     @Properties.setter
     def Properties(self, properties):
+        """
+        array of SdsStreamViewProperty   not required
+        :param properties:
+        :return:
+        """
         self.__properties = properties
 
     def toJson(self):

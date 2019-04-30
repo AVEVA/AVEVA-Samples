@@ -99,7 +99,7 @@ namespace SdsClientLibraries
 
                 // Step 3
                 // create an SdsStream
-               Console.WriteLine("Creating an SdsStream");
+                Console.WriteLine("Creating an SdsStream");
                 var stream = new SdsStream
                 {
                     Id = streamId,
@@ -539,6 +539,9 @@ namespace SdsClientLibraries
                 RunInTryCatch(metadataService.DeleteTypeAsync, targetTypeId);
                 RunInTryCatch(metadataService.DeleteTypeAsync, targetIntTypeId);
 
+                //wait incase any of the async calls issues
+                Task.Delay(10000).Wait();
+
 
                 Console.WriteLine("done");
                 if(!test)
@@ -555,11 +558,11 @@ namespace SdsClientLibraries
         /// </summary>
         /// <param name="methodToRun">The method to run.</param>
         /// <param name="value">The value to put into the method to run</param>
-        private static void RunInTryCatch(Func<string, Task> methodToRun, string value)
+        private static async void RunInTryCatch(Func<string, Task> methodToRun, string value)
         {
             try
             {
-                methodToRun(value).Wait(100);
+                await methodToRun(value);
             }
             catch (Exception ex)
             {

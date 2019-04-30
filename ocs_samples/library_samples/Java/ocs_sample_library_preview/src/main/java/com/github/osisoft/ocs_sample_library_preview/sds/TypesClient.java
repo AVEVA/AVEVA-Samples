@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
+/**
+ * TypesClient
+ */
 public class TypesClient {
     private String baseUrl = null;
     private String apiVersion = null;
@@ -46,7 +48,10 @@ public class TypesClient {
     private String typePath = typesBase + "/{typeId}";
     private String getTypesPath = typesBase + "?skip={skip}&count={count}&filter={filter}";
 
-
+    /**
+     * base constructor
+     * @param base this base client helps make the OCS calls
+     */
     public TypesClient(BaseClient base) {
         baseClient = base;
         this.baseUrl = base.baseUrl;
@@ -54,6 +59,14 @@ public class TypesClient {
         this.mGson = base.mGson;
     }
 
+    /**
+     * creates the type
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param typeDef the type to create
+     * @return the created type
+     * @throws SdsError  any error that occurs
+     */
     public String createType(String tenantId, String namespaceId, SdsType typeDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -102,6 +115,14 @@ public class TypesClient {
         return response.toString();
     }
     
+    /**
+     * get the type 
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param typeId the type to get
+     * @return the string of the type
+     * @throws SdsError  any error that occurs
+     */
     public String getType(String tenantId, String namespaceId, String typeId) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -142,10 +163,29 @@ public class TypesClient {
         return jsonResults.toString();
     }
 
+    /**
+     * gets the types 
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param skip number of types to skip, useful in paging
+     * @param count number of types to return
+     * @return string of the types
+     * @throws SdsError any error that occurs
+     */
     public String getTypes(String tenantId, String namespaceId, int skip, int count) throws SdsError {
         return getTypes(tenantId,namespaceId,skip,count, "");
     }
 
+    /**
+     * gets the types 
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param skip number of types to skip, useful in paging
+     * @param count number of types to return
+     * @param filter filter query to reduce the number of types returned
+     * @return string of the types
+     * @throws SdsError any error that occurs
+     */
     public String getTypes(String tenantId, String namespaceId, int skip, int count, String filter) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -186,6 +226,13 @@ public class TypesClient {
         return jsonResults.toString();
     }
 
+    /**
+     * Deletes the type
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param typeId the type to delete
+     * @throws SdsError  any error that occurs
+     */
     public void deleteType(String tenantId, String namespaceId, String typeId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -214,8 +261,4 @@ public class TypesClient {
             e.printStackTrace();
         }
     }
-    
-
-
-
 }

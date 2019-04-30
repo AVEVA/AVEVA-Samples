@@ -17,6 +17,9 @@
 import json
 
 class DataviewGroupRule(object):
+    """
+    DataviewGroupRule
+    """
     
     def __init__(self, id = None, type_= None, tokenRules = None):
         self.__id = id
@@ -24,27 +27,53 @@ class DataviewGroupRule(object):
         self.__tokenRules = tokenRules
 
 
-    """Sds dataview definition"""
     @property
     def Id(self):
+        """
+        unique id   required
+        :return:
+        """
         return self.__id
     @Id.setter
     def Id(self, id):
+        """
+        unique id   required
+        :param id:
+        :return:
+        """
         self.__id = id
     
     @property
     def Type(self):
+        """
+        Stream property to base grouping on   not required
+        :return:
+        """
         return self.__type
     @Type.setter
     def Type(self, type_):
+        """
+        Stream property to base grouping on   not required
+        :param type_:
+        :return:
+        """
         self.__type = type_    
 
     
     @property
     def TokenRules(self):
+        """
+        token rules that create patterns for groups   required
+        :return:
+        """
         return self.__tokenRules
     @TokenRules.setter
     def TokenRules(self, tokenRules):
+        """
+        token rules that create patterns for groups   required
+        :param tokenRules:
+        :return:
+        """
         self.__tokenRules = tokenRules    
 
     def toJson(self):

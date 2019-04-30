@@ -17,44 +17,77 @@
 
 package  com.github.osisoft.ocs_sample_library_preview.dataviews;
 
-
+/**
+ * DataviewGroupRule
+ */
 public class DataviewGroupRule {
 
     private String Id = "";
     private String Type = "";
     private String TokenRules= "";
 
+    /**
+     * base constructor
+     */
     public DataviewGroupRule()
     {
     }
 
+    /**
+     * creates a DataviewGroupRule
+     * @param Id  
+     * @param Type
+     */
     public DataviewGroupRule(String Id, String Type)
     {
         this.Id = Id;
         this.Type = Type;
-    }
-    
+    }    
 
+    /**
+     * gets id
+     * @return
+     */
     public String getId() {
         return Id;
     }
 
+    /**
+     * sets id
+     * @param id
+     */
     public void setId(String id) {
         this.Id = id;
     }
 
+    /**
+     * gets type
+     * @return
+     */
     public String getType() {
         return Type;
     }
 
+    /**
+     * sets type
+     * @param type
+     */
     public void setType(String type) {
         this.Type = type;
     }
 
+    /**
+     * get token rule
+     * @return
+     */
     public String getTokenRules() {
         return TokenRules;
     }
 
+    /**
+     * sets token rule
+     * @param tokenRules
+     */
     public void setTokenRules(String tokenRules) {
         this.TokenRules = tokenRules;
     }

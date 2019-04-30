@@ -17,6 +17,7 @@
 from enum import Enum
 
 class SdsSearchMode(object):
+    """Search enum 0-4"""
     Exact = 0
     ExactOrNext = 1
     Next = 2
