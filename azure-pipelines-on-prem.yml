@@ -32,7 +32,13 @@ jobs:
       displayName: copy file
 
     - script: |
-        mv prod_onprem_omf_appsettings.json appsettings.json
+        del appsettings.json
+      workingDirectory:  '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/'
+      displayName: 'rename config file1'
+
+
+    - script: |
+        rename prod_onprem_omf_appsettings.json appsettings.json
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/
       displayName: 'rename config file'     
       
