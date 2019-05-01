@@ -41,7 +41,18 @@ jobs:
         rename prod_onprem_omf_appsettings.json appsettings.json
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/
       displayName: 'rename config file'     
-      
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet test'
+      inputs:
+        command: test
+
+        
     - script: |
         dotnet restore
         dotnet test
