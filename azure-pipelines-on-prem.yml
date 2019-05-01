@@ -10,8 +10,8 @@ jobs:
 
 - job: OMF_APIDotNet
 
-pool:
- name: 00-OSIManaged-Build
+ pool:
+    name: 00-OSIManaged-Build
  steps :
 
     # Download Secure File
