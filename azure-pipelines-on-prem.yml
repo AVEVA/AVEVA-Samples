@@ -42,6 +42,11 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/
       displayName: 'rename config file'     
 
+    - task: NuGetCommand@2
+      displayName: 'NuGet restore'
+      inputs:
+        restoreSolution: 'omf_samples/basic_samples/OMF_API/CSharp/OMF_API/OMF_API.csproj'
+
     - task: DotNetCoreCLI@2
       displayName: 'dotnet restore'
       inputs:
