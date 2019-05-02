@@ -10,6 +10,27 @@ from https://api.nuget.org/v3/index.json. The libraries offer a framework of cla
 
 [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
+
+Getting Starting
+----------------------------
+
+In this example we assume that you have the dotnet core CLI.
+
+To run this example from the commandline run
+
+```
+dotnet restore
+dotnet run
+```
+
+to test this program change directories to the test and run
+
+```
+dotnet restore
+dotnet test
+```
+
+
 Configure constants for connecting and authentication
 -----------------------------------------------------
 
