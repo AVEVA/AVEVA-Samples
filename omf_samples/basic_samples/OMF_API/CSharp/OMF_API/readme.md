@@ -61,8 +61,8 @@ The piserver uses the PI Web API as its OMF accepting endpoint.  To configure th
 
 ```json
 {
-  "Resource": "PI_WEB_API_URL",
-  "dataservername": "PI_DATA_ARCHIVE_NAME"
+  "Resource": "REPLACE_WITH_PI_WEB_API_URL",
+  "dataservername": "REPLACE_WITH_PI_DATA_ARCHIVE_NAME"
 }
 ```
 

@@ -700,8 +700,8 @@ def oneTimeSendMessages(action = 'create'):
     ],action)
     '''
 
-def checkSends(firstVal):    
-    global checkBase
+def checkSends(lastVal):    
+    global checkBase, dataServerName
 
     print("Checks")
 
@@ -712,20 +712,24 @@ def checkSends(firstVal):
         #print(json1)
         json1 = checkValue(checkBase + '/Streams' + '/Container1')
         #print(json1)
-        json1 = checkValue(checkBase + '/Streams' + '/Container1'+ '/Data/first')
+        json1 = checkValue(checkBase + '/Streams' + '/Container1'+ '/Data/last')
 
         # just checking to make sure some data made it it, could do a more comprhensive check but this is ok...
-        assert firstVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['IntegerProperty']
+        assert lastVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['IntegerProperty']
 
 
     else:
         #print(json1)
-        json1 = checkValue(checkBase + "/dataservers?name=" + pidataserver)
-        #print(json1)
-        json1 = checkValue(checkBase + '/Streams' + '/Container1'+ '/Data/first')
+        json1 = checkValue(checkBase + "/dataservers?name=" + dataServerName)
+        pointsURL = json.loads(json1)['Links']['Points']
+
+        json1 = checkValue(pointsURL + "?nameFilter=container1*")
+        endValueURL = json.loads(json1)['Items'][0]['Links']['Value']
+        
+        json1 = checkValue(endValueURL)
 
         # just checking to make sure some data made it it, could do a more comprhensive check but this is ok...
-        assert firstVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['IntegerProperty']
+        assert lastVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['Value']
 
 def supressError(sdsCall):
     #easily call a function and not have to wrap it individually for failure
@@ -811,11 +815,10 @@ def main(test = False):
 
         # Step 9
         count = 0
-        firstVal = ''
+        lastVal = ''
         while count == 0 or ((not test) and count < 2):
             val = create_data_values_for_first_dynamic_type("Container1")
-            if count == 0:
-                firstVal = val
+            lastVal = val
             send_omf_message_to_endpoint("data", val)
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container2"))
             send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("Container3"))
@@ -824,7 +827,7 @@ def main(test = False):
                 send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndexAndMultiIndex_type("Container5", "Container6"))
             time.sleep(1)
             count = count +1
-        checkSends(firstVal)
+        checkSends(lastVal)
     except Exception as ex:
         print(("Encountered Error: {error}".format(error = ex)))
         print
