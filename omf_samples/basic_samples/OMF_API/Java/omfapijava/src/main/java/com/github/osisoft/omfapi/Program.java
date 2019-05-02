@@ -16,7 +16,7 @@
  */
 
 // OMF_API_Java
-// Version 1.0.0.1
+// Version 1.0.1
 // 3-21-19
 
 
@@ -71,10 +71,10 @@ public class Program
     static String omfEndPoint = getConfiguration("completedURL");
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
+    static String dataServerName = getConfiguration("dataServerName");
     static String endPointToUse = omfEndPoint;
     static String checkBase = "";
-
-    
+  
 
     //values used across calls of a function
     static int integer_boolean_value = 0;

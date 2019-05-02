@@ -45,7 +45,53 @@ Using a command line:
 
 4. Building and running the project.
    a) cd to your project location.
-   b) run "mvn package exec:java" on cmd.
+   b) run ``mvn package exec:java`` on cmd.
+
+To test your porject locally run ``mvn test``
+
+
+Configure constants for connecting and authentication
+-----------------------------------------------------
+
+The SDS Service is secured by obtaining tokens from Azure Active Directory. Such clients 
+provide a client application identifier and an associated secret (or key) that are 
+authenticated against the directory. The sample includes an appsettings.json configuration 
+file to hold configuration strings, including the authentication strings. You must 
+replace the placeholders with the authentication-related values you received from OSIsoft. 
+
+The values to be replaced are in ``config.properties``:
+
+```
+[Configurations]
+Namespace = Samples
+
+[Access]
+Resource = https://dat-b.osisoft.com
+Tenant = REPLACE_WITH_TENANT_ID
+ApiVersion = v1-preview
+
+[Credentials]
+ProducerToken = REPLACE_WITH_TOKEN_STRING
+ClientId = REPLACE_WITH_APPLICATION_IDENTIFIER
+ClientSecret = REPLACE_WITH_APPLICATION_SECRET
+```
+
+
+
+The piserver uses the PI Web API as its OMF accepting endpoint.  To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used. Note: the tenantId is used to autodetect if you are going against OCS or PI, so make sure that is removed if going against PI.
+
+```
+[Configurations]
+DataServerName = REPLACE_WITH_PI_DATA_ARCHIVE_NAME
+
+[Access]
+Resource = REPLACE_WITH_PI_WEB_API_URL
+```
+
+
+See the general readme for information on setting up your endpoint.
+
+
 
 ----------
 
