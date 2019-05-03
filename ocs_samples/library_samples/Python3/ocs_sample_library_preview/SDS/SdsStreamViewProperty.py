@@ -65,13 +65,26 @@ class SdsStreamViewProperty(object):
         :return:
         """
         self.__sdsStreamView = description
+
+    @property
+    def Mode(self):
+        return self.__mode
+    @Mode.setter
+    def Mode(self, mode):
+        self.__mode = mode
         
     def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'SourceId' : self.SourceId, 'TargetId' : self.TargetId }
+        dictionary = { 'SourceId' : self.SourceId }
+
+        if hasattr(self, 'TargetId'):
+            dictionary['TargetId'] = self.TargetId
+
+        if hasattr(self, 'Mode'):
+            dictionary['Mode'] = self.Mode
 
         if hasattr(self, 'SdsStreamView'):
             
@@ -96,6 +109,9 @@ class SdsStreamViewProperty(object):
 
         if 'TargetId' in content:
             streamViewProperty.TargetId = content['TargetId']
+
+        if 'Mode' in content:
+            streamViewProperty.Mode = content['Mode']
 		
         if 'SdsStreamView' in content:
             

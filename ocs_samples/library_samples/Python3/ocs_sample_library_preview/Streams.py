@@ -58,7 +58,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+            self.__uri_API + self.__getStreamView.format(tenant_id=self.__tenant, namespace_id=namespace_id,
             streamView_id=streamView_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
@@ -106,7 +106,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__uri_API + self.__getStreamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
@@ -709,6 +709,47 @@ class Streams(object):
             values.append(value_class.fromJson(c))
         return values
 
+    def getSummaries(self, namespace_id, stream_id, value_class, start, end, count, stream_view_id = "", filter = ""):
+        """Retrieves JSON object representing a summary for the stream specified by 'stream_id'"""
+
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
+        if count is None:
+            raise TypeError
+
+        # if stream_view_id is not set, do not specify /transform/ route and stream_view_id parameter
+        if len(stream_view_id) == 0:
+            _path = self.__getSummaries.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id, start=start, end=end, count=count,filter= filter)
+        else:
+            _path = self.__getSummariesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                        stream_id=stream_id, start=start, end=end, count=count,filter= filter,stream_view_id=stream_view_id)
+
+        response = requests.get(
+                self.__uri_API + _path,
+                headers=self.__baseClient.sdsHeaders())          
+
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get summaries for SdsStream {stream_id}. {status}:{reason}".
+                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+
+        content = json.loads(response.content.decode('utf-8'))
+        response.close()
+        if value_class is None:
+            return content
+
+        values = []
+        for c in content:
+            values.append(value_class.fromDictionary(c))
+        return values
+
     def insertValues(self, namespace_id, stream_id, values):
         """
         Tells Sds Service to insert the values, defined by the list 'values', into
@@ -884,7 +925,10 @@ class Streams(object):
         self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}&filter={filter}"
         self.__getWindowValuesform = self.__dataPath + "?startIndex={start}&endIndex={end}&form={form}"
         self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
+        self.__getSummaries = self.__dataPath + "/Summaries?startIndex={start}&endIndex={end}&Count={count}&filter={filter}"
+        self.__getSummariesT = self.__dataPath + "/Transform/Summaries?startIndex={start}&endIndex={end}&Count={count}&streamViewId={stream_view_id}&filter={filter}"
         self.__getRangeInterpolatedQuery = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}"
+
 
         self.__insertValuesPath = self.__dataPath
         self.__updateValuesPath = self.__dataPath
