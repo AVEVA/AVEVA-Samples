@@ -710,7 +710,19 @@ class Streams(object):
         return values
 
     def getSummaries(self, namespace_id, stream_id, value_class, start, end, count, stream_view_id = "", filter = ""):
-        """Retrieves JSON object representing a summary for the stream specified by 'stream_id'"""
+        """
+        Retrieves JSON object representing a summary for the stream specified by 'stream_id'
+        :param namespace_id: id of namespace to work against
+        :param stream_id: id of the stream to get the data of
+        :param value_class: use this to cast the value into a given type.  Type must support .fromJson(). If None returns a dynamic Python object from the data.  
+        Note- for this function the default return json string is not a JSON array of the value, so the same type definition won't work.
+        :param start: starting index
+        :param end:  ending index
+        :param count: number of datapoints in summary
+        :param stream_view_id: streamview to tranform the data into 
+        :param filter: filter to apply
+        :return: An array of the data summary in type specified if value_class is defined.  Otherwise it is a dynamic Python object
+        """
 
         if namespace_id is None:
             raise TypeError
