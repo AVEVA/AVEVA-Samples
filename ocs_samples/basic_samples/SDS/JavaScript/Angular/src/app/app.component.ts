@@ -1,33 +1,26 @@
 // app.component.ts
 //
-//Copyright 2019 OSIsoft, LLC
+// Copyright 2019 OSIsoft, LLC
 //
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//<http://www.apache.org/licenses/LICENSE-2.0>
+// <http://www.apache.org/licenses/LICENSE-2.0>
 //
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-import { Component } from '@angular/core';
-
-import { AdalService } from './adal/adal.service'
-import { ConfigurationService, ISdsConfigSet } from './osiconfiguration.service'
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-const config: ISdsConfigSet = {
-    ClientID: 'PLACEHOLDER_REPLACE_WITH_CLIENTID',
-    SdsEndPoint: 'PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL',
-    SdsResourceURI: 'PLACEHOLDER_REPLACE_WITH_RESOURCE',
-    TenantId: 'PLACEHOLDER_REPLACE_WITH_TENANT_ID',
-    NamespaceId: 'REPLACE_WITH_NAMESPACE',
-    ApiVersion: 'v1-preview'
-};
+import {OidcService} from './libraries/auth/ocs-auth'
+import {UserManagerSettings, WebStorageStateStore} from 'oidc-client'
+import oidcConfigJson from './config/oidc.config.json';
+import sdsConfig from './config/sdsconfig.json';
+import { SdsConfig } from './config/sdsconfig.js';
 
 @Component({
   selector: 'app-root',
@@ -35,40 +28,42 @@ const config: ISdsConfigSet = {
   styleUrls: ['./app.component.css'],
   providers: []
 })
-export class AppComponent {
-  constructor(private adalService: AdalService,
-              private configurationService: ConfigurationService,
-              private router: Router) {
-    this.configurationService.AmbientConfiguration = config;
-    this.adalService.init(this.configurationService.adalConfig);
+export class AppComponent implements OnInit {
+  private sdsConfig: SdsConfig;
+  private authConfig: UserManagerSettings;
 
-    this.router.events.subscribe((path: any) => {
-      console.log('path = ', path);
-      if (path) {
-        if (path.url) {
-            this.adalService.handleWindowCallbackUrl(path.url.substring(1));
-        }
-      }
-    });
+  constructor(private router: Router, private auth: OidcService) {
+    this.sdsConfig = sdsConfig as SdsConfig;
   }
 
-  logOutUser(): void {
-    this.adalService.logOut();
-  }
-
-  loginUser(): void {
-    this.adalService.login();
-  }
-
-  isAuthenticated(): boolean {
-    return this.adalService.userInfo.isAuthenticated;
-  }
-
-  getUserName(): string {
-    if (this.adalService.userInfo.isAuthenticated) {
-      return this.adalService.userInfo.profile.name;
-    } else {
-      return null;
+  ngOnInit(): void {
+    const configFromJson = oidcConfigJson as UserManagerSettings;
+    this.authConfig = {
+      ...configFromJson,
+      userStore: new WebStorageStateStore({store: window.localStorage}),
+      acr_values: `tenant:${this.sdsConfig.tenantId}`,
+      response_type: "id_token token",
+      scope: "openid ocsapi",
+      filterProtocolClaims: true,
+      loadUserInfo: true,
+      revokeAccessTokenOnSignout: true,
+      automaticSilentRenew: true,
+      accessTokenExpiringNotificationTime: 60,
+      silentRequestTimeout: 10000
     }
+
+    this.auth.init(this.authConfig);
+  }
+
+  get loggedIn() {
+    return (this.auth.userInfo !== null);
+  }
+
+  login() {
+    this.auth.login();
+  }
+
+  logout() {
+    this.auth.logout();
   }
 }

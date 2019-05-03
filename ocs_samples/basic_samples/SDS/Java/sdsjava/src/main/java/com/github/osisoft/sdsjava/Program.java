@@ -343,7 +343,7 @@ public class Program {
             System.out.println();
 
             System.out.println(
-                    "Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property::");
+                    "Here is our explicit mapping, note SdsStreamViewMap will return all properties of the Source Type, even those without a corresponding Target property:");
             sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {
             }.getType();
             jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleManualStreamViewId);
@@ -366,7 +366,6 @@ public class Program {
             System.out.println("The new type value " + firstVal + " compared to the original one " + newStreamString);
             
             // Step 14 
-            // TODO4
 
             String types = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100);
             String typesFiltered = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100, "contains(Id,'Target')");
@@ -450,7 +449,6 @@ public class Program {
 
             
             // Modifying an existing stream with a secondary index.
-            //TODO fix
             System.out.println("Modifying a stream to have a secondary index.");
 
             String streamS = ocsClient.Streams.getStream(tenantId, namespaceId, sampleStream.getId());
@@ -496,7 +494,6 @@ public class Program {
 
             
             // Step 19
-            //TODO
 
             System.out.println("Inserting data");
             String dataIn = ocsClient.mGson.toJson(WaveDataCompound.next(1, 10));

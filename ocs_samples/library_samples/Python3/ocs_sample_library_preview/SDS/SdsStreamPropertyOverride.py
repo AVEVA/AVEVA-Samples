@@ -17,27 +17,56 @@
 import json
 
 class SdsStreamPropertyOverride(object):
-    """Sds Stream PropertyOverride definitions"""
+    """
+    Sds Stream PropertyOverride definitions
+    """
 
     @property
     def SdsTypePropertyId(self):
+        """
+        id   required
+        :return:
+        """
         return self.__sdsTypePropertyId
     @SdsTypePropertyId.setter
     def SdsTypePropertyId(self, sdsTypePropertyId):
+        """
+        id   required
+        :param sdsTypePropertyId:
+        :return:
+        """
         self.__sdsTypePropertyId = sdsTypePropertyId
 
     @property
     def InterpolationMode(self):
+        """
+        SdsInterpolationMode   not required
+        :return:
+        """
         return self.__interpolationMode
     @InterpolationMode.setter
     def InterpolationMode(self, interpolationMode):
+        """
+        SdsInterpolationMode   not required
+        :param interpolationMode:
+        :return:
+        """
         self.__interpolationMode = interpolationMode
 
     @property
     def Uom(self):
+        """
+        Unit of Measure    not required
+        :return:
+        """
         return self.__uom
     @Uom.setter
     def Uom(self, uom):
+        """
+        Unit of Measure    not required
+        :param uom:
+        :return:
+        """
         self.__uom = uom
 
     def toJson(self):

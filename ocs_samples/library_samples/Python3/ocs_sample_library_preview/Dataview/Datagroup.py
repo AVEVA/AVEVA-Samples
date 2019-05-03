@@ -17,7 +17,10 @@
 import json
 
 class Datagroup(object):
-    """Sds Datagroup definition"""
+    """
+    Datagroup definition
+    """
+
     @property
     def Tokens(self):
         return self.__tokens

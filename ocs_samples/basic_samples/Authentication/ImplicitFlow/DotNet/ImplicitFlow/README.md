@@ -13,9 +13,8 @@
 
 ### Using Visual Studio
 
-- Load the solution from the directory above this in Visual Studio
+- Load the .csproj
 - Rebuild solution
-- Select ImplicitFlow project
 - Run it
 - Pres the *login* button in the browser
 - Follow the prompts in the web browser to log in

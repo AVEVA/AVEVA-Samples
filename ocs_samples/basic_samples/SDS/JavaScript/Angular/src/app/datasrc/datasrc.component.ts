@@ -16,17 +16,34 @@
 
 import { Component } from '@angular/core';
 
-import { SdsBoundaryType, SdsRestService, SdsStreamPropertyOverride } from '../sds.rest.service'
+import { SdsBoundaryType, SdsRestService, SdsStreamPropertyOverride, SdsStreamIndex } from '../sds/sds.rest.service'
 import { SdsType, SdsStream, SdsTypeProperty, SdsTypeCode,
-  SdsStreamMode, SdsStreamView, SdsStreamViewProperty, SdsStreamViewMap} from '../sds.rest.service'
+  SdsStreamMode, SdsStreamView, SdsStreamViewProperty, SdsStreamViewMap} from '../sds/sds.rest.service'
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 
 const streamId = 'WaveDataStream';
+const streamIdSecondary = 'SampleStream_Secondary';
+const streamIdCompound = 'SampleStream_Compound';
+
 const typeId = 'WaveDataType';
+const compoundTypeId = 'SampleType_Compound';
 const targetTypeId = 'WaveDataTargetType';
 const targetIntTypeId = 'WaveDataTargetIntType';
 const autoStreamViewId = 'WaveDataAutoStreamView';
 const manualStreamViewId = 'WaveDataManualStreamView';
+
+class  WaveDataCompound {
+  Order: number;
+  Multiplier: number;
+  Radians: number;
+  Tau: number;
+  Sin: number;
+  Cos: number;
+  Tan: number;
+  Sinh: number;
+  Cosh: number;
+  Tanh: number
+}
 
 class  WaveData {
   Order: number;
@@ -66,12 +83,21 @@ class  WaveDataInteger {
 })
 export class DatasrcComponent {
   stream: SdsStream;
+  streamSecondaryIndex: SdsStream;
   events: WaveData[];
+  eventsHeaders: string;
+  eventsInterpolated: string;
+  eventsFiltered: string;
+
   targetEvents: WaveDataTarget[];
   integerEvents: WaveDataInteger[];
   streamViewMap: SdsStreamViewMap;
   metadataMap: Map<string, string>;
   hasEvents: boolean;
+  hasEventsHeaders: boolean;
+  hasEventsInterpolated: boolean;
+  hasEventsFiltered:boolean;
+
   hasStreamView1Events: boolean;
   hasStreamView2Events: boolean;
   hasMapProperties: boolean;
@@ -96,9 +122,84 @@ export class DatasrcComponent {
   button17Message: string;
   button18Message: string;
   button19Message: string;
+  getDataWithHeadersMessage: string;
+  getDataInterpolatedMessage: string;
+  getFilteredValuesMessage: string;
+  updateStreamTypeMessage: string;
+  filterTypesMessage: string;
+  secondaryCreateMessage: string;
+  secondaryUpdateMessage: string;
+  secondaryDeleteMessage: string;
+  createCompoundTypeandStreamMessage: string;
+  createAndRetreiveCompoundDataMessage: string;
+  createAndRetreiveCompoundDataMessageData: string;
 
   constructor(private sdsService: SdsRestService) {
     this.hasEvents = false;
+  }
+
+  buildWaveDataCompoundType() {
+    const doubleType = new SdsType();
+    doubleType.Id = 'doubleType';
+    doubleType.SdsTypeCode = SdsTypeCode.Double;
+
+    const intType = new SdsType();
+    intType.Id = 'intType';
+    intType.SdsTypeCode = SdsTypeCode.Int32;
+
+    const orderProperty = new SdsTypeProperty();
+    orderProperty.Id = 'Order';
+    orderProperty.SdsType = intType;
+    orderProperty.IsKey = true;
+    orderProperty.Order = 1;
+
+    const multiplier = new SdsTypeProperty();
+    multiplier.Id = 'Multiplier';
+    multiplier.SdsType = intType;
+    multiplier.IsKey = true;
+    multiplier.Order = 2;
+
+    const radiansProperty = new SdsTypeProperty();
+    radiansProperty.Id = 'Radians';
+    radiansProperty.SdsType = doubleType;
+
+    const tauProperty = new SdsTypeProperty();
+    tauProperty.Id = 'Tau';
+    tauProperty.SdsType = doubleType;
+
+    const sinProperty = new SdsTypeProperty();
+    sinProperty.Id = 'Sin';
+    sinProperty.SdsType = doubleType;
+
+    const cosProperty = new SdsTypeProperty();
+    cosProperty.Id = 'Cos';
+    cosProperty.SdsType = doubleType;
+
+    const tanProperty = new SdsTypeProperty();
+    tanProperty.Id = 'Tan';
+    tanProperty.SdsType = doubleType;
+
+    const sinhProperty = new SdsTypeProperty();
+    sinhProperty.Id = 'Sinh';
+    sinhProperty.SdsType = doubleType;
+
+    const coshProperty = new SdsTypeProperty();
+    coshProperty.Id = 'Cosh';
+    coshProperty.SdsType = doubleType;
+
+    const tanhProperty = new SdsTypeProperty();
+    tanhProperty.Id = 'Tanh';
+    tanhProperty.SdsType = doubleType;
+
+    const waveDataType = new SdsType();
+    waveDataType.Id = compoundTypeId;
+    waveDataType.Name = 'WaveDataType_AngularSample';
+    waveDataType.Description = 'This is a sample SdsType for storing WaveData events';
+    waveDataType.Properties = [orderProperty, multiplier, radiansProperty, tauProperty, sinProperty,
+      cosProperty, tanProperty, sinhProperty, coshProperty, tanhProperty];
+    waveDataType.SdsTypeCode = SdsTypeCode.Object;
+
+    return waveDataType;
   }
 
   buildWaveDataType() {
@@ -304,8 +405,28 @@ export class DatasrcComponent {
     return waveData;
   }
 
+  newWaveDataCompoundEvent(order: number, multiplier: number) {
+    const radians = 2 * Math.PI / multiplier;
+
+    const waveData = new WaveDataCompound();
+    waveData.Order = order;
+    waveData.Multiplier = multiplier;
+    waveData.Radians = radians;
+    waveData.Tau = radians / (2 * Math.PI);
+    waveData.Sin = multiplier * Math.sin(radians);
+    waveData.Cos = multiplier * Math.cos(radians);
+    waveData.Tan = multiplier * Math.tan(radians);
+    waveData.Sinh = multiplier * Math.sinh(radians);
+    waveData.Cosh = multiplier * Math.cosh(radians);
+    waveData.Tanh = multiplier * Math.tanh(radians);
+
+    return waveData;
+  }
+
+
   createType() {
     const type = this.buildWaveDataType();
+    console.log(type);
     this.sdsService.createType(type).subscribe(res => {
       this.button1Message = this.healthyResponseMessage(res);
     },
@@ -327,6 +448,76 @@ export class DatasrcComponent {
       });
   }
 
+  updateStreamSecondaryIndex() {
+    const index = new SdsStreamIndex();
+    index.SdsTypePropertyId = 'SinhInt';
+    this.sdsService.getStream(streamId)
+    .subscribe(res => {
+      this.stream = res.body as SdsStream;
+      this.stream.Indexes = [index];
+      this.sdsService.updateStream(this.stream)
+      .subscribe(res2 => {
+          this.secondaryUpdateMessage = this.healthyResponseMessage(res2);
+        },
+        err => {
+          this.secondaryUpdateMessage = this.unhealthyResponseMessage(err);
+        });
+    },
+    err => {
+      this.secondaryUpdateMessage = this.unhealthyResponseMessage(err);
+    });
+  }
+
+  secondaryDeleteIndex() {
+    this.streamSecondaryIndex.Indexes = [];
+
+    this.sdsService.updateStream(this.streamSecondaryIndex)
+    .subscribe(res => {
+        this.secondaryDeleteMessage = this.healthyResponseMessage(res) + JSON.stringify(res.body);
+      },
+      err => {
+        this.secondaryDeleteMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+
+  createStreamSecondaryIndex() {
+    this.streamSecondaryIndex = new SdsStream();
+    const index = new SdsStreamIndex();
+    index.SdsTypePropertyId = 'Radians';
+    this.streamSecondaryIndex.Id = streamIdSecondary;
+    this.streamSecondaryIndex.TypeId = typeId;
+    this.streamSecondaryIndex.Indexes = [index];
+
+    this.sdsService.createStream(this.streamSecondaryIndex)
+    .subscribe(res => {
+        this.secondaryCreateMessage = this.healthyResponseMessage(res) + JSON.stringify(res.body);
+      },
+      err => {
+        this.secondaryCreateMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+  
+  createCompoundTypeandStream() {
+    const compoundType = this.buildWaveDataCompoundType()
+    const compoundStream = new SdsStream();
+    compoundStream.Id = streamIdCompound;
+    compoundStream.TypeId = compoundTypeId;
+
+    this.sdsService.createType(compoundType)
+    .subscribe(res => {
+      this.sdsService.createStream(compoundStream)
+      .subscribe(res2 => {
+          this.createCompoundTypeandStreamMessage = this.healthyResponseMessage(res2);
+        },
+        err => {
+          this.createCompoundTypeandStreamMessage = this.unhealthyResponseMessage(err);
+        });
+    },
+    err => {
+      this.createCompoundTypeandStreamMessage = this.unhealthyResponseMessage(err);
+    });
+  }
+
   writeSingleWaveDataEvent() {
     const list: Array<WaveData> = [];
     list.push(this.newWaveDataEvent(0, 2.5, 2));
@@ -337,6 +528,8 @@ export class DatasrcComponent {
       this.button3Message = this.unhealthyResponseMessage(err);
     });
   }
+
+
 
   writeWaveDataEvents() {
     const list: Array<WaveData> = [];
@@ -363,6 +556,93 @@ export class DatasrcComponent {
       err => {
         this.button4Message = this.unhealthyResponseMessage(err);
       });
+  }
+
+  retrieveWaveDataEventsHeaders() {
+    this.hasEventsHeaders = false;
+    this.sdsService.getRangeValuesHeaders(streamId, '1', 40, SdsBoundaryType.ExactOrCalculated)
+      .subscribe(res => {
+        this.eventsHeaders = res.body as string;
+        this.hasEventsHeaders = true;
+        this.getDataWithHeadersMessage = this.healthyResponseMessage(res) + JSON.stringify(this.eventsHeaders);
+      },
+      err => {
+        this.getDataWithHeadersMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+  
+  retrieveFilteredValues() {
+    this.hasEventsFiltered = false;
+    this.sdsService.getWindowValues(streamId, 0, 40, 'Radians%20lt%203')
+      .subscribe(res => {
+        this.eventsFiltered = res.body as string;
+        this.hasEventsFiltered = true;
+        this.getFilteredValuesMessage = this.healthyResponseMessage(res) + JSON.stringify(this.eventsFiltered);
+      },
+      err => {
+        this.getFilteredValuesMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+
+  updateStreamType() {
+    this.sdsService.updateStreamType(streamId, manualStreamViewId)
+      .subscribe(res => {
+        const resp = res.body as string;
+        this.updateStreamTypeMessage = this.healthyResponseMessage(res);
+      },
+      err => {
+        this.updateStreamTypeMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+
+
+  filterTypes() {
+    this.sdsService.getTypes(0, 100, 'contains(Id,\'Target\')')
+      .subscribe(res => {
+        const resp = res.body as string;
+        this.filterTypesMessage = this.healthyResponseMessage(res) + JSON.stringify(resp);
+      },
+      err => {
+        this.filterTypesMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+
+
+
+  retrieveInterpolatedValues() {
+    this.hasEventsInterpolated = false;
+    this.sdsService.getWindowValuesInterpolated(streamId, 5, 32, 4)
+      .subscribe(res => {
+        this.eventsInterpolated = res.body as string;
+        this.hasEventsInterpolated = true;
+        this.getDataInterpolatedMessage = this.healthyResponseMessage(res) + JSON.stringify(this.eventsInterpolated);
+      },
+      err => {
+        this.getDataInterpolatedMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+
+  createAndRetreiveCompoundData() {
+    const list: Array<WaveDataCompound> = [];
+    list.push(this.newWaveDataCompoundEvent(1, 10));
+    list.push(this.newWaveDataCompoundEvent(2, 2));
+    list.push(this.newWaveDataCompoundEvent(3, 1));
+    list.push(this.newWaveDataCompoundEvent(10, 3));
+    list.push(this.newWaveDataCompoundEvent(10, 8));
+    list.push(this.newWaveDataCompoundEvent(10, 10));
+    this.sdsService.insertValues(streamIdCompound, list).subscribe(res => {
+      this.createAndRetreiveCompoundDataMessage = this.healthyResponseMessage(res);
+      this.sdsService.getWindowValues(streamIdCompound, '2|1', '10|8').subscribe(res2 => {
+        this.createAndRetreiveCompoundDataMessage = this.healthyResponseMessage(res2);
+        this.createAndRetreiveCompoundDataMessageData = JSON.stringify(res2.body);
+      },
+      err => {
+        this.createAndRetreiveCompoundDataMessage = this.unhealthyResponseMessage(err);
+      });
+    },
+    err => {
+      this.createAndRetreiveCompoundDataMessage = this.unhealthyResponseMessage(err);
+    });
   }
 
   updateWaveDataEvents() {
@@ -536,24 +816,31 @@ export class DatasrcComponent {
   }
 
   cleanup() {
-    this.sdsService.deleteStream(streamId).subscribe(() => {
-      // you can't delete a type if there are existing streams or streamViews
-      // that depend on it, so we must make sure the stream is deleted first.
-      this.sdsService.deleteStreamView(autoStreamViewId).subscribe();
-      this.sdsService.deleteStreamView(manualStreamViewId).subscribe();
-      this.sdsService.deleteType(typeId).subscribe();
-      this.sdsService.deleteType(targetTypeId).subscribe();
-      this.sdsService.deleteType(targetIntTypeId).subscribe();
+    this.sdsService.deleteStream(streamIdSecondary).subscribe(() => {
+      this.sdsService.deleteStream(streamId).subscribe(() => {
+        // you can't delete a type if there are existing streams or streamViews
+        // that depend on it, so we must make sure the stream is deleted first.
+        this.sdsService.deleteStreamView(autoStreamViewId).subscribe();
+        this.sdsService.deleteStreamView(manualStreamViewId).subscribe();
+        this.sdsService.deleteType(typeId).subscribe();
+        this.sdsService.deleteType(targetTypeId).subscribe();
+        this.sdsService.deleteType(targetIntTypeId).subscribe();
+      });
+    });
+    this.sdsService.deleteStream(streamIdCompound).subscribe(() => {
+      this.sdsService.deleteType(compoundTypeId).subscribe();
     });
     this.hasEvents = false;
     this.button12Message = 'All Objects Deleted'
   }
 
   healthyResponseMessage(res: HttpResponse<any>) {
+    console.log(res);
     return `${res.status} (${res.statusText})`;
   }
 
   unhealthyResponseMessage(err: HttpErrorResponse) {
-      return `${err.status} (${err.statusText}) [${err.error ? err.error.Message: 'No error message'}]`;
+    console.log(err);
+    return `${err.status} (${err.statusText}) [${err.error ? err.error.Reason: 'No error message'}]`;
   }
 }

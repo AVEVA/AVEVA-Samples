@@ -22,6 +22,17 @@ class SdsStream(object):
     """Sds stream definition"""
 
     def __init__(self, id = None, name = None, description = None, typeId = None, propertyOverrides = None, indexes = None, interpolationMode = None, extrapolationMode = None):
+        """
+
+        :param id: required
+        :param name: not required
+        :param description: not required
+        :param typeId: required
+        :param propertyOverrides:  array of  SdsStreamPropertyOverride    not required
+        :param indexes: array of SdsStreamIndex   not required
+        :param interpolationMode: SdsInterpolationMode   default is null   not required
+        :param extrapolationMode: SdsExtrapolationMode default is null   not required
+        """
         self.Id = id
         self.Name = name
         self.Description = description
@@ -33,58 +44,130 @@ class SdsStream(object):
 
     @property
     def Id(self):
+        """
+        required
+        :return:
+        """
         return self.__id
     @Id.setter
     def Id(self, id):
+        """"
+        required
+        :param id:
+        :return:
+        """
         self.__id = id
     
     @property
     def Name(self):
+        """
+        not required
+        :return:
+        """
         return self.__name
     @Name.setter
     def Name(self, name):
+        """
+        not required
+        :param name:
+        :return:
+        """
         self.__name = name
     
     @property
     def Description(self):
+        """
+        not required
+        :return:
+        """
         return self.__description
     @Description.setter
     def Description(self, description):
+        """
+        not required
+        :param description:
+        :return:
+        """
         self.__description = description
         
     @property
     def TypeId(self):
+        """
+        required
+        :return:
+        """
         return self.__typeId
     @TypeId.setter
     def TypeId(self, typeId):
+        """
+        required
+        :param typeId:
+        :return:
+        """
         self.__typeId = typeId
 		
     @property
     def PropertyOverrides(self):
+        """
+        array of  SdsStreamPropertyOverride    not required
+        :return:
+        """
         return self.__propertyOverrides
     @PropertyOverrides.setter
     def PropertyOverrides(self, propertyOverrides):
+        """
+        array of  SdsStreamPropertyOverride    not required
+        :param propertyOverrides:
+        :return:
+        """
         self.__propertyOverrides = propertyOverrides
 
     @property
     def Indexes(self):
+        """
+        array of SdsStreamIndex   not required
+        :return:
+        """
         return self.__indexes 
     @Indexes.setter
     def Indexes(self, indexes):
+        """
+        array of SdsStreamIndex   not required
+        :param indexes:
+        :return:
+        """
         self.__indexes = indexes
 
     @property
     def InterpolationMode(self):
+        """
+        SdsInterpolationMode   default is null   not required
+        :return:
+        """
         return self.__interpolationMode
     @InterpolationMode.setter
     def InterpolationMode(self, interpolationMode):
+        """
+        SdsInterpolationMode    default is null   not required
+        :param interpolationMode:
+        :return:
+        """
         self.__interpolationMode = interpolationMode
 
     @property
     def ExtrapolationMode(self):
+        """
+        SdsExtrapolationMode default is null   not required
+        :return:
+        """
         return self.__extrapolationMode
     @ExtrapolationMode.setter
     def ExtrapolationMode(self, extrapolationMode):
+        """
+        SdsExtrapolationMode default is null   not required
+        :param extrapolationMode:
+        :return:
+        """
         self.__extrapolationMode = extrapolationMode
 
     def toJson(self):

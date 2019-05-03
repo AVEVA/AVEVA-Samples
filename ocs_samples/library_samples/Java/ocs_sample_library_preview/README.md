@@ -1,12 +1,18 @@
 Welcome
 ========
 
-The JAVA OCS libraries is an introductory language-specific examples of programming against OSISoft Cloud Services ([OCS](https://www.osisoft.com/Solutions/OSIsoft-Cloud-Services/)). They are intended as instructional samples only and are not for production use.
+The JAVA OCS library is an introductory language-specific examples of programming against OSISoft Cloud Services ([OCS](https://www.osisoft.com/Solutions/OSIsoft-Cloud-Services/)). It is intended as an instructional samples only and is not for production use.
 
-The libraries are available on [Github](https://github.com/osisoft/OCS-Samples). 
+
+The library is not intended to show every endpoint and every option/parameter for endpoints it has.  The library is known to be incomplete.  
+
+
+Other language libraries and samples are available on [Github](https://github.com/osisoft/OSI-Samples). 
+
+
 
 To install these locally run:
- mvn install pom.xml
+ mvn install 
 
 
-[OCS Samples](https://github.com/osisoft/ocs-samples) are licensed under the Apache 2 license.
+[OSI Samples](https://github.com/osisoft/OSI-samples) are licensed under the Apache 2 license.

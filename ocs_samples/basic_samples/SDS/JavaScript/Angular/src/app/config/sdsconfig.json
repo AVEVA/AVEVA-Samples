@@ -1,0 +1,6 @@
+{
+    "serviceBaseUri": "https://dat-b.osisoft.com",
+    "tenantId": "SPECIFY",
+    "namespaceId": "SPECIFY",
+    "apiVersion": "v1-preview"
+}

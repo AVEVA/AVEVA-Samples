@@ -22,15 +22,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OSIsoft.Data;
-//using OSIsoft.Data.Http.Security;
 using OSIsoft.Data.Reflection;
 using OSIsoft.Identity; 
-//using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SdsClientLibraries
 {
     public class Program
     {
+        public static Exception toThrow = null;
+        public static bool success = true;
+
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
         public static async Task<bool> MainAsync(bool test = false)
@@ -98,7 +99,7 @@ namespace SdsClientLibraries
 
                 // Step 3
                 // create an SdsStream
-               Console.WriteLine("Creating an SdsStream");
+                Console.WriteLine("Creating an SdsStream");
                 var stream = new SdsStream
                 {
                     Id = streamId,
@@ -462,7 +463,7 @@ namespace SdsClientLibraries
 
                 await metadataService.CreateOrUpdateStreamAsync(secondary);
                 secondary = await metadataService.GetStreamAsync(secondary.Id);
-                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
+                Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes?.Count()}. ");
                 Console.WriteLine();
 
 
@@ -538,6 +539,9 @@ namespace SdsClientLibraries
                 RunInTryCatch(metadataService.DeleteTypeAsync, targetTypeId);
                 RunInTryCatch(metadataService.DeleteTypeAsync, targetIntTypeId);
 
+                //wait incase any of the async calls issues
+                Task.Delay(10000).Wait();
+
 
                 Console.WriteLine("done");
                 if(!test)
@@ -550,20 +554,24 @@ namespace SdsClientLibraries
         }
 
         /// <summary>
-        /// Use this to run a method that you don't want to stop the program if there is an error and you don't want to report the error
+        /// Use this to run a method that you don't want to stop the program if there is an error
         /// </summary>
         /// <param name="methodToRun">The method to run.</param>
         /// <param name="value">The value to put into the method to run</param>
-        private static async void RunInTryCatch(Func<string,Task> methodToRun, string value)
+        private static async void RunInTryCatch(Func<string, Task> methodToRun, string value)
         {
             try
             {
                 await methodToRun(value);
-                
             }
             catch (Exception ex)
             {
-               Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
+                Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
+                if (toThrow == null)
+                {
+                    success = false;
+                    toThrow = ex;
+                }
             }
         }
 

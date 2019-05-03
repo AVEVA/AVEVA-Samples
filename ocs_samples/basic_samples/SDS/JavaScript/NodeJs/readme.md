@@ -15,21 +15,22 @@ Sample Setup
 
 1. Make a local copy of the git repo
 2. Install node.js
-3. Install request-promise, using the following command. Add a ``-g``
+3. Install rquest and request-promise, using the following command. Add a ``-g``
    option to make the module available globally, install in the same
    folder as the other js files:
 
-   .. code:: javascript
-
-       npm install request-promise
+```
+npm install request
+npm install request-promise
+```
 
 4. Open Command Prompt in Windows
 5. Goto folder where js files are located
 6. Type the following command to run the test file in the local server
 
-   .. code:: javascript
-
-       node Sample.js
+```
+node Sample.js
+```
 
 7. Now open a browser client and enter the following URL to trigger the
    SDS operations ``http://localhost:8080/``
@@ -53,22 +54,22 @@ DELETE        | Delete           | URL parameters
 
 The REST calls in this sample are set up as follows:
 
-.. code:: javascript
-
-            var restCall = require("request-promise")
-            restCall({
-                url: authItems["authority"],
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                form: {
-                    'grant_type': 'client_credentials',
-                    'client_id': authItems['clientId'],
-                    'client_secret': authItems['clientSecret'],
-                    'resource': authItems['resource']
-                }
-            });
+```js
+var restCall = require("request-promise")
+restCall({
+    url: authItems["authority"],
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    form: {
+        'grant_type': 'client_credentials',
+        'client_id': authItems['clientId'],
+        'client_secret': authItems['clientSecret'],
+        'resource': authItems['resource']
+    }
+});
+```
 
 -  URL - The service endpoint
 -  REST-METHOD - Denotes the type of REST call
@@ -125,16 +126,16 @@ used in the sample.
 
 The values to be replaced are in ``config.js``:
 
-.. code:: javascript
-
-        authItems : {'resource' : "https://sdshomeprod.onmicrosoft.com/ocsapi",
-                         'authority' : "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token",
-                         'clientId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
-                         'clientSecret' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
-        sdsServerUrl : "PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL",
-	tenantId: "PLACEHOLDER_REPLACE_WITH_TENANT_ID",
-	namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
-        apiVersion: "v1-preview"
+```js
+authItems : {'resource' : "https://sdshomeprod.onmicrosoft.com/ocsapi",
+                    'authority' : "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token",
+                    'clientId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
+                    'clientSecret' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
+sdsServerUrl : "PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL",
+tenantId: "PLACEHOLDER_REPLACE_WITH_TENANT_ID",
+namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
+apiVersion: "v1-preview"
+```
 
 Obtain an Authentication Token
 ------------------------------
@@ -147,21 +148,21 @@ which handles the specifics of token acquisition, caching, and refresh.
 During initialization, ``SdsClient`` sets the SdsServerUrl. Then, the
 first step is to get an authentication token by calling,
 
-.. code:: javascript
-
-    this.getToken(authItems)
+```js
+this.getToken(authItems)
+```
 
 The token received from ``getToken`` is included in the headers of each
 SDS REST API request:
 
-.. code:: javascript
-
-     this.getHeaders = function(){
-                                return {
-                                            "Authorization" : "bearer "+ this.token,
-                                            "Content-type": "application/json", 
-                                            "Accept": "*/*; q=1"
-                                        }
+```js
+this.getHeaders = function(){
+                        return {
+                                    "Authorization" : "bearer "+ this.token,
+                                    "Content-type": "application/json", 
+                                    "Accept": "*/*; q=1"
+                                }
+```
 
 Note that the value of the ``Authorization`` header is the word
 "bearer", followed by a space, and followed by the token string.
@@ -172,16 +173,16 @@ token expiration and refreshing it as needed. As mentioned above,
 Microsoft also provides an authentication library compatible with
 angular.js that handles token caching and refresh transparently.
 
-.. code:: javascript
-
-    if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client)
-				.then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.createType(tenantId, sampleNamespaceId, sampleType);
-                    })
-				.catch(function (err) { logError(err); });
+```js
+if (client.tokenExpires < nowSeconds) {
+            return checkTokenExpired(client)
+            .then(
+                function (res) {
+                    refreshToken(res, client);
+                    return client.createType(tenantId, sampleNamespaceId, sampleType);
+                })
+            .catch(function (err) { logError(err); });
+```
 
 Note: The ``checkTokenExpired`` method returns a request-promise object, which
 can have a ``.then()`` and a ``.catch()`` method associated with it. The
@@ -191,11 +192,12 @@ thrown. This sample follows a pattern of placing REST calls in the
 ``.then()`` method after token acquisition (or other dependent REST
 calls):
 
-.. code:: javascript
+```js
+var getClientToken = client.getToken(authItems)
+    .catch(function (err) { throw err });
+var createType = getClientToken.then(...<SDS REST call to create a type>...)
+```
 
-    var getClientToken = client.getToken(authItems)
-        .catch(function (err) { throw err });
-    var createType = getClientToken.then(...<SDS REST call to create a type>...)
 
 In the above snippet, the type creation method is called only if token
 acquisition was successful. This is not mandatory for interaction with
@@ -218,25 +220,25 @@ Sample.js. WaveData contains properties of integer and double atomic types.
 The constructions begins by defining a base SdsType for each atomic type and then defining
 Properties of those atomic types.
 
-.. code:: javascript
+```js
+// define basic SdsTypes
+var doubleType = new sdsObjs.SdsType({ "Id": "doubleType", "SdsTypeCode": sdsObjs.sdsTypeCode.Double });
+var intType = new sdsObjs.SdsType({ "Id": "intType", "SdsTypeCode": sdsObjs.sdsTypeCode.Int32 });
 
-    // define basic SdsTypes
-    var doubleType = new sdsObjs.SdsType({ "Id": "doubleType", "SdsTypeCode": sdsObjs.sdsTypeCode.Double });
-    var intType = new sdsObjs.SdsType({ "Id": "intType", "SdsTypeCode": sdsObjs.sdsTypeCode.Int32 });
-
-    // define properties
-    var orderProperty = new sdsObjs.SdsTypeProperty({ "Id": "Order", "SdsType": intType, "IsKey": true });
+// define properties
+var orderProperty = new sdsObjs.SdsTypeProperty({ "Id": "Order", "SdsType": intType, "IsKey": true });
+```
 
 An SdsType can be created by a POST request as follows:
 
-.. code:: javascript
-
-            restCall({
-                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "/" + type.Id,
-                method: 'POST',
-                headers: this.getHeaders(),
-                body: JSON.stringify(type).toString()
-            });
+```js
+restCall({
+    url: this.url + this.typesBase.format([tenantId, namespaceId]) + "/" + type.Id,
+    method: 'POST',
+    headers: this.getHeaders(),
+    body: JSON.stringify(type).toString()
+});
+```
 
 -  Returns the SdsType object in a json format
 -  If a type with the same Id exists, url path of the existing SDS type
@@ -251,26 +253,26 @@ is create a local SdsStream instance, give it an Id, assign it a type,
 and submit it to the SDS service. The value of the ``TypeId`` property is
 the value of the SdsType ``Id`` property.
 
-.. code:: javascript
-
-    var sampleStream = new sdsObjs.SdsStream({
-        "Id": sampleStreamId, 
-	"Name": "WaveStreamJs",
-        "Description": "A Stream to store the WaveDatan Sds types events",
-        "TypeId": sampleTypeId
-        });
+```js
+var sampleStream = new sdsObjs.SdsStream({
+    "Id": sampleStreamId, 
+"Name": "WaveStreamJs",
+    "Description": "A Stream to store the WaveDatan Sds types events",
+    "TypeId": sampleTypeId
+    });
+```
 
 The local SdsStream can be created in the SDS service by a POST request as
 follows:
 
-.. code:: javascript
-
-            restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + stream.Id,
-                method: 'POST',
-                headers: this.getHeaders(),
-                body: JSON.stringify(stream).toString()
-            });
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + stream.Id,
+    method: 'POST',
+    headers: this.getHeaders(),
+    body: JSON.stringify(stream).toString()
+});
+```
 
 -  SdsStream object is passed in json format
 
@@ -288,15 +290,15 @@ An event can be created using the following POST request:
 
 When inserting single or multiple values, the payload has to be a list of events:
 
-.. code:: javascript
-
-            restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                    streamId + this.insertValuesBase,
-                method: 'POST',
-                headers: this.getHeaders(),
-                body: JSON.stringify(events)
-            });
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
+        streamId + this.insertValuesBase,
+    method: 'POST',
+    headers: this.getHeaders(),
+    body: JSON.stringify(events)
+});
+```
 
 The SDS REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
@@ -314,13 +316,13 @@ capable of conversion to the type of the index assigned in the SdsType.
 
 This sample implements only a few of the many available retrieval methods.
 
-.. code:: javascript
-
-        restCall({
-            url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]),
-            method: 'GET',
-            headers: this.getHeaders()
-        });
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]),
+    method: 'GET',
+    headers: this.getHeaders()
+});
+```
 
 -  parameters are the SdsStream Id and the starting and ending index
    values for the desired window Ex: For a time index, request url
@@ -337,15 +339,15 @@ Updating events is handled by PUT REST call as follows:
 
 When updating single or multiple events, the payload has to be an array of event objects:
 
-.. code:: javascript
-
-            restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.updateValuesBase,
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(events)
-            });
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
+    streamId + this.updateValuesBase,
+    method: 'PUT',
+    headers: this.getHeaders(),
+    body: JSON.stringify(events)
+});
+```
 
 If you attempt to update values that do not exist they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
@@ -356,15 +358,15 @@ values and will not insert any new values into the stream. The sample
 program demonstrates this by replacing all twenty values. The calling conventions are
 identical to ``updateValues``:
 
-.. code:: javascript
-     
-            restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
-                streamId + this.replaceValuesBase,
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(events)
-            });
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" +
+    streamId + this.replaceValuesBase,
+    method: 'PUT',
+    headers: this.getHeaders(),
+    body: JSON.stringify(events)
+});
+```
 
 Property Overrides
 ------------------
@@ -378,15 +380,15 @@ Now if a requested index does not correspond to a real value in the stream then 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
-.. code:: javascript
+```js
+// create a Property Override    
+var propertyOverride = new sdsObjs.SdsPropertyOverride({ "SdsTypePropertyId": "Radians", "InterpolationMode": sdsObjs.sdsStreamMode.Discrete });
+var propertyOverrides = [propertyOverride]
 
-    // create a Property Override    
-    var propertyOverride = new sdsObjs.SdsPropertyOverride({ "SdsTypePropertyId": "Radians", "InterpolationMode": sdsObjs.sdsStreamMode.Discrete });
-    var propertyOverrides = [propertyOverride]
-
-	// update the stream
-    sampleStream.PropertyOverrides = propertyOverrides;
-    return client.updateStream(tenantId, sampleNamespaceId, sampleStream);
+// update the stream
+sampleStream.PropertyOverrides = propertyOverrides;
+return client.updateStream(tenantId, sampleNamespaceId, sampleStream);
+```
 
 The process consists of two steps. First, the Property Override must be created, then the
 stream must be updated. Note that the sample retrieves three data points
@@ -407,24 +409,24 @@ destination. When the mapping is straightforward, such as when
 the properties are in the same position and of the same data type, 
 or when the properties have the same name, SDS will map the properties automatically.
 
-.. code:: javascript
-
-      client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id)
+```js
+client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id)
+```
 
 To map a property that is beyond the ability of SDS to map on its own, 
 you should define an SdsStreamViewProperty and add it to the SdsStreamView’s Properties collection.
 
-.. code:: javascript
-
-        var sinStreamViewProperty = new sdsObjs.SdsStreamViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
-        ...
-        var manualStreamView = new sdsObjs.SdsStreamView({
-            "Id": manualStreamViewId, 
-            "Name": "MapSampleTypeToATargetType",     
-            "TargetTypeId" : targetIntegerTypeId,
-            "SourceTypeId" : sampleTypeId,
-            "Properties" : [sinStreamViewProperty, cosStreamViewProperty, tanStreamViewProperty]
-        });
+```js
+var sinStreamViewProperty = new sdsObjs.SdsStreamViewProperty({ "SourceId": "Sin", "TargetId": "SinInt" });
+...
+var manualStreamView = new sdsObjs.SdsStreamView({
+    "Id": manualStreamViewId, 
+    "Name": "MapSampleTypeToATargetType",     
+    "TargetTypeId" : targetIntegerTypeId,
+    "SourceTypeId" : sampleTypeId,
+    "Properties" : [sinStreamViewProperty, cosStreamViewProperty, tanStreamViewProperty]
+});
+```
 
 SdsStreamViewMap
 ---------
@@ -433,9 +435,9 @@ When an SdsStreamView is added, SDS defines a plan mapping. Plan details are ret
 The SdsStreamViewMap provides a detailed Property-by-Property definition of the mapping.
 The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
-.. code:: javascript
-
-        var sdsStreamViewMap = client.getStreamViewMap(tenantId, sampleNamespaceId, manualStreamViewId);
+```js
+var sdsStreamViewMap = client.getStreamViewMap(tenantId, sampleNamespaceId, manualStreamViewId);
+```
 
 Delete Values from a Stream
 ---------------------------
@@ -447,19 +449,19 @@ Removing values depends on the value's key type ID value. If a match is
 found within the stream, then that value will be removed. Code from both functions
 is shown below:
 
-.. code:: javascript
+```js
+    restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.removeSingleValueBase.format([streamId, index]),
+    method: 'DELETE',
+    headers: this.getHeaders()
+});
 
-        restCall({
-	    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.removeSingleValueBase.format([streamId, index]),
-	    method: 'DELETE',
-	    headers: this.getHeaders()
-	});
-
-	restCall({
-	    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.removeMultipleValuesBase.format([streamId, start, end]),
-	    method: 'DELETE',
-	    headers: this.getHeaders()
-	});
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.removeMultipleValuesBase.format([streamId, start, end]),
+    method: 'DELETE',
+    headers: this.getHeaders()
+});
+```
 
 As when retrieving a window of values, removing a window is
 inclusive; that is, both values corresponding to start and end
@@ -472,23 +474,21 @@ In order for the program to run repeatedly without collisions, the sample
 performs some cleanup before exiting. Deleting streams, stream views and types can 
 be achieved by a DELETE REST call and passing the corresponding Id.
 
-.. code:: javascript
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
+    method: 'DELETE',
+    headers: this.getHeaders()
+});
+```
 
-            restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
-                method: 'DELETE',
-                headers: this.getHeaders()
-            });
-
-.. code:: javascript
-
-	    restCall({
-                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "/" + typeId,
-                method: 'DELETE',
-                headers: this.getHeaders()
-            });
-
-
+```js
+restCall({
+    url: this.url + this.typesBase.format([tenantId, namespaceId]) + "/" + typeId,
+    method: 'DELETE',
+    headers: this.getHeaders()
+});
+```
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />

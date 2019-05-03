@@ -17,6 +17,9 @@
 
 package  com.github.osisoft.ocs_sample_library_preview.sds;
 
+/**
+ * SdsInterpolationMode 0-3
+ */
 public enum SdsInterpolationMode {
 
     Continuous(0),
@@ -28,7 +31,11 @@ public enum SdsInterpolationMode {
     private SdsInterpolationMode(int id) {
         this.SdsInterpolationMode = id;
     }
-
+    
+    /**
+     * gets the int value
+     * @return
+     */
     public int getValue() {
         return SdsInterpolationMode;
     }

@@ -7,7 +7,7 @@ using static System.Int32;
 
 namespace HybridFlow
 {
-    static class Program
+    public static class Program
     {
         private static IConfiguration _configuration;
 
@@ -16,19 +16,19 @@ namespace HybridFlow
         /// </summary>
         private const string AuthorizationHeaderName = "Authorization";
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         { 
             InitConfig();
 
-            HybridFlow.OcsUrl = GetConfigValue("OCSUrl");
-            HybridFlow.RedirectHost = GetConfigValue("HybridFlow:RedirectHost");
-            HybridFlow.RedirectPort = Parse(GetConfigValue("HybridFlow:RedirectPort"));
-            HybridFlow.RedirectPath = GetConfigValue("HybridFlow:RedirectPath");
+            HybridFlow.OcsUrl = GetConfigValue("Resource");
+            HybridFlow.RedirectHost = GetConfigValue("RedirectHost");
+            HybridFlow.RedirectPort = Parse(GetConfigValue("RedirectPort"));
+            HybridFlow.RedirectPath = GetConfigValue("RedirectPath");
 
             var tenantId = GetConfigValue("TenantId");
-            var clientId = GetConfigValue("HybridFlow:ClientId");
-            var clientSecret = GetConfigValue("HybridFlow:ClientSecret");
-            var scope = GetConfigValue("HybridFlow:Scope");
+            var clientId = GetConfigValue("ClientId");
+            var clientSecret = GetConfigValue("ClientKey");
+            var scope = GetConfigValue("Scope");
 
             // Get access token and refresh token.
             var (accessToken, refreshToken, expiration) = HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
@@ -91,7 +91,7 @@ namespace HybridFlow
         {
             try {
                 _configuration = new ConfigurationBuilder()
-                .AddJsonFile("config.json", optional:false, reloadOnChange:false)
+                .AddJsonFile("appsettings.json", optional:false, reloadOnChange:false)
                 .Build();
             }
             catch (FileNotFoundException)

@@ -17,6 +17,9 @@
 
 package  com.github.osisoft.ocs_sample_library_preview.sds;
 
+/**
+ * SdsBoundaryType 0-3
+ */
 public enum SdsBoundaryType {
 
     Exact(0),
@@ -30,6 +33,10 @@ public enum SdsBoundaryType {
         this.SdsBoundaryType = id;
     }
 
+    /**
+     * gets the int value
+     * @return
+     */
     public int getValue() {
         return SdsBoundaryType;
     }

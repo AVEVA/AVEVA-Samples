@@ -1,6 +1,6 @@
 # Setup
 
-Replace the placeholders in the [config](./config.json) file with your TenantID, ClientID and ClientSecret.
+Replace the placeholders in the [apsettings](./apsettings.json) file with your TenantID, ClientID and ClientSecret.
 
 ## Running the sample
 
@@ -11,9 +11,8 @@ Replace the placeholders in the [config](./config.json) file with your TenantID,
 
 ### Using Visual Studio
 
-- Load the solution from the directory above this in Visual Studio
+- Load the .csproj
 - Rebuild solution
-- Select ClientCredentialFlow project
 - Run it
   - If you want to see the token and other outputs from the program, put a breakpoint at the end of the main method and run in debug mode
 

@@ -135,7 +135,7 @@ The sample for this authentication flow can be found [here](./HybridFlow/).
 
 Tasks|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ------|------|------------
-**Client Credential Flow** | <a href="ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a><br /><a href="ClientCredentialFlow/Python3/">Python3</a>|
+**Client Credential Flow** | <a href="ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>|[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_CC_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 **Hybrid Flow** | <a href="HybridFlow/DotNet/HybridFlow">.NET</a>|
 **Implicit Flow** | <a href="ImplicitFlow/DotNet/ImplicitFlow">.NET</a>|
 

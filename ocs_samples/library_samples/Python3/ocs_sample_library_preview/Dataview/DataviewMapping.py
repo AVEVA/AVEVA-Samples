@@ -38,16 +38,34 @@ class DataviewMapping(object):
     """Sds dataview definition"""
     @property
     def IsDefault(self):
+        """
+        boolean  	Determines whether default parameters should be used   not required
+        :return:
+        """
         return self.__isDefault
     @IsDefault.setter
     def IsDefault(self, isDefault):
+        """
+        boolean  	Determines whether default parameters should be used   not required
+        :param isDefault:
+        :return:
+        """
         self.__isDefault = isDefault
     
     @property
     def Columns(self):
+        """
+        array of DataviewMappingColumn   required  unless IsDefault is true
+        :return:
+        """
         return self.__columns
     @Columns.setter
     def Columns(self, columns ):
+        """
+        array of DataviewMappingColumn   required  unless IsDefault is true
+        :param columns:
+        :return:
+        """
         self.__columns = columns    
 
 

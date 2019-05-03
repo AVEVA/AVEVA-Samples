@@ -1,6 +1,6 @@
 The sample code in the folders below demonstrate how to make client libraries. 
 
-The libraries are generally used in all of the other samples.  They were seperated out to minimize re-written code and to follow general best practices.  The libraries are not complete.  They do not include every service, every endpoint for every service, or even every option on included endpoints. Included parameters may not be complete to.  These are meant to show how a client library could be made and what it might look like.
+The libraries are generally used in all of the other samples.  They were seperated out to minimize re-written code and to follow general best practices.  The libraries are not complete.  They do not include every service, every endpoint for every service, or even every option on included endpoints. Included parameters may or may not be complete too.  These are meant to show how a client library could be made and what it might look like.
 
 
 |Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

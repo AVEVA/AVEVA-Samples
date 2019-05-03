@@ -16,14 +16,9 @@
 
 module.exports = {
 
-    //VERY IMPORTANT: edit the following values to reflect the authorization items you were given
-    authItems: {
-        'resource': "https://qihomeprod.onmicrosoft.com/ocsapi",
-        'authority': "https://login.windows.net/<REPLACE_WITH_TENANT_ID>.onmicrosoft.com/oauth2/token",
-        'clientId': "REPLACE_WITH_APPLICATION_IDENTIFIER",
-        'clientSecret': "REPLACE_WITH_APPLICATION_SECRET"
-    },
-    sdsServerUrl: "https://dat-a.osisoft.com",
+    resource: "https://dat-b.osisoft.com",
+    clientId: "REPLACE_WITH_APPLICATION_IDENTIFIER",
+    clientSecret: "REPLACE_WITH_APPLICATION_SECRET",
     tenantId: "REPLACE_WITH_TENANT_ID",
     namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",
     apiVersion: "v1-preview"

@@ -28,30 +28,67 @@ class DataviewQueryQuery(object):
     """Sds dataview definition"""
     @property
     def Resource(self):
+        """
+        query resource can be something like "Streams", "TypeProperties"   required
+        :return:
+        """
         return self.__resource
     @Resource.setter
     def Resource(self, resource):
+        """
+        query resource   required
+        :param resource:
+        :return:
+        """
         self.__resource = resource
 
     @property
     def Field(self):
+        """
+        query field can be something like "Id", "Name", "Tag", "Description", "TypeId", "MetadataKey"   required
+
+        :return:
+        """
         return self.__field
     @Field.setter
     def Field(self, field):
+        """
+        query field can be something like "Id", "Name", "Tag", "Description", "TypeId", "MetadataKey"   required
+        :param field:
+        :return:
+        """
         self.__field = field
     
     @property
     def Value(self):
+        """
+        value for field to use in query   required
+        :return:
+        """
         return self.__value
     @Value.setter
     def Value(self, value):
+        """
+        value for field to use in query   required
+        :param value:
+        :return:
+        """
         self.__value = value
     
     @property
     def Function(self):
+        """
+        QueryFunction can be something like "Contains", "Equals", "EndsWith", "StartsWith"    required
+        :return:
+        """
         return self.__function
     @Function.setter
     def Function(self, function):
+        """
+        QueryFunction can be something like "Contains", "Equals", "EndsWith", "StartsWith"    required
+        :param function:
+        :return:
+        """
         self.__function= function
     
 

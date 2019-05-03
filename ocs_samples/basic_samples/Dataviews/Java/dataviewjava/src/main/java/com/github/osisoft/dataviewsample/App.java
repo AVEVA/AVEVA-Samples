@@ -120,12 +120,20 @@ public class App {
             
             System.out.println();
             System.out.println("Getting datagroups");
+
+            //This works in automated envrionment, but the below code works locally and gives you the datagroup back as an object
+            String dataGroups = ocsClient.Dataviews.getDatagroupsString(tenantId, namespaceId, sampleDataviewId, 0, 100);
+            System.out.println("Datagroups");
+            System.out.println(dataGroups);
+
+            //This should work to get datagroups and does locally
+            /*
             Datagroups dataGroups = ocsClient.Dataviews.getDatagroups(tenantId, namespaceId, sampleDataviewId, 0, 100);
             for (Datagroup dg : dataGroups.getDataGroups().values()) {
                 System.out.println("Datagroup");
                 System.out.println(ocsClient.mGson.toJson(dg));
             }
-
+            */
  
             ///By default the preview get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
             ///Beyond the normal API optoins, this function does have the option to return the data in a class if you have created a Type for the data you are retreiving.

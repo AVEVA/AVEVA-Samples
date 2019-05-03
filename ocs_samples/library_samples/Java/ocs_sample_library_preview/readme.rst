@@ -63,18 +63,18 @@ The constructor for the OCSClient class takes the base URL (that is, the
 protocol, server address and port number) and the api version. It also creates a new Gson
 serializer/deserializer to convert between Java Objects and JSON.  This is all done in subclass used as a base.
 
-.. code:: java
+```java
+public BaseClient() {
+    gclientId = getConfiguration("clientId");
+    gclientSecret = getConfiguration("clientSecret");
+    gresource = getConfiguration("resource");
+    gresource = gresource.endsWith("/") ? gresource :  gresource + "/";
 
-    public BaseClient() {
-        gclientId = getConfiguration("clientId");
-        gclientSecret = getConfiguration("clientSecret");
-        gresource = getConfiguration("resource");
-        gresource = gresource.endsWith("/") ? gresource :  gresource + "/";
-
-        this.baseUrl = gresource;
-        this.apiVersion = getConfiguration("apiVersion");
-        this.mGson = new Gson();
-    }
+    this.baseUrl = gresource;
+    this.apiVersion = getConfiguration("apiVersion");
+    this.mGson = new Gson();
+}
+```
 
 Configure the Sample:
 -----------------------
@@ -117,14 +117,14 @@ and may be used in the sample.
 
 The values to be replaced are in ``config.properties``:
 
-.. code:: java
-
-    resource = https://dat-b.osisoft.com
-    clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
-    clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
-    tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
-    namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
-    apiVersion = v1-preview
+```
+resource = https://dat-b.osisoft.com
+clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
+clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
+tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
+namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
+apiVersion = v1-preview
+```
 
 Obtain an Authentication Token
 ------------------------------

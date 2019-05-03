@@ -31,7 +31,7 @@ namespace ClientCredentialFlow
         private static AuthenticationHandler InitiateAuthenticationHandler(string clientId, string clientSecret)
         {
             // Create an instance of the AuthenticationHandler.
-            return new AuthenticationHandler(_ocsUrl, clientId, clientSecret)
+            return new AuthenticationHandler(new Uri(_ocsUrl), clientId, clientSecret)
             {
                 InnerHandler = new HttpClientHandler()
                 {
