@@ -21,4 +21,4 @@ If you wish to contribute please take a look at the [contribution guide](CONTRIB
 
 ## License
 
-[OCS Samples](https://github.com/osisoft/ocs-samples) are licensed under the [Apache 2 license](LICENSE.md).
+[OSI Samples](https://github.com/osisoft/osi-samples) are licensed under the [Apache 2 license](LICENSE.md).
