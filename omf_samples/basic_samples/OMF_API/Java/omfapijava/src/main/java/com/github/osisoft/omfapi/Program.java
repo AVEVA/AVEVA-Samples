@@ -16,15 +16,12 @@
  */
 
 // OMF_API_Java
-// Version 1.0.0.1
+// Version 1.0.1
 // 3-21-19
-
 
 package com.github.osisoft.omfapi;
 
-
 //import com.google.gson.reflect.TypeToken;
-
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -44,7 +41,18 @@ import java.util.Properties;
 
 import java.io.*;
 import java.net.*;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.ThreadLocalRandom;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import java.time.*;
 
 
@@ -54,27 +62,29 @@ public class Program
     static Boolean success = true;
 
     //settings that aren't set by configuration 
-    static boolean sendToOCS = true;
     static String compression = "none";
     static String omfVersion = "1.1";
+    static boolean forceSend = false;
     
     // used in holding the access token 
     static String cachedAccessToken = null;
     static Date accessTokenExpiration = new Date(Long.MIN_VALUE);
     static long FIVE_SECONDS_IN_MILLISECONDS = 5000;
 
+    
+    static boolean sendToOCS = true;
+
     // Step 1
     static String resource = getConfiguration("resource");;
     static String clientId = getConfiguration("clientId");
     static String clientSecret = getConfiguration("clientSecret");
     static String apiVersion = getConfiguration("apiVersion");
-    static String omfEndPoint = getConfiguration("completedURL");
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
-    static String endPointToUse = omfEndPoint;
+    static String dataServerName = getConfiguration("dataServerName");
+    static String omfEndPoint = "";
     static String checkBase = "";
-
-    
+  
 
     //values used across calls of a function
     static int integer_boolean_value = 0;
@@ -86,9 +96,49 @@ public class Program
     public static void main( String[] args )
     {
         toRun(false);
-    }        
+    }     
+    
+        
+    private static void disableSslVerification() {
+        try
+        {
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            }
+            };
+
+            // Install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Create all-trusting host name verifier
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     public static boolean toRun(Boolean test) {
+        disableSslVerification();
+
         // Create Sds client to communicate with server
         System.out.println("------------------------------------------------------------------");
         System.out.println(" .d88888b.  888b     d888 8888888888        8888888b. Y88b   d88P ");
@@ -102,21 +152,22 @@ public class Program
         System.out.println("------------------------------------------------------------------");
 
         try {
+
+            if(!forceSend){
+                sendToOCS = (tenantId != null && !tenantId.isEmpty());
+            }
             
             if (sendToOCS){
-                if(endPointToUse == null || endPointToUse.equals(""))
-                {
-                    endPointToUse = resource + "/api/" + apiVersion + "/tenants/" + tenantId + "/namespaces/" + namespaceId + "/omf";
-                }
                 checkBase = resource + "/api/" + apiVersion + "/tenants/" + tenantId + "/namespaces/" + namespaceId;
+                omfEndPoint = checkBase + "/omf";
             }
             else{
-                omfEndPoint = resource + "/api/" + apiVersion + "/tenants/" + tenantId + "/namespaces/" + namespaceId + "/omf";
+                checkBase = resource;
+                omfEndPoint = checkBase + "/omf";
             }
 
             // Step 2 
             AcquireAuthToken();
-
             
             System.out.println("Sending Types and Containers");
             // Steps 3-8 contained in here
@@ -125,23 +176,26 @@ public class Program
             System.out.println("Sending Data ");
             // Step 9
             int count = 0;
-            String firstVal = "";
+            String val2 = "";
 
             while (count == 0 || (!test && count < 2)){
                 String val = create_data_values_for_first_dynamic_type("Container1");
-                if (count == 0){
-                    firstVal = val;
-                }
+                val2 = val;
+
                 sendOMF(val,"data", "create");
-                sendOMF(create_data_values_for_first_dynamic_type("container2"),"data", "create");
-                sendOMF(create_data_values_for_second_dynamic_type("container3"),"data", "create");
-                sendOMF(create_data_values_for_third_dynamic_type("container4"),"data", "create");
-                sendOMF(create_data_values_for_NonTimeStampIndexAndMultiIndex_type("container5", "container6"),"data", "create");
+                sendOMF(create_data_values_for_first_dynamic_type("Container2"),"data", "create");
+                sendOMF(create_data_values_for_second_dynamic_type("Container3"),"data", "create");
+                sendOMF(create_data_values_for_third_dynamic_type("Container4"),"data", "create");
+
+                if(sendToOCS){
+                    sendOMF(create_data_values_for_NonTimeStampIndexAndMultiIndex_type("Container5", "Container6"),"data", "create");
+                }
+
                 Thread.sleep(1000);
                 count = count +1;
             }
 
-            checkSends(firstVal);
+            checkSends(val2);
 
         }
         catch (Exception e) {
@@ -165,8 +219,9 @@ public class Program
         return success;
     }
     
-    private static void checkSends(String firstVal) throws Exception {
+    private static void checkSends(String lastVal) throws Exception {
         System.out.println("Checks");
+        Gson gson = new Gson();
         if(sendToOCS){
             String json1;
             // just getting back the type or stream means that it worked
@@ -174,16 +229,36 @@ public class Program
             //System.out.println(json1);
             json1 = getValue(checkBase + "/Streams" + "/Container1");
             //System.out.println(json1);
-            json1 = getValue(checkBase + "/Streams" + "/Container1"+ "/Data/first");
+            json1 = getValue(checkBase + "/Streams" + "/Container1"+ "/Data/last");
             //System.out.println(json1);
 
-            Gson gson = new Gson();
             Map<String, Object> mappy = gson.fromJson(json1, Map.class);
             String temp = " \"IntegerProperty\": " + mappy.get("IntegerProperty").toString().replace(".0", "");
             
-            if(!firstVal.contains(temp))
+            if(!lastVal.contains(temp))
                 throw new Exception("Expected value not found from sending it via OMF");
 
+        }
+        else{
+
+            String json1;
+            json1 = getValue(checkBase + "/dataservers?name=" + dataServerName);
+            Map<String, Object> mappy = gson.fromJson(json1, Map.class);
+            Map<String, Object> mappy2 = ( Map<String, Object>)mappy.get("Links");
+        
+            String pointsURL = mappy2.get("Points").toString();
+
+            json1 = getValue(pointsURL+ "?nameFilter=container1*");
+            Map<String, Object> mappy3 = gson.fromJson(json1, Map.class);
+            Map<String, Object> mappy4 = ((ArrayList<Map<String, Object>>)mappy3.get("Items")).get(0);
+            Map<String, Object> mappy5 = ((Map<String, Object>)mappy4.get("Links"));
+            String EndValueUrl = mappy5.get("EndValue").toString();
+            
+            String json3 = getValue(EndValueUrl);
+            Map<String, Object> mappy6 = gson.fromJson(json3, Map.class);
+            String temp = mappy6.get("Value").toString().replace(".0", "");;
+            if(!lastVal.contains(temp))
+                throw new Exception("Expected value not found from sending it via OMF");
         }
     
     
@@ -306,8 +381,8 @@ public class Program
         //Step 7
         sendOMF(getStatic1(),"data",action);
         //Step 8
-        sendOMF(getLink1(),"data",action);
-        sendOMF(getLink2(),"data",action);
+        //sendOMF(getLink1(),"data",action);
+      //  sendOMF(getLink2(),"data",action);
         
     }
 
@@ -464,7 +539,7 @@ public class Program
         "                    \"Int_Key\": {" +
         "                        \"type\": \"integer\"," +
         "                        \"name\": \"Integer Key\"," +
-        "                        \"isindex\": True," +
+        "                        \"isindex\": true," +
         "                        \"description\": \"A non-time stamp key\"" +
         "                    }" +
         "                }" +
@@ -489,13 +564,13 @@ public class Program
         "                    \"IntKey\": {" +
         "                        \"type\": \"integer key part 1\"," +
         "                        \"name\": \"integer key part 1\"," +
-        "                        \"isindex\": True," +
+        "                        \"isindex\": true," +
         "                        \"description\": \"This could represent any integer value\"" +
         "                    }," +
         "                    \"IntKey2\": {" +
         "                        \"type\": \"integer key part 2\"," +
         "                        \"name\": \"integer key part 2\"," +
-        "                        \"isindex\": True," +
+        "                        \"isindex\": true," +
         "                        \"description\": \"This could represent any integer value as well\"" +
         "                    }" +
         "                }" +
@@ -515,7 +590,7 @@ public class Program
         "                \"timestamp\": {" +
         "                    \"format\": \"date-time\"," +
         "                    \"type\": \"string\"," +
-        "                    \"isindex\": True," +
+        "                    \"isindex\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"IntegerProperty\": {" +
@@ -534,7 +609,7 @@ public class Program
         "                \"timestamp\": {" +
         "                    \"format\": \"date-time\"," +
         "                    \"type\": \"string\"," +
-        "                    \"isindex\": True," +
+        "                    \"isindex\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"NumberProperty1\": {" +
@@ -564,7 +639,7 @@ public class Program
         "                \"timestamp\": {" +
         "                    \"format\": \"date-time\"," +
         "                    \"type\": \"string\"," +
-        "                    \"isindex\": True," +
+        "                    \"isindex\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"IntegerEnum\": {" +
@@ -589,12 +664,12 @@ public class Program
         "            \"properties\": {" +
         "                \"index\": {" +
         "                    \"type\": \"string\"," +
-        "                    \"isindex\": True," +
+        "                    \"isindex\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"name\": {" +
         "                    \"type\": \"string\"," +
-        "                    \"isname\": True," +
+        "                    \"isname\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"StringProperty\": {" +
@@ -612,12 +687,12 @@ public class Program
         "            \"properties\": {" +
         "                \"index\": {" +
         "                    \"type\": \"string\"," +
-        "                    \"isindex\": True," +
+        "                    \"isindex\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"name\": {" +
         "                    \"type\": \"string\"," +
-        "                    \"isname\": True," +
+        "                    \"isname\": true," +
         "                    \"description\": \"not in use\"" +
         "                }," +
         "                \"StringProperty\": {" +
@@ -710,7 +785,7 @@ public class Program
         URL url = null;
         HttpURLConnection urlConnection = null;
         try {
-            url = new URL(endPointToUse);
+            url = new URL(omfEndPoint);
             urlConnection = getConnection(url, "POST",message_type, action);
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -727,7 +802,7 @@ public class Program
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (isSuccessResponseCode(httpResult)) {
+            if (isSuccessResponseCode(httpResult) || httpResult ==409) {
             } else {
 
                 StringBuffer httpErrorMessage = new StringBuffer();
@@ -758,6 +833,10 @@ public class Program
 	}
 
     protected static String AcquireAuthToken() {
+
+        if(!sendToOCS){
+            return null;
+        }
 
         if (cachedAccessToken != null){
             long tokenExpirationTime = accessTokenExpiration.getTime(); // returns time in milliseconds.
@@ -817,20 +896,22 @@ public class Program
    
     public static HttpURLConnection getConnection(URL url, String method, String message_type, String action) {
         HttpURLConnection urlConnection = null;
-        String token = AcquireAuthToken();
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(method);
-            urlConnection.setRequestProperty("Accept", "*/*; q=1");
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setRequestProperty("Authorization", "Bearer " + token);
-            urlConnection.setRequestProperty("producertoken", token);
+            if(sendToOCS){
+                urlConnection.setRequestProperty("Accept", "*/*; q=1");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                String token = AcquireAuthToken();
+                urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+                urlConnection.setRequestProperty("producertoken", token);
+            }
             urlConnection.setRequestProperty("messagetype", message_type);
             urlConnection.setRequestProperty("action", action);
             urlConnection.setRequestProperty("omfversion", omfVersion);
             urlConnection.setRequestProperty("messageformat", "json");
-            urlConnection.setRequestProperty("compression", compression);
+//            urlConnection.setRequestProperty("compression", compression);
             urlConnection.setUseCaches(false);
             urlConnection.setConnectTimeout(50000);
             urlConnection.setReadTimeout(50000);
