@@ -14,5 +14,6 @@ Other language libraries and samples are available on [Github](https://github.co
 To install these locally run:
  mvn install 
 
+Tests are done by testing the sample apps that use this
 
 [OSI Samples](https://github.com/osisoft/OSI-samples) are licensed under the Apache 2 license.

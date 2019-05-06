@@ -23,6 +23,8 @@ These steps illustrate common OMF messages to send.  Most OMF sending applicatio
 
 The samples are based on OMF v1.1. 
 
+The samples are written in a way that the same sample can send to both PI and OCS.  This is controlled by either the crendential file passed in or by an override variable in the program.
+
 
 NOTE: Automated tests are currently OCS only.
 NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoint.  
@@ -35,7 +37,7 @@ Configuring OCS or the PI system to accept OMF messages
 Sending to OCS:
 Configure OMF Ingress.  This can be done programmatically, but here are the steps to do it via the OCS portal:
 
-Note: UI is still a WIP, so once that is finalized we will update this with the steps.
+Note: UI is still a work-in-progress, so once that is finalized we will update this with the steps.
 
 
 Sending to PI:
@@ -62,4 +64,4 @@ This list is not exhuastive, but rather a few key details to know.
 ----------
 
 For the main OMF page [ReadMe](../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

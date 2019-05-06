@@ -38,7 +38,13 @@ dotnet run
 - Return to the application after having been authenticated in the browser
 
 
+## Test
+
+This sample passes manually, locally
+
+This test has not been automated due to issues with getting logins working properly.
+
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
