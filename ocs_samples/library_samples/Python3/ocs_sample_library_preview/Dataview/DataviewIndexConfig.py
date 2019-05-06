@@ -78,7 +78,9 @@ class DataviewIndexConfig(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'IsDefault' : self.IsDefault}
+        dictionary = {}
+        if hasattr(self, 'IsDefault'):
+           dictionary = { 'IsDefault' : self.IsDefault}
 	
         if hasattr(self, 'StartIndex'):
             dictionary['StartIndex'] = self.StartIndex
