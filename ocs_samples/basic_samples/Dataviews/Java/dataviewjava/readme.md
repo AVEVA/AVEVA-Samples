@@ -1,7 +1,7 @@
 Using the OCS Dataview Service in JAVA
 ==================================================================
 
-The sample code in this demonstrates how to invoke Dataview REST APIs via the sample JAVA client [library]( https://github.com/osisoft/OCS-Samples/tree/master/library_samples/Java/ocs_sample_library_preview ). 
+The sample code in this demonstrates how to invoke Dataview REST APIs via the sample JAVA client [library]( https://github.com/osisoft/OSI-Samples/tree/master/library_samples/Java/ocs_sample_library_preview ). 
 By examining the code, you will see how to establish a connection 
 to SDS, obtain an authorization token, create an  SdsType and  SdsStream with data (if needed), 
 create a Dataview, update it, retreive it, and retrieve data from it a couple of different ways.  
@@ -55,7 +55,11 @@ Using a command line:
 
 *Currently this project is not hosted on the central Maven repo and must be compiled and installed locally.
 
+-------------
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=DataviewJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+---------
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

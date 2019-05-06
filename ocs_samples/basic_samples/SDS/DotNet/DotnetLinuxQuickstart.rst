@@ -47,8 +47,8 @@ will need to be specified, this step is shown here by opening the appsettings.js
 	sudo apt-get update
 	sudo apt-get install dotnet-sdk-2.1.3
 	sudo apt-get install git
-	sudo git clone https://github.com/osisoft/OCS-Samples
-	cd OCS-Samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries
+	sudo git clone https://github.com/osisoft/OSI-Samples
+	cd OSI-Samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries
 	sudo nano appsettings.json
 	sudo dotnet publish
 	sudo dotnet run bin/Debug/netcoreapp2.0/publish/SdsClientLibrariesCore.dll 

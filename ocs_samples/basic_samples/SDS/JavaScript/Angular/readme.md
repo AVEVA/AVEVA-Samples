@@ -387,6 +387,13 @@ deleteWindowValues(streamId: string, start, end): Observable<any> {
 ```
 
 
+Test
+------------------
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSangJS)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+Note this samaple  only fails in automation due to login issues.  Testing manually, locally it is ok... 
+
+
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

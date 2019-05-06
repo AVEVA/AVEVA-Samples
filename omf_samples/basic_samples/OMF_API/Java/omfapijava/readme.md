@@ -49,6 +49,7 @@ Using a command line:
 
 To test your porject locally run ``mvn test``
 
+These are also tested using VS Code.
 
 Configure constants for connecting and authentication
 -----------------------------------------------------
@@ -102,4 +103,4 @@ See the general readme for information on setting up your endpoint.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OMF page [ReadMe](../../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

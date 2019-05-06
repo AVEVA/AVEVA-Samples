@@ -400,7 +400,11 @@ await metadataService.DeleteStreamAsync(streamId);
 await metadataService.DeleteTypeAsync(typeId);
 ```
 
+------------
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+-----------
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

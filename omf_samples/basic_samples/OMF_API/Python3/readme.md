@@ -62,8 +62,12 @@ Resource = REPLACE_WITH_PI_WEB_API_URL
 
 See the general readme for information on setting up your endpoint.
 
+-----------
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+-----------
 
 
 For the general steps or switch languages see the Task  [ReadMe](../)<br />
 For the main OMF page [ReadMe](../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

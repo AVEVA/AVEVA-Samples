@@ -12,7 +12,7 @@ setuptools.setup(
     description="A preview of an OCS (OSIsoft Cloud Services) client library",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/osisoft/ocs-samples",
+    url="https://github.com/osisoft/OSI-Samples",
     packages=setuptools.find_packages(),    
     install_requires=[
         'requests==2.21.0'

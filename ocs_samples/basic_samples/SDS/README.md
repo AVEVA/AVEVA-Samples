@@ -43,4 +43,4 @@ Step numbers are searchable in the code.  For find the relevant part of the code
 Note: the Angular app only fails in automation due to login issues.  Testing locally it is ok... 
 
 For the main OCS page [ReadMe](../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

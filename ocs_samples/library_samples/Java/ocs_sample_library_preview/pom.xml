@@ -9,7 +9,7 @@
 
   <name>ocs_sample_library_preview</name>
   <description>A preview of an OCS (OSIsoft Cloud Services) client library </description>
-  <url>https://github.com/osisoft/OCS-Samples</url>
+  <url>https://github.com/osisoft/OSI-Samples</url>
   <developers>
     <developer>
       <name>Derek Endres</name>
@@ -29,8 +29,8 @@
   
   <scm>
     
-  <connection>scm:git:git://github.com/osisoft/OCS-Samples/tree/master/library_samples/Java/ocs_sample_library_preview.git</connection>
-    <url>https://github.com/osisoft/OCS-Samples</url>
+  <connection>scm:git:git://github.com/osisoft/OSI-Samples/tree/master/library_samples/Java/ocs_sample_library_preview.git</connection>
+    <url>https://github.com/osisoft/OSI-Samples</url>
   </scm>
  
 

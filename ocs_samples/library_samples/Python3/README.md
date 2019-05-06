@@ -16,5 +16,7 @@ The library is not intended to show every endpoint and every option/parameter fo
 
 Other language libraries and samples are available on [Github](https://github.com/osisoft/OSI-Samples). 
 
+Tests are done by testing the sample apps that use this.
+
 
 [OSI Samples](https://github.com/osisoft/OSI-samples) are licensed under the Apache 2 license.
