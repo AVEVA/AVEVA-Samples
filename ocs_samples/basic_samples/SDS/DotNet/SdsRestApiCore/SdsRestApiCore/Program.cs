@@ -1,7 +1,3 @@
-// <copyright file="Program.cs" company="OSIsoft, LLC">
-//
-// </copyright>
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -613,7 +609,15 @@ namespace SdsRestApiCore
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStreamSecond.Id}");
                 CheckIfResponseWasSuccessful(response);
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}. ");
+                
+                var count = 0;
+                if(waveStream.Indexes !=null )
+                    count = waveStream.Indexes.Count();
+                var count2 = 0;
+                if(waveStreamSecond.Indexes !=null )
+                    count2 = waveStreamSecond.Indexes.Count();
+
+                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}. ");
                 Console.WriteLine();
                 
 
