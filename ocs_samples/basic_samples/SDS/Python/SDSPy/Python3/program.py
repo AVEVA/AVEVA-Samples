@@ -720,7 +720,7 @@ def main():
         # Adding Compound Index Type
         print("Creating an SdsType with a compound index")
         typeCompound = getWaveCompoundDataType(compoundTypeId)        
-        ocsClient.Types.createOrUpdateType(namespaceId, typeCompound)
+        ocsClient.Types.getOrCreateType(namespaceId, typeCompound)
 
         # create an SdsStream
         print("Creating an SdsStream off of type with compound index")        
