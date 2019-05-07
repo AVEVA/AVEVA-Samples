@@ -24,9 +24,9 @@ from .SdsError import SdsError
 class OCSClient:
     """Handles communication with Sds Service"""
 
-    def __init__(self, apiversion, tenant, url, clientId, clientSecret):
-        self.__baseClient = BaseClient(apiversion, tenant, url, clientId, clientSecret)
-        
+    def __init__(self, apiversion, tenant, url, clientId, clientSecret, acceptVerbosity=False):
+        self.__baseClient = BaseClient(apiversion, tenant, url, clientId, clientSecret, acceptVerbosity)
+
         self.__Dataviews  = Dataviews(self.__baseClient)
         self.__Types  = Types(self.__baseClient)
         self.__Streams  = Streams(self.__baseClient)
@@ -40,7 +40,12 @@ class OCSClient:
     def tenant(self):
         return self.__baseClient.tenant
 
-        
+    @property
+    def acceptverbosity(self):
+        return self.__baseClient.AcceptVerbosity
+    @acceptverbosity.setter
+    def acceptverbosity(self, AcceptVerbosity):
+        self.__baseClient.AcceptVerbosity = AcceptVerbosity
 
     @property 
     def Dataviews(self):

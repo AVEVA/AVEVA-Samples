@@ -28,7 +28,7 @@ import time
 class BaseClient(object):
     """Handles communication with Sds Service"""
 
-    def __init__(self, apiversion, tenant, url, clientId, clientSecret):
+    def __init__(self, apiversion, tenant, url, clientId, clientSecret, acceptVerbosity=False):
         self.__apiversion = apiversion
         self.__tenant = tenant
         self.__clientId = clientId
@@ -38,6 +38,7 @@ class BaseClient(object):
         self.__token = ""
         self.__expiration = 0
         self.__getToken()
+        self.__acceptVerbosity = acceptVerbosity
 
         self.__uri_API =  url + '/api/' + apiversion
 
@@ -58,6 +59,13 @@ class BaseClient(object):
     @property
     def tenant(self):
         return self.__tenant
+
+    @property
+    def AcceptVerbosity(self):
+        return self.__acceptVerbosity
+    @AcceptVerbosity.setter
+    def AcceptVerbosity(self, accept_verbosity):
+        self.__acceptVerbosity = accept_verbosity
 
     def __getToken(self):
         if ((self.__expiration - time.time()) > 5 * 60):
@@ -90,7 +98,9 @@ class BaseClient(object):
         return self.__token
 
     def sdsHeaders(self):
-        return {"Authorization": "Bearer %s" % self.__getToken(),
-                "Content-type": "application/json",
-                "Accept": "*/*; q=1"
-                }
+        headers = {"Authorization": "Bearer %s" % self.__getToken(),
+                   "Content-type": "application/json",
+                   "Accept": "application/json" }
+        if (self.__acceptVerbosity):
+            headers['Accept-Verbosity'] = "verbose"
+        return headers
