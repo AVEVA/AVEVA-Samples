@@ -107,7 +107,7 @@ class Types(object):
 
         :param namespace_id: id of namespace to work against
         :param type:  the SdsType to create or get
-        :return:  the created or retreived SdsType
+        :return:  the created or retrieved SdsType
         """
         if namespace_id is None:
             raise TypeError
@@ -125,29 +125,6 @@ class Types(object):
         type = SdsType.fromJson(json.loads(response.content.decode('utf-8')))
         response.close()
         return type
-
-    def createOrUpdateType(self, namespace_id, type):
-        """
-        Tells Sds Service to create or update a type based on local 'type' object
-
-        :param namespace_id: id of namespace to work against
-        :param type:  the SdsType to create or update
-        :return:  the created or updated SdsType
-        """
-        if namespace_id is None:
-            raise TypeError
-        if type is None or not isinstance(type, SdsType):
-            raise TypeError
-
-        response = requests.put(
-            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
-            data=type.toJson(), headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to create type, {type_id}. {status}:{reason}".format(type_id=type.Id, status=response.status_code, reason=response.text))
-        
-        response.close()
 
     def deleteType(self, namespace_id, type_id):
         """

@@ -53,8 +53,8 @@ public class StreamsClient {
     private String getRangeStreamViewQuery = dataBase + "/Transform?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&streamViewId={streamViewId}";
     private String updateMultiplePath = dataBase;
     private String replaceMultiplePath = dataBase + "?allowCreate=false";
-    private String removeSingleQuery = dataBase + "/RemoveValue?index={index}";
-    private String removeMultipleQuery = dataBase + "/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}";
+    private String removeSingleQuery = dataBase + "?index={index}";
+    private String removeMultipleQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
 
     //dataview path
     private String dataviewBase = requestBase + "/Dataviews";
