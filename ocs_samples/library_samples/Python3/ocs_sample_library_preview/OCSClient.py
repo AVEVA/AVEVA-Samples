@@ -13,7 +13,7 @@ class OCSClient:
     A client that handles communication with OCS
     """
 
-    def __init__(self, apiversion, tenant, url, clientId, clientSecret):
+    def __init__(self, apiversion, tenant, url, clientId, clientSecret, acceptVerbosity=False):
         """
         Use this to help comuninaication with OCS
         :param apiversion: Version of the api you are communicating with
@@ -21,9 +21,9 @@ class OCSClient:
         :param url: The base URL for your OCS instance
         :param clientId: Your client ID
         :param clientSecret: Your client Secret or Key
+        :param acceptVerbosity: Sets whether in value calls you get all values or just non-default values
         """
-        self.__baseClient = BaseClient(apiversion, tenant, url, clientId, clientSecret)
-        
+        self.__baseClient = BaseClient(apiversion, tenant, url, clientId, clientSecret, acceptVerbosity)
         self.__Dataviews  = Dataviews(self.__baseClient)
         self.__Types  = Types(self.__baseClient)
         self.__Streams  = Streams(self.__baseClient)
@@ -43,6 +43,16 @@ class OCSClient:
         return self.__baseClient.tenant
 
     @property
+    def acceptverbosity(self):
+        """
+        :return: Whether this will include the accept verbosity header
+        """
+        return self.__baseClient.AcceptVerbosity
+    @acceptverbosity.setter
+    def acceptverbosity(self, AcceptVerbosity):
+        self.__baseClient.AcceptVerbosity = AcceptVerbosity
+
+    @property     
     def Dataviews(self):
         """
         :return: A client for interacting with Dataviews
