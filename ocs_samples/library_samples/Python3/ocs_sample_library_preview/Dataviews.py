@@ -1,18 +1,5 @@
 # Dataviews.py
 #
-# Copyright 2019 OSIsoft, LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# <http://www.apache.org/licenses/LICENSE-2.0>
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 
 
@@ -30,14 +17,24 @@ import requests
 
 
 class Dataviews(object):
-    """Handles communication with Sds Service"""
+    """
+    Client for interacting with Dataviews
+    """
 
     def __init__(self, client):
+        """
+        Initiliizes the dataviews client
+        :param client: This is the base client that is used to make the callss
+        """
         self.__baseClient = client
         self.__setPathAndQueryTemplates()
    
     def postDataview(self, namespace_id, dataview):
-        """Tells Sds Service to create a dataview based on local 'dataview' or get if existing dataview matches"""
+        """Tells Sds Service to create a dataview based on local 'dataview' or get if existing dataview matches
+        :param namespace_id: namespace to work against
+        :param dataview: dataview defintion.  Dataview object expected
+        :return: Retreived dataview as Dataview object
+        """
         if namespace_id is None:
             raise TypeError
         if dataview is None or not isinstance(dataview, Dataview):
@@ -57,7 +54,11 @@ class Dataviews(object):
         return dataview
 		
     def putDataview(self, namespace_id, dataview):
-        """Tells Sds Service to update a dataview based on local 'dataview'"""
+        """Tells Sds Service to update a dataview based on local 'dataview'
+        :param namespace_id: namespace to work against
+        :param dataview: dataview defintion.  Dataview object expected
+        :return: Retreived dataview as Dataview object
+        """
         if namespace_id is None:
             raise TypeError
         if dataview is None or not isinstance(dataview, Dataview):
@@ -77,7 +78,11 @@ class Dataviews(object):
 		
 				
     def deleteDataview(self, namespace_id, dataview_id):
-        """Tells Sds Service to delete a dataview based on 'dataview_id'"""
+        """
+        Tells Sds Service to delete a dataview based on 'dataview_id'
+        :param namespace_id: namespace to work against
+        :param dataview_id:  id of dataview to delete
+        """
         if namespace_id is None:
             raise TypeError
         if dataview_id is None:
@@ -96,7 +101,12 @@ class Dataviews(object):
 		
 		
     def getDataview(self, namespace_id, dataview_id):
-        """Retrieves the dataview specified by 'dataview_id' from Sds Service"""
+        """
+        Retrieves the dataview specified by 'dataview_id' from Sds Service
+        :param namespace_id: namespace to work against
+        :param dataview_id:  id of dataview to get
+        :return: Retreived dataview as Dataview object
+        """
         if namespace_id is None:
             raise TypeError
         if dataview_id is None:
@@ -115,7 +125,13 @@ class Dataviews(object):
         return dataview
 		
     def getDataviews(self, namespace_id, skip = 0, count =100):
-        """Retrieves all of the dataviews from Sds Service"""
+        """
+        Retrieves all of the dataviews from Sds Service
+        :param namespace_id: namespace to work against
+        :param skip: Number of dataviews to skip
+        :param count: Number of dataviews to return
+        :return: array of dataviews
+        """
         if namespace_id is None:
             raise TypeError
 
@@ -128,15 +144,24 @@ class Dataviews(object):
                           format( status=response.status_code, reason=response.text))
         
         dataviews = json.loads(response.content)
+
         results = []
         for t in dataviews:
             results.append(Dataview.fromJson(t))
         response.close()
         return results
+
 		
-		
-    def getDatagroups(self, namespace_id,dataview_id, skip = 0, count = 100):
-        """Retrieves all of the datagroups from the specified dataview from Sds Service"""
+    def getDatagroups(self, namespace_id,dataview_id, skip = 0, count = 100, returnAsDynamicObject = False):
+        """
+        Retrieves all of the datagroups from the specified dataview from Sds Service
+        :param namespace_id: namespace to work against
+        :param dataview_id: dataview to work against
+        :param skip: Number of datagroups to skip
+        :param count: Number of datagroups to return
+        :param returnAsDynamicObject: returns the collection as dynamic object rather than a list of dataviews.  Added because the automated tests were failing.  Boolean
+        :return:
+        """
         if namespace_id is None:
             raise TypeError
 
@@ -150,6 +175,8 @@ class Dataviews(object):
         
         datagroups = json.loads(response.content)   
 
+        if returnAsDynamicObject:
+            return datagroups
 
         results = {}
         for key, value in datagroups.items():
@@ -163,7 +190,13 @@ class Dataviews(object):
 		
 		
     def getDatagroup(self, namespace_id,dataview_id, datagroup_id):
-        """Retrieves a datagroupby 'datagroup_id' from the specified dataview from Sds Service"""
+        """
+        Retrieves a datagroupby 'datagroup_id' from the specified dataview from Sds Service
+        :param namespace_id: namespace to work against
+        :param dataview_id: dataview to work against
+        :param datagroup_id: datagroup to retrieve
+        :return: the asked for Datagroup
+        """
         if namespace_id is None:
             raise TypeError
 
@@ -179,9 +212,21 @@ class Dataviews(object):
         datagroup = Datagroup.fromJson(json.loads(response.content))
         return datagroup
 	
-#needs other parameters with smart 
+        # needs other parameters with smart
     def getDataviewPreview(self, namespace_id, dataview_id, startIndex = None, endIndex = None, interval = None, form = None, count = -1, value_class = None):
-        """Retrieves the dataviewpreview of the 'dataview_id' from Sds Service"""
+        """
+        Retrieves the dataviewpreview of the 'dataview_id' from Sds Service
+        :param namespace_id: namespace to work against
+        :param dataview_id: dataview to work against
+        :param startIndex: start index
+        :param endIndex:  end index
+        :param interval: space between values
+        :param form: form definition
+        :param count: number of values to return
+        :param value_class: Use this to auto format the data into the defined type.  The tpye is expected to have a fromJson method that takes a dynamicObject and converts it into the defined type.
+          Otherwise you get a dynamic object
+        :return:
+        """
         if namespace_id is None:
             raise TypeError
         if dataview_id is None:
@@ -220,7 +265,18 @@ class Dataviews(object):
         return value_class.fromJson(content)
 		
     def getDataInterpolated(self, namespace_id, dataview_id, skip = -1, count = -1, form = None, sessionId = -1,  value_class = None):
-        """Retrieves the dataviewpreview of the 'dataview_id' from Sds Service"""
+        """
+        Retrieves the dataviewpreview of the 'dataview_id' from Sds Service
+        :param namespace_id: namespace to work against
+        :param dataview_id: dataview to work against
+        :param skip: number of values to skip
+        :param count: number of values to return
+        :param form: form definition
+        :param sessionId: used so you can return to a call to get more data if you need to page
+        :param value_class: Use this to auto format the data into the defined type.  The tpye is expected to have a fromJson method that takes a dynamicObject and converts it into the defined type.
+          Otherwise you get a dynamic object
+        :return: 
+        """
         if namespace_id is None:
             raise TypeError
         if dataview_id is None:
@@ -260,6 +316,10 @@ class Dataviews(object):
 		
 
     def __setPathAndQueryTemplates(self):
+        """
+        Internal  Sets the needed URLS
+        :return:
+        """
         self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
               
         self.__dataviewsPath = self.__basePath + "/Dataviews"

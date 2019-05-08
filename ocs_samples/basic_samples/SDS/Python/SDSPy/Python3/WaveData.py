@@ -1,18 +1,5 @@
 # WaveData.py
 #
-# Copyright 2019 OSIsoft, LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# <http://www.apache.org/licenses/LICENSE-2.0>
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 import datetime
 import math
@@ -96,8 +83,8 @@ class WaveData:
     def Tanh(self, tanh):
         self._tanh = tanh
         
-    def isprop(v):
-        return isinstance(v, property)
+    def isprop(self):
+        return isinstance(self, property)
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -172,8 +159,8 @@ class WaveDataInteger:
     def TanInt(self, TanInt):
         self._TanInt = TanInt
         
-    def isprop(v):
-        return isinstance(v, property)
+    def isprop(self):
+        return isinstance(self, property)
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -286,8 +273,8 @@ class WaveDataTarget:
     def TanhTarget(self, TanhTarget):
         self._TanhTarget = TanhTarget
         
-    def isprop(v):
-        return isinstance(v, property)
+    def isprop(self):
+        return isinstance(self, property)
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -322,3 +309,126 @@ class WaveDataTarget:
                     prop[1].fset(wave, value)
 
         return wave
+
+class WaveDataCompound:
+    """Represents a data point to be injected into Sds Service"""
+    
+    def __init__(self):
+        self._order = None
+        self._multiplier = None
+        self._tau = None
+        self._radians = None
+        self._sin = None
+        self._cos = None
+        self._tan = None
+        self._sinh = None
+        self._cosh = None
+        self._tanh = None
+    
+    @property
+    def Order(self):
+        return self._order
+    @Order.setter
+    def Order(self, order):
+        self._order = order
+    
+    @property
+    def Multiplier(self):
+        return self._multiplier
+    @Multiplier.setter
+    def Multiplier(self, multiplier):
+        self._multiplier = multiplier
+
+    @property
+    def Tau(self):
+        return self._tau
+    @Tau.setter
+    def Tau(self, tau):
+        self._tau = tau
+    
+    @property
+    def Radians(self):
+        return self._radians
+    @Radians.setter
+    def Radians(self, radians):
+        self._radians = radians
+    
+    @property
+    def Sin(self):
+        return self._sin
+    @Sin.setter
+    def Sin(self, sin):
+        self._sin = sin
+    
+    @property
+    def Cos(self):
+        return self._cos
+    @Cos.setter
+    def Cos(self, cos):
+        self._cos = cos
+
+    @property
+    def Tan(self):
+        return self._tan
+    @Tan.setter
+    def Tan(self, tan):
+        self._tan = tan
+
+    @property
+    def Sinh(self):
+        return self._sinh
+    @Sinh.setter
+    def Sinh(self, sinh):
+        self._sinh = sinh
+
+    @property
+    def Cosh(self):
+        return self._cosh
+    @Cosh.setter
+    def Cosh(self, cosh):
+        self._cosh = cosh
+    
+    @property
+    def Tanh(self):
+        return self._tanh
+    @Tanh.setter
+    def Tanh(self, tanh):
+        self._tanh = tanh
+        
+    def isprop(self):
+        return isinstance(self, property)
+
+    def toJson(self):
+        return json.dumps(self.toDictionary())
+
+    def toDictionary(self):
+        dictionary = { }
+        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
+            if hasattr(self, prop[0]):
+                dictionary[prop[0]] = prop[1].fget(self)
+
+        return dictionary
+
+    @staticmethod
+    def fromJson(jsonObj):
+        return WaveData.fromDictionary(jsonObj)
+
+    @staticmethod
+    def fromDictionary(content):
+        wave = WaveData()
+
+        if len(content) == 0:
+            return wave
+
+        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
+            # Pre-Assign the default
+            prop[1].fset(wave, 0)
+
+            # If found in JSON object, then set
+            if prop[0] in content:
+                value = content[prop[0]]
+                if value is not None:
+                    prop[1].fset(wave, value)
+
+        return wave
+

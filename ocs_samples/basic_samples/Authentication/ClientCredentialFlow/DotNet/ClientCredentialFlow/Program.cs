@@ -4,19 +4,19 @@ using Microsoft.Extensions.Configuration;
 
 namespace ClientCredentialFlow
 {
-    static class Program
+    public static class Program
     {
         private static IConfiguration _configuration;
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             InitConfig();
                 
-            ClientFlow.OcsUrl = GetConfigValue("OCSUrl");
+            ClientFlow.OcsUrl = GetConfigValue("Resource");
 
             var tenantId = GetConfigValue("TenantId");
-            var clientId = GetConfigValue("ClientCredentialFlow:ClientId");
-            var clientSecret = GetConfigValue("ClientCredentialFlow:ClientSecret");
+            var clientId = GetConfigValue("ClientId");
+            var clientSecret = GetConfigValue("ClientKey");
             ClientFlow.CreateAuthenticatedHttpClient(clientId, clientSecret);
 
             // Make an HTTP request to OCS using the authenticated client - since this is the first request, the AuthenticationHandler will
@@ -36,7 +36,7 @@ namespace ClientCredentialFlow
         {
             try {
                 _configuration = new ConfigurationBuilder()
-                .AddJsonFile("config.json", optional:false, reloadOnChange:false)
+                .AddJsonFile("appsettings.json", optional:false, reloadOnChange:false)
                 .Build();
             }
             catch (FileNotFoundException ex)

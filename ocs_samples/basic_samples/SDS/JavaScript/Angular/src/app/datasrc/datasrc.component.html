@@ -1,23 +1,12 @@
 <!-- datasrc.component.html
 
-   Copyright 2019 OSIsoft, LLC
-   
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-   
-   http://www.apache.org/licenses/LICENSE-2.0>
-   
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+
 -->
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 <div class="container-fluid text-center">
+  <!-- Step 2 -->
   <h3>Creating an SdsType</h3>
   <p>To insert data into Sds, you must first create an SdsType that will enforce what type of data is written to a stream.
     For this sample, we will be writing events of the WaveData type discussed in the README.
@@ -27,25 +16,28 @@
     <br>
     <span *ngIf="button1Message">Response: {{button1Message}}</span>
   </div>
+  <!-- Step 3 -->
   <h3>Creating an SdsStream</h3>
   <p>Now that we have an SdsType, we can create an SdsStream. Once we create a stream and associate it with a type,
   we can write data of that type to Sds. Press the button below to create a stream.</p>
-  <button class="btn btn-primary" (click)="createStream()">Create Stream</button>
+  <button id="createStream" class="btn btn-primary" (click)="createStream()">Create Stream</button>
   <br>
-  <span *ngIf="button2Message">Response: {{button2Message}}</span>
+  <span id="createStreamMessage" *ngIf="button2Message">Response: {{button2Message}}</span>
+  <!-- Step 4 -->
   <h3>Write data to Sds</h3>
   <p>Press the button below to write 10 WaveData events to Sds using the InsertValues call.</p>
-  <button class="btn btn-primary" (click)="writeWaveDataEvents()">Insert Values</button>
+  <button id="writeWaveDataEvents"  class="btn btn-primary" (click)="writeWaveDataEvents()">Insert Values</button>
   <br>
-  <span *ngIf="button3Message">Response: {{button3Message}}</span>
+  <span id="writeWaveDataEventsMessage" *ngIf="button3Message">Response: {{button3Message}}</span>
+  <!-- Step 5 -->
   <h3>Retrieving events from Sds</h3>
   <p>There are several ways to read data back from Sds. Using GetRangeValues, we can start at index location "1" of our wave data
   and get the remaining events. We didn't actually write a value with an index of 1, but since we use SdsBoundaryType.ExactOrCalculated
   in our request, we get an interpolated value at index location 1.</p>
-  <button class="btn btn-primary" (click)="retrieveWaveDataEvents()">Retrieve Events</button>
+  <button id="retrieveWaveDataEvents" class="btn btn-primary" (click)="retrieveWaveDataEvents()">Retrieve Events</button>
   <br>
-  <span *ngIf="button4Message">Response: {{button4Message}}</span>
-  <div *ngIf="hasEvents">
+  <span id="retrieveWaveDataEventsMessage" *ngIf="button4Message">Response: {{button4Message}}</span>
+  <div id="retrieveWaveDataEventsTable" *ngIf="hasEvents">
     <table class="table table-striped table-responsive">
       <tr>
         <th>Order</th>
@@ -70,47 +62,76 @@
         <td>{{event.Tanh}}</td>
       </tr>
     </table>
-  </div>
+  </div>  
+  <!-- Step 6 -->
+  <h3>Retrieving events from Sds with headers</h3>
+  <p>We can repeat the same call, but instead of retreiving the data as json array with can get it back as table with headers.</p>
+  <button id="retrieveWaveDataEventsHeaders" class="btn btn-primary" (click)="retrieveWaveDataEventsHeaders()">Retrieve Events in table with Headers</button>
+  <br>
+  <span id="retrieveWaveDataEventsHeadersMessage" *ngIf="getDataWithHeadersMessage">Response: {{getDataWithHeadersMessage}}</span>
+  
+  <!-- Step 7 -->
   <h4>Update values</h4>
   <p>A call to update values will either create or replace an event at the associated index location.  We will send a collection of
     twenty events to Sds, causing ten events to be updated and an additionaly ten to be created. Press Retrieve Events above to 
     see the updated data.
   </p>
-  <button class="btn btn-primary" (click)="updateWaveDataEvents()" >Update values</button>
+  <button  id="updateWaveDataEvents" class="btn btn-primary" (click)="updateWaveDataEvents()" >Update values</button>
   <br>
-  <span *ngIf="button14Message">Response: {{button14Message}}</span>
+  <span id="updateWaveDataEventsMessage" *ngIf="button14Message">Response: {{button14Message}}</span>
 
+  <!-- Step 8 -->
   <h4>Replace values</h4>
   <p>A call to replace values will either create or replace an event at the associated Index location. Press Retrieve Events above to 
     see the replaced data.</p>
-  <button class="btn btn-primary" (click)="replaceWaveDataEvents()" >Replace values</button>
+  <button id="replaceWaveDataEvents" class="btn btn-primary" (click)="replaceWaveDataEvents()" >Replace values</button>
   <br>
-  <span *ngIf="button15Message">Response: {{button15Message}}</span>
+  <span id="replaceWaveDataEventsMessage" *ngIf="button15Message">Response: {{button15Message}}</span>
+  
+  <!-- Step 9 (getting the replaced values is done above^) -->
+  <h4>Get interpolated values</h4>
+  <p>We can make a call using a start and end value with a certain number of points expected and interpolation will occur automatically.</p>
+  <button id= "retrieveInterpolatedValues" class="btn btn-primary" (click)="retrieveInterpolatedValues()" >Get Interpolated</button>
+  <br>
+  <span id= "retrieveInterpolatedValuesMessage"  *ngIf="getDataInterpolatedMessage">Response: {{getDataInterpolatedMessage}}</span>
+  
+
+  <!-- Step 10 -->
+  <h4>Get filtered values</h4>
+  <p>We can make a call using a start and end value with a certain number of points expected and interpolation will occur automatically. 
+     In this case we are asking for values with: radians < 3</p>
+  <button id= "retrieveFilteredValues" class="btn btn-primary" (click)="retrieveFilteredValues()" >Get Filtered</button>
+  <br>
+  <span id= "retrieveFilteredValuesMessage"  *ngIf="getFilteredValuesMessage">Response: {{getFilteredValuesMessage}}</span>
+  
+  <!-- Step 11 -->
   <h3>Property Overrides</h3>
   <p>Sds can interpolate or extrapolate data at an index location where data does not explicitly exist. 
     Using the default (Continuous) read behavior and requesting data starting at index location '1', where we have not entered data, 
     Sds will interpolate a value for each property.  We can override this read behavior on a property by property basis, here we 
     override the Radians property instructing Sds not to interpolate.  Sds will now return the default value for the data type.</p>
-  <button class="btn btn-primary" (click)="createPropertyOverrideAndUpdateStream()" >Create Property Override and Update Stream</button>
+  <button id="createPropertyOverrideAndUpdateStream" class="btn btn-primary" (click)="createPropertyOverrideAndUpdateStream()" >Create Property Override and Update Stream</button>
   <br>
-  <span *ngIf="button5Message">Response: {{button5Message}}</span>
+  <span id="createPropertyOverrideAndUpdateStreamMessage" *ngIf="button5Message">Response: {{button5Message}}</span>
+  
+  <!-- Step 12 -->
   <h3>Using SdsStreamViews</h3>
   <p>SdsStreamViews can return a StreamView of the data stored on the server, we can use them to coerce SdsStream data of 
     a certain type to be returned as another type. A simple example of this would be to provide a type with the same 
     data shape using different names for each property.</p>
-  <button class="btn btn-primary" (click)="createAutoStreamViewTargetType()" >Create a target SdsType</button>
+  <button id="createAutoStreamViewTargetType" class="btn btn-primary" (click)="createAutoStreamViewTargetType()" >Create a target SdsType</button>
   <br>
-  <span *ngIf="button6Message">Response: {{button6Message}}</span>
+  <span id="createAutoStreamViewTargetTypeMessage" *ngIf="button6Message">Response: {{button6Message}}</span>
   <p>Once we have created our target type we create an SdsStreamView specifying a SourceTypeId (our original SdsType) and 
     a TargetTypeId.</p>
-  <button class="btn btn-primary" (click)="createAutoStreamView()" >Create an SdsStreamView</button>
+  <button id="createAutoStreamView" class="btn btn-primary" (click)="createAutoStreamView()" >Create an SdsStreamView</button>
   <br>
-  <span *ngIf="button7Message">Response: {{button7Message}}</span>
+  <span id="createAutoStreamViewMessage" *ngIf="button7Message">Response: {{button7Message}}</span>
   <p>We can now use this SdsStreamView on any GET request and our data will be returned with the structure of the target SdsType.</p>
-    <button class="btn btn-primary" (click)="retrieveWaveDataEventsAutoStreamView()" >Retrieve Events</button>
+    <button id="retrieveWaveDataEventsAutoStreamView" class="btn btn-primary" (click)="retrieveWaveDataEventsAutoStreamView()" >Retrieve Events</button>
     <br>
-    <span *ngIf="button8Message">Response: {{button8Message}}</span>
-    <div *ngIf="hasStreamView1Events">
+    <span id="retrieveWaveDataEventsAutoStreamViewMessage" *ngIf="button8Message">Response: {{button8Message}}</span>
+    <div id="retrieveWaveDataEventsAutoStreamViewTable" *ngIf="hasStreamView1Events">
       <table class="table table-striped table-responsive">
         <tr>
           <th>OrderTarget</th>
@@ -141,16 +162,16 @@
     explicitly.  For this we add an SdsStreamViewProperty mapping the source property to the target property.  We will create 
     three SdsStreamViewProperties and return Sin, Cos and Tan as though they were integers.  
   </p>
-    <button class="btn btn-primary" (click)="createSdsStreamViewPropertiesAndManualType()" >Create SdsStreamView with SdsStreamViewProperties</button>
+    <button id="createSdsStreamViewPropertiesAndManualType" class="btn btn-primary" (click)="createSdsStreamViewPropertiesAndManualType()" >Create SdsStreamView with SdsStreamViewProperties</button>
     <br>
-    <span *ngIf="button9Message">Response: {{button9Message}}</span>
+    <span id="createSdsStreamViewPropertiesAndManualTypeMessage" *ngIf="button9Message">Response: {{button9Message}}</span>
     <p>  Speficying this SdsStreamView on our GET request we see that Sds has only returned values for those Properties that have
       an explicit mapping.
       </p>
-        <button class="btn btn-primary" (click)="retrieveWaveDataEventsManualStreamView()" >Retrieve Events</button>
+        <button id="retrieveWaveDataEventsManualStreamView" class="btn btn-primary" (click)="retrieveWaveDataEventsManualStreamView()" >Retrieve Events</button>
         <br>
-        <span *ngIf="button10Message">Response: {{button10Message}}</span>
-        <div *ngIf="hasStreamView2Events">
+        <span id="retrieveWaveDataEventsManualStreamViewMessage" *ngIf="button10Message">Response: {{button10Message}}</span>
+        <div id="retrieveWaveDataEventsManualStreamViewTable" *ngIf="hasStreamView2Events">
             <table class="table table-striped table-condensed">
               <tr>
                 <th>OrderTarget</th>
@@ -169,10 +190,10 @@
         <p>  Finally, if we are ever curious about the mapping for a specific StreamView we can request its SdsStreamViewMap.  This will show the relationship 
           between the SourceType and the TargetType.
             </p>
-              <button class="btn btn-primary" (click)="getSdsStreamViewMap()" >Request SdsStreamViewMap</button>
+              <button id="getSdsStreamViewMap" class="btn btn-primary" (click)="getSdsStreamViewMap()" >Request SdsStreamViewMap</button>
               <br>
-              <span *ngIf="button11Message">Response: {{button11Message}}</span>
-              <div *ngIf="hasMapProperties">
+              <span id="getSdsStreamViewMapMessage" *ngIf="button11Message">Response: {{button11Message}}</span>
+              <div id="getSdsStreamViewMapTable" *ngIf="hasMapProperties">
                   <table class="table table-striped table-bordered">
                     <tr>
                       <th>SourceTypeId</th>
@@ -198,22 +219,39 @@
                   </ng-container>
                   </table>
                 </div>
+
+  <!-- Step 13 -->
+  <h4>UpdateStreamType</h4>
+  <p>We can change the streams type using the streamview</p>
+  <button id= "updateStreamType" class="btn btn-primary" (click)="updateStreamType()" >Update StreamType</button>
+  <br>
+  <span id= "updateStreamTypeMessage"  *ngIf="updateStreamTypeMessage">Response: {{updateStreamTypeMessage}}</span>
+
+  <!-- Step 14 -->
+
+  <h4>Filtering Types</h4>
+  <p>We can filter the types we return based upon many things, including in this example whether their Id contains: Target.</p>
+  <button id= "filterTypes" class="btn btn-primary" (click)="filterTypes()" >Retreive Filtered Types</button>
+  <br>
+  <span id= "filterTypesMessage"  *ngIf="filterTypesMessage">Response: {{filterTypesMessage}}</span>
+                
+  <!-- Step 15 -->
   <h3>Tags and Metadata</h3>
   <p>Let's add some tags and metadata to our stream</p>
-  <button class="btn btn-primary" (click)="createTagsAndMetadata()">Create Tags and Metadata</button>
+  <button id="createTagsAndMetadata" class="btn btn-primary" (click)="createTagsAndMetadata()">Create Tags and Metadata</button>
   <br>
-  <span *ngIf="button16Message">Response: {{button16Message}}</span>
+  <span id="createTagsAndMetadataMessage" *ngIf="button16Message">Response: {{button16Message}}</span>
   
   <p></p>
-  <button class="btn btn-primary" (click)="getAndPrintTags()">Get Tags</button>
+  <button id="getAndPrintTags" class="btn btn-primary" (click)="getAndPrintTags()">Get Tags</button>
   <br>
-  <span *ngIf="button17Message">{{button17Message}}</span>
+  <span id="getAndPrintTagsMessage" *ngIf="button17Message">{{button17Message}}</span>
 
   <p></p>
-  <button class="btn btn-primary" (click)="getAndPrintMetadata()" >Get Metadata</button>
+  <button id="getAndPrintMetadata" class="btn btn-primary" (click)="getAndPrintMetadata()" >Get Metadata</button>
   <br>
-  <span *ngIf="button18Message">Response: {{button18Message}}</span>
-  <div *ngIf="hasMetadata">
+  <span id="getAndPrintMetadataMessage" *ngIf="button18Message">Response: {{button18Message}}</span>
+  <div id="getAndPrintMetadataMessage" *ngIf="hasMetadata">
       <table class="table table-striped table-bordered">
           <tr>
             <th>Key</th>
@@ -235,20 +273,68 @@
     </div>
   <p></p>  
 
+  <!-- Step 16 -->
   <h3>Delete Values</h3>
   <p>Press the button below to delete all values from the SdsStream, pressing Retrieve Events 
     above should now return an empty array.
   </p>
-  <button class="btn btn-primary" (click)="deleteAllValues()">Delete Values</button>
+  <button id="deleteAllValues" class="btn btn-primary" (click)="deleteAllValues()">Delete Values</button>
   <br>
-  <span *ngIf="button13Message">Response: {{button13Message}}</span>
+  <span id="deleteAllValuesMessage" *ngIf="button13Message">Response: {{button13Message}}</span>
 
+  <!-- Step 17 -->
+  <h3>Create Stream with Secondary Index Values</h3>
+  <p> Streams can have a secondary index that is different than its type primary index. 
+    In this case we create a new stream to show this, with a seconadry index on radians.
+  </p>
+  <button id= 'secondaryCreate' class="btn btn-primary" (click)="createStreamSecondaryIndex()">Create Secondary indexed stream </button>
+  <br>
+  <span id= 'secondaryCreateMessage' *ngIf="secondaryCreateMessage">Response: {{secondaryCreateMessage}}</span>
+  
+  <h3>Add secondary index to an existing stream</h3>
+  <p> Streams can have a secondary index that is different than its type primary index. 
+    In this case we add an index to our first stream to show this, with a seconadry index on SinhInt.
+  </p>
+  <button id= 'secondaryUpdate' class="btn btn-primary" (click)="updateStreamSecondaryIndex()">Update stream to have a secondary index </button>
+  <br>
+  <span id= 'secondaryUpdateMessage' *ngIf="secondaryUpdateMessage">Response: {{secondaryUpdateMessage}}</span>
+  
+  <h3>Remove a secondary index from an existing stream</h3>
+  <p> 
+  </p>
+  <button id= 'secondaryDelete' class="btn btn-primary" (click)="secondaryDeleteIndex()">Update stream to not have a secondary index </button>
+  <br>
+  <span id= 'secondaryDeleteMessage' *ngIf="secondaryDeleteMessage">Response: {{secondaryDeleteMessage}}</span>
+
+  <!-- Step 18 -->
+  
+  <h3>Add a type and stream with a compound index</h3>
+  <p> Types can have a compound index.
+  </p>
+  <button id= 'createCompoundTypeandStream' class="btn btn-primary" (click)="createCompoundTypeandStream()">Create Compound Type and Stream</button>
+  <br>
+  <span id= 'createCompoundTypeandStreamMessage' *ngIf="createCompoundTypeandStreamMessage">Response: {{createCompoundTypeandStreamMessage}}</span>
+
+
+  <!-- Step 19 -->
+  
+  <h3>Data with a compound index</h3>
+  <p> Types can have a compound index.  With that you send data normally and retreive data using the complex indicies
+  </p>
+  <button id= 'createAndRetreiveCompoundData' class="btn btn-primary" (click)="createAndRetreiveCompoundData()">Create Compound data and retreive</button>
+  <br>
+  <span id= 'createAndRetreiveCompoundDataMessage' *ngIf="createAndRetreiveCompoundDataMessage">Response: {{createAndRetreiveCompoundDataMessage}}</span>
+  <span id= 'createAndRetreiveCompoundDataMessageData' *ngIf="createAndRetreiveCompoundDataMessageData">Response: {{createAndRetreiveCompoundDataMessageData}}</span>
+
+
+  
+  <!-- Step 20 -->
   <h4>Deleting types, streams and streamViews</h4>
   <p>Press the button below to delete the types, streams and streamViews that this sample has created. Failure to do
   so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
   written to that stream.</p>
-  <button class="btn btn-primary" (click)="cleanup()">Clean up</button>
+  <button id="cleanup"  class="btn btn-primary" (click)="cleanup()">Clean up</button>
   <br>
-  <span *ngIf="button12Message">Response: {{button12Message}}</span>
+  <span id="cleanupMessage"  *ngIf="button12Message">Response: {{button12Message}}</span>
 </div>
 

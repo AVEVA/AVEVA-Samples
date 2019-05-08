@@ -6,7 +6,7 @@
 
   <groupId>com.github.osisoft.dataviewsample</groupId>
   <artifactId>dataviewjava</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0.3-PREVIEW</version>
 
   <name>dataviewjava</name>
   <!-- FIXME change it to the project's website -->
@@ -22,7 +22,7 @@
       <dependency> 
         <groupId> com.github.osisoft.ocs_sample_library_preview</groupId>
         <artifactId>ocs_sample_library_preview</artifactId>
-        <version>[0.0.5,)</version>
+        <version>[0.0.7,)</version>
     </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

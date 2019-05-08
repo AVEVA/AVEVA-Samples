@@ -1,20 +1,3 @@
-// <copyright file="Program.cs" company="OSIsoft, LLC">
-//
-//Copyright 2019 OSIsoft, LLC
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//<http://www.apache.org/licenses/LICENSE-2.0>
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-// </copyright>
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,6 +11,9 @@ namespace SdsRestApiCore
 {
     public class Program
     {
+        public static Exception toThrow = null;
+        public static bool success = true;
+
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
         public static async Task<bool> MainAsync(bool test = false)
@@ -623,7 +609,15 @@ namespace SdsRestApiCore
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStreamSecond.Id}");
                 CheckIfResponseWasSuccessful(response);
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}. ");
+                
+                var count = 0;
+                if(waveStream.Indexes !=null )
+                    count = waveStream.Indexes.Count();
+                var count2 = 0;
+                if(waveStreamSecond.Indexes !=null )
+                    count2 = waveStreamSecond.Indexes.Count();
+
+                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}. ");
                 Console.WriteLine();
                 
 
@@ -744,20 +738,24 @@ namespace SdsRestApiCore
 
 
         /// <summary>
-        /// Use this to run a method that you don't want to stop the program if there is an error and you don't want to report the error
+        /// Use this to run a method that you don't want to stop the program if there is an error
         /// </summary>
         /// <param name="methodToRun">The method to run.</param>
         /// <param name="value">The value to put into the method to run</param>
-        private static async void RunInTryCatch(Func<string, Task> methodToRun, string value)
+        private static void RunInTryCatch(Func<string, Task> methodToRun, string value)
         {
             try
             {
-                await methodToRun(value);
-
+                methodToRun(value).Wait(10000);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Got error in {methodToRun.Method.Name} with value {value} but continued on:" + ex.Message);
+                if (toThrow == null)
+                {
+                    success = false;
+                    toThrow = ex;
+                }
             }
         }
 

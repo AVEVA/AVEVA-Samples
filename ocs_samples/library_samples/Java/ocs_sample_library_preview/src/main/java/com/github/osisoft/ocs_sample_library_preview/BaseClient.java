@@ -1,18 +1,5 @@
 /** BaseClient.java
  * 
- *  Copyright 2019 OSIsoft, LLC
- *  
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0>
- *  
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
  */
 
 package  com.github.osisoft.ocs_sample_library_preview;
@@ -30,16 +17,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
+/**
+ * Base client that helps with interactions to OCS
+ */
 public class BaseClient {
+    /**
+     * accessible json converter
+     */
+    public Gson mGson = null;
+    /**
+     * use this to see the base url for going against OCS
+     */
+    public String baseUrl = null;
+    /**
+     * api version used for the calls
+     */
+    public String apiVersion = null;
+
     private String cachedAccessToken = null;
     private Date accessTokenExpiration = new Date(Long.MIN_VALUE);
     private long FIVE_SECONDS_IN_MILLISECONDS = 5000;
-    public Gson mGson = null;
-    public String baseUrl = null;
-    public String apiVersion = null;
-    // REST API url strings
-    // base of all requests
+
     private String requestBase = "api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}";
 
     //config parameters
@@ -47,8 +45,10 @@ public class BaseClient {
     private String gclientSecret = "";
     private String gresource = "";
 
+    /**
+     * Creates a baseclient.  Reading information from the configuration file at the program's running folder
+     */
     public BaseClient() {
-        // It should not set static fields from construtor like that..
         gclientId = getConfiguration("clientId");
         gclientSecret = getConfiguration("clientSecret");
         gresource = getConfiguration("resource");
@@ -59,8 +59,15 @@ public class BaseClient {
         this.mGson = new Gson();
     }
     
+    /**
+     * Creates a baseclient using the passed information rather than the configuration settings
+     * 
+     * @param apiVersion APIversion of OCS
+     * @param clientId Client id to login with
+     * @param clientSecret client secret to login with 
+     * @param resource OCS url
+     */
     public BaseClient(String apiVersion, String clientId, String clientSecret, String resource) {
-        // It should not set static fields from construtor like that..
         gclientId = clientId;
         gclientSecret = clientSecret;
         gresource = resource;
@@ -71,6 +78,12 @@ public class BaseClient {
         this.mGson = new Gson();
     }
    
+    /**
+     * Makes the connection to the url
+     * @param url the url to connect to 
+     * @param method the method to do, put, get, delete, etc...
+     * @return
+     */
     public HttpURLConnection getConnection(URL url, String method) {
         HttpURLConnection urlConnection = null;
         String token = AcquireAuthToken();
@@ -102,6 +115,10 @@ public class BaseClient {
         return urlConnection;
     }
 
+    /**
+     * Helper to get the bearer auth token
+     * @return the token string
+     */
     protected String AcquireAuthToken() {
 
         if (cachedAccessToken != null){
@@ -154,6 +171,11 @@ public class BaseClient {
         return cachedAccessToken;
     }
 
+    /**
+     * helper to get configuration information for the file
+     * @param propertyId which property to retreive from the file
+     * @return the value retreived
+     */
     private String getConfiguration(String propertyId) {
         String property = "";
         Properties props = new Properties();
@@ -182,6 +204,11 @@ public class BaseClient {
         return property.trim();
     }
 
+    /**
+     * helper to check if the response code indicates success
+     * @param responseCode code number
+     * @return success
+     */
     public boolean isSuccessResponseCode(int responseCode) {
         return responseCode >= 200 && responseCode < 300;
     }

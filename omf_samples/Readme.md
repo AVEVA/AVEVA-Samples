@@ -1,5 +1,5 @@
 # OMF Samples
-The OSIsoft Message Format ([OMF](https://pisquare.osisoft.com/community/developers-club/omf)) defines a set of message headers and bodies that can be used to generate messages for ingestion into a compliant back-end system.  The PI System and OCS both have a compliant OMF receiving endpoint. 
+The OSIsoft Message Format ([OMF](https://pisquare.osisoft.com/community/developers-club/omf)) defines a set of message headers and bodies that can be used to generate messages for ingestion into a compliant back-end system.  The PI System and OCS both have a compliant OMF receiving endpoint.   
 
 OMF can be used to develop data acquisition applications on platforms and in languages for which there are no supported OSIsoft libraries.  Official documentation can be found [here](https://omf-docs.readthedocs.io/en/latest/).
 
@@ -18,8 +18,7 @@ Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;S
 ----|-----------|---------|-----------
 <img src="../miscellaneous/images/ctp.png" alt="ctp icon">  **<a href="basic_samples/OMF_API/">Basic API</a>** | These samples demonstrate sending some typical OMF messages.  The applications are configurable to both PI and OCS.  <a href="basic_samples/OMF_API">Details</a>   |  <a href="basic_samples/OMF_API/CSharp/OMF_API/">.NET*</a><br /><a href="basic_samples/OMF_API/Python3/">Python3*</a><br /><a href="basic_samples/OMF_API/Java/omfapijava">Java*</a>  | [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
-To configure OCS programmatically for OMF Ingress see: [ReadMe](../ocs_samples/basic_samples/IngressClientLibraries)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
 
 
 
@@ -43,4 +42,4 @@ If you wish to contribute please take a look at the [contribution guide](../CONT
 
 ## License
 
-[OCS Samples](https://github.com/osisoft/ocs-samples) are licensed under the [Apache 2 license](../LICENSE.md).
+[OSI Samples](https://github.com/osisoft/OSI-Samples) are licensed under the [Apache 2 license](../LICENSE.md).

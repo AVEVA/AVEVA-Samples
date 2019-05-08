@@ -13,9 +13,8 @@
 
 ### Using Visual Studio
 
-- Load the solution from the directory above this in Visual Studio
+- Load the .csproj
 - Rebuild solution
-- Select ImplicitFlow project
 - Run it
 - Pres the *login* button in the browser
 - Follow the prompts in the web browser to log in
@@ -34,7 +33,13 @@ dotnet run
 - Return to the application after having been authenticated in the browser
 
 
+## Test
+
+This sample passes manually, locally
+
+This test has not been automated due to issues with getting logins working properly.
+
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OCS-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

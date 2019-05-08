@@ -1,18 +1,5 @@
 # DataviewMappingColumn.py
 #
-# Copyright 2019 OSIsoft, LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# <http://www.apache.org/licenses/LICENSE-2.0>
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 import json
 
@@ -20,30 +7,66 @@ class DataviewMappingColumn(object):
     """Sds dataview definition"""
     @property
     def Name(self):
+        """
+        Name   required
+        :return:
+        """
         return self.__name
     @Name.setter
     def Name(self, name):
+        """
+        Name   required
+        :param name:
+        :return:
+        """
         self.__name = name
     
     @property
     def IsKey(self):
+        """
+        Bool    required   required one true in columns set
+        :return:
+        """
         return self.__isKey
     @IsKey.setter
     def IsKey(self, isKey):
+        """
+        Bool    required   required one true in columns set
+        :param isKey:
+        :return:
+        """
         self.__isKey= isKey
 
     @property
     def DataType(self):
+        """
+        type of the mapped data source   not required
+        :return:
+        """
         return self.__dataType
     @DataType.setter
     def DataType(self, dataType):
+        """
+        type of the mapped data source   not required
+        :param dataType:
+        :return:
+        """
         self.__dataType = dataType
 		   
     @property
     def MappingRule(self):
+        """
+        Mapping to the data source   required
+        :return:
+        """
         return self.__MappingRule
     @MappingRule.setter
     def MappingRule(self, MappingRule):
+        """
+        Mapping to the data source   required
+        :param MappingRule:
+        :return:
+        """
         self.__MappingRule= MappingRule
     
 

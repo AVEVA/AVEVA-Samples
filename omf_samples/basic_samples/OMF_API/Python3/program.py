@@ -1,18 +1,3 @@
-# program.py
-# Copyright 2019 OSIsoft, LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# <http://www.apache.org/licenses/LICENSE-2.0>
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 # NOTE: this script was designed using the v1.0
 # version of the OMF specification, as outlined here:
 # http://omf-docs.osisoft.com/en/v1.0
@@ -21,7 +6,7 @@
 #*************************************************************************************
 
 # OMF_API_Python3
-# Version 1.0.0.1
+# version 0.0.2s
 # 3-20-19
 
 # ************************************************************************
@@ -44,6 +29,9 @@ import traceback
 # Specify options for sending web requests to the target PI System
 # ************************************************************************
 
+# Whether or not we are inferring where the app is pointing to from the config file
+forceSending = False
+
 # Specifys whether we are sending to PI or OCS.  The main changes are in the accepted messages and the URL.
 sendingToOCS = True
 
@@ -64,12 +52,17 @@ producerToken = ""
 # Holder for the omfEndPoint if sending to PI.  It is set from the configuration
 omfEndPoint = ""
 
+# Holder for the checkbase if sending to PI.  It is set from the configuration
+checkBase = ""
+
 # Holder for the omfEndPoint base if sending to OCS.  Auth and OMF endpoint are built from this.  It is set from the configuration
 resourceBase = ""
 
+dataServerName = ""
+
 
 # The version of the OMFmessages
-omfVersion = "1.0"
+omfVersion = "1.1"
 
 # Holders for data message values
 integer_boolean_value = 0
@@ -88,7 +81,7 @@ clientSecret = ""
 
 def getToken():
     # Gets the oken for the omfsendpoint    
-    global __expiration, __token, resourceBase, clientId, clientSecret, producerToken
+    global __expiration, __token, resourceBase, clientId, clientSecret, producerToken, sendingToOCS
 
     if(not sendingToOCS):
         return producerToken
@@ -149,16 +142,26 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
     else:
         msg_body = json.dumps(message_omf_json)
 
-    # Assemble headers        
-    msg_headers = {
-        "Authorization": "Bearer %s" % getToken(),
-        'producertoken': getToken(),
-        'messagetype': message_type,
-        'action': action,
-        'messageformat': 'JSON',
-        'omfversion': omfVersion,
-        'compression': compression
-    }
+    msg_headers = {}
+
+    # Assemble headers   
+    if sendingToOCS:     
+        msg_headers = {
+            "Authorization": "Bearer %s" % getToken(),
+            'producertoken': getToken(),
+            'messagetype': message_type,
+            'action': action,
+            'messageformat': 'JSON',
+            'omfversion': omfVersion,
+            'compression': compression
+        }
+    else:   
+        msg_headers = {
+            'messagetype': message_type,
+            'action': action,
+            'messageformat': 'JSON',
+            'omfversion': omfVersion
+        }
 
     # Send the request, and collect the response
     response = requests.post(
@@ -168,15 +171,20 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
         verify = VERIFY_SSL,
         timeout = WEB_REQUEST_TIMEOUT_SECONDS
     )
+    if response.status_code == 409:
+        #print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
+        return
+
     
     # response code in 200s if the request was successful!
     if response.status_code < 200 or response.status_code >= 300:
+        print(msg_headers)
         response.close()
         print('Response from relay was bad.  "{0}" message: {1} {2}.  Message holdings: {3}'.format(message_type, response.status_code, response.text, message_omf_json))
         print()
         raise Exception("OMF message was unsuccessful, {message_type}. {status}:{reason}".format(message_type=message_type, status=response.status_code, reason=response.text))
-    else:
-        print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
+    #else:
+        #print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
     
 def checkValue(url):
     # Sends the request out to the preconfigured endpoint..
@@ -205,12 +213,9 @@ def checkValue(url):
         raise Exception("OMF message was unsuccessful. {status}:{reason}".format( status=response.status_code, reason=response.text))
     return response.text
     
-
-
 def getCurrentTime():
     # Returns the current time
     return datetime.datetime.utcnow().isoformat() + 'Z'
-
 
 # Creates a JSON packet containing data values for containers
 # of type FirstDynamicType defined below
@@ -251,7 +256,6 @@ def create_data_values_for_second_dynamic_type(containerid):
             ]
         }
     ]
-
 
 # of type ThirdDynamicType defined below
 def create_data_values_for_third_dynamic_type(containerid):
@@ -315,13 +319,11 @@ def create_data_values_for_NonTimeStampIndexAndMultiIndex_type(NonTimeStampIndex
             ]
         }
     ]
-    
-
 
 def oneTimeSendMessages(action = 'create'):    
     # Wrapper around all of the data and container messages.  
+    global omfVersion, sendingToOCS
 
-    global omfVersion
     # ************************************************************************
     # Send the types messages to define the types of streams that will be sent.
     # These types are referenced in all later messages
@@ -604,6 +606,7 @@ def oneTimeSendMessages(action = 'create'):
     # Step 8
     # Send a JSON packet to define links between assets
     # to create AF Asset structure
+    '''
     send_omf_message_to_endpoint("data", [
         {
             "typeid": "__Link",
@@ -631,10 +634,12 @@ def oneTimeSendMessages(action = 'create'):
             ]
         }
     ],action)
+    '''
 
     # Send a JSON packet to define links between assets and
     # containerids to create attributes with PI point references
     # from containerid properties
+    '''
     send_omf_message_to_endpoint("data", [
         {
             "typeid": "__Link",
@@ -678,30 +683,38 @@ def oneTimeSendMessages(action = 'create'):
             ]
         }
     ],action)
+    '''
 
+def checkSends(lastVal):    
+    global checkBase, dataServerName
 
-def checkSends(firstVal):    
-    global checkBase
+    print("Checks")
 
     if(sendingToOCS):
 
-        print("Checks")
         # just getting back the type or stream means that it worked
         json1 = checkValue(checkBase + '/Types' + '/FirstDynamicType')
         #print(json1)
         json1 = checkValue(checkBase + '/Streams' + '/Container1')
         #print(json1)
-        json1 = checkValue(checkBase + '/Streams' + '/Container1'+ '/Data/first')
+        json1 = checkValue(checkBase + '/Streams' + '/Container1'+ '/Data/last')
 
         # just checking to make sure some data made it it, could do a more comprhensive check but this is ok...
-        assert firstVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['IntegerProperty']
+        assert lastVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['IntegerProperty']
 
 
     else:
-        val = True
+        #print(json1)
+        json1 = checkValue(checkBase + "/dataservers?name=" + dataServerName)
+        pointsURL = json.loads(json1)['Links']['Points']
 
+        json1 = checkValue(pointsURL + "?nameFilter=container1*")
+        endValueURL = json.loads(json1)['Items'][0]['Links']['Value']
+        
+        json1 = checkValue(endValueURL)
 
-
+        # just checking to make sure some data made it it, could do a more comprhensive check but this is ok...
+        assert lastVal[0]['values'][0]['IntegerProperty']  == json.loads(json1)['Value']
 
 def supressError(sdsCall):
     #easily call a function and not have to wrap it individually for failure
@@ -728,18 +741,12 @@ def getConfig(section, field):
     return config.has_option(section,field) and config.get(section,field) or None
 
 # ************************************************************************
-# Finally, loop indefinitely, sending random events
-# conforming to the container types that we defined earlier
-
 # Note: PI points will be created on the first data value message
 # arrived for a given container
-#
-# Note: values for each containerid are sent as a batch; you can update
-# different containerids at different times
 # ************************************************************************
 def main(test = False):
     # Main program.  Seperated out so that we can add a test function and call this easily
-    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase
+    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase, dataServerName, forceSending, sendingToOCS
     success = True
     try:
         print('------------------------------------------------------------------')
@@ -755,31 +762,31 @@ def main(test = False):
 
         # Step 1
         namespaceId = getConfig('Configurations', 'Namespace') 
+        dataServerName = getConfig('Configurations', 'DataServerName') 
         resourceBase = getConfig('Access', 'Resource')
         tenant = getConfig('Access', 'Tenant')
         apiversion = getConfig('Access', 'ApiVersion')
         producerToken = getConfig('Credentials', 'ProducerToken')
-        completedURL = getConfig('Credentials', 'OMFEndpoint')
         producerToken = getConfig('Credentials', 'ProducerToken')
         clientId = getConfig('Credentials', 'ClientId')
         clientSecret = getConfig('Credentials', 'ClientSecret')
 
+        if not forceSending:
+            if tenant is None:
+                sendingToOCS = False
+            else:
+                sendingToOCS = True
+
         if sendingToOCS:
-            omfEndPoint = resourceBase + '/api/' + apiversion + '/tenants/' + tenant + '/namespaces/' + namespaceId +'/omf'
             checkBase = resourceBase + '/api/' + apiversion + '/tenants/' + tenant + '/namespaces/' + namespaceId
+            omfEndPoint = checkBase +'/omf'
         else:
-            omfEndPoint = resourceBase + '/omf'
             checkBase = resourceBase 
+            omfEndPoint = checkBase + '/omf'
         
-        if completedURL:
-            omfEndPoint = completedURL
 
         # Step 2
-        if(sendingToOCS):
-            getToken()
-        else:            
-            producerToken = getConfig('Credentials', 'ProducerToken')
-            omfVersion = "1.1"
+        getToken()
 
     # ************************************************************************
     # Turn off HTTPS warnings, if desired
@@ -793,11 +800,10 @@ def main(test = False):
 
         # Step 9
         count = 0
-        firstVal = ''
+        lastVal = ''
         while count == 0 or ((not test) and count < 2):
             val = create_data_values_for_first_dynamic_type("Container1")
-            if count == 0:
-                firstVal = val
+            lastVal = val
             send_omf_message_to_endpoint("data", val)
             send_omf_message_to_endpoint("data", create_data_values_for_first_dynamic_type("Container2"))
             send_omf_message_to_endpoint("data", create_data_values_for_second_dynamic_type("Container3"))
@@ -806,7 +812,7 @@ def main(test = False):
                 send_omf_message_to_endpoint("data", create_data_values_for_NonTimeStampIndexAndMultiIndex_type("Container5", "Container6"))
             time.sleep(1)
             count = count +1
-        checkSends(firstVal)
+        checkSends(lastVal)
     except Exception as ex:
         print(("Encountered Error: {error}".format(error = ex)))
         print

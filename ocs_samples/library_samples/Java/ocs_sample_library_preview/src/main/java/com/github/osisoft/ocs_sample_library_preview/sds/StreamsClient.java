@@ -1,18 +1,5 @@
 /** SdsClient.java
  * 
- *  Copyright 2019 OSIsoft, LLC
- *  
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0>
- *  
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
  */
 
 package  com.github.osisoft.ocs_sample_library_preview.sds;
@@ -33,6 +20,9 @@ import java.util.Map;
 import java.util.Properties;
 
 
+/**
+ * StreamsClient
+ */
 public class StreamsClient {
     private String baseUrl = null;
     private String apiVersion = null;
@@ -63,8 +53,8 @@ public class StreamsClient {
     private String getRangeStreamViewQuery = dataBase + "/Transform?startIndex={startIndex}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundaryType}&streamViewId={streamViewId}";
     private String updateMultiplePath = dataBase;
     private String replaceMultiplePath = dataBase + "?allowCreate=false";
-    private String removeSingleQuery = dataBase + "/RemoveValue?index={index}";
-    private String removeMultipleQuery = dataBase + "/RemoveWindowValues?startIndex={startIndex}&endIndex={endIndex}";
+    private String removeSingleQuery = dataBase + "?index={index}";
+    private String removeMultipleQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
 
     //dataview path
     private String dataviewBase = requestBase + "/Dataviews";
@@ -77,6 +67,10 @@ public class StreamsClient {
     private String getDatagroups  = datagroupPath + "?skip={skip}&count={count}";
 
 
+    /**
+     * Base Constructor
+     * @param base baseclient that helps with OCS calls
+     */
     public StreamsClient(BaseClient base) {
         baseClient = base;
         this.baseUrl = base.baseUrl;
@@ -84,6 +78,14 @@ public class StreamsClient {
         this.mGson = base.mGson;
     }
 
+    /**
+     * creates a stream view
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param {SdsStreamView} streamViewDef SdsStreamView to create
+     * @return created SdsStreamView as a string
+     * @throws SdsError  any error that occurs
+     */
     public String createStreamView(String tenantId, String namespaceId, SdsStreamView streamViewDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -133,6 +135,14 @@ public class StreamsClient {
         return response.toString();
     }
 
+    /**
+     * gets a streamviewmap
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamViewId the streamview to retreivemap
+     * @return the streamviewmap as a string
+     * @throws SdsError any error that occurs
+     */
     public String getStreamViewMap(String tenantId, String namespaceId, String streamViewId) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -174,6 +184,13 @@ public class StreamsClient {
         return jsonResults.toString();
     }
     
+    /**
+     * delete stream view
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamViewId the streamview to delete
+     * @throws SdsError any error that occurs
+     */
     public void deleteStreamView(String tenantId, String namespaceId, String streamViewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -203,6 +220,15 @@ public class StreamsClient {
             e.printStackTrace();
         }
     }
+
+    /**
+     * creates the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamDef the stream to create
+     * @return the created stream as a string
+     * @throws SdsError any error that occurs
+     */
      public String createStream(String tenantId, String namespaceId, SdsStream streamDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -254,6 +280,14 @@ public class StreamsClient {
 
     }
 
+    /**
+     * gets the specified stream
+     * @param tenantId tenant to wrok against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get
+     * @return the stream as a string
+     * @throws SdsError
+     */
     public String getStream(String tenantId, String namespaceId, String streamId) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -293,6 +327,16 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+    /**
+     * gets a streams
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param query query used to help filter the results
+     * @param skip number of streams to skip, used for paging
+     * @param count number of streams to return
+     * @return Arraylist<SdsStream> 
+     * @throws SdsError any error that occurs
+     */
     public ArrayList<SdsStream> getStreams(String tenantId, String namespaceId, String query, String skip, String count) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -335,6 +379,14 @@ public class StreamsClient {
         //   return jsonResults.toString();
     }
 
+    /**
+     * updates the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId the id of the stream to update
+     * @param streamDef the new stream definition
+     * @throws SdsError any error that occurs
+     */
     public void updateStream(String tenantId, String namespaceId, String streamId, SdsStream streamDef) throws SdsError {
 
         URL url = null;
@@ -373,6 +425,13 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * delete the specified stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to delete
+     * @throws SdsError any error that occurs
+     */
     public void deleteStream(String tenantId, String namespaceId, String streamId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -402,6 +461,14 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * update the tags associated with a stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to update tags on
+     * @param tags ArrayList<String> of tags
+     * @throws SdsError any error that occurs
+     */
     public void updateTags(String tenantId, String namespaceId, String streamId, ArrayList<String> tags) throws SdsError {
 
         URL url = null;
@@ -440,6 +507,14 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * gets the tags assocaited with the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get tags of
+     * @return ArrayList<String> of tags
+     * @throws SdsError any error that occurs
+     */
     public ArrayList<String> getTags(String tenantId, String namespaceId, String streamId) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -481,6 +556,14 @@ public class StreamsClient {
         return results;
     }
     
+    /***
+     * updates the meta data of a stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId the stream to update the meta data of
+     * @param metadata Map<String, String> 
+     * @throws SdsError  any error that occurs
+     */
     public void updateMetadata(String tenantId, String namespaceId, String streamId, Map<String, String> metadata) throws SdsError {
 
         URL url = null;
@@ -519,6 +602,15 @@ public class StreamsClient {
         }
     }
     
+    /**
+     * gets metadata value from key associated with the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get metadata from
+     * @param key the specific key to get the value from 
+     * @return the specific string value from the metadata Map<String, String> 
+     * @throws SdsError  any error that occurs
+     */
     public String getMetadata(String tenantId, String namespaceId, String streamId, String key) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -558,6 +650,14 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+    /**
+     * inserts values into the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to insert values into
+     * @param json json string of the array of values to insert
+     * @throws SdsError  any error that occurs
+     */
     public void insertValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -592,6 +692,15 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * gets value at specified index
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get value of
+     * @param index index to get value at
+     * @return string of the value
+     * @throws SdsError  any error that occurs
+     */
     public String getValue(String tenantId, String namespaceId, String streamId, String index) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -634,6 +743,14 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+    /***
+     * gets the last value of a stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId the stream to get the last of 
+     * @return string of the last value
+     * @throws SdsError  any error that occurs
+     */
     public String getLastValue(String tenantId, String namespaceId, String streamId) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -674,6 +791,14 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+    /**
+     * gets the first value in the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get the first value of
+     * @return string value of the fire value in the stream
+     * @throws SdsError any error that occurs
+     */
     public String getFirstValue(String tenantId, String namespaceId, String streamId) throws SdsError {
 
         URL url;
@@ -714,15 +839,47 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+    /**
+     * gets window value of stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get window value from 
+     * @param startIndex starting index
+     * @param endIndex ending index
+     * @return string of values
+     * @throws SdsError  any error that occurs
+     */
     public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws SdsError {
         return getWindowValues(tenantId,namespaceId,streamId,startIndex,endIndex,"");
     }
     
+    /**
+     * gets window value of stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get window value from 
+     * @param startIndex starting index
+     * @param endIndex ending index
+     * @param filter filter to reduce the number of values returned
+     * @return string of values
+     * @throws SdsError any error that occurs
+     */
     public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, String filter) throws SdsError {
         return getWindowValues(tenantId,namespaceId,streamId,startIndex,endIndex, filter, "");
-    }
-    
+    }    
 
+    /**
+     * gets window value of stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get window value from 
+     * @param startIndex starting index
+     * @param endIndex ending index
+     * @param filter filter to reduce the number of values returned
+     * @param form use this to specify the format of the returned payload 
+     * @return string of values
+     * @throws SdsError any error that occurs
+     */
     public String getWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, String filter, String form) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -771,10 +928,37 @@ public class StreamsClient {
     }
 
 
+    /**
+     * gets the specified range of values from the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get range of values from 
+     * @param startIndex the starting index
+     * @param skip number of values to skip (good for paging)
+     * @param count number of values to return 
+     * @param reverse whether to go forward or backward in regards to the index when getting more values 
+     * @param boundaryType  SdsBoundaryType
+     * @return string of the array of values 
+     * @throws SdsError any error that occurs
+     */
     public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
         return getRangeValues(tenantId, namespaceId, streamId, startIndex, "", skip,count, reverse, boundaryType);
     }
 
+    /**
+     * gets the specified range of values from the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to get range of values from 
+     * @param startIndex the starting index
+     * @param endIndex the ending index
+     * @param skip number of values to skip (good for paging)
+     * @param count number of values to return 
+     * @param reverse whether to go forward or backward in regards to the index when getting more values 
+     * @param boundaryType  SdsBoundaryType
+     * @return string of the array of values 
+     * @throws SdsError any error that occurs
+     */
     public String getRangeValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -821,10 +1005,18 @@ public class StreamsClient {
 
         return response.toString();
     }
-
-
-    
-
+        
+    /**
+     * gets interpolated values in the range specified
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId the stream to get values from 
+     * @param startIndex the starting index
+     * @param endIndex the ending index
+     * @param count the number of values to return
+     * @return string of the array of values
+     * @throws SdsError any error that occurs
+     */
     public String getRangeValuesInterpolated(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int count) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -866,6 +1058,21 @@ public class StreamsClient {
 
         return response.toString();
     }
+
+    /**
+     * gets a range of values from a streamview
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId the stream to get values from 
+     * @param startIndex the starting index
+     * @param skip the number of values to skip (good for paging)
+     * @param count the number of values to return
+     * @param reverse whether to go forward or backward in regards to the index when getting more values 
+     * @param boundaryType SdsBoundaryType
+     * @param streamViewId the streamview definition to desribe how to view the data 
+     * @return string of the array of values
+     * @throws SdsError any error that occurs
+     */
     public String getRangeValuesStreamView(String tenantId, String namespaceId, String streamId, String startIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType, String streamViewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -910,6 +1117,14 @@ public class StreamsClient {
         return response.toString();
     }
 
+    /**
+     * updates the stream with the values specified
+     * @param tenantId tenant to work against
+     * @param namespaceId namepsace to work against
+     * @param streamId the stream to update the values of
+     * @param json the values to update on the stream
+     * @throws SdsError any error that occurs
+     */
     public void updateValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -944,6 +1159,14 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * replace the values on the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId the stream to replace values in
+     * @param json the values to replace
+     * @throws SdsError any error that occurs
+     */
     public void replaceValues(String tenantId, String namespaceId, String streamId, String json) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
@@ -978,6 +1201,14 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * removes a value from the stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to remove value from 
+     * @param index index to remove
+     * @throws SdsError any error that occurs
+     */
     public void removeValue(String tenantId, String namespaceId, String streamId, String index) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -1007,6 +1238,15 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * remove a window of values from a stream
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to remove values from
+     * @param startIndex starting index to remove
+     * @param endIndex ending index to remove
+     * @throws SdsError any error that occurs 
+     */
     public void removeWindowValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -1038,6 +1278,14 @@ public class StreamsClient {
         }
     }
 
+    /**
+     * update the stream type to a new type using a streamview
+     * @param tenantId tenant to work against
+     * @param namespaceId namespace to work against
+     * @param streamId stream to update 
+     * @param streamViewId streamview to change the type of the stream to
+     * @throws SdsError any error that occurs
+     */
 	public void updateStreamType(String tenantId, String namespaceId, String streamId, String streamViewId) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -1074,8 +1322,4 @@ public class StreamsClient {
             e.printStackTrace();
         }
 	}
-    
-
-
-
 }

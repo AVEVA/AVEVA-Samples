@@ -1,42 +1,24 @@
 <!-- app.component.html
 
-   Copyright 2019 OSIsoft, LLC
-   
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-   
-   http://www.apache.org/licenses/LICENSE-2.0>
-   
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+
 -->
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-<div *ngIf="isAuthenticated()">
-  <div class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand">OSIsoft Cloud Services</a>
-        <button type="button" class="btn btn-default navbar-btn" (click)="logOutUser()">Sign out ({{getUserName()}})</button>
-        <router-outlet></router-outlet>
-      </div>
-    </div>
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="navbar-nav">
+      <a class="nav-item nav-link" routerLink="/">Home</a>
+      <!-- Step 1 -->
+      <a *ngIf="!loggedIn" class="nav-item nav-link" (click)="login()">Login</a>
+      <a *ngIf="loggedIn" class="nav-item nav-link" (click)="logout()">Logout</a>
+      
   </div>
-</div>
-<div *ngIf="!isAuthenticated()">
-  <div class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand">OSIsoft Cloud Services</a>
-        <button type="button" class="btn btn-default navbar-btn" (click)="loginUser()">Sign in</button>
-      </div>
-    </div>
-  </div>
-  <p class="text-center">Sign in to get started</p>
-</div>
+</nav>
 
+<div class="jumbotron">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-6 offset-md-3">
+              <router-outlet></router-outlet>
+          </div>
+      </div>
+  </div>
+</div>

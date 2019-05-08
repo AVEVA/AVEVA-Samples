@@ -1,18 +1,5 @@
 # SdsType.py
 #
-# Copyright 2019 OSIsoft, LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# <http://www.apache.org/licenses/LICENSE-2.0>
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 from enum import Enum
 import json
@@ -23,6 +10,15 @@ from .SdsTypeProperty import SdsTypeProperty
 class SdsType(object):
     """Sds type definitions"""
     def __init__(self, id = None, name = None, description = None, baseType = None, sdsTypeCode = SdsTypeCode.Empty, properties = None):
+        """
+
+        :param id: required
+        :param name: not required
+        :param description: not required
+        :param baseType: not required
+        :param sdsTypeCode: SdsTypeCode    required
+        :param properties: array of SdsTypeProperty   required
+        """
         self.SdsTypeCode = sdsTypeCode
         self.Id = id
         self.Name = name
@@ -33,44 +29,98 @@ class SdsType(object):
 
     @property
     def Id(self):
+        """
+        required
+        :return:
+        """
         return self.__id
     @Id.setter
     def Id(self, id):
+        """
+        required
+        :param id:
+        :return:
+        """
         self.__id = id
     
     @property
     def Name(self):
+        """
+        not required
+        :return:
+        """
         return self.__name
     @Name.setter
     def Name(self, name):
+        """
+        not required
+        :param name:
+        :return:
+        """
         self.__name = name
     
     @property
     def Description(self):
+        """
+        not required
+        :return:
+        """
         return self.__description
     @Description.setter
     def Description(self, description):
+        """
+        not required
+        :param description:
+        :return:
+        """
         self.__description = description
 
     @property
     def BaseType(self):
+        """
+        not required
+        :return:
+        """
         return self.__baseType
     @BaseType.setter
     def BaseType(self, baseType):
+        """
+        not required
+        :param baseType:
+        :return:
+        """
         self.__baseType = baseType
     
     @property
     def SdsTypeCode(self):
+        """
+        required
+        :return:
+        """
         return self.__typeCode
     @SdsTypeCode.setter
     def SdsTypeCode(self, typeCode):
+        """
+        SdsTypeCode    required
+        :param typeCode:
+        :return:
+        """
         self.__typeCode = typeCode
 
     @property
     def Properties(self):
+        """
+        SdsTypeCode  required
+        :return:
+        """
         return self.__properties
     @Properties.setter
     def Properties(self, properties):
+        """
+        required
+        :param properties:
+        :return:
+        """
         self.__properties = properties
 
     def toJson(self):

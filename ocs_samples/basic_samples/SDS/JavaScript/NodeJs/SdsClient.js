@@ -1,18 +1,5 @@
 // SdsClient.js
 //
-//Copyright 2019 OSIsoft, LLC
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//<http://www.apache.org/licenses/LICENSE-2.0>
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
 
 
 
@@ -49,8 +36,10 @@ module.exports = {
         this.streamViewsBase = this.apiBase + "/Tenants/{0}/Namespaces/{1}/StreamViews";
         this.insertValuesBase = "/Data";
         this.getLastValueBase = "/{0}/Data/Last";
-        this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}";
+        this.getFirstValueBase = "/{0}/Data/First";
+        this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}&filter={3}";
         this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&streamViewId={6}";
+        this.getRangeValuesInterpolatedBase = "/{0}/Data/Transform/Interpolated?startIndex={1}&endindex={2}&count={3}";
         this.updateValuesBase = "/Data";
         this.replaceValuesBase = "/Data?allowCreate=false";
         this.removeSingleValueBase = "/{0}/Data?index={1}";
@@ -59,20 +48,35 @@ module.exports = {
         this.tokenExpires = "";
 
         // returns an access token
-        this.getToken = function (authItems) {
+        this.getToken = function (clientId,clientSecret,resource) {
+
             return restCall({
-                url: authItems["authority"],
-                method: 'POST',
+                url: resource + "/identity/.well-known/openid-configuration",
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                form: {
-                    'grant_type': 'client_credentials',
-                    'client_id': authItems['clientId'],
-                    'client_secret': authItems['clientSecret'],
-                    'resource': authItems['resource']
+                    "Accept" : "application/json"
                 }
-            });
+            }).then(
+                function (res) {
+                    var obj = JSON.parse(res);
+                    authority= obj.token_endpoint;
+
+                    return restCall({
+                        url: authority,
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        form: {
+                            'grant_type': 'client_credentials',
+                            'client_id': clientId,
+                            'client_secret': clientSecret,
+                            'resource': resource
+                        }
+                    });
+                }
+            ).catch(function (err) { logError(err); });
+           
         };
 
         // create a type
@@ -104,6 +108,24 @@ module.exports = {
             });
         };
 
+        // get streams from the Sds Service
+        this.getTypes = function (tenantId, namespaceId, queryString, skip, count) {
+            return restCall({
+                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString + "&skip=" + skip + "&count=" + count  ,
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // get stream from the Sds Service
+        this.getStream = function (tenantId, namespaceId, streamId) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
         // create a streamView
         this.createStreamView = function (tenantId, namespaceId, streamView) {
             return restCall({
@@ -119,6 +141,15 @@ module.exports = {
             return restCall({
                 url: this.url + this.streamViewsBase.format([tenantId, namespaceId]) + "/" + streamViewId + "/Map",
                 method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // create tags
+        this.updateStreamType = function (tenantId, namespaceId, streamId, streamViewId) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId + "/Type?streamViewId=" + streamViewId,
+                method: 'PUT',
                 headers: this.getHeaders()
             });
         };
@@ -181,10 +212,29 @@ module.exports = {
             });
         }
 
-        // retrieve a window of events
-        this.getWindowValues = function (tenantId, namespaceId, streamId, start, end) {
+        // get last value added to stream
+        this.getFirstValue = function(tenantId, namespaceId, streamId) {
             return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]),
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getFirstValueBase.format([streamId]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        }
+
+        // retrieve a window of events
+        this.getWindowValues = function (tenantId, namespaceId, streamId, start, end, filter= "") {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end, filter]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+        
+
+        // retrieve a window of events in table format
+        this.getWindowValuesTable = function (tenantId, namespaceId, streamId, start, end) {
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end,""]) +"&form=tableh",
                 method: 'GET',
                 headers: this.getHeaders()
             });
@@ -194,6 +244,15 @@ module.exports = {
         this.getRangeValues = function (tenantId, namespaceId, streamId, start, skip, count, reverse, boundaryType, streamView ="") {            
             return restCall({
                 url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesBase.format([streamId, start, skip, count, reverse, boundaryType, streamView]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        };
+
+        // retrieve a range of value based on boundary type
+        this.getRangeValuesInterpolated = function (tenantId, namespaceId, streamId, start, end, count) {            
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesInterpolatedBase.format([streamId, start, end, count]),
                 method: 'GET',
                 headers: this.getHeaders()
             });
