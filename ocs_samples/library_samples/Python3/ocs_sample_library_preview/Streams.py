@@ -45,7 +45,7 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getStreamView.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
             streamView_id=streamView_id), 
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
