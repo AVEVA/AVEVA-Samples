@@ -6,6 +6,7 @@ SDSPy
 Version | Date |  Notes
 ----|-----------| --------
 0.0.1 | 4-25-19 | This version was out earlier too.  
+0.0.2 | 4-25-19 | Updates based on lib change
 
 
 
@@ -50,6 +51,7 @@ SDSDotNet
 Version | Date |  Notes
 ----|-----------| --------
 0.0.1 | 4-25-19 | This version was out earlier too.
+0.0.2 | 5-9-19 | Updating calls based on lib changes.
 
 
 OMF_APIDotNet
@@ -93,7 +95,7 @@ Version | Date |  Notes
 ----|-----------| --------
 0.0.12 | 4-25-19 | 
 0.0.13 | 4-30-19 | updating documentation non-breaking
-
+0.0.15 | 5-9-19 | adding accept verbosity and summaries
 
 Lib_Java
 

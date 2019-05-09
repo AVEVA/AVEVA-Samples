@@ -1,6 +1,6 @@
 # program.py
 #
-# version 0.0.1
+# version 0.0.2
 
 from ocs_sample_library_preview import *
 from WaveData import WaveData, WaveDataInteger, WaveDataTarget, WaveDataCompound
