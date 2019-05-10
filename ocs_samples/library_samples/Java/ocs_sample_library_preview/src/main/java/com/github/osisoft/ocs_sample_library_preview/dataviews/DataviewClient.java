@@ -320,8 +320,14 @@ public class DataviewClient {
             e.printStackTrace();
         }
 
-        ArrayList<Dataview> results = mGson.fromJson(response.toString(), new TypeToken<ArrayList<Dataview>>(){}.getType());
-        return results;
+        try {
+
+            ArrayList<Dataview> results = mGson.fromJson(response.toString(), new TypeToken<ArrayList<Dataview>>(){}.getType());
+            return results;
+        } catch (Exception e) {
+            System.out.println((response.toString()));
+            throw e;
+        }
        // return response.toString();
     }
 
