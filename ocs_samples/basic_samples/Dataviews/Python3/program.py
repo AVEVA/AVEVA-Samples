@@ -163,7 +163,7 @@ def main(test = False):
 
         #assert is added to make sure we get back what we are expecting
         expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Function": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
-        assert dv.toJson() == expectedJSON, 'Dataview is different: ' + dv.toJson()
+        assert dv.toJson().lower() == expectedJSON.lower(), 'Dataview is different: ' + dv.toJson()
         
         
         dv.Description = sampleDataviewDescription_modified
@@ -174,7 +174,7 @@ def main(test = False):
         dv = ocsClient.Dataviews.putDataview(namespaceId, dv)
             
         expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Function": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
-        assert dv.toJson() == expectedJSON, 'Dataview is different ' + dv.toJson()
+        assert dv.toJson().lower() == expectedJSON.lower(), 'Dataview is different ' + dv.toJson()
     
 
         #Getting the complete set of dataviews to make sure it is there

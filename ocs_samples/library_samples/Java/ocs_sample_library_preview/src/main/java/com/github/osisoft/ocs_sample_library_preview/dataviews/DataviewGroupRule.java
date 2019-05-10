@@ -24,7 +24,7 @@ public class DataviewGroupRule {
 
     private String Id = "";
     private String Type = "";
-    private String TokenRules= "";
+    private Object TokenRules= "";
 
     /**
      * base constructor
@@ -80,7 +80,7 @@ public class DataviewGroupRule {
      * get token rule
      * @return
      */
-    public String getTokenRules() {
+    public Object getTokenRules() {
         return TokenRules;
     }
 
@@ -88,7 +88,7 @@ public class DataviewGroupRule {
      * sets token rule
      * @param tokenRules
      */
-    public void setTokenRules(String tokenRules) {
+    public void setTokenRules(Object tokenRules) {
         this.TokenRules = tokenRules;
     }
 }
