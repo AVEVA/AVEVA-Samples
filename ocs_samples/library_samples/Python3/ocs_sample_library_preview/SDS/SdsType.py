@@ -9,7 +9,7 @@ from .SdsTypeProperty import SdsTypeProperty
 
 class SdsType(object):
     """Sds type definitions"""
-    def __init__(self, id = None, name = None, description = None, baseType = None, sdsTypeCode = SdsTypeCode.Empty, properties = None):
+    def __init__(self, id = None, name = None, description = None, baseType = None, sdsTypeCode = SdsTypeCode.Empty, properties = []):
         """
 
         :param id: required
@@ -132,7 +132,7 @@ class SdsType(object):
 
         # optional properties
         if hasattr(self, 'Properties') :
-            if(self.Properties is not None):
+            if(self.Properties):
                 dictionary['Properties'] = []
                 for value in self.Properties:
                     dictionary['Properties'].append(value.toDictionary())
