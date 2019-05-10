@@ -7,6 +7,61 @@
   
 jobs:      
 
+
+- job: SDSPy
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        architecture: 'x64'
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_config.ini
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_config.ini
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+
+    - script: |
+        mv prod_config.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'rename config file'
+      
+
+      
+    - script: |
+        pip install setuptools wheel
+        pip install unittest-xml-reporting    
+        pip install pytest
+        pip install pytest-cov
+      displayName: 'Install tools'
+      
+      
+    - script: |
+        pip install -r requirements.txt
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'Install requirements'
+      
+    - script: |
+        python -m pytest ./program.py
+      displayName: 'Test with pytest'
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+
 - job: DataviewPy
 
   pool:
@@ -55,6 +110,102 @@ jobs:
       displayName: 'Test with pytest'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/
 
+- job: OMF_APIPy
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        architecture: 'x64'
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_omf_config.ini
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_omf_config.ini
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+
+    - script: |
+        mv prod_omf_config.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
+      displayName: 'rename config file'
+      
+
+      
+    - script: |
+        pip install setuptools wheel
+        pip install unittest-xml-reporting    
+        pip install pytest
+        pip install pytest-cov
+      displayName: 'Install tools'
+      
+      
+    - script: |
+        pip install -r requirements.txt
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
+      displayName: 'Install requirements'
+      
+    - script: |
+        python -m pytest ./program.py
+      displayName: 'Test with pytest'
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
+
+- job: SDSJava
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_config.properties
+
+      #
+    - script: mvn install -f pom.xml 
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/library_samples/Java/ocs_sample_library_preview/
+      displayName: install library
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_config.properties
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+      
+
+    - script: |
+        mv prod_config.properties config.properties
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/
+      displayName: 'Install requirements'
+      
+    - task: Maven@3
+      inputs:
+        mavenPomFile: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/pom.xml'
+        publishJUnitResults: false
+        testResultsFiles: '**/TEST-*.xml'
+        goals: 'test'
+  
 - job: DataviewJava
 
   pool:
@@ -90,3 +241,409 @@ jobs:
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         goals: 'test'
+    
+- job: OMF_APIJava
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: config.properties
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: config.properties 
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+      
+    - task: Maven@3
+      inputs:
+        mavenPomFile: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/pom.xml'
+        publishJUnitResults: false
+        testResultsFiles: '**/TEST-*.xml'
+        goals: 'test'
+ 
+- job: SDSDotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_appsettings.json
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibraries/
+      displayName: 'rename config file'     
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsClientLibraries/SdsClientLibrariesCoreTests/
+      displayName: 'Run Test'
+    
+- job: OMF_APIDotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_omf_appsettings.json
+
+
+    # Copy Files basic_samples\OMF_API\CSharp\OMF_API
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_omf_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_omf_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_API/
+      displayName: 'rename config file'     
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_APITests/
+      displayName: 'Run Test'
+     
+- job: SDSDotNetAPI
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_appsettings.json
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCore/
+      displayName: 'rename config file'         
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCoreTest/
+      displayName: 'Run Test' 
+
+- job: Auth_CC_DotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_appsettings.json
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlow/
+      displayName: 'rename config file'        
+      
+    - script: |
+        dotnet restore
+        dotnet build
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlowTest/
+      displayName: 'Run Test'  
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlowTest/
+      displayName: 'Run Test' 
+
+- job: UOM_DotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_appsettings.json
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/advanced_samples/UomsSample/Dotnet/UomsSample/UomsSample/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional 
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/advanced_samples/UomsSample/Dotnet/UomsSample/UomsSample/
+      displayName: 'rename config file'         
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/advanced_samples/UomsSample/Dotnet/UomsSample/UomsSampleTest/
+      displayName: 'Run Test' 
+
+
+
+
+- job: SDSnodeJS
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+    - task: NodeTool@0 
+      inputs:
+        versionSpec: '8.x' # replace this value with the version that you need for your project
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_config.js
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_config.js
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/'
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+
+    - script: |
+        mv prod_config.js config.js
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/
+      displayName: 'rename config file'
+      
+
+      
+    - script: |
+       npm install request
+       npm install request-promise
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/
+      displayName: 'Install tools'      
+      
+    - script: |
+        node Sample.js
+      displayName: 'Test that the app runs'
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/
+
+
+- job: SDSangJS
+
+  pool:
+    vmImage: 'vs2017-win2016'
+    
+  steps :
+    - task: NodeTool@0 
+      inputs:
+        versionSpec: '8.x' # replace this value with the version that you need for your project
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_oidc.config.json
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_sdsconfig.json
+        
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_cred.json
+
+
+    # Copy Files  
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_oidc.config.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file 1
+      
+
+    # Copy Files 
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_sdsconfig.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file 2
+
+    # Copy Files   ocs_samples\basic_samples\SDS\JavaScript\Angular\e2e\src\config.json
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_cred.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/' 
+        #cleanTargetFolder: false # Optional 
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file 3
+
+    - script: |
+        del oidc.config.json
+      workingDirectory:  '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file1'
+
+    - script: |
+        rename prod_oidc.config.json oidc.config.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file2'
+
+    - script: |
+        del sdsconfig.json
+      workingDirectory:  '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file3'
+
+    - script: |
+        rename prod_sdsconfig.json sdsconfig.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/src/app/config/' 
+      displayName: 'rename config file4'
+
+    - script: |
+        del cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file5'
+
+    - script: |
+        rename prod_cred.json cred.json
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/e2e/src/'
+      displayName: 'rename config file6'
+      
+    - script: |
+       npm install -g @angular/cli
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools1'      
+      
+      
+    - script: |
+       npx webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools2'    
+
+
+    - script: |
+       npm install 
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools3'   
+      
+    - script: |
+       npx webdriver-manager update
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+      displayName: 'Install tools5'
+
+    - script: |
+        ng e2e --webdriver-update=false
+      displayName: 'Test that the app runs'
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
+
+
+    # Publish Test Results
+    # Publish Test Results to Azure Pipelines/TFS
+    - task: PublishTestResults@2
+      inputs:
+        #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/ex*.png' 
+        #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+        #mergeTestResults: false # Optional
+        #failTaskOnFailedTests: false # Optional
+        #testRunTitle: # Optional
+        #buildPlatform: # Optional
+        #buildConfiguration: # Optional
+        #publishRunAttachments: true # Optional
+
