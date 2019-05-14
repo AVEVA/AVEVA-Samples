@@ -27,6 +27,7 @@ The samples are written in a way that the same sample can send to both PI and OC
 
 
 NOTE: Automated tests are currently OCS only.
+
 NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoint.  
 
 
