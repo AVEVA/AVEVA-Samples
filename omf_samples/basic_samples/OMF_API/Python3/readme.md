@@ -49,8 +49,11 @@ ClientSecret = REPLACE_WITH_APPLICATION_SECRET
 ```
 
 
+The PIServer will use the PI Web API as its OMF accepting endpoint.  It is currently in Beta.  This is what the sample is tested against.  Currently the only OMF supported endpoint for PI is the Connector Relay.  These samples have not been tested against this.
 
-The piserver uses the PI Web API as its OMF accepting endpoint.  It is currently in Beta.  To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used. Note: the tenantId is used to autodetect if you are going against OCS or PI, so make sure that is removed if going against PI.
+ To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used. 
+ 
+ Note: the tenantId is used to autodetect if you are going against OCS or PI, so make sure that is removed if going against PI.
 
 ```ini
 [Configurations]
