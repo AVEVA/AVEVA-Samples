@@ -5,9 +5,7 @@ Building a .NET sample to send OMF to PI or OCS
 Building a sample with the rest calls directly
 ----------------------------------------------
 
-The sample does not makes use of the OSIsoft Cloud Services Client Libraries.   When working in .NET, 
-it is generally recommended that you use the OCS Client Libraries metapackage, OSIsoft.OCSClients. The metapackage is a NuGet package available 
-from https://api.nuget.org/v3/index.json. The libraries offer a framework of classes that make client development easier.
+The sample does not makes use of the OSIsoft Cloud Services Client Libraries. 
 
 The sample also does not use any libraries for connecting to PI.  Generally a library will be easier to use.
 
@@ -57,7 +55,9 @@ replace the placeholders with the authentication-related values you received fro
 ```
 
 
-The piserver uses the PI Web API as its OMF accepting endpoint.  To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used. Note: the tenantId is used to autodetect if you are going against OCS or PI, so make sure that is removed if going against PI.
+The PIServer uses the PI Web API as its OMF accepting endpoint.  It is currently in Beta.  To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used. 
+
+Note: In this sample the tenantId is used to autodetect if you are going against OCS or PI, so make sure that is removed if going against PI.
 
 ```json
 {
