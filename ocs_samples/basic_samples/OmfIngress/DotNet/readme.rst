@@ -139,7 +139,7 @@ For each type of message, we first construct the message body using the OMF libr
 	OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
 	
 	DataPointType dataPoint = new DataPointType() { Timestamp = DateTime.UtcNow, Value = rand.NextDouble() };
-    OmfDataMessage dataMessage = OmfMessageCreator.CreateDataMessage(streamId, dataPoint);
+	OmfDataMessage dataMessage = OmfMessageCreator.CreateDataMessage(streamId, dataPoint);
 
 Then the devices uses it's own ingress client, which uses the device clientId and clientSecret to authenticate the requests. The device clientId is used to route the message
 to the Topic that the clientId is mapped to. 
