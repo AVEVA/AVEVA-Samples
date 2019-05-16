@@ -17,7 +17,11 @@ To Run this Sample:
 6. Run ``program.py``  from commandline run ``python program.py``
 
 
-To Run the provided test:
+To test the sample after running it:
+1. Run ``python test.py``
+
+or
+
 1. Install pytest ``pip install pytest``
 2. Run ``pytest program.py``
 
