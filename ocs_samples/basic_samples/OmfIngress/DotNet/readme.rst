@@ -158,11 +158,11 @@ Deleting Containers and Types can be achieved by constructing the same OMF messa
 
 .. code:: cs
 
- 	OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
-    typeMessage.ActionType = ActionType.Delete;
+	OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
+	typeMessage.ActionType = ActionType.Delete;
 
-    OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
-    containerMessage.ActionType = ActionType.Delete;  
+	OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
+	containerMessage.ActionType = ActionType.Delete;  
 
 Deleting Subscriptions and Topics 
 can be achieved using the Ingress client and passing the corresponding object Ids:
