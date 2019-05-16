@@ -32,19 +32,6 @@ NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoi
 
 
 
-Configuring OCS or the PI system to accept OMF messages
------------------------------------------------------
-
-Sending to OCS:
-Configure OMF Ingress.  This can be done programmatically, but here are the steps to do it via the OCS portal:
-
-Note: UI is still a work-in-progress, so once that is finalized we will update this with the steps.
-
-
-Sending to PI:
-PI Web API OMF accepting endpoint not currently released
-
-
 OMF limitations on OCS and PI
 -----------------------------------------------------
 This list is not exhuastive, but rather a few key details to know.  
