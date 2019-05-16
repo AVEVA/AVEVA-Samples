@@ -68,7 +68,9 @@ To run the test use ng e2e --webdriver-update=false.
 Running the example
 ------------------------------
 
-Install dependencies using ``npm install`` from within the Angular folder, then run the sample using ``npm start``
+Install dependencies using ``npm ci``* from within the Angular folder, then run the sample using ``npm start``
+
+*you can use ``npm install`` but this will update the package-lock.json and may introduce new and different sub-dependencies.  
 
 Login using the button in the webpage header
 
