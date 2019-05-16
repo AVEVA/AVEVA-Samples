@@ -145,6 +145,7 @@ Then the devices uses it's own ingress client, which uses the device clientId an
 to the Topic that the clientId is mapped to. 
 
 .. code:: cs
+
 	await deviceIngressService.SendOMFMessageAsync();
 
 Cleanup: Deleting Topics and Subscriptions
@@ -156,6 +157,7 @@ sample performs some cleanup before exiting.
 Deleting Containers and Types can be achieved by constructing the same OMF messages, but instead specifying the Delete action:
 
 .. code:: cs
+
  	OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
     typeMessage.ActionType = ActionType.Delete;
 
