@@ -618,7 +618,7 @@ jobs:
 
 
     - script: |
-       npm install 
+       npm ci 
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/Angular/
       displayName: 'Install tools3'   
       
