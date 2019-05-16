@@ -32,6 +32,16 @@ To Run this Sample:
 4. Update ``config.ini`` with the credentials provided by OSIsoft
 5. Run ``program.py``
 
+
+To Test the sample:
+1. Run ``python test.py``
+
+or
+
+1. Install pytest ``pip install pytest``
+2. Run ``pytest program.py``
+
+
 Establish a Connection
 ----------------------
 
