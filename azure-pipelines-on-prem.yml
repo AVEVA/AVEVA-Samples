@@ -11,7 +11,7 @@ jobs:
 - job: OMF_APIDotNet
   pool:
     name: 00-OSIManaged-Test
-    demands: Agent.ComputerName -equals IAC8188
+    demands: USERNAME -equals IAC8188$
 
   steps :
     # Download Secure File
