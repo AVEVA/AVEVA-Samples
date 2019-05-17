@@ -134,6 +134,7 @@ jobs:
         pip install unittest-xml-reporting    
         pip install pytest
         pip install pytest-cov
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'Install tools'
       
       
