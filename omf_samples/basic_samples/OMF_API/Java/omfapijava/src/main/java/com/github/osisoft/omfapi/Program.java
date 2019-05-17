@@ -203,7 +203,7 @@ public class Program
                 oneTimeSendMessages("Delete");
             }
             catch(Exception e) {
-                if(!success){
+                if(!success && sendToOCS){
                     success = false;
                     exc = e;                    
                 }
