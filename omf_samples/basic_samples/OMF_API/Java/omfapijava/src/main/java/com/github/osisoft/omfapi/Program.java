@@ -363,6 +363,12 @@ public class Program
     }
 
     private static void oneTimeSendMessages(String action) throws Exception {
+        if(sendToOCS)
+        {
+            return;
+        }
+
+
         //Step 3
         sendOMF(getFirstandSecondStaticTypeString(),"type",action);
         //Step 4
