@@ -130,7 +130,7 @@ jobs:
             
       
     - script: |
-        pip install -r requirements.txt
+        C:\Program Files (x86)\Python37-32\Scripts\pip.exe install -r requirements.txt
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'Install requirements'
       
