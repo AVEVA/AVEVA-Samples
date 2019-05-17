@@ -363,7 +363,7 @@ public class Program
     }
 
     private static void oneTimeSendMessages(String action) throws Exception {
-        if(sendToOCS)
+        if(!sendToOCS)
         {
             return;
         }
