@@ -102,7 +102,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: prod_onprem_omf_config.ini.ini
+        secureFile: prod_onprem_omf_config.ini
 
 
     # Copy Files
