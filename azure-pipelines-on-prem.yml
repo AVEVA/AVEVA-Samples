@@ -128,6 +128,10 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'rename config file'   
 
+    - script: |
+        python ./program.py
+      displayName: 'Test with pytest2'
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       
     - script: |
         pip install setuptools wheel
