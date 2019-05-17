@@ -115,13 +115,7 @@ jobs:
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
-      displayName: copy file
-
-    - script: |
-        mv prod_onprem_omf_config.ini.ini config.ini
-      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
-      displayName: 'rename config file'
-      
+      displayName: copy file      
 
     - script: |
         del config.ini
