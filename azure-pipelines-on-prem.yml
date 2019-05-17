@@ -127,19 +127,14 @@ jobs:
         rename prod_onprem_omf_config.ini config.ini
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'rename config file'   
-
-    - script: |
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\python.exe --version
-      displayName: 'Test with pytest2'
-      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
             
       
     - script: |
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\Scripts\pip.exe install -r requirements.txt
+        pip install -r requirements.txt
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'Install requirements'
       
     - script: |
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\python.exe ./test.py
+        python.exe ./test.py
       displayName: 'Test with unittes'
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
