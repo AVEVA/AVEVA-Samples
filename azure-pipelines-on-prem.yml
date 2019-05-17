@@ -129,7 +129,7 @@ jobs:
       displayName: 'rename config file'   
 
     - script: |
-        python ./program.py
+        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\python.exe --version
       displayName: 'Test with pytest2'
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       
