@@ -110,7 +110,7 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: prod_onprem_omf_config.ini.ini
+        contents: prod_onprem_omf_config.ini
         targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
@@ -124,7 +124,7 @@ jobs:
 
 
     - script: |
-        rename prod_onprem_omf_config.ini.ini config.ini
+        rename prod_onprem_omf_config.ini config.ini
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
       displayName: 'rename config file'   
 
