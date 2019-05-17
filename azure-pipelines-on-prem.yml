@@ -132,15 +132,7 @@ jobs:
         C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\python.exe --version
       displayName: 'Test with pytest2'
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
-      
-    - script: |
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\Scripts\pip.exe install setuptools wheel
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\Scripts\pip.exe install unittest-xml-reporting    
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\Scripts\pip.exe install pytest
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\Scripts\pip.exe install pytest-cov
-      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
-      displayName: 'Install tools'
-      
+            
       
     - script: |
         C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\Scripts\pip.exe install -r requirements.txt
@@ -148,6 +140,6 @@ jobs:
       displayName: 'Install requirements'
       
     - script: |
-        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\python.exe -m pytest ./program.py
-      displayName: 'Test with pytest'
+        C:\Users\dendres\AppData\Local\Programs\Python\Python37-32\python.exe ./test.py
+      displayName: 'Test with unittes'
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
