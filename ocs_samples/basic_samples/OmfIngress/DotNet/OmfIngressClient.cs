@@ -44,21 +44,21 @@ namespace OmfIngressClientLibraries
             Console.WriteLine();
 
             // Create a Subscription
-            Console.WriteLine($"Creating an OCS Subscription in Namespace {_namespaceId} for Topic with Id {createdTopic.Id}");
+            Console.WriteLine($"Creating a Subscription in Namespace {_namespaceId} for Topic with Id {createdTopic.Id}");
             Console.WriteLine();
             Subscription subscription = new Subscription()
             {
                 TenantId = _tenantId,
                 NamespaceId = destinationNamespaceId,
                 Name = $"{connectionName}-{destinationNamespaceId}",
-                Description = "This is a sample OCS Data Store Subscription",
+                Description = "This is a sample Subscription",
                 Type = SubscriptionType.Sds,
                 TopicId = createdTopic.Id,
                 TopicTenantId = createdTopic.TenantId,
                 TopicNamespaceId = createdTopic.NamespaceId
             };
             Subscription createdSubscription = await _ingressService.CreateSubscriptionAsync(subscription);
-            Console.WriteLine($"Created an OCS Subscription with Id {createdSubscription.Id}");
+            Console.WriteLine($"Created a Subscription with Id {createdSubscription.Id}");
             Console.WriteLine();
             OmfConnection omfConnection = new OmfConnection()
             {
@@ -71,12 +71,13 @@ namespace OmfIngressClientLibraries
 
         public async Task DeleteOmfConnectionAsync(OmfConnection omfConnection)
         {
-            Console.WriteLine($"Deleting the OCS Subscription with Id {omfConnection.Subscription.Id}");
+            // Delete the Topic and Subscription
+            Console.WriteLine($"Deleting the Subscription with Id {omfConnection.Subscription.Id}");
             Console.WriteLine();
 
             await _ingressService.DeleteSubscriptionAsync(omfConnection.Subscription.Id);
 
-            Console.WriteLine($"Deleted the OCS Subscription with Id {omfConnection.Subscription.Id}");
+            Console.WriteLine($"Deleted the Subscription with Id {omfConnection.Subscription.Id}");
             Console.WriteLine();
 
             // Delete the Topic
