@@ -3,6 +3,7 @@ using OSIsoft.Identity;
 using OSIsoft.Omf;
 using OSIsoft.OmfIngress.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace OmfIngressClientLibraries
 {
@@ -18,7 +19,7 @@ namespace OmfIngressClientLibraries
             _deviceIngressService = deviceBaseIngressService.GetIngressService(tenantId, namespaceId);
         }
 
-        public async void CreateDataPointTypeAsync()
+        public async Task CreateDataPointTypeAsync()
         {
             Console.WriteLine($"Creating Type with Id {typeof(DataPointType).Name}");
             Console.WriteLine();
@@ -28,7 +29,7 @@ namespace OmfIngressClientLibraries
             await _deviceIngressService.SendOMFMessageAsync(serializedTypeMessage);
         }
 
-        public async void CreateStreamAsyc(string streamId)
+        public async Task CreateStreamAsyc(string streamId)
         {
             //create container
             Console.WriteLine($"Creating Container with Id {streamId}");
@@ -39,7 +40,7 @@ namespace OmfIngressClientLibraries
             await _deviceIngressService.SendOMFMessageAsync(serializedContainerMessage);
         }
 
-        public async void SendValueAsync(string streamId, DataPointType value)
+        public async Task SendValueAsync(string streamId, DataPointType value)
         {
             OmfDataMessage dataMessage = OmfMessageCreator.CreateDataMessage(streamId, value);
             SerializedOmfMessage serializedDataMessage = OmfMessageSerializer.Serialize(dataMessage);
@@ -48,7 +49,7 @@ namespace OmfIngressClientLibraries
             Console.WriteLine($"Sent data point: Time: {value.Timestamp}, Value: {value.Value}");
         }
 
-        public async void DeleteDataPointTypeAsync()
+        public async Task DeleteDataPointTypeAsync()
         {
             //delete type
             Console.WriteLine($"Deleting Type with Id {typeof(DataPointType).Name}");
@@ -59,7 +60,7 @@ namespace OmfIngressClientLibraries
             await _deviceIngressService.SendOMFMessageAsync(serializedTypeMessage);
         }
 
-        public async void DeleteStreamAsync(string streamId)
+        public async Task DeleteStreamAsync(string streamId)
         {
             //delete container
             Console.WriteLine($"Deleting Container with Id {streamId}");
