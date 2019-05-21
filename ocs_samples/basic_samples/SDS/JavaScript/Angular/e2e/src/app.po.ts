@@ -216,13 +216,14 @@ export class AppPage {
                             console.log('!!choices');
                             console.log(res);
                         })*/ // excess debugging
-                        browser.driver.findElement(by.xpath('/html/body/div[3]/div/div[2]/a[1]'))
+                        browser.driver.findElement(by.css('a.osi-provider:nth-child(4)'))
                             .then((ele) => {
                                 ele.click()
                                 .then((res) => {
                                     browser.driver.sleep(3000)
                                     .then((res) => {
-                                        this.loginWithGoogle(cred.login, cred.pass);
+                                        this.loginWithOutlook(cred.login, cred.pass);
+                                        //this.loginWithGoogle(cred.login, cred.pass);
                                     });
                                 });
                             });
@@ -230,9 +231,9 @@ export class AppPage {
             });
     }
     
- loginWithGoogle (username, passphrase) {
+    loginWithOutlook (username, passphrase) {
     return this.selectWindow(0).then(() => {
-        return browser.driver.findElement(by.css('[type="email"]'))
+        return browser.driver.findElement(by.xpath('//*[@id="i0116"]')) 
             .then((el) => {                
                 /*element(by.xpath('/html')).getText().then((res) => {
                     console.log('!!email');
