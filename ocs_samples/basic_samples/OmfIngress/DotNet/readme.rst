@@ -148,6 +148,7 @@ Then the devices uses its own ingress client, which uses the device clientId and
 to the Topic that the clientId is mapped to. Note that the message must be serialized before being sent.
 
 .. code:: cs
+
 	var serializedMessage = OmfMessageSerializer.Serialize(omfMessage);
 	await deviceIngressService.SendOMFMessageAsync(serializedMessage);
 
