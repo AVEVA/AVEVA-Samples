@@ -25,7 +25,7 @@ namespace OmfIngressClientLibraries
             string address = configuration["Address"];
             string clientId = configuration["ClientId"];
             string clientSecret = configuration["ClientSecret"];
-            string topicName = configuration["TopicName"];
+            string connectionName = configuration["ConnectionName"];
             string streamId = configuration["StreamId"];
             string deviceClientId = configuration["DeviceClientId"];
             string deviceClientSecret = configuration["DeviceClientSecret"];
@@ -41,16 +41,16 @@ namespace OmfIngressClientLibraries
 
             try
             {
-                omfConnection = await omfIngressClient.CreateOmfConnectionAsync(deviceClientId, topicName, namespaceId);
+                omfConnection = await omfIngressClient.CreateOmfConnectionAsync(deviceClientId, connectionName, namespaceId);
 
                 // At this point, we are ready to send OMF data to OCS.
                 //create type
                 await omfDevice.CreateDataPointTypeAsync();
-                await omfDevice.CreateStreamAsyc(streamId);
+                await omfDevice.CreateStreamAsync(streamId);
 
                 //send random data points
                 Random rand = new Random();
-                Console.WriteLine("Sending OMF Data Messages. Pres ESC key to stop sending.");
+                Console.WriteLine("Sending OMF Data Messages. Press ESC key to stop sending.");
                 do
                 {
                     while (!Console.KeyAvailable)
@@ -75,7 +75,7 @@ namespace OmfIngressClientLibraries
                     await omfDevice.DeleteStreamAsync(streamId);
                     await omfDevice.DeleteDataPointTypeAsync();
 
-                    // Delete the Subscription                  
+                    // Delete the Connection           
                     await omfIngressClient.DeleteOmfConnectionAsync(omfConnection);
                     
                 }

@@ -31,7 +31,7 @@ namespace OmfIngressClientLibraries
             await _deviceIngressService.SendOMFMessageAsync(serializedTypeMessage);
         }
 
-        public async Task CreateStreamAsyc(string streamId)
+        public async Task CreateStreamAsync(string streamId)
         {
             // Create container
             Console.WriteLine($"Creating Container with Id {streamId}");
