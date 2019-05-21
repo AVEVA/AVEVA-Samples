@@ -20,23 +20,21 @@ The Ingress Service is secured by obtaining tokens from the Identity Server. Suc
 provide a client application identifier and an associated secret (or key) that are 
 authenticated against the server. The sample includes an appsettings.json configuration 
 file to hold configuration strings, including the authentication strings. You must 
-replace the placeholders with the authentication-related values you received from OSIsoft. 
+replace the placeholders with the authentication-related values you received from OSIsoft. The application requires two Client Credential Clients, one to manage OMF Ingress connetions and one to send data from a mock device. For information on how to obtain these client IDs and secrets, see the [Client Credential Client Documentation](https://ocs-docs.osisoft.com/Documentation/Identity/Identity_ClientCredentialClient.html).
 
-::
-
+```
 	{
-		"TenantId": "REPLACE_WITH_TENANT_ID",
-		"NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
-		"Address": "https://dat-b.osisoft.com",
-		"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-		"ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
-		"Connection": "REPLACE_WITH_Connection_NAME",
-		"StreamId": "REPLACE_WITH_STREAM_ID",
-		"DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",
-		"DeviceClientSecret": "REPLACE_WITH_DEVICE_CLIENT_SECRET"
+        "TenantId": "REPLACE_WITH_YOUR_TENANT_ID",
+        "NamespaceId": "REPLACE_WITH_YOUR_NAMESPACE_ID",
+        "Address": "https://dat-b.osisoft.com",
+        "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+        "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
+        "DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",
+        "DeviceClientSecret": "REPLACE_WITH_DEVICE_CLIENT_SECRET",
+        "ConnectionName": "REPLACE_WITH_DESIRED_CONNECTION_NAME",
+        "StreamId": "REPLACE_WITH_DESIRED_STREAM_ID"
 	}
-
-
+```
 
 The authentication values are provided to the ``OSIsoft.Identity.AuthenticationHandler``. 
 The AuthenticationHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
@@ -55,12 +53,12 @@ The example works through one interface:
 
 The following code block illustrates how to configure the IngressService to use throughout the sample:
 
-.. code:: cs
+```
+    AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientSecret);
 
-	AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientSecret);
-
-	IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
-	IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
+    IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
+    IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
+```
 
 Note that the instance of the IIngressService is scoped to a tenant and namespace. If you wish to work in a different tenant or namespace, you would need another instance scoped to that tenant and namespace.
 
@@ -74,7 +72,7 @@ Clients
 ---------------
 
 Devices sending OMF messages each need their own unique clientId and clientSecret. The clientId and secret are used to authenticate the requests, and the clientId is used route messages to the proper topic(s). 
-ClientIds may be mapped to at most one topic per namespace. For more details on Clients see the documentation (insert link).
+ClientIds may be mapped to at most one topic per namespace. For more details on Clients see the [Client Credential Client Documentation](https://ocs-docs.osisoft.com/Documentation/Identity/Identity_ClientCredentialClient.html).
 
 Topics
 --------------
@@ -84,22 +82,23 @@ via a Subscription. A topic must contain at least one client Id. Client Ids may 
 or removed from an existing topic. First, we create the Topic locally by instantiating 
 a new Topic object:
 
-.. code:: cs
 
-	Topic topic = new Topic()
-	{
-		TenantId = tenantId,
-		NamespaceId = namespaceId,
-		Name = "REPLACE_WITH_TOPIC_NAME",
-		Description = "This is a sample Topic",
-		ClientIds = new List<string>() { mappedClientId }
-	};
+```
+    Topic topic = new Topic()
+    {
+        TenantId = tenantId,
+        NamespaceId = namespaceId,
+        Name = "REPLACE_WITH_TOPIC_NAME",
+        Description = "This is a sample Topic",
+        ClientIds = new List<string>() { mappedClientId }
+    };
+```
 
 Then use the Ingress client to create the Topic in OCS:
 
-.. code:: cs
-
-	Topic createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
+```
+    Topic createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
+```
 
 Subscriptions
 ---------------------
@@ -107,26 +106,25 @@ Subscriptions
 A Subscription is used to consume data from a Topic and relay it to the Sequential Data Store.
 First, we create the Subscription locally by instantiating a new Subscription object:
 
-.. code:: cs
+```
+    Subscription subscription = new Subscription()
+    {
+        TenantId = tenantId,
+        NamespaceId = namespaceId,
+        Name = "REPLACE_WITH_SUBSCRIPTION_NAME",
+        Description = "This is a sample OCS Data Store Subscription",
+        Type = SubscriptionType.Sds,
+        TopicId = createdTopic.Id,
+        TopicTenantId = createdTopic.TenantId,
+        TopicNamespaceId = createdTopic.NamespaceId
+    };
+```
 
-	Subscription subscription = new Subscription()
-	{
-		TenantId = tenantId,
-		NamespaceId = namespaceId,
-		Name = "REPLACE_WITH_SUBSCRIPTION_NAME",
-		Description = "This is a sample OCS Data Store Subscription",
-		Type = SubscriptionType.Sds,
-		TopicId = createdTopic.Id,
-		TopicTenantId = createdTopic.TenantId,
-		TopicNamespaceId = createdTopic.NamespaceId
-	};
-	
 Then use the Ingress client to create the Subscription in OCS:
 
-.. code:: cs
-
-	Subscription createdSubscription = await ingressService.CreateOrUpdateSubscriptionAsync(subscription);
-	
+```
+    Subscription createdSubscription = await ingressService.CreateOrUpdateSubscriptionAsync(subscription);
+```	
 
 Send OMF Messages
 -------------------
@@ -135,43 +133,43 @@ OMF messages sent to OCS are translated into objects native to the Sequential Da
 an OMF Container message which creates an SDS stream, and then send OMF Data messages, which use the containerId in the message body to route the data to the SDS stream. 
 Refer to the data store documentation for how to view the types/streams/data in SDS. For each type of message, we first construct the message body using the OMF library:
 
-.. code:: cs
-	
-	OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
+```	
+    OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
 
-	OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
-	
-	DataPointType dataPoint = new DataPointType() { Timestamp = DateTime.UtcNow, Value = rand.NextDouble() };
-	OmfDataMessage dataMessage = OmfMessageCreator.CreateDataMessage(streamId, dataPoint);
+    OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
+
+    DataPointType dataPoint = new DataPointType() { Timestamp = DateTime.UtcNow, Value = rand.NextDouble() };
+    OmfDataMessage dataMessage = OmfMessageCreator.CreateDataMessage(streamId, dataPoint);
+```
 
 Then the devices uses its own ingress client, which uses the device clientId and clientSecret to authenticate the requests. The device clientId is used to route the message
 to the Topic that the clientId is mapped to. Note that the message must be serialized before being sent.
 
-.. code:: cs
-
-	var serializedMessage = OmfMessageSerializer.Serialize(omfMessage);
-	await deviceIngressService.SendOMFMessageAsync(serializedMessage);
+```
+    var serializedMessage = OmfMessageSerializer.Serialize(omfMessage);
+    await deviceIngressService.SendOMFMessageAsync(serializedMessage);
+```
 
 Cleanup: Deleting Topics and Subscriptions
 -----------------------------------------------------
 
-In order to prevet unused resources from being left behind, this sample performs some cleanup before exiting. 
+In order to prevent unused resources from being left behind, this sample performs some cleanup before exiting. 
 
 Deleting Containers and Types can be achieved by constructing the same OMF messages, but instead specifying the Delete action:
 
-.. code:: cs
+```
+    OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
+    typeMessage.ActionType = ActionType.Delete;
 
-	OmfTypeMessage typeMessage = OmfMessageCreator.CreateTypeMessage(typeof(DataPointType));
-	typeMessage.ActionType = ActionType.Delete;
-
-	OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
-	containerMessage.ActionType = ActionType.Delete;  
+    OmfContainerMessage containerMessage = OmfMessageCreator.CreateContainerMessage(streamId, typeof(DataPointType));
+    containerMessage.ActionType = ActionType.Delete;  
+```
 
 Then serialize the message and send as shown in the prior section.
 
 Deleting Subscriptions and Topics can be achieved using the Ingress client and passing the corresponding object Ids:
 
-.. code:: cs
-
-	await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
-	await ingressService.DeleteTopicAsync(createdTopic.Id);
+```
+    await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
+    await ingressService.DeleteTopicAsync(createdTopic.Id);
+```
