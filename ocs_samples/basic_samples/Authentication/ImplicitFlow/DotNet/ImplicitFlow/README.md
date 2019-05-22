@@ -35,6 +35,8 @@ dotnet run
 
 ## Test
 
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Implicit_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
 To test update the appsettings.json to appropriate url for the app, username and password to log in as.  For the test the application must be running previously.
 
 
