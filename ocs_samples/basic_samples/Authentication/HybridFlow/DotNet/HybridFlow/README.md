@@ -40,9 +40,9 @@ dotnet run
 
 ## Test
 
-This sample passes manually, locally
+To  test autonomously using the test project, update your appsettings.json with you password and userName to login in as.   Note the automated tests is only written to work with a personal microsoft account.
 
-This test has not been automated due to issues with getting logins working properly.
+
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />

@@ -1,5 +1,6 @@
 var config = {
     authority: "https://dat-b.osisoft.com/identity",
+    ApiVersion: "v1-preview",
     client_id: "Client ID Placeholder",
     redirect_uri: "http://localhost:5003/callback.html",
     response_type: "id_token token",

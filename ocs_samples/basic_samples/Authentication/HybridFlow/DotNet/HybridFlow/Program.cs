@@ -17,41 +17,68 @@ namespace HybridFlow
         private const string AuthorizationHeaderName = "Authorization";
 
         public static void Main(string[] args)
-        { 
-            InitConfig();
+        {
+            try
+            {
+                InitConfig();
 
-            HybridFlow.OcsUrl = GetConfigValue("Resource");
-            HybridFlow.RedirectHost = GetConfigValue("RedirectHost");
-            HybridFlow.RedirectPort = Parse(GetConfigValue("RedirectPort"));
-            HybridFlow.RedirectPath = GetConfigValue("RedirectPath");
+                if (args.Length > 0)
+                {
+                    SystemBrowser.test = true;
+                    SystemBrowser.password = GetConfigValue("password");
+                    SystemBrowser.userName = GetConfigValue("userName");
+                    SystemBrowser.tenant = GetConfigValue("TenantId");
+                }
 
-            var tenantId = GetConfigValue("TenantId");
-            var clientId = GetConfigValue("ClientId");
-            var clientSecret = GetConfigValue("ClientKey");
-            var scope = GetConfigValue("Scope");
+                HybridFlow.OcsUrl = GetConfigValue("Resource");
+                HybridFlow.RedirectHost = GetConfigValue("RedirectHost");
+                HybridFlow.RedirectPort = Parse(GetConfigValue("RedirectPort"));
+                HybridFlow.RedirectPath = GetConfigValue("RedirectPath");
 
-            // Get access token and refresh token.
-            var (accessToken, refreshToken, expiration) = HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
-            Console.WriteLine("Access Token: " + accessToken);
-            Console.WriteLine("Refresh Token: " + refreshToken);
-            Console.WriteLine("Expires: " + expiration);
+                var tenantId = GetConfigValue("TenantId");
+                var clientId = GetConfigValue("ClientId");
+                var clientSecret = GetConfigValue("ClientKey");
+                var scope = GetConfigValue("Scope");
+                var ocsUrl = GetConfigValue("Resource");
+                var api = GetConfigValue("ApiVersion");
 
-            //  Make a request to GetTenant endpoint
-            Console.WriteLine(GetRequest($"{GetConfigValue("OCSUrl")}/api/Tenants/{tenantId}", accessToken).Result
-                ? "Request succeeded"
-                : "request failed");
+                // Get access token and refresh token.
+                var (accessToken, refreshToken, expiration) = HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
+                Console.WriteLine("Access Token: " + accessToken);
+                Console.WriteLine("Refresh Token: " + refreshToken);
+                Console.WriteLine("Expires: " + expiration);
 
-            // Get a new access token from a refresh token. If the previous access token has not expired it can still be used.
-            // This will also reissue a new refresh token. Old refresh token will no longer be valid after use.
-            (accessToken, refreshToken, expiration) = HybridFlow.GetAccessTokenFromRefreshToken(refreshToken, clientId, clientSecret);
-            Console.WriteLine("Access Token: " + accessToken);
-            Console.WriteLine("Refresh Token: " + refreshToken);
-            Console.WriteLine("Expires: " + expiration);
+                //  Make a request to GetTenant endpoint
+                var result1 = GetRequest($"{ocsUrl}/api/{api}/Tenants/{tenantId}", accessToken).Result;
+                Console.WriteLine(result1
+                    ? "Request succeeded"
+                    : "request failed");
+                if (!result1)
+                    throw new Exception("Request failed");
 
-            //  Make a request to GetTenant endpoint
-            Console.WriteLine(GetRequest($"{GetConfigValue("OCSUrl")}/api/Tenants/{tenantId}", accessToken).Result
-                ? "Request succeeded"
-                : "request failed");
+                // Get a new access token from a refresh token. If the previous access token has not expired it can still be used.
+                // This will also reissue a new refresh token. Old refresh token will no longer be valid after use.
+                (accessToken, refreshToken, expiration) = HybridFlow.GetAccessTokenFromRefreshToken(refreshToken, clientId, clientSecret);
+                Console.WriteLine("Access Token: " + accessToken);
+                Console.WriteLine("Refresh Token: " + refreshToken);
+                Console.WriteLine("Expires: " + expiration);
+
+                //  Make a request to GetTenant endpoint
+                var result2 = GetRequest($"{ocsUrl}/api/{api}/Tenants/{tenantId}", accessToken).Result;
+                Console.WriteLine(result2
+                    ? "Request succeeded"
+                    : "request failed");
+                if (!result2)
+                    throw new Exception("Request failed");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                if (SystemBrowser.test)
+                    throw e;
+            }
+            if (!SystemBrowser.test)
+                Console.ReadLine();
         }
 
         private static async Task<bool> GetRequest(string endpoint, string accessToken)
@@ -94,15 +121,15 @@ namespace HybridFlow
                 .AddJsonFile("appsettings.json", optional:false, reloadOnChange:false)
                 .Build();
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException e)
             {
                 Console.WriteLine("Config file missing");
-                Environment.Exit(1);
+                throw e; 
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error while initiating configuration: " + ex.ToString());
-                Environment.Exit(1);
+                throw ex;
             }
         }
 
@@ -120,14 +147,14 @@ namespace HybridFlow
                 if (value == null)
                 {
                     Console.WriteLine($"Missing the value for \"{key}\" in config file");
-                    Environment.Exit(1);
+                    throw new Exception($"Missing the value for \"{key}\" in config file");
                 }
                 return value;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 Console.WriteLine($"Configuration issue");
-                Environment.Exit(1);
+                throw ex;
             }
 
             return "";
