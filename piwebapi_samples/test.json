@@ -1,0 +1,1 @@
+$Env:SPRING_APPLICATION_JSON='{"blackduck.url":"https://osisoft.blackducksoftware.com","blackduck.api.token":"MmRhMzkwNjItMWIwZC00YWFlLTkzYzQtNjlkYTdjMzZlNTczOmE4MWQ0ZWUzLWVkNTAtNDllNy1hOTYyLWM4ZjA1OTBlMDg5Yw==",    "detect.project.name":"NOC_ER_Test","detect.project.version.name":"latest","detect.binary.scan.file.path":"C:/temp/BlackDuckScan/notepad++.exe"}'
