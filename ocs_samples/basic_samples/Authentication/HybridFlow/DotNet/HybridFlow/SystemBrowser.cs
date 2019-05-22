@@ -2,6 +2,8 @@ using IdentityModel.OidcClient.Browser;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HybridFlow
@@ -17,6 +20,10 @@ namespace HybridFlow
     {
         public int Port { get; }
         private readonly string _path;
+        public static bool test = false;
+        public static string tenant;
+        public static string userName;
+        public static string password;
 
         public SystemBrowser(int? port = null, string path = null)
         {
@@ -70,6 +77,11 @@ namespace HybridFlow
 
         public static void OpenBrowser(string url)
         {
+            if(test)
+            {
+                AutoLogin(url);
+                return;
+            }
             try
             {
                 Process.Start(url);
@@ -96,7 +108,45 @@ namespace HybridFlow
                 }
             }
         }
+
+
+        private static void AutoLogin(string url)
+        {
+            //embedded automated logging in.  Added for testing purposes as typically for a Hybrid application you want the user to login.
+
+            //works against the personal account option only
+
+            //not sure why this is needed, but it works with it there and doesn't when it is missing
+            var a = System.Environment.CurrentDirectory;
+
+            using (IWebDriver driver = new ChromeDriver(a))
+            {
+                driver.Url = url;
+
+                Thread.Sleep(4000);
+
+                driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[2]")).Click();
+
+
+                Thread.Sleep(4000);
+
+                driver.FindElement(By.XPath("//*[@id=\"i0116\"]")).SendKeys(userName);
+                driver.FindElement(By.XPath("//*[@id=\"idSIButton9\"]")).Click();
+
+
+                Thread.Sleep(4000);
+
+                driver.FindElement(By.XPath("//*[@id=\"i0118\"]")).SendKeys(password);
+                driver.FindElement(By.XPath("//*[@id=\"idSIButton9\"]")).Click();
+
+                Thread.Sleep(4000);
+
+                driver.Close();
+            }
+        }
     }
+
+
 
     public class LoopbackHttpListener : IDisposable
     {
