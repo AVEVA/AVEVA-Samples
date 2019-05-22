@@ -43,8 +43,8 @@ function getTenant() {
             // form url
             var host = window.config.authority.replace('identity', '');
             var tenantId = window.config.acr_values.replace('tenant:', '');
-            var ApiVersion = window.config.acr_values.replace('ApiVersion:', '');
-            const url = host + 'api' + ApiVersion + '/tenants/' + tenantId;
+            var ApiVersion = window.config.ApiVersion.replace('ApiVersion:', '');
+            const url = host + 'api/' + ApiVersion + '/tenants/' + tenantId;
 
             // Set header
             $.ajaxSetup({

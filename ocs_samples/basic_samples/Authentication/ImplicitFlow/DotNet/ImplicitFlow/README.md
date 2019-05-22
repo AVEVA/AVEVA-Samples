@@ -35,9 +35,7 @@ dotnet run
 
 ## Test
 
-This sample passes manually, locally
-
-This test has not been automated due to issues with getting logins working properly.
+To test update the appsettings.json to appropriate url for the app, username and password to log in as.  For the test the application must be running previously.
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />

@@ -466,6 +466,74 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/HybridFlow/DotNet/HybridFlowTest/
       displayName: 'Run Test' 
 
+- job: Auth_Implicit_DotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: Implicit_test_appsettings.json
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: Implicit_config.js
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: Implicit_test_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: Implicit_config.js
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/wwwroot'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+
+    - script: |
+        mv Implicit_test_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
+      displayName: 'rename config file'        
+
+    - script: |
+        mv Implicit_config.js config.js
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/wwwroot
+      displayName: 'rename config file'       
+      
+    - script: |
+        dotnet restore
+        dotnet build
+        dotnet run
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/
+      displayName: 'Run Test'  
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
+      displayName: 'Run Test' 
+
 
 
 - job: UOM_DotNet
