@@ -108,7 +108,7 @@ jobs:
     - script: |
         dotnet restore
         dotnet build
-        start /B dotnet run
+        dotnet run &
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/
       displayName: 'Run Test'  
       
