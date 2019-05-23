@@ -216,7 +216,7 @@ export class AppPage {
                             console.log('!!choices');
                             console.log(res);
                         })*/ // excess debugging
-                        browser.driver.findElement(by.css('a.osi-provider:nth-child(4)'))
+                        browser.driver.findElement(by.css('a.osi-provider:nth-child(5)'))
                             .then((ele) => {
                                 ele.click()
                                 .then((res) => {

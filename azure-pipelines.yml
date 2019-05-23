@@ -1,9 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-
   
 jobs:      
 
@@ -424,10 +418,11 @@ jobs:
       displayName: 'Run Test' 
 
 
+
 - job: Auth_Hybrid_DotNet
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'vs2017-win2016'
   steps :
 
     # Download Secure File
@@ -450,9 +445,14 @@ jobs:
       displayName: copy file
 
     - script: |
-        mv Hybrid_prod_appsettings.json appsettings.json
+        del appsettings.json
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/HybridFlow/DotNet/HybridFlow/
-      displayName: 'rename config file'        
+      displayName: 'rename config file'       
+
+    - script: |
+        rename Hybrid_prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/HybridFlow/DotNet/HybridFlow/
+      displayName: 'rename config file'       
       
     - script: |
         dotnet restore
@@ -469,7 +469,7 @@ jobs:
 - job: Auth_Implicit_DotNet
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'vs2017-win2016'
   steps :
 
     # Download Secure File
@@ -510,21 +510,30 @@ jobs:
         #flattenFolders: false # Optional 
       displayName: copy file
 
-
     - script: |
-        mv Implicit_test_appsettings.json appsettings.json
+        del appsettings.json
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
       displayName: 'rename config file'        
 
     - script: |
-        mv Implicit_config.js config.js
+        del config.js
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/wwwroot
+      displayName: 'rename config file'     
+
+    - script: |
+        rename Implicit_test_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
+      displayName: 'rename config file'        
+
+    - script: |
+        rename Implicit_config.js config.js
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/wwwroot
       displayName: 'rename config file'       
       
     - script: |
         dotnet restore
         dotnet build
-        dotnet run
+        start /B dotnet run
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlow/
       displayName: 'Run Test'  
       
@@ -759,4 +768,5 @@ jobs:
         #buildPlatform: # Optional
         #buildConfiguration: # Optional
         #publishRunAttachments: true # Optional
+
 
