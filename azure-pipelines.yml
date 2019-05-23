@@ -11,7 +11,7 @@ jobs:
 - job: Auth_Hybrid_DotNet
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'vs2017-win2016'
   steps :
 
     # Download Secure File
@@ -34,9 +34,14 @@ jobs:
       displayName: copy file
 
     - script: |
-        mv Hybrid_prod_appsettings.json appsettings.json
+        del appsettings.json
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/HybridFlow/DotNet/HybridFlow/
-      displayName: 'rename config file'        
+      displayName: 'rename config file'       
+
+    - script: |
+        rename Hybrid_prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/HybridFlow/DotNet/HybridFlow/
+      displayName: 'rename config file'       
       
     - script: |
         dotnet restore
