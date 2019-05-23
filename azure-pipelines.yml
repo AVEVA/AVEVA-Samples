@@ -101,7 +101,7 @@ jobs:
 
     - script: |
         del config.js
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/wwwroot
       displayName: 'rename config file'     
 
     - script: |
