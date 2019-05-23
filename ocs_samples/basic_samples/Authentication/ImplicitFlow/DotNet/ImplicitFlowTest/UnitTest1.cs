@@ -38,7 +38,7 @@ namespace Tests
             //not sure why specifying the current directory is needed on local testing but it is
 
             //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
-            using (IWebDriver driver = new ChromeDriver())
+            using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
                 driver.Url = url;
 
