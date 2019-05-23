@@ -117,8 +117,15 @@ namespace HybridFlow
             //works against the personal account option only
 
             //not sure why this is needed, but it works with it there and doesn't when it is missing
-
-            using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
+            string a = (Environment.CurrentDirectory);
+            Console.WriteLine(a);
+            Console.WriteLine("Files");
+            foreach ( var b in Directory.GetFiles(a))
+            {
+                Console.WriteLine(b);
+            }
+            
+            using (IWebDriver driver = new ChromeDriver(a))
             {
                 driver.Url = url;
 
