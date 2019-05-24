@@ -1,7 +1,3 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
 logs/*
 !.gitkeep
 node_modules/

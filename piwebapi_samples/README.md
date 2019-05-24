@@ -32,12 +32,10 @@ Automated tests are also available to test the above mentioned functionality. No
 |Languages| Test&nbsp;Status 
 ------|------------
   [Angular](Angular/AngularPIWebAPISample)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Angular)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4612&branchName=dev)  
-  [AngularJS](AngularJS/)|Under Construction  
+  [AngularJS](AngularJS/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(AngularJS)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4657&branchName=dev)
   [jQuery](jQuery/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(JQuery)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4624&branchName=dev)   
   [Python](Python/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Python)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4625&branchName=dev)
   [R](R/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(R)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4615&branchName=dev)
-
-
 
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
 
