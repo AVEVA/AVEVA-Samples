@@ -103,6 +103,8 @@ class DataviewMappingColumn(object):
 
         if 'IsKey' in content:
             dataviewMappingColumn.IsKey = content['IsKey']
+        else:
+            dataviewMappingColumn.IsKey = False
 
         if 'DataType' in content:
             dataviewMappingColumn.DataType = content['DataType']
