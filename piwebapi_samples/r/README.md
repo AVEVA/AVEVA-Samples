@@ -12,13 +12,14 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Delete all the above AF/PI Data Archive objects  
 
 In addition, PI Web API must be configured to allow CORS as follows:  
-Attribute&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;Value  
-CorsExposedHeaders&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Allow,Content-Encoding,Content-Length,Date,Location  
-CorsHeaders&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*  
-CorsMethods&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*  
-CorsOrigins&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*  
-CorsSupportsCredentials&nbsp;&nbsp;&nbsp;*  
-DisableWrites&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;False  
+|Attribute|Value 
+------|------------
+CorsExposedHeaders|Allow,Content-Encoding,Content-Length,Date,Location  
+CorsHeaders|*  
+CorsMethods|*  
+CorsOrigins|*  
+CorsSupportsCredentials|True  
+DisableWrites|False  
 
 This sample shows basic functionality of the PI Web API, not every feature. The sample is meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
@@ -62,4 +63,4 @@ To run the unit tests:
     - Click the __Source__ menu option to execute the sample code  
 
 For the main PI Web API page [ReadMe](../)  
-For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
