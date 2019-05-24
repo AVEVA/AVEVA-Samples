@@ -2,7 +2,7 @@ The sample code in this folder demonstrates how to utilize the PI Web API in jQu
 
 In order to run this sample, you must configure PI Web API with the proper security to:
 - Create an AF database
-- Create AF catagories
+- Create AF categories
 - Create AF templates
 - Create AF elements with attributes
 - Create PI Points associated with element attributes
@@ -41,12 +41,28 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
-Automated tests are also available to test the above mentioned functionality. You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run the tests.  Note that the tests must be updated with the appropriate:
-- Username
-- Password
-- PI Web API host
-- AF Server
-- PI Data Archive
+To run the sample code:
+- The sample code was developed to run in the Chrome browser
+- Clone the GitHub repository
+- Open Visual Studio Code  
+- Open the folder in which you placed the code
+- Open the file: launch.json
+- Search for the text "url":, change this to the path to index.html. For example: "url": "file:///C:/PI Web API/JQuery/index.html",
+- Click "Start Debugging" on the Debug menu
+
+To run the sample tests:
+- You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run automated tests.
+- Open the file: samplePIWebAPI.js
+- Search for the text "var configDefaults"
+- Change the text for PIWebAPIUrl, add your PI Web API Url.  For example:  'PIWebAPIUrl': 'https://mydomain.com/piwebapi',
+- Change the text for AssetServer, add your Asset Server Name.  For example:  'AssetServer': 'AssetServerName',
+- Change the text for PIServer, add your PI Server Name.  For example:  'PIServer': 'PIServerName'
+- Change the text for Name, add your PI Web API user name.  For example:  'Name': 'MyUserName',
+- Change the text for Password, add your PI Web API user password.  For example:  'Password': 'MyUserPassword'
+- Change the text for AuthType, add your PI Web API authentication method (Basic or Kerberos).  For example:  'AuthType': 'Basic',
+- Open the file: launch.json
+- Search for the text "url":, change this to the path to SpecRunner.html. For example: "url": "file:///C:/PI Web API/JQuery/JasmineUnitTests/SpecRunner.html",
+- Click "Start Debugging" on the Debug menu
 
 For the main PI Web API page [ReadMe](../)<br />
-For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)

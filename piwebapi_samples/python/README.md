@@ -2,7 +2,7 @@ The sample code in this folder demonstrates how to utilize the PI Web API using 
 
 In order to run this sample, you must configure PI Web API with the proper security to:
 - Create an AF database
-- Create AF catagories
+- Create AF categories
 - Create AF templates
 - Create AF elements with attributes
 - Create PI Points associated with element attributes
@@ -47,7 +47,32 @@ Automated tests are also available to test the above mentioned functionality. Yo
 - Password  
 - PI Web API host  
 - AF Server  
-- PI Data Archive  
+- PI Data Archive
+
+To run the sample code:
+- Clone the GitHub repository
+- Open the Python folder with your IDE
+- Install the required modules by running the following command in the terminal:  pip install -r requirements.txt
+- Run the application using the following command in the terminal:  python .\program.py
+To run the sample tests:
+- Each test file (prefixed as "test_..."), can be run independently or all the tests can be run in a single instance via the run_all_tests.py file.
+- To run a single file:
+  - Open the test file you wish to run: e.g. Python\test_batch.py
+  - Note the global constants at the top file, and replace with your desired values.
+- To run all tests via run_all_tests.py:
+  - Open __each__ test file.
+  - Note the global constants at the top of each file, and replace with your desired values.
+
+- All of these global constants are not necessary for each file, therefore you may only see one or two per file.
+- Search for the text __PIWEBAPI_URL__, add your PI Web API Url.  For example:  PIWEBAPI_URL = 'https://mydomain.com/piwebapi';
+- Search for the text __AF_SERVER_NAME__, add your Asset Server Name.  For example:  AF_SERVER_NAME = 'AssetServerName';
+- Search for the text __PI_SERVER_NAME__, add your PI Server Name.  For example:  PI_SERVER_NAME = 'PIServerName';
+- Search for the text __OSI_AF_DATABASE__, add your PI Web API database name.  For example:  OSI_AF_DATABASE = 'DatabaseName';
+- Search for the text __OSI_AF_ELEMENT__, add your PI Web API element name.  For example:  OSI_AF_ELEMENT = 'Pump1';
+- Search for the text __OSI_AF_ATTRIBUTE_TAG__, add your PI Web API attribute tag.  For example:  OSI_AF_ATTRIBUTE_TAG = 'PumpStatus';
+
+- In the terminal, navigate to the test files and use the following command to run all the tests:   python .\run_all_tests.py
+- or to run a test individually: python .\test_batch_call.py
 
 For the main PI Web API page [ReadMe](../)  
-For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)

@@ -4,7 +4,7 @@ The sample code in this folder demonstrates how to utilize the PI Web API in R. 
 
 In order to run this sample, you must configure PI Web API with the proper security to:
 - Create an AF database
-- Create AF catagories
+- Create AF categories
 - Create AF templates
 - Create AF elements with attributes
 - Create PI Points associated with element attributes
@@ -43,24 +43,23 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
-To run the sample script:  
+To run the sample code:
+- Clone the GitHub repository
 - Open RStudio  
-- Open sampleCode.R  
+- Open the file: sampleCode.R  
 - Click the __Source__ menu option to execute the sample code  
 
-Automated tests are also available to test the above mentioned functionality. You must have already [installed testthat](https://testthat.r-lib.org/) in order to run the tests. Note that the tests must be updated with the appropriate:
-- Username  
-- Password  
-- PI Web API host  
-- AF Server  
-- PI Data Archive  
-
-To run the unit tests:
-- Open RStudio  
-- Open run_tests.r  
-- Change the test_dir path to the folder in which you placed the R scripts  
-    - test_results <- test_dir("c:\\R", env = test_env(), reporter="summary")  
-    - Click the __Source__ menu option to execute the sample code  
+To run the sample tests:
+- Open the file: sampleCode.R 
+- Search for the text defaultPIWebAPIUrl, add your PI Web API Url.  For example:  defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
+- Search for the text defaultAssetServer, add your Asset Server Name.  For example:  defaultAssetServer <- "AssetServerName"
+- Search for the text defaultPIServer, add your PI Server Name.  For example:  defaultPIServer <- "PIServerName"
+- Search for the text defaultName, add your PI Web API user name.  For example:  defaultName <- "MyUserName"
+- Search for the text defaultPassword, add your PI Web API user password.  For example:  defaultPassword <- "MyUserPassword"
+- Search for the text defaultAuthorization, add your PI Web API authentication method (Basic or Kerberos).  For example:  defaultAuthorization = "Basic"
+- Open the file: run_tests.r
+- Search for the text path <- ".", change the path to the folder in which you placed the R scripts. For example: path <- "C:\R"
+- Click the __Source__ menu option to execute the sample code tests
 
 For the main PI Web API page [ReadMe](../)  
-For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)
