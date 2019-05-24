@@ -66,5 +66,5 @@ To run the sample tests:
 - Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  const authType = 'Basic';
 - In the terminal, use the following command to run the tests:   __ng test__
 
-For the main PI Web API page [ReadMe](../)  
+For the main PI Web API page [ReadMe](../../)  
 For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)
