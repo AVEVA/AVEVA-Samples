@@ -1,5 +1,28 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in AngularJS. You must have already [downloaded AngularJS](https://angularjs.org/) to run this sample application.  
 
+Getting Started
+------------
+
+To run the sample code:
+- Clone the GitHub repository
+- Open the AngularJS folder with your IDE
+- Install the required modules by running the following command in the terminal:  __npm ci__
+- Run the application using the following command in the terminal:  __npm start__
+- By default, you can open the AngularJS app by using the following URL in a browser:  __localhost:8000__
+
+Getting Started with Tests
+------------
+
+To run the sample tests:
+- Open the test file:  AngularJS\app\app.spec.js
+- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  const piWebAPIUrl = 'https://mydomain.com/piwebapi';
+- Search for the text __const assetServer__, add your Asset Server Name.  For example:  const assetServer = 'AssetServerName';
+- Search for the text __const piServer__, add your PI Server Name.  For example:  const piWebAPIUrl = 'PIServerName';
+- Search for the text __const userName__, add your PI Web API user name.  For example:  const userName = 'MyUserName';
+- Search for the text __const userPassword__, add your PI Web API user password.  For example:  const userPassword = 'MyUserPassword';
+- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  const authType = 'Basic';
+- In the terminal, use the following command to run the tests:   __karma start__
+
 
 System Configuration
 ----------------------------
@@ -48,29 +71,6 @@ Automated tests are also available to test the above mentioned functionality. Yo
 - PI Web API host
 - AF Server
 - PI Data Archive  
-
-Getting Started
-------------
-
-To run the sample code:
-- Clone the GitHub repository
-- Open the AngularJS folder with your IDE
-- Install the required modules by running the following command in the terminal:  __npm ci__
-- Run the application using the following command in the terminal:  __npm start__
-- By default, you can open the AngularJS app by using the following URL in a browser:  __localhost:8000__
-
-Getting Started with Tests
-------------
-
-To run the sample tests:
-- Open the test file:  AngularJS\app\app.spec.js
-- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  const piWebAPIUrl = 'https://mydomain.com/piwebapi';
-- Search for the text __const assetServer__, add your Asset Server Name.  For example:  const assetServer = 'AssetServerName';
-- Search for the text __const piServer__, add your PI Server Name.  For example:  const piWebAPIUrl = 'PIServerName';
-- Search for the text __const userName__, add your PI Web API user name.  For example:  const userName = 'MyUserName';
-- Search for the text __const userPassword__, add your PI Web API user password.  For example:  const userPassword = 'MyUserPassword';
-- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  const authType = 'Basic';
-- In the terminal, use the following command to run the tests:   __karma start__
 
 For the main PI Web API page [ReadMe](../)  
 For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)

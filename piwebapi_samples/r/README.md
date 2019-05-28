@@ -3,6 +3,31 @@ The sample code in this folder demonstrates how to utilize the PI Web API in R. 
 - [Installing httr](https://cran.r-project.org/web/packages/httr/index.html) to work with HTTP and jsonlite for parsing and generating JSON
 
 
+Getting Started
+------------
+
+To run the sample code:
+- Clone the GitHub repository
+- Open RStudio  
+- Open the file: sampleCode.R  
+- Click the __Source__ menu option to execute the sample code  
+
+
+Getting Started with Tests
+------------
+
+To run the sample tests:
+- Open the file: sampleCode.R 
+- Search for the text defaultPIWebAPIUrl, add your PI Web API Url.  For example:  defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
+- Search for the text defaultAssetServer, add your Asset Server Name.  For example:  defaultAssetServer <- "AssetServerName"
+- Search for the text defaultPIServer, add your PI Server Name.  For example:  defaultPIServer <- "PIServerName"
+- Search for the text defaultName, add your PI Web API user name.  For example:  defaultName <- "MyUserName"
+- Search for the text defaultPassword, add your PI Web API user password.  For example:  defaultPassword <- "MyUserPassword"
+- Search for the text defaultAuthorization, add your PI Web API authentication method (Basic or Kerberos).  For example:  defaultAuthorization = "Basic"
+- Open the file: run_tests.r
+- Search for the text path <- ".", change the path to the folder in which you placed the R scripts. For example: path <- "C:\R"
+- Click the __Source__ menu option to execute the sample code tests
+
 System Configuration
 ----------------------------
 
@@ -51,31 +76,6 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
-
-Getting Started
-------------
-
-To run the sample code:
-- Clone the GitHub repository
-- Open RStudio  
-- Open the file: sampleCode.R  
-- Click the __Source__ menu option to execute the sample code  
-
-
-Getting Started with Tests
-------------
-
-To run the sample tests:
-- Open the file: sampleCode.R 
-- Search for the text defaultPIWebAPIUrl, add your PI Web API Url.  For example:  defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
-- Search for the text defaultAssetServer, add your Asset Server Name.  For example:  defaultAssetServer <- "AssetServerName"
-- Search for the text defaultPIServer, add your PI Server Name.  For example:  defaultPIServer <- "PIServerName"
-- Search for the text defaultName, add your PI Web API user name.  For example:  defaultName <- "MyUserName"
-- Search for the text defaultPassword, add your PI Web API user password.  For example:  defaultPassword <- "MyUserPassword"
-- Search for the text defaultAuthorization, add your PI Web API authentication method (Basic or Kerberos).  For example:  defaultAuthorization = "Basic"
-- Open the file: run_tests.r
-- Search for the text path <- ".", change the path to the folder in which you placed the R scripts. For example: path <- "C:\R"
-- Click the __Source__ menu option to execute the sample code tests
 
 For the main PI Web API page [ReadMe](../)  
 For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)

@@ -3,6 +3,16 @@ The sample code in the folders below demonstrate how to utilize the PI Web API i
 The samples exercise the PI Web API in exactly the same way across multiple languages/frameworks:  Angular, AngularJS, jQuery, Python and R. Each in their own folder. The samples show basic functionality of the PI Web API, not every feature. These samples are meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
 
+
+|Languages| Test&nbsp;Status 
+------|------------
+  [Angular](Angular/AngularPIWebAPISample)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Angular)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4612&branchName=dev)  
+  [AngularJS](AngularJS/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(AngularJS)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4657&branchName=dev)
+  [jQuery](jQuery/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(JQuery)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4624&branchName=dev)   
+  [Python](Python/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Python)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4625&branchName=dev)
+  [R](R/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(R)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4615&branchName=dev)
+
+
 System Configuration
 ----------------------------
 
@@ -38,7 +48,7 @@ The functionality included with the samples include(recommended order of executi
 - Delete the element template
 - Delete the sample database
 
-Test
+Test Configurations
 ----------
 
 Automated tests are also available to test the above mentioned functionality. Note that the tests must be updated with the appropriate:
@@ -47,14 +57,6 @@ Automated tests are also available to test the above mentioned functionality. No
 - PI Web API host  
 - AF Server  
 - PI Data Archive 
-
-|Languages| Test&nbsp;Status 
-------|------------
-  [Angular](Angular/AngularPIWebAPISample)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Angular)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4612&branchName=dev)  
-  [AngularJS](AngularJS/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(AngularJS)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4657&branchName=dev)
-  [jQuery](jQuery/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(JQuery)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4624&branchName=dev)   
-  [Python](Python/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Python)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4625&branchName=dev)
-  [R](R/)|[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(R)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4615&branchName=dev)
 
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
 
