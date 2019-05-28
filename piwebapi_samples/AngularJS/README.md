@@ -37,6 +37,18 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Delete all the above AF/PI Data Archive objects
 
 
+In addition, PI Web API must be configured to allow CORS as follows:  
+
+|Attribute|Value 
+------|------------
+CorsExposedHeaders|Allow,Content-Encoding,Content-Length,Date,Location  
+CorsHeaders|*  
+CorsMethods|*  
+CorsOrigins|*  
+CorsSupportsCredentials|True  
+DisableWrites|False  
+
+
 Functionality
 ------------
 
@@ -62,15 +74,5 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the sampleWeb API database
 
 
-Tests
---------------
-
-Automated tests are also available to test the above mentioned functionality. You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run the tests. Note that the tests must be updated with the appropriate:
-- Username
-- Password
-- PI Web API host
-- AF Server
-- PI Data Archive  
-
 For the main PI Web API page [ReadMe](../)  
-For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
