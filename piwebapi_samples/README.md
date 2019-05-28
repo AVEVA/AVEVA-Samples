@@ -28,12 +28,12 @@ In order to run these samples, you must configure PI Web API with the proper sec
 Common Actions
 --------------
 
-The functionality included with the samples include(recommended order of execution):
+The functionality included with the samples include (recommended order of execution):
 - Create an AF database
 - Create a category
 - Create an element template
 - Create an element and associate the element's attributes with PI tags where appropriate
-- Write a single value to the attribute
+- Write a single value to an attribute
 - Write a 100 values to an attribute
 - Perform a Batch (6 steps in 1 call) operation which includes:  
   - Get the sample tag  

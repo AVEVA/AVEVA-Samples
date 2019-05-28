@@ -1,4 +1,6 @@
-The sample code in this folder demonstrates how to utilize the PI Web API in Angular. You must have already [configured your Angular development environment](https://angular.io/guide/quickstart) in order to run this sample application.  
+The sample code in this folder demonstrates how to utilize the PI Web API in R. The sample code is dependent on:
+- [Downloading R](https://cran.r-project.org/mirrors.html)
+- [Installing httr](https://cran.r-project.org/web/packages/httr/index.html) to work with HTTP and jsonlite for parsing and generating JSON
 
 
 Getting Started
@@ -6,23 +8,25 @@ Getting Started
 
 To run the sample code:
 - Clone the GitHub repository
-- Open the Angular\AngularPIWebAPISample folder with your IDE
-- Install the required modules by running the following command in the terminal:  __npm ci__
-- Run the application using the following command in the terminal:  __ng serve__
-- By default, you can open the Angular app by using the following URL in a browser:  __localhost:4200__
+- Open RStudio  
+- Open the file: sampleCode.R  
+- Click the __Source__ menu option to execute the sample code  
+
 
 Getting Started with Tests
 ------------
 
 To run the sample tests:
-- Open the test file:  Angular\AngularPIWebAPISample\src\app\services\piwebapi.service.spec.ts
-- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  const piWebAPIUrl = 'https://mydomain.com/piwebapi';
-- Search for the text __const assetServer__, add your Asset Server Name.  For example:  const assetServer = 'AssetServerName';
-- Search for the text __const piServer__, add your PI Server Name.  For example:  const piWebAPIUrl = 'PIServerName';
-- Search for the text __const userName__, add your PI Web API user name.  For example:  const userName = 'MyUserName';
-- Search for the text __const userPassword__, add your PI Web API user password.  For example:  const userPassword = 'MyUserPassword';
-- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  const authType = 'Basic';
-- In the terminal, use the following command to run the tests:   __ng test__
+- Open the file: sampleCode.R 
+- Search for the text defaultPIWebAPIUrl, add your PI Web API Url.  For example:  defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
+- Search for the text defaultAssetServer, add your Asset Server Name.  For example:  defaultAssetServer <- "AssetServerName"
+- Search for the text defaultPIServer, add your PI Server Name.  For example:  defaultPIServer <- "PIServerName"
+- Search for the text defaultName, add your PI Web API user name.  For example:  defaultName <- "MyUserName"
+- Search for the text defaultPassword, add your PI Web API user password.  For example:  defaultPassword <- "MyUserPassword"
+- Search for the text defaultAuthorization, add your PI Web API authentication method (Basic or Kerberos).  For example:  defaultAuthorization = "Basic"
+- Open the file: run_tests.r
+- Search for the text path <- ".", change the path to the folder in which you placed the R scripts. For example: path <- "C:\R"
+- Click the __Source__ menu option to execute the sample code tests
 
 System Configuration
 ----------------------------
@@ -35,7 +39,6 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Create PI Points associated with element attributes
 - Write and read element attributes
 - Delete all the above AF/PI Data Archive objects  
-
 
 In addition, PI Web API must be configured to allow CORS as follows:  
 
@@ -50,7 +53,7 @@ DisableWrites|False
 
 
 Functionality
---------------
+------------
 
 This sample shows basic functionality of the PI Web API, not every feature. The sample is meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
@@ -74,7 +77,7 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
-[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Angular)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4612&branchName=dev)  
+[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(R)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4615&branchName=dev)
 
-For the main PI Web API page [ReadMe](../../)  
+For the main PI Web API page [ReadMe](../)  
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

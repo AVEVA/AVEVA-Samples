@@ -1,32 +1,35 @@
-The sample code in this folder demonstrates how to utilize the PI Web API in R. The sample code is dependent on:
-- [Downloading R](https://cran.r-project.org/mirrors.html)
-- [Installing httr](https://cran.r-project.org/web/packages/httr/index.html) to work with HTTP and jsonlite for parsing and generating JSON
+The sample code in this folder demonstrates how to utilize the PI Web API in jQuery. You must have already [downloaded jQuery](https://jquery.com/download/) in order to run this sample application.
 
 
 Getting Started
 ------------
 
 To run the sample code:
+- The sample code was developed to run in the Chrome browser
 - Clone the GitHub repository
-- Open RStudio  
-- Open the file: sampleCode.R  
-- Click the __Source__ menu option to execute the sample code  
+- Open Visual Studio Code  
+- Open the folder in which you placed the code
+- Open the file: launch.json
+- Search for the text "url":, change this to the path to index.html. For example: "url": "file:///C:/PI Web API/JQuery/index.html",
+- Click "Start Debugging" on the Debug menu
 
 
 Getting Started with Tests
 ------------
 
 To run the sample tests:
-- Open the file: sampleCode.R 
-- Search for the text defaultPIWebAPIUrl, add your PI Web API Url.  For example:  defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
-- Search for the text defaultAssetServer, add your Asset Server Name.  For example:  defaultAssetServer <- "AssetServerName"
-- Search for the text defaultPIServer, add your PI Server Name.  For example:  defaultPIServer <- "PIServerName"
-- Search for the text defaultName, add your PI Web API user name.  For example:  defaultName <- "MyUserName"
-- Search for the text defaultPassword, add your PI Web API user password.  For example:  defaultPassword <- "MyUserPassword"
-- Search for the text defaultAuthorization, add your PI Web API authentication method (Basic or Kerberos).  For example:  defaultAuthorization = "Basic"
-- Open the file: run_tests.r
-- Search for the text path <- ".", change the path to the folder in which you placed the R scripts. For example: path <- "C:\R"
-- Click the __Source__ menu option to execute the sample code tests
+- You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run automated tests.
+- Open the file: samplePIWebAPI.js
+- Search for the text "var configDefaults"
+- Change the text for PIWebAPIUrl, add your PI Web API Url.  For example:  'PIWebAPIUrl': 'https://mydomain.com/piwebapi',
+- Change the text for AssetServer, add your Asset Server Name.  For example:  'AssetServer': 'AssetServerName',
+- Change the text for PIServer, add your PI Server Name.  For example:  'PIServer': 'PIServerName'
+- Change the text for Name, add your PI Web API user name.  For example:  'Name': 'MyUserName',
+- Change the text for Password, add your PI Web API user password.  For example:  'Password': 'MyUserPassword'
+- Change the text for AuthType, add your PI Web API authentication method (Basic or Kerberos).  For example:  'AuthType': 'Basic',
+- Open the file: launch.json
+- Search for the text "url":, change this to the path to SpecRunner.html. For example: "url": "file:///C:/PI Web API/JQuery/JasmineUnitTests/SpecRunner.html",
+- Click "Start Debugging" on the Debug menu
 
 System Configuration
 ----------------------------
@@ -41,6 +44,7 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Delete all the above AF/PI Data Archive objects  
 
 In addition, PI Web API must be configured to allow CORS as follows:  
+
 |Attribute|Value 
 ------|------------
 CorsExposedHeaders|Allow,Content-Encoding,Content-Length,Date,Location  
@@ -49,7 +53,6 @@ CorsMethods|*
 CorsOrigins|*  
 CorsSupportsCredentials|True  
 DisableWrites|False  
-
 
 Functionality
 ------------
@@ -76,6 +79,7 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
+[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(JQuery)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4624&branchName=dev)   
 
-For the main PI Web API page [ReadMe](../)  
-For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)
+For the main PI Web API page [ReadMe](../)<br />
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

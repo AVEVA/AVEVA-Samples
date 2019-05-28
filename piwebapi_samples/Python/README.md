@@ -45,6 +45,7 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Delete all the above AF/PI Data Archive objects  
 
 In addition, PI Web API must be configured to allow CORS as follows:  
+
 |Attribute|Value 
 ------|------------
 CorsExposedHeaders&|Allow,Content-Encoding,Content-Length,Date,Location  
@@ -79,16 +80,7 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
-Tests
-------------
-
-Automated tests are also available to test the above mentioned functionality. You must have already Python in order to run the tests. Note that the tests must be updated with the appropriate:
-- Username  
-- Password  
-- PI Web API host  
-- AF Server  
-- PI Data Archive
-
+[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(Python)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4625&branchName=dev)
 
 For the main PI Web API page [ReadMe](../)  
-For the main landing page on master [ReadMe](https://github.com/osisoft/PIWeb API-Samples)
+For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
