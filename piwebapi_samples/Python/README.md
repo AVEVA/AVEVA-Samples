@@ -45,6 +45,7 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Delete all the above AF/PI Data Archive objects  
 
 In addition, PI Web API must be configured to allow CORS as follows:  
+
 |Attribute|Value 
 ------|------------
 CorsExposedHeaders&|Allow,Content-Encoding,Content-Length,Date,Location  
