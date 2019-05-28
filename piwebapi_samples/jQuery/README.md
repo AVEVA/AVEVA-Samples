@@ -1,5 +1,8 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in jQuery. You must have already [downloaded jQuery](https://jquery.com/download/) in order to run this sample application.
 
+System Configuration
+----------------------------
+
 In order to run this sample, you must configure PI Web API with the proper security to:
 - Create an AF database
 - Create AF categories
@@ -18,6 +21,9 @@ CorsMethods|*
 CorsOrigins|*  
 CorsSupportsCredentials|True  
 DisableWrites|False  
+
+Functionality
+------------
 
 This sample shows basic functionality of the PI Web API, not every feature. The sample is meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
@@ -41,6 +47,9 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
+Getting Started
+------------
+
 To run the sample code:
 - The sample code was developed to run in the Chrome browser
 - Clone the GitHub repository
@@ -49,6 +58,9 @@ To run the sample code:
 - Open the file: launch.json
 - Search for the text "url":, change this to the path to index.html. For example: "url": "file:///C:/PI Web API/JQuery/index.html",
 - Click "Start Debugging" on the Debug menu
+
+Getting Started with Tests
+------------
 
 To run the sample tests:
 - You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run automated tests.

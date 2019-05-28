@@ -1,5 +1,9 @@
 The sample code in this folder demonstrates how to utilize the PI Web API using Python. You must have already [installed Python](https://www.python.org/downloads/release/python-373/) in order to run this sample application.  
 
+
+System Configuration
+----------------------------
+
 In order to run this sample, you must configure PI Web API with the proper security to:
 - Create an AF database
 - Create AF categories
@@ -19,6 +23,8 @@ CorsOrigins|*
 CorsSupportsCredentials|True  
 DisableWrites|False
 
+Functionality
+------------
 
 This sample shows basic functionality of the PI Web API, not every feature. The sample is meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
@@ -42,12 +48,19 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the element template
 - Delete the sample database
 
+Tests
+------------
+
 Automated tests are also available to test the above mentioned functionality. You must have already Python in order to run the tests. Note that the tests must be updated with the appropriate:
 - Username  
 - Password  
 - PI Web API host  
 - AF Server  
 - PI Data Archive
+
+
+Getting Started
+------------
 
 To run the sample code:
 - Clone the GitHub repository
@@ -70,6 +83,10 @@ To run the sample tests:
 - Search for the text __OSI_AF_DATABASE__, add your PI Web API database name.  For example:  OSI_AF_DATABASE = 'DatabaseName';
 - Search for the text __OSI_AF_ELEMENT__, add your PI Web API element name.  For example:  OSI_AF_ELEMENT = 'Pump1';
 - Search for the text __OSI_AF_ATTRIBUTE_TAG__, add your PI Web API attribute tag.  For example:  OSI_AF_ATTRIBUTE_TAG = 'PumpStatus';
+
+
+Getting Started with Tests
+------------
 
 - In the terminal, navigate to the test files and use the following command to run all the tests:   python .\run_all_tests.py
 - or to run a test individually: python .\test_batch_call.py

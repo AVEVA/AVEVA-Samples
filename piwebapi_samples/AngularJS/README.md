@@ -1,5 +1,9 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in AngularJS. You must have already [downloaded AngularJS](https://angularjs.org/) to run this sample application.  
 
+
+System Configuration
+----------------------------
+
 In order to run this sample, you must configure PI Web API with the proper security to:
 - Create an AF database
 - Create AF categories
@@ -8,6 +12,10 @@ In order to run this sample, you must configure PI Web API with the proper secur
 - Create PI Points associated with element attributes
 - Write and read element attributes
 - Delete all the above AF/PI Data Archive objects
+
+
+Functionality
+------------
 
 This sample shows basic functionality of the PI Web API, not every feature. The sample is meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
@@ -31,6 +39,9 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the sampleWeb API database
 
 
+Tests
+--------------
+
 Automated tests are also available to test the above mentioned functionality. You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run the tests. Note that the tests must be updated with the appropriate:
 - Username
 - Password
@@ -38,12 +49,18 @@ Automated tests are also available to test the above mentioned functionality. Yo
 - AF Server
 - PI Data Archive  
 
+Getting Started
+------------
+
 To run the sample code:
 - Clone the GitHub repository
 - Open the AngularJS folder with your IDE
 - Install the required modules by running the following command in the terminal:  __npm ci__
 - Run the application using the following command in the terminal:  __npm start__
 - By default, you can open the AngularJS app by using the following URL in a browser:  __localhost:8000__
+
+Getting Started with Tests
+------------
 
 To run the sample tests:
 - Open the test file:  AngularJS\app\app.spec.js

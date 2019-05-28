@@ -2,6 +2,22 @@ The sample code in the folders below demonstrate how to utilize the PI Web API i
 
 The samples exercise the PI Web API in exactly the same way across multiple languages/frameworks:  Angular, AngularJS, jQuery, Python and R. Each in their own folder. The samples show basic functionality of the PI Web API, not every feature. These samples are meant to show a basic sample application that uses the PI Web API to read and write data to a PI Data Archive and AF. Tests are also included to verify that the code is functioning as expected.
 
+
+System Configuration
+----------------------------
+
+In order to run these samples, you must configure PI Web API with the proper security to:
+- Create an AF database
+- Create AF categories
+- Create AF templates
+- Create AF elements with attributes
+- Create PI Points associated with element attributes
+- Write and read element attributes
+- Delete all the above AF/PI Data Archive objects  
+
+Common Actions
+--------------
+
 The functionality included with the samples include(recommended order of execution):
 - Create an AF database
 - Create a category
@@ -21,6 +37,9 @@ The functionality included with the samples include(recommended order of executi
 - Delete the element
 - Delete the element template
 - Delete the sample database
+
+Test
+----------
 
 Automated tests are also available to test the above mentioned functionality. Note that the tests must be updated with the appropriate:
 - Username  
