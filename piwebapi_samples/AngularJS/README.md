@@ -15,13 +15,42 @@ Getting Started with Tests
 
 To run the sample tests:
 - Open the test file:  AngularJS\app\app.spec.js
-- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  const piWebAPIUrl = 'https://mydomain.com/piwebapi';
-- Search for the text __const assetServer__, add your Asset Server Name.  For example:  const assetServer = 'AssetServerName';
-- Search for the text __const piServer__, add your PI Server Name.  For example:  const piWebAPIUrl = 'PIServerName';
-- Search for the text __const userName__, add your PI Web API user name.  For example:  const userName = 'MyUserName';
-- Search for the text __const userPassword__, add your PI Web API user password.  For example:  const userPassword = 'MyUserPassword';
-- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  const authType = 'Basic';
-- In the terminal, use the following command to run the tests:   __karma start__
+- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  
+
+```javascript
+const piWebAPIUrl = 'https://mydomain.com/piwebapi';
+```
+
+- Search for the text __const assetServer__, add your Asset Server Name.  For example:  
+
+```javascript
+const assetServer = 'AssetServerName';
+```
+
+- Search for the text __const piServer__, add your PI Server Name.  For example:
+
+```javascript
+const piWebAPIUrl = 'PIServerName';
+```
+
+- Search for the text __const userName__, add your PI Web API user name.  For example:  
+
+```javascript
+const userName = 'MyUserName';
+```
+
+- Search for the text __const userPassword__, add your PI Web API user password.  For example:  
+
+```javascript
+const userPassword = 'MyUserPassword';
+```
+- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:
+
+```javascript
+  const authType = 'Basic';
+  ```
+  
+- In the terminal, use the following command to run the tests:   ```karma start```
 
 
 System Configuration
@@ -73,6 +102,7 @@ The functionality included with this sample includes(recommended order of execut
 - Delete the Machine element template
 - Delete the sampleWeb API database
 
+[![Build Status](https://osisoft.visualstudio.com/NOC/_apis/build/status/PI%20Web%20API%20(AngularJS)?branchName=dev)](https://osisoft.visualstudio.com/NOC/_build/latest?definitionId=4657&branchName=dev)
 
 For the main PI Web API page [ReadMe](../)  
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

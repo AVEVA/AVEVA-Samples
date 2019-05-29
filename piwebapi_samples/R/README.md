@@ -9,7 +9,7 @@ Getting Started
 To run the sample code:
 - Clone the GitHub repository
 - Open RStudio  
-- Open the file: sampleCode.R  
+- Open the file: ```sampleCode.R```
 - Click the __Source__ menu option to execute the sample code  
 
 
@@ -18,14 +18,49 @@ Getting Started with Tests
 
 To run the sample tests:
 - Open the file: sampleCode.R 
-- Search for the text defaultPIWebAPIUrl, add your PI Web API Url.  For example:  defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
-- Search for the text defaultAssetServer, add your Asset Server Name.  For example:  defaultAssetServer <- "AssetServerName"
-- Search for the text defaultPIServer, add your PI Server Name.  For example:  defaultPIServer <- "PIServerName"
-- Search for the text defaultName, add your PI Web API user name.  For example:  defaultName <- "MyUserName"
-- Search for the text defaultPassword, add your PI Web API user password.  For example:  defaultPassword <- "MyUserPassword"
-- Search for the text defaultAuthorization, add your PI Web API authentication method (Basic or Kerberos).  For example:  defaultAuthorization = "Basic"
-- Open the file: run_tests.r
-- Search for the text path <- ".", change the path to the folder in which you placed the R scripts. For example: path <- "C:\R"
+- Search for the text __defaultPIWebAPIUrl__, add your PI Web API Url.  For example:
+
+```R
+defaultPIWebAPIUrl <- "https://mydomain.com/piwebapi"
+```
+
+- Search for the text __defaultAssetServer__, add your Asset Server Name.  For example:  
+
+```R
+defaultAssetServer <- "AssetServerName"
+```
+
+- Search for the text __defaultPIServer__, add your PI Server Name.  For example:  
+
+```R
+defaultPIServer <- "PIServerName"
+```
+
+- Search for the text __defaultName__, add your PI Web API user name.  For example:  
+
+```R
+defaultName <- "MyUserName"
+```
+
+- Search for the text __defaultPassword__, add your PI Web API user password.  For example:  
+
+```R
+defaultPassword <- "MyUserPassword"
+```
+
+- Search for the text __defaultAuthorization__, add your PI Web API authentication method (Basic or Kerberos).  For example:  
+
+```R
+defaultAuthorization = "Basic"
+```
+
+- Open the file: ```run_tests.r```
+- Search for the text path __<- "."__, change the path to the folder in which you placed the R scripts. For example: 
+
+```R
+path <- "C:\R"
+```
+
 - Click the __Source__ menu option to execute the sample code tests
 
 System Configuration

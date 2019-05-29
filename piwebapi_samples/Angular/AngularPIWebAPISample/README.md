@@ -7,22 +7,51 @@ Getting Started
 To run the sample code:
 - Clone the GitHub repository
 - Open the Angular\AngularPIWebAPISample folder with your IDE
-- Install the required modules by running the following command in the terminal:  __npm ci__
-- Run the application using the following command in the terminal:  __ng serve__
-- By default, you can open the Angular app by using the following URL in a browser:  __localhost:4200__
+- Install the required modules by running the following command in the terminal:  ```npm ci```
+- Run the application using the following command in the terminal:  ```ng serve```
+- By default, you can open the Angular app by using the following URL in a browser:  ```localhost:4200```
 
 Getting Started with Tests
 ------------
 
 To run the sample tests:
-- Open the test file:  Angular\AngularPIWebAPISample\src\app\services\piwebapi.service.spec.ts
-- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  const piWebAPIUrl = 'https://mydomain.com/piwebapi';
-- Search for the text __const assetServer__, add your Asset Server Name.  For example:  const assetServer = 'AssetServerName';
-- Search for the text __const piServer__, add your PI Server Name.  For example:  const piWebAPIUrl = 'PIServerName';
-- Search for the text __const userName__, add your PI Web API user name.  For example:  const userName = 'MyUserName';
-- Search for the text __const userPassword__, add your PI Web API user password.  For example:  const userPassword = 'MyUserPassword';
-- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  const authType = 'Basic';
-- In the terminal, use the following command to run the tests:   __ng test__
+- Open the test file:  ```Angular\AngularPIWebAPISample\src\app\services\piwebapi.service.spec.ts```
+- Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  
+
+```typescript 
+const piWebAPIUrl = 'https://mydomain.com/piwebapi;
+```
+
+- Search for the text __const assetServer__, add your Asset Server Name.  For example:  
+
+```typescript 
+const assetServer = 'AssetServerName';
+```
+
+- Search for the text __const piServer__, add your PI Server Name.  For example:  
+
+```typescript
+const piWebAPIUrl = 'PIServerName';
+```
+
+- Search for the text __const userName__, add your PI Web API user name.  For example:  
+
+```typescript
+const userName = 'MyUserName';
+```
+
+- Search for the text __const userPassword__, add your PI Web API user password.  For example:  
+```typescript
+const userPassword = 'MyUserPassword';
+```
+
+- Search for the text __const authType__, add your PI Web API authentication method (Basic or Kerberos).  For example: 
+
+```typescript
+const authType = 'Basic';
+```
+
+- In the terminal, use the following command to run the tests:  ```ng test```
 
 System Configuration
 ----------------------------
