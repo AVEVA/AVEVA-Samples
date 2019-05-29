@@ -19,16 +19,51 @@ Getting Started with Tests
 
 To run the sample tests:
 - You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run automated tests.
-- Open the file: samplePIWebAPI.js
-- Search for the text "var configDefaults"
-- Change the text for PIWebAPIUrl, add your PI Web API Url.  For example:  'PIWebAPIUrl': 'https://mydomain.com/piwebapi',
-- Change the text for AssetServer, add your Asset Server Name.  For example:  'AssetServer': 'AssetServerName',
-- Change the text for PIServer, add your PI Server Name.  For example:  'PIServer': 'PIServerName'
-- Change the text for Name, add your PI Web API user name.  For example:  'Name': 'MyUserName',
-- Change the text for Password, add your PI Web API user password.  For example:  'Password': 'MyUserPassword'
-- Change the text for AuthType, add your PI Web API authentication method (Basic or Kerberos).  For example:  'AuthType': 'Basic',
-- Open the file: launch.json
-- Search for the text "url":, change this to the path to SpecRunner.html. For example: "url": "file:///C:/PI Web API/JQuery/JasmineUnitTests/SpecRunner.html",
+- Open the file: ```samplePIWebAPI.js```
+- Search for the text "__var configDefaults__"
+- Change the text for __PIWebAPIUrl__, add your PI Web API Url.  For example:
+
+```javascript
+'PIWebAPIUrl': 'https://mydomain.com/piwebapi',
+```
+
+- Change the text for __AssetServer__, add your Asset Server Name.  For example:  
+
+```javascript
+'AssetServer': 'AssetServerName',
+```
+
+- Change the text for __PIServer__, add your PI Server Name.  For example:  
+
+```javascript
+'PIServer': 'PIServerName'
+```
+
+- Change the text for __Name__, add your PI Web API user name.  For example:  
+
+```javascript
+'Name': 'MyUserName',
+```
+
+- Change the text for __Password__, add your PI Web API user password.  For example:  
+
+```javascript
+'Password': 'MyUserPassword'
+```
+
+- Change the text for __AuthType__, add your PI Web API authentication method (Basic or Kerberos).  For example:  
+
+```javascript
+'AuthType': 'Basic',
+```
+
+- Open the file: ```launch.json```
+- Search for the text "url":, change this to the path to SpecRunner.html. For example: 
+
+```json
+"url": "file:///C:/PI Web API/JQuery/JasmineUnitTests/SpecRunner.html",
+```
+
 - Click "Start Debugging" on the Debug menu
 
 System Configuration
