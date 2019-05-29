@@ -8,7 +8,7 @@ Technology|Description
 ----|-----------
 **<a href="ocs_samples/">OCS</a>** | These samples cover programming against OCS.  Samples include basic samples to more advanced.  <a href="ocs_samples/">Details</a>  
 **<a href="omf_samples/">OMF</a>** | These samples highlight forming and sending OMF messages for PI and OCS.  <a href="omf_samples/">Details</a>  
-**<a href="piwebapi_samples/">PI Web API</a>**  | **--COMING SOON--** These samples cover programming against the PI Server via the PI Web API. <a href="piwebapi_samples/">Details</a>  
+**<a href="piwebapi_samples/">PI Web API</a>**  | These samples cover programming against the PI Server via the PI Web API. <a href="piwebapi_samples/">Details</a>  
 
 Note: The OMF samples work against both the on-prem PI System and OCS.
 
