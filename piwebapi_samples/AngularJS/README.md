@@ -6,15 +6,15 @@ Getting Started
 To run the sample code:
 - Clone the GitHub repository
 - Open the AngularJS folder with your IDE
-- Install the required modules by running the following command in the terminal:  __npm ci__
-- Run the application using the following command in the terminal:  __npm start__
-- By default, you can open the AngularJS app by using the following URL in a browser:  __localhost:8000__
+- Install the required modules by running the following command in the terminal:  ```npm ci```
+- Run the application using the following command in the terminal:  ```npm start```
+- By default, you can open the AngularJS app by using the following URL in a browser:  ```localhost:8000```
 
 Getting Started with Tests
 ------------
 
 To run the sample tests:
-- Open the test file:  AngularJS\app\app.spec.js
+- Open the test file:  ```AngularJS\app\app.spec.js```
 - Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  
 
 ```javascript

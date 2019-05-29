@@ -9,8 +9,13 @@ To run the sample code:
 - Clone the GitHub repository
 - Open Visual Studio Code  
 - Open the folder in which you placed the code
-- Open the file: launch.json
-- Search for the text "url":, change this to the path to index.html. For example: "url": "file:///C:/PI Web API/JQuery/index.html",
+- Open the file: ```launch.json```
+- Search for the text "__url__":, change this to the path to ```index.html```. For example: 
+
+```json
+"url": "file:///C:/PI Web API/JQuery/index.html",
+```
+
 - Click "Start Debugging" on the Debug menu
 
 

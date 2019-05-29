@@ -19,7 +19,7 @@ To run the sample tests:
 - Search for the text __const piWebAPIUrl__, add your PI Web API Url.  For example:  
 
 ```typescript 
-const piWebAPIUrl = 'https://mydomain.com/piwebapi;
+const piWebAPIUrl = 'https://mydomain.com/piwebapi';
 ```
 
 - Search for the text __const assetServer__, add your Asset Server Name.  For example:  
