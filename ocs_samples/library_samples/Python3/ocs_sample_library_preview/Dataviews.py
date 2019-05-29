@@ -257,14 +257,17 @@ class Dataviews(object):
             raise SdsError("Failed to get dataview preview for dataview {dataview_id}. {status}:{reason}".
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
 
-        content = json.loads(response.content)
+        if form.lower() in ["csv", "csvh"]: 
+            content = response.text
+        else:
+            content = json.loads(response.content)
         response.close()
 		
         if value_class is None:
             return (content)
         return value_class.fromJson(content)
 		
-    def getDataInterpolated(self, namespace_id, dataview_id, skip = -1, count = -1, form = None, sessionId = -1,  value_class = None):
+    def getDataInterpolated(self, namespace_id, dataview_id, skip = None, count = None, form = None, sessionId = None,  value_class = None):
         """
         Retrieves the dataviewpreview of the 'dataview_id' from Sds Service
         :param namespace_id: namespace to work against
@@ -282,30 +285,19 @@ class Dataviews(object):
         if dataview_id is None:
             raise TypeError
 
-        urlAdd = []
-        urlAddStr = ""
-        if count != -1:
-            urlAdd.append("count=" + str(count))
-        if skip != -1:
-            urlAdd.append("skip=" + str(count))        
-        if form is not None:
-            urlAdd.append("form=" +form)
-        if sessionId != -1:
-            urlAdd.append("sessionId=" + str(count))
-        if len(urlAdd) != 0:
-            urlAddStr = "?" + '&'.join(str(x) for x in urlAdd)
-        
-        
+        params = { "count": count, "skip": skip, "form": form, "sessionId": sessionId }  
         response = requests.get(
-            self.__baseClient.uri_API + self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id) + urlAddStr, 
-            headers=self.__baseClient.sdsHeaders())
+            self.__baseClient.uri_API + self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id), 
+            headers=self.__baseClient.sdsHeaders(),
+            params=params,
+        )
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to get dataview data interpolated for dataview {dataview_id}. {status}:{reason}".
                           format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
                           
-        if(form is not None):
-            return response.content.decode("utf-8") 
+        if form is not None:
+            return response.text 
 
         content = json.loads(response.content)
         response.close()
