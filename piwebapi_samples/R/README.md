@@ -17,7 +17,7 @@ Getting Started with Tests
 ------------
 
 To run the sample tests:
-- Open the file: sampleCode.R 
+- Open the file: ```sampleCode.R```
 - Search for the text __defaultPIWebAPIUrl__, add your PI Web API Url.  For example:
 
 ```R
