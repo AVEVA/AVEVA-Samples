@@ -235,8 +235,9 @@ class Dataviews(object):
         params = {"startIndex": startIndex, "endIndex": endIndex, "interval": interval, "form": form, "count": count}
         response = requests.get(
             self.__baseClient.uri_API + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id), 
-            headers=self.__baseClient.sdsHeaders()
-            params=params))
+            headers=self.__baseClient.sdsHeaders(),
+            params=params
+        )  
         if response.status_code < 200 or response.status_code >= 300:
             response.close()
             raise SdsError("Failed to get dataview preview for dataview {dataview_id}. {status}:{reason}".
