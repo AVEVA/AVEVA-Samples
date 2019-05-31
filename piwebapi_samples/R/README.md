@@ -1,7 +1,8 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in R. The sample code is dependent on:
 - [Downloading R](https://cran.r-project.org/mirrors.html)
-- [Installing httr](https://cran.r-project.org/web/packages/httr/index.html) to work with HTTP and jsonlite for parsing and generating JSON
+- [Installing httr](https://CRAN.R-project.org/package=httr) to work with HTTP and jsonlite for parsing and generating JSON
 
+The steps below assume that you have [RStudio](https://www.rstudio.com/products/rstudio/download/).
 
 Getting Started
 ------------
@@ -9,6 +10,7 @@ Getting Started
 To run the sample code:
 - Clone the GitHub repository
 - Open RStudio  
+- Install httr if not already installed.  From the Console inside RStudio ```install.packages("httr")```
 - Open the file: ```sampleCode.R```
 - Click the __Source__ menu option to execute the sample code  
 
@@ -17,6 +19,7 @@ Getting Started with Tests
 ------------
 
 To run the sample tests:
+- Install [testthat](https://cran.r-project.org/web/packages/testthat/index.html) if not already installed.  From the Console inside RStudio ```install.packages("testthat")```
 - Open the file: ```sampleCode.R```
 - Search for the text __defaultPIWebAPIUrl__, add your PI Web API Url.  For example:
 
@@ -36,29 +39,29 @@ defaultAssetServer <- "AssetServerName"
 defaultPIServer <- "PIServerName"
 ```
 
-- Search for the text __defaultName__, add your PI Web API user name.  For example:  
+- Search for the text __defaultName__, add your PI Web API user name.  (Not needed for kerberos)  For example:  
 
 ```R
 defaultName <- "MyUserName"
 ```
 
-- Search for the text __defaultPassword__, add your PI Web API user password.  For example:  
+- Search for the text __defaultPassword__, add your PI Web API user password. (Not needed for kerberos) For example:  
 
 ```R
 defaultPassword <- "MyUserPassword"
 ```
 
-- Search for the text __defaultAuthorization__, add your PI Web API authentication method (Basic or Kerberos).  For example:  
+- Search for the text __defaultAuthorization__, add your PI Web API authentication method: ```basic``` or ```gssnegotiate``` (for kerberos).    For example:  
 
 ```R
-defaultAuthorization = "Basic"
+defaultAuthorization <- "basic"
 ```
 
 - Open the file: ```run_tests.r```
 - Search for the text path __<- "."__, change the path to the folder in which you placed the R scripts. For example: 
 
 ```R
-path <- "C:\R"
+path <- "C:\\R\\"
 ```
 
 - Click the __Source__ menu option to execute the sample code tests
