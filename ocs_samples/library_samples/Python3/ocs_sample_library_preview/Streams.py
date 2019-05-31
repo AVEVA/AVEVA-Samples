@@ -654,7 +654,7 @@ class Streams(object):
             values.append(value_class.fromJson(c))
         return values
         
-    def getRangeValuesInterpolated(self, namespace_id, stream_id, value_class, start, end, count):
+    def getRangeValuesInterpolated(self, namespace_id, stream_id, value_class, start, end, count, stream_view_id = None):
         """
         Retrieves JSON object representing a range of values from the stream specified by 'stream_id'
         :param namespace_id: id of namespace to work against
@@ -663,6 +663,7 @@ class Streams(object):
         :param start: starting index
         :param end:  ending index
         :param count: number of datapoints to retrieve
+        :param stream_view_id: stream view to transform the data into. Default is None
         :return: An array of the data in type specified if value_class is defined.  Otherwise it is a dynamic Python object
         """
         
@@ -677,9 +678,17 @@ class Streams(object):
         if count is None:
             raise TypeError
 
+        if stream_view_id is None:
+            _path = self.__getRangeInterpolatedQuery.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id, start=start, end=end, count=count,filter= filter)
+        else:
+            _path = self.__getRangeInterpolatedQueryV.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                        stream_id=stream_id, start=start, end=end, count=count ,filter=filter, 
+                                                        stream_view_id=stream_view_id)
+
+
         response = requests.get(
-            self.__uri_API + self.__getRangeInterpolatedQuery.format( tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                           stream_id=stream_id, start=start, end=end, count=count),
+            self.__uri_API + _path,
            headers=self.__baseClient.sdsHeaders())
 
         if response.status_code < 200 or response.status_code >= 300:
@@ -706,7 +715,7 @@ class Streams(object):
         :param start: starting index
         :param end:  ending index
         :param count: number of datapoints in summary
-        :param stream_view_id: streamview to tranform the data into 
+        :param stream_view_id: streamview to tranform the data into . Default is None
         :param filter: filter to apply
         :return: An array of the data summary in type specified if value_class is defined.  Otherwise it is a dynamic Python object
         """
@@ -727,7 +736,7 @@ class Streams(object):
             _path = self.__getSummaries.format(tenant_id=self.__tenant, namespace_id=namespace_id,
                                                        stream_id=stream_id, start=start, end=end, count=count,filter= filter)
         else:
-            _path = self.__getSummariesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+            _path = self.__getSummariesV.format(tenant_id=self.__tenant, namespace_id=namespace_id,
                                                         stream_id=stream_id, start=start, end=end, count=count,filter= filter,stream_view_id=stream_view_id)
 
         response = requests.get(
@@ -925,8 +934,9 @@ class Streams(object):
         self.__getWindowValuesform = self.__dataPath + "?startIndex={start}&endIndex={end}&form={form}"
         self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
         self.__getSummaries = self.__dataPath + "/Summaries?startIndex={start}&endIndex={end}&Count={count}&filter={filter}"
-        self.__getSummariesT = self.__dataPath + "/Transform/Summaries?startIndex={start}&endIndex={end}&Count={count}&streamViewId={stream_view_id}&filter={filter}"
+        self.__getSummariesV = self.__dataPath + "/Transform/Summaries?startIndex={start}&endIndex={end}&Count={count}&streamViewId={stream_view_id}&filter={filter}"
         self.__getRangeInterpolatedQuery = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}"
+        self.__getRangeInterpolatedQueryV = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}&streamViewId={stream_view_id}"
 
 
         self.__insertValuesPath = self.__dataPath

@@ -8,7 +8,7 @@ class SdsTypeProperty(object):
     Sds type property definition
     """
 
-    def __init__(self, id=None, name =None, description = None, isKey = False, sdsType = None, value = None, order = None):
+    def __init__(self, id=None, name =None, description = None, isKey = False, sdsType = None, value = None, order = None, interpolationMode = None):
         """
         
         :param id: required
@@ -18,6 +18,7 @@ class SdsTypeProperty(object):
         :param sdsType: SdsType required
         :param value:  object   not required
         :param order: Integer   Determines the order of a complex index type.  If isKey is set and this is part of a complex index  this is required.   Not required
+        :param interpolationMode not required
         """
         self.Id = id
         self.Description = description
@@ -25,6 +26,7 @@ class SdsTypeProperty(object):
         self.SdsType = sdsType
         self.Value = value
         self.Order = order
+        self.InterpolationMode = interpolationMode
             
     @property
     def Id(self):
@@ -151,6 +153,25 @@ class SdsTypeProperty(object):
         :return:
         """
         self.__order = order
+
+    @property
+    def InterpolationMode(self):
+        """
+        SdsInterpolationMode    Determines the interpolation mode. not required.
+        :param self:
+        :return:
+        """
+        return self.__interpolationMode
+    @InterpolationMode.setter
+    def InterpolationMode(self, interpolationMode):
+        """
+        SdsInterpolationMode    Determines the interpolation mode. not required.
+        :param self:
+        :param interpolationMode:
+        :return:
+        """
+        self.__interpolationMode = interpolationMode
+
     
     def toDictionary(self):
         dictionary = { 'IsKey' : self.IsKey }
@@ -176,6 +197,9 @@ class SdsTypeProperty(object):
 
         if hasattr(self, 'Order'):
             dictionary['Order'] = self.Order
+
+        if hasattr(self,'InterpolationMode'):
+            dictionary['InterpolationMode'] = self.InterpolationMode
 
         return dictionary
 
@@ -207,5 +231,8 @@ class SdsTypeProperty(object):
 
         if 'Order' in content:
             typeProperty.Order = content['Order']
+
+        if 'InterpolationMode' in content:
+            typeProperty.InterpolationMode = content['InterpolationMode']
 
         return typeProperty

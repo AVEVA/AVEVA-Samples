@@ -9,7 +9,7 @@ from .SdsTypeProperty import SdsTypeProperty
 
 class SdsType(object):
     """Sds type definitions"""
-    def __init__(self, id = None, name = None, description = None, baseType = None, sdsTypeCode = SdsTypeCode.Empty, properties = None):
+    def __init__(self, id = None, name = None, description = None, baseType = None, sdsTypeCode = SdsTypeCode.Empty, properties = None, extrapolationMode = None, interpolationMode = None):
         """
 
         :param id: required
@@ -17,6 +17,8 @@ class SdsType(object):
         :param description: not required
         :param baseType: not required
         :param sdsTypeCode: SdsTypeCode    required
+        :param interpolationMode: not required, enumeration from SdsInterpolationMode
+        :param extrapolationMode: not required, enumeration from SdsExtrapolationMode
         :param properties: array of SdsTypeProperty   required
         """
         self.SdsTypeCode = sdsTypeCode
@@ -24,6 +26,8 @@ class SdsType(object):
         self.Name = name
         self.Description = description
         self.BaseType = baseType
+        self.InterpolationMode = interpolationMode
+        self.ExtrapolationMode = extrapolationMode
         self.Properties = properties
 
 
@@ -108,6 +112,38 @@ class SdsType(object):
         self.__typeCode = typeCode
 
     @property
+    def InterpolationMode(self):
+        """
+        not required
+        :return:
+        """
+        return self.__interpolationMode
+    @InterpolationMode.setter
+    def InterpolationMode(self, interpolationMode):
+        """
+        SdsInterpolationMode    required
+        :param interpolationMode
+        :return:
+        """
+        self.__interpolationMode = interpolationMode
+
+    @property
+    def ExtrapolationMode(self):
+        """
+        not required
+        :return:
+        """
+        return self.__extrapolationMode
+    @ExtrapolationMode.setter
+    def ExtrapolationMode(self, extrapolationMode):
+        """
+        SdsExtrapolationMode   required
+        :param extrapolationMode
+        :return:
+        """
+        self.__extrapolationMode = extrapolationMode
+
+    @property
     def Properties(self):
         """
         SdsTypeCode  required
@@ -151,6 +187,12 @@ class SdsType(object):
             if(self.BaseType is not None):
                 dictionary['BaseType'] = self.BaseType.toDictionary()
 
+        if hasattr(self,'ExtrapolationMode'):
+            dictionary['ExtrapolationMode'] = self.ExtrapolationMode
+
+        if hasattr(self,'InterpolationMode'):
+            dictionary['InterpolationMode'] = self.InterpolationMode
+
         return dictionary
 
     @staticmethod
@@ -160,6 +202,9 @@ class SdsType(object):
     @staticmethod
     def fromDictionary(content):
         type = SdsType()
+
+        if content is None:
+            return None
 
         if len(content) == 0:
             return type
@@ -178,6 +223,12 @@ class SdsType(object):
 
         if 'BaseType' in content:
             type.BaseType = SdsType.fromDictionary(content['BaseType'])
+
+        if 'InterpolationMode' in content:
+            type.InterpolationMode = content['InterpolationMode']
+
+        if 'ExtrapolationMode' in content:
+            type.ExtrapolationMode = content['ExtrapolationMode']
        
         if 'Properties' in content:
             properties = content['Properties']

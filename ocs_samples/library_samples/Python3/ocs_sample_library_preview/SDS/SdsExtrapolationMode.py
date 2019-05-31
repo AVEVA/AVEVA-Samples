@@ -1,11 +1,11 @@
-# SdsStreamExtrapolation.py
+# SdsStreamExtrapolationMode.py
 #
 
 from enum import Enum
 
-class SdsStreamExtrapolation(Enum):
+class SdsExtrapolationMode(Enum):
     """
-    SdsStreamExtrapolation 0 -3
+    SdsStreamExtrapolationMode 0 -3
     """
     All = 0
     Nonex = 1

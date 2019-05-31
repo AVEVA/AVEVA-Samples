@@ -2,7 +2,8 @@ from .SdsBoundaryType import SdsBoundaryType
 from .SdsNamespace import SdsNamespace
 from .SdsSearchMode import SdsSearchMode
 from .SdsStream import SdsStream
-from .SdsStreamExtrapolation import SdsStreamExtrapolation
+from .SdsExtrapolationMode import SdsExtrapolationMode
+from .SdsInterpolationMode import SdsInterpolationMode
 from .SdsStreamIndex import SdsStreamIndex
 from .SdsStreamMode import SdsStreamMode
 from .SdsStreamPropertyOverride import SdsStreamPropertyOverride
