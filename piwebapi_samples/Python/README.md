@@ -7,8 +7,20 @@ To run the sample code:
 - Clone the GitHub repository
 - Open the Python folder with your IDE
 - Install the required modules by running the following command in the terminal:  ```pip install -r requirements.txt```
-- Run the application using the following command in the terminal:  ```python .\program.py```
+- Run the application using the following command in the terminal:  ```python .\program.py``` where ```program.py``` is the program you want to run.  e.g ```python .\create_sandbox.py```
 
+Getting Started with Tests
+------------
+
+To run the sample tests:
+- Each test file (prefixed as "test_..."), can be run independently or all the tests can be run in a single instance via the ```run_all_tests.py``` file.
+- To run a single file:
+  - Open the test file you wish to run: e.g. ```.\test_batch.py```
+  - Note the global constants at the top file, and replace with your desired values.
+- To run all tests via ```run_all_tests.py```:
+  - Open __each__ test file.
+  - Note the global constants at the top of each file, and replace with your desired values.
+  
 - All of these global constants are not necessary for each file, therefore you may only see one or two per file.
 - Search for the text __PIWEBAPI_URL__, add your PI Web API Url.  For example:  
 
@@ -46,19 +58,12 @@ OSI_AF_ELEMENT = 'Pump1';
 OSI_AF_ATTRIBUTE_TAG = 'PumpStatus';
 ```
 
-Getting Started with Tests
-------------
-
-To run the sample tests:
-- Each test file (prefixed as "test_..."), can be run independently or all the tests can be run in a single instance via the ```run_all_tests.py``` file.
-- To run a single file:
-  - Open the test file you wish to run: e.g. ```Python\test_batch.py```
-  - Note the global constants at the top file, and replace with your desired values.
-- To run all tests via ```run_all_tests.py```:
-  - Open __each__ test file.
-  - Note the global constants at the top of each file, and replace with your desired values.
 
 - In the terminal, navigate to the test files and use the following command to run all the tests:   ```python .\run_all_tests.py```  or to run a test individually: ```python .\test_batch_call.py```
+
+Note:  The tests are only configured for kerberos.
+
+Note:  The single tests may have expected configurations of PIWebAPI, this will cause the test to fail with a 404 Error if the expected configuration isn't available.  See run_all_tests for the order to run the tests in. 
 
 
 System Configuration
