@@ -16,6 +16,7 @@ To run the sample code:
 "url": "file:///C:/PI Web API/JQuery/index.html",
 ```
 
+- Install Debugger for Chrome extension
 - Click "Start Debugging" on the Debug menu
 
 
