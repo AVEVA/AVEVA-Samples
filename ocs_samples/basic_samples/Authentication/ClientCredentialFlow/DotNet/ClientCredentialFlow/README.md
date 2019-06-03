@@ -1,6 +1,6 @@
 # Setup
 
-Replace the placeholders in the [apsettings](./apsettings.json) file with your TenantID, ClientID and ClientSecret.
+Replace the placeholders in the [apsettings](./apsettings.json) file with your Tenant Id, Client Id and Client Secret, and the current Api Version. There is no need to replace the Namespace Id for this sample.
 
 ## Running the sample
 

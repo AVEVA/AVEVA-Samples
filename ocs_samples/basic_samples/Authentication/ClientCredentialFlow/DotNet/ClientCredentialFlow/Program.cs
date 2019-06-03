@@ -11,33 +11,49 @@ namespace ClientCredentialFlow
         public static void Main(string[] args)
         {
             InitConfig();
-                
+
             ClientFlow.OcsUrl = GetConfigValue("Resource");
 
             var tenantId = GetConfigValue("TenantId");
             var clientId = GetConfigValue("ClientId");
             var clientSecret = GetConfigValue("ClientKey");
+            var version = GetConfigValue("ApiVersion");
             ClientFlow.CreateAuthenticatedHttpClient(clientId, clientSecret);
 
             // Make an HTTP request to OCS using the authenticated client - since this is the first request, the AuthenticationHandler will
             // authenticate and acquire an Access Token and cache it.
-            var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/Tenants/{tenantId}").Result;
-            response.EnsureSuccessStatusCode();
-            Console.WriteLine(response.Content.ReadAsStringAsync());
-            Console.WriteLine($"HTTP GET api/Tenants/{tenantId} successful");
+            try
+            {
+                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/Tenants/{tenantId}/Users").Result;
+                response.EnsureSuccessStatusCode();
+                Console.WriteLine(response.Content.ReadAsStringAsync());
+                Console.WriteLine($"HTTP GET api/{version}/Tenants/{tenantId}/Users successful");
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine($"Authentication failed with the following error: {ex.InnerException.Message}");
+            }
 
             // Make another request to OCS - this call should use the cached Access Token.
-            response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/Tenants/{tenantId}/Users").Result;
-            response.EnsureSuccessStatusCode();
-            Console.WriteLine($"HTTP GET api/Tenants/{tenantId}/Users successful");
+            try
+            {
+                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/Tenants/{tenantId}/Users").Result;
+                response.EnsureSuccessStatusCode();
+                Console.WriteLine($"HTTP GET api/{version}/Tenants/{tenantId}/Users successful");
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine($"Authentication failed with the following error: {ex.InnerException.Message}");
+            }
         }
 
         private static void InitConfig()
         {
-            try {
+            try
+            {
                 _configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional:false, reloadOnChange:false)
-                .Build();
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .Build();
             }
             catch (FileNotFoundException ex)
             {
@@ -53,7 +69,8 @@ namespace ClientCredentialFlow
 
         private static string GetConfigValue(string key)
         {
-            try {
+            try
+            {
                 if (_configuration == null)
                 {
                     Console.WriteLine("Config Null");
@@ -67,9 +84,10 @@ namespace ClientCredentialFlow
                     Console.WriteLine($"Missing the value for \"{key}\" in config file");
                     Environment.Exit(1);
                 }
+
                 return value;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine($"Configuration issue");
                 Environment.Exit(1);
