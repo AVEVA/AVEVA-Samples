@@ -199,6 +199,9 @@ namespace OMF_API
         private static void CheckValues(string value)
         {
             Console.WriteLine("Checks");
+            Console.WriteLine("Letting OMF get to data store");
+            Thread.Sleep(10000);
+            
             if (sendingToOCS)
             {
                 //give a little bit of time for the OMF information to propogate

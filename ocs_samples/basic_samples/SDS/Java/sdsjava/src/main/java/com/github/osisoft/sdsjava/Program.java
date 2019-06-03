@@ -461,8 +461,13 @@ public class Program {
             streamS = ocsClient.Streams.getStream(tenantId, namespaceId, secondary.getId());
             secondary = ocsClient.mGson.fromJson(streamS, SdsStream.class);
 
-            System.out.println("Secondary indexes on streams original:" + sampleStream.getIndexes().size() + ". New one:  " + secondary.getIndexes().size());
+            int numberOfIndicies=  0;
+            List<SdsStreamIndex> indicies = secondary.getIndexes();
+            if( indicies != null  ){
+                numberOfIndicies = indicies.size();
+            }
 
+            System.out.println("Secondary indexes on streams original:" + sampleStream.getIndexes().size() + ". New one:  " + numberOfIndicies);
 
             // Step 18
             // Adding Compound Index Type
