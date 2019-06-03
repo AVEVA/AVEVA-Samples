@@ -1,7 +1,7 @@
 var config = {
     authority: "https://dat-b.osisoft.com/identity",
-    ApiVersion: "v1-preview",
-    client_id: "Client ID Placeholder",
+    ApiVersion: "v1",
+    client_id: "REPLACE_WITH_CLIENT_ID",
     redirect_uri: "http://localhost:5003/callback.html",
     response_type: "id_token token",
     scope:"openid ocsapi",
@@ -9,5 +9,5 @@ var config = {
     filterProtocolClaims: true,
     loadUserInfo: true,
     revokeAccessTokenOnSignout: true,
-    acr_values: "tenant:" + "Tenant ID Placeholder"
+    acr_values: "tenant:" + "REPLACE_WITH_TENANT_ID"
 };
