@@ -1,12 +1,12 @@
 {
+  "TenantId": "TenantID",
   "HybridFlow": {
-    "ClientId": "Client ID placeholder",
-    "ClientSecret": "Client Secret Placeholder",
+    "ClientId": "ClientID",
+    "ClientSecret": "ClientSecret",
     "scope": "openid ocsapi offline_access",
     "RedirectHost": "https://localhost",
     "RedirectPort": "54567",
     "RedirectPath": "signin-oidc"
   },
-  "TenantId": "Tenant ID placeholder",
   "OCSUrl": "https://dat-b.osisoft.com"
 }

@@ -1,12 +1,13 @@
 # Setup
 
-1. Replace the placeholders in the [config](./config.json) file with your TenantID, ClientID and ClientSecret
+1. Replace the placeholders in the [config](./config.json) file with your Tenant Id, Client Id and Client Secret
 2. Ensure that this client was created to allow Refresh Tokens
   - If this client does not allow refresh tokens - **AllowAccessTokes** set to false
    when creating the client - remove **offline_access** scope
    in the config file. If the scope is not removed authenticatin will fail. No refresh token will be issued upon authentication
 3. Ensure that the client contains $"{RedirectHost}:{RedirectPort}/{RedirectPath}" in the list of RedirectUris
   - Default value from config is: `http://127.0.0.1:54567/signin-oidc`
+
   - You can change the values to match your use case
 
 ## Running the sample

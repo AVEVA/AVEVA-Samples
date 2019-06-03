@@ -1,6 +1,6 @@
 # Setup
 
-Replace the placeholders in the [config](./config.json) file with your TenantID, ClientID and ClientSecret.
+Replace the placeholders in the [config](./config.json) file with your Tenant Id, Client Id and Client Secret.
 
 ## Running the sample
 
