@@ -18,17 +18,8 @@ export class AppPage {
                         expect(txt).toContain(expectation);
                     });
             });
-/*#createType
-        return element(by.xpath('//*[@id="' + path + '"]')).click()
-            .then((res) => {
-                browser.driver.sleep(2000);
-                element(by.xpath('//*[@id="' + path + 'Message"]')).getText()
-                    .then((txt) => {
-                        expect(txt).toContain(expectation);
-                    });
-            });
-            */
     }
+
     createType(): any {        
         element(by.xpath('/html')).getText().then((res) => {
             console.log('!!create type');
@@ -39,18 +30,17 @@ export class AppPage {
             browser.driver.sleep(2000);
             element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/span')).getText()
                 .then((txt) => {
-                    expect(txt).toContain("201");
+                    expect(txt).toContain('20');
                 });
         });
-        // return this.helper('createType', '201');
     }
 
     createStream(): any {
-        return this.helper('createStream', '201');
+        return this.helper('createStream', '20');
     }
 
     writeData(): any {
-        return this.helper('writeWaveDataEvents', '204');
+        return this.helper('writeWaveDataEvents', '20');
     }
 
     retreiveEvents(): any {
@@ -63,11 +53,11 @@ export class AppPage {
     }
 
     updateValues(): any {
-        return this.helper('updateWaveDataEvents', '204');
+        return this.helper('updateWaveDataEvents', '20');
     }
 
     replaceValues(): any {
-        return this.helper('replaceWaveDataEvents', '204');
+        return this.helper('replaceWaveDataEvents', '20');
     }
 
     // todo update this
@@ -81,15 +71,15 @@ export class AppPage {
     }
 
     propertyOverride(): any {
-        return this.helper('createPropertyOverrideAndUpdateStream', '204');
+        return this.helper('createPropertyOverrideAndUpdateStream', '20');
     }
 
     createSdsType2(): any {
-        return this.helper('createAutoStreamViewTargetType', '201');
+        return this.helper('createAutoStreamViewTargetType', '20');
     }
 
     createSdsStream2(): any {
-        return this.helper('createAutoStreamView', '201');
+        return this.helper('createAutoStreamView', '20');
     }
 
     retreiveEventsBasedOnSdsView(): any {
@@ -97,27 +87,15 @@ export class AppPage {
     }
 
     createStreamViewWithProps(): any {
-        return this.helper('createSdsStreamViewPropertiesAndManualType', '201');
+        return this.helper('createSdsStreamViewPropertiesAndManualType', '20');
     }
 
     getEvents2(): any {
         return this.helper('retrieveWaveDataEventsManualStreamView', '');
-/*
-        return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/button[11]')).click()
-            .then((res) => {
-                browser.driver.sleep(2000);
-                element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div[3]/table/tbody/tr[1]/th[1]')).getText()
-                    .then((txt) => {
-                        expect(txt).toContain("OrderTarget");
-                    });
-            });
-*/
     }
 
     sdsStreamViewMap(): any {
         return this.helper('getSdsStreamViewMap', '');
-
-//        return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/button[12]')).click();
     }
 
     updateStreamType(): any {
@@ -129,43 +107,21 @@ export class AppPage {
     }
 
     createTagsAndMetaData(): any {
-        return this.helper('createTagsAndMetadata', '200');
+        return this.helper('createTagsAndMetadata', '20');
     }
 
 
     getTags(): any {
         return this.helper('getAndPrintTags', '');
-
-        /*
-        return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/button[14]')).click()
-            .then((res) => {
-                browser.driver.sleep(2000);
-                element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/span[14]')).getText()
-                    .then((txt) => {
-                        expect(txt).toContain("waves, periodic, 2018, validated");
-                    });
-            });
-            */
     }
 
     getMetadata(): any {
         return this.helper('getAndPrintMetadata', '');
-
-        /*
-        return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/button[15]')).click()
-            .then((res) => {
-                browser.driver.sleep(2000);
-                element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div[6]/table/tbody/tr[4]/td[1]')).getText()
-                    .then((txt) => {
-                       // expect(txt).toContain("Province");
-                    });
-            });
-            */
     }
 
 
     deleteVal(): any {
-        return this.helper('deleteAllValues', '204');
+        return this.helper('deleteAllValues', '20');
     }
 
     secondaryCreate(): any {
