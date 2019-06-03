@@ -639,7 +639,7 @@ jobs:
   steps :
     - task: NodeTool@0 
       inputs:
-        versionSpec: '8.x' # replace this value with the version that you need for your project
+        versionSpec: '10.x' # replace this value with the version that you need for your project
 
     # Download Secure File
     # Download a secure file to a temporary location on the build or release agent
