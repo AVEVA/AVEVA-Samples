@@ -14,7 +14,7 @@
 ### Using Visual Studio
 
 - Load the .csproj
-- Rebuild solution
+- Rebuild project
 - Run it
 - Pres the *login* button in the browser
 - Follow the prompts in the web browser to log in
