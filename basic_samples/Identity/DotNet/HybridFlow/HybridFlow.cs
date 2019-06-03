@@ -19,7 +19,7 @@ namespace HybridFlow
         {
             set => _ocsIdentityUrl = value + IdentityResourceSuffix;
         }
-        
+
         public static string RedirectHost
         {
             set => _redirectHost = value;
@@ -40,7 +40,8 @@ namespace HybridFlow
         /// </summary>
         private const string IdentityResourceSuffix = "/identity";
 
-        public static (string, string, DateTime) GetHybridFlowAccessToken(string clientId, string clientSecret, string scope, string tenantId)
+        public static (string, string, DateTime) GetHybridFlowAccessToken(string clientId, string clientSecret,
+            string scope, string tenantId)
         {
             Console.WriteLine("+-----------------------+");
             Console.WriteLine("|  Sign in with OIDC    |");
@@ -58,8 +59,8 @@ namespace HybridFlow
 
                 Console.WriteLine("Prompting for login via a browser...");
                 loginResult = SignIn(clientId, clientSecret, scope, tenantId).Result;
-            } while(loginResult.IsError);
-            
+            } while (loginResult.IsError);
+
 
             return (loginResult.AccessToken, loginResult.RefreshToken, loginResult.AccessTokenExpiration.ToLocalTime());
         }
@@ -67,7 +68,7 @@ namespace HybridFlow
         private static async Task<ProviderInformation> GetProviderInformation()
         {
             // Discover endpoints from metadata.
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 // Create a discovery request
                 var discoveryDocumentRequest = new DiscoveryDocumentRequest
@@ -98,7 +99,8 @@ namespace HybridFlow
             }
         }
 
-        private static async Task<LoginResult> SignIn(string clientId, string clientSecret, string scope, string tenantId)
+        private static async Task<LoginResult> SignIn(string clientId, string clientSecret, string scope,
+            string tenantId)
         {
             // create a redirect URI using an available port on the loopback address.
             // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
@@ -144,7 +146,8 @@ namespace HybridFlow
             return null;
         }
 
-        public static (string, string, DateTime) GetAccessTokenFromRefreshToken(string refreshToken, string clientId, string clientSecret)
+        public static (string, string, DateTime) GetAccessTokenFromRefreshToken(string refreshToken, string clientId,
+            string clientSecret)
         {
             Console.WriteLine("");
             Console.WriteLine("+-----------------------+");
@@ -155,17 +158,19 @@ namespace HybridFlow
             return RefreshTokenAsync(refreshToken, clientId, clientSecret).Result;
         }
 
-        private static async Task<(string, string, DateTime)> RefreshTokenAsync(string refreshToken, string clientId, string clientSecret)
+        private static async Task<(string, string, DateTime)> RefreshTokenAsync(string refreshToken, string clientId,
+            string clientSecret)
         {
             if (refreshToken == "")
             {
                 Console.WriteLine("No refresh token provided");
             }
+
             Console.WriteLine("Using refresh token: {0}", refreshToken);
 
             // Get provider information manually
             var provider = await GetProviderInformation();
-            
+
             // Make a refresh token request. This will issue new access and refresh tokens.
             var tokenClient = new HttpClient();
             var response = await tokenClient.RequestRefreshTokenAsync(new RefreshTokenRequest
@@ -177,13 +182,12 @@ namespace HybridFlow
                 RefreshToken = refreshToken
             });
 
-            if (response.IsError) 
-            {
-                Console.WriteLine("Error while getting the refresh token: " + response.Error);
-                return ("", "", DateTime.Now);
-            }
+            if (!response.IsError)
+                return (response.AccessToken, response.RefreshToken,
+                    DateTime.Now.AddSeconds(response.ExpiresIn).ToLocalTime());
+            Console.WriteLine("Error while getting the refresh token: " + response.Error);
+            return ("", "", DateTime.Now);
 
-            return (response.AccessToken, response.RefreshToken, DateTime.Now.AddSeconds(response.ExpiresIn).ToLocalTime());
         }
 
         public static async void Logout()

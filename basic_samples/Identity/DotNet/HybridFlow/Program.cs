@@ -17,7 +17,7 @@ namespace HybridFlow
         private const string AuthorizationHeaderName = "Authorization";
 
         static void Main(string[] args)
-        { 
+        {
             InitConfig();
 
             HybridFlow.OcsUrl = GetConfigValue("OCSUrl");
@@ -31,9 +31,10 @@ namespace HybridFlow
             var scope = GetConfigValue("HybridFlow:Scope");
 
             // Get access token and refresh token.
-            var (accessToken, refreshToken, expiration) = HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
+            var (accessToken, refreshToken, expiration) =
+                HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
             Console.WriteLine("Access Token: " + accessToken);
-            var refreshStatus =  !string.IsNullOrEmpty(refreshToken) ? refreshToken : "No refresh token requested";
+            var refreshStatus = !string.IsNullOrEmpty(refreshToken) ? refreshToken : "No refresh token requested";
             Console.WriteLine("Refresh Token: " + refreshStatus);
             Console.WriteLine("Expires: " + expiration);
 
@@ -102,10 +103,11 @@ namespace HybridFlow
 
         private static void InitConfig()
         {
-            try {
+            try
+            {
                 _configuration = new ConfigurationBuilder()
-                .AddJsonFile("config.json", optional:false, reloadOnChange:false)
-                .Build();
+                    .AddJsonFile("config.json", optional: false, reloadOnChange: false)
+                    .Build();
             }
             catch (FileNotFoundException)
             {
@@ -121,7 +123,8 @@ namespace HybridFlow
 
         private static string GetConfigValue(string key)
         {
-            try {
+            try
+            {
                 if (_configuration == null)
                 {
                     Console.WriteLine("Config Null");
@@ -130,14 +133,13 @@ namespace HybridFlow
 
                 var value = _configuration.GetValue<string>(key);
 
-                if (value == null)
-                {
-                    Console.WriteLine($"Missing the value for \"{key}\" in config file");
-                    Environment.Exit(1);
-                }
+                if (value != null) return value;
+                Console.WriteLine($"Missing the value for \"{key}\" in config file");
+                Environment.Exit(1);
+
                 return value;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine($"Configuration issue");
                 Environment.Exit(1);

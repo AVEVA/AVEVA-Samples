@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.String;
 
 namespace HybridFlow
 {
@@ -22,21 +23,14 @@ namespace HybridFlow
         {
             _path = path;
 
-            if (!port.HasValue)
-            {
-                Port = GetRandomUnusedPort();
-            }
-            else
-            {
-                Port = port.Value;
-            }
+            Port = port ?? GetRandomUnusedPort();
         }
 
-        private int GetRandomUnusedPort()
+        private static int GetRandomUnusedPort()
         {
             var listener = new TcpListener(IPAddress.Loopback, 0);
             listener.Start();
-            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            var port = ((IPEndPoint) listener.LocalEndpoint).Port;
             listener.Stop();
             return port;
         }
@@ -50,25 +44,26 @@ namespace HybridFlow
                 try
                 {
                     var result = await listener.WaitForCallbackAsync();
-                    if (String.IsNullOrWhiteSpace(result))
+                    if (IsNullOrWhiteSpace(result))
                     {
-                        return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = "Empty response." };
+                        return new BrowserResult
+                            {ResultType = BrowserResultType.UnknownError, Error = "Empty response."};
                     }
 
-                    return new BrowserResult { Response = result, ResultType = BrowserResultType.Success };
+                    return new BrowserResult {Response = result, ResultType = BrowserResultType.Success};
                 }
                 catch (TaskCanceledException ex)
                 {
-                    return new BrowserResult { ResultType = BrowserResultType.Timeout, Error = ex.Message };
+                    return new BrowserResult {ResultType = BrowserResultType.Timeout, Error = ex.Message};
                 }
                 catch (Exception ex)
                 {
-                    return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = ex.Message };
+                    return new BrowserResult {ResultType = BrowserResultType.UnknownError, Error = ex.Message};
                 }
             }
         }
 
-        public static void OpenBrowser(string url)
+        private static void OpenBrowser(string url)
         {
             try
             {
@@ -80,7 +75,7 @@ namespace HybridFlow
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") {CreateNoWindow = true});
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
@@ -100,24 +95,23 @@ namespace HybridFlow
 
     public class LoopbackHttpListener : IDisposable
     {
-        const int DefaultTimeout = 60 * 5; // 5 mins (in seconds)
+        private const int DefaultTimeout = 60 * 5; // 5 mins (in seconds)
 
-        IWebHost _host;
-        TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
-        string _url;
+        readonly IWebHost _host;
+        private readonly TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
 
-        public string Url => _url;
+        private string Url { get; }
 
         public LoopbackHttpListener(int port, string path = null)
         {
-            path = path ?? String.Empty;
+            path = path ?? Empty;
             if (path.StartsWith("/")) path = path.Substring(1);
 
-            _url = $"http://127.0.0.1:{port}/{path}";
+            Url = $"https://127.0.0.1:{port}/{path}";
 
             _host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls(_url)
+                .UseUrls(Url)
                 .Configure(Configure)
                 .Build();
             _host.Start();
@@ -132,32 +126,33 @@ namespace HybridFlow
             });
         }
 
-        void Configure(IApplicationBuilder app)
+        private void Configure(IApplicationBuilder app)
         {
             app.Run(async ctx =>
             {
-                if (ctx.Request.Method == "GET")
+                switch (ctx.Request.Method)
                 {
-                    SetResult(ctx.Request.QueryString.Value, ctx);
-                }
-                else if (ctx.Request.Method == "POST")
-                {
-                    if (!ctx.Request.ContentType.Equals("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase))
-                    {
+                    case "GET":
+                        SetResult(ctx.Request.QueryString.Value, ctx);
+                        break;
+                    case "POST" when !ctx.Request.ContentType.Equals("application/x-www-form-urlencoded",
+                        StringComparison.OrdinalIgnoreCase):
                         ctx.Response.StatusCode = 415;
-                    }
-                    else
+                        break;
+                    case "POST":
                     {
                         using (var sr = new StreamReader(ctx.Request.Body, Encoding.UTF8))
                         {
                             var body = await sr.ReadToEndAsync();
                             SetResult(body, ctx);
                         }
+
+                        break;
                     }
-                }
-                else
-                {
-                    ctx.Response.StatusCode = 405;
+
+                    default:
+                        ctx.Response.StatusCode = 405;
+                        break;
                 }
             });
         }
