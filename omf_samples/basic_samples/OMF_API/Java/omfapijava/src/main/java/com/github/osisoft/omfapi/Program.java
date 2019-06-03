@@ -220,7 +220,10 @@ public class Program
     }
     
     private static void checkSends(String lastVal) throws Exception {
-        System.out.println("Checks");
+        System.out.println("Checks");        
+        System.out.println("Letting OMF get to data store");
+
+        Thread.sleep(10000);
         Gson gson = new Gson();
         if(sendToOCS){
             String json1;
