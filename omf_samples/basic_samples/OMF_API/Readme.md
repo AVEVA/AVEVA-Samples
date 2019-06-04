@@ -27,22 +27,9 @@ The samples are written in a way that the same sample can send to both PI and OC
 
 
 NOTE: Automated tests are currently OCS only.
-NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoint.  
 
+NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoint.  The Connector Relay OMF endpoint is the only current endpoint.  These samples should generally work if you change the OMF Version Header to 1.0, but they are untested and there might be more changes required.   
 
-
-Configuring OCS or the PI system to accept OMF messages
------------------------------------------------------
-
-Sending to OCS:
-Configure OMF Ingress.  This can be done programmatically, but here are the steps to do it via the OCS portal:
-
-Note: UI is still a work-in-progress, so once that is finalized we will update this with the steps.
-
-
-Sending to PI:
-1) Install PI Web API 2019 (not released currently)
-2) Configure OMF endpoint during installation
 
 
 OMF limitations on OCS and PI

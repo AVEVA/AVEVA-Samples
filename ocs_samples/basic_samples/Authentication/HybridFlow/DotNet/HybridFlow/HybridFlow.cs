@@ -138,7 +138,7 @@ namespace HybridFlow
             catch (Exception ex)
             {
                 Console.WriteLine($"Error while logging in: {ex}");
-                Environment.Exit(1);
+                throw ex;
             }
 
             return null;

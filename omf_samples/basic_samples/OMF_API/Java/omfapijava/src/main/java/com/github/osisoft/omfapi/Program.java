@@ -47,6 +47,7 @@ public class Program
 {
     //holder used for test result
     static Boolean success = true;
+    static Exception exc;
 
     //settings that aren't set by configuration 
     static String compression = "none";
@@ -82,7 +83,12 @@ public class Program
 	
     public static void main( String[] args )
     {
-        toRun(false);
+        try
+        {
+            toRun(false);
+        }
+        catch (Exception e) {
+        }
     }     
     
         
@@ -123,7 +129,7 @@ public class Program
     }
     
     
-    public static boolean toRun(Boolean test) {
+    public static boolean toRun(Boolean test) throws Exception {
         disableSslVerification();
 
         // Create Sds client to communicate with server
@@ -188,6 +194,7 @@ public class Program
         catch (Exception e) {
             success = false;
             e.printStackTrace();
+            exc = e;
         } finally {
             System.out.println("Deletings");
 
@@ -196,18 +203,27 @@ public class Program
                 oneTimeSendMessages("Delete");
             }
             catch(Exception e) {
-                success = false;
+                if(!success && sendToOCS){
+                    success = false;
+                    exc = e;                    
+                }
                 e.printStackTrace();
             }
 
             System.out.println("Done");
         }
-
+        if(!success){
+            success = false;
+            throw exc;               
+        }
         return success;
     }
     
     private static void checkSends(String lastVal) throws Exception {
-        System.out.println("Checks");
+        System.out.println("Checks");        
+        System.out.println("Letting OMF get to data store");
+
+        Thread.sleep(10000);
         Gson gson = new Gson();
         if(sendToOCS){
             String json1;
@@ -350,6 +366,12 @@ public class Program
     }
 
     private static void oneTimeSendMessages(String action) throws Exception {
+        if(!sendToOCS)
+        {
+            return;
+        }
+
+
         //Step 3
         sendOMF(getFirstandSecondStaticTypeString(),"type",action);
         //Step 4

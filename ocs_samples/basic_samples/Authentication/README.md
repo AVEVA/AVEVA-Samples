@@ -136,10 +136,9 @@ The sample for this authentication flow can be found [here](./HybridFlow/).
 Tasks|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ------|------|------------
 **Client Credential Flow** | <a href="ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>|[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_CC_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
-**Hybrid Flow** | <a href="HybridFlow/DotNet/HybridFlow">.NET</a>| Passes manually, locally
-**Implicit Flow** | <a href="ImplicitFlow/DotNet/ImplicitFlow">.NET</a>| Passes manually, locally
+**Hybrid Flow** | <a href="HybridFlow/DotNet/HybridFlow">.NET</a>| [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Hybrid_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+**Implicit Flow** | <a href="ImplicitFlow/DotNet/ImplicitFlow">.NET</a>| [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Implicit_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
-These tests have not been automated due to issues with getting logins working properly.
 
 For the main OCS page [ReadMe](../../)<br />
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

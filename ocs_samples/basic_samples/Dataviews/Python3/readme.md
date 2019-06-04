@@ -7,6 +7,7 @@ to SDS, obtain an authorization token, create an  SdsType and  SdsStream with da
 create a Dataview, update it, retreive it, and retrieve data from it a couple of different ways.  
 At the end everything that was created is deleted. 
 
+This example uses the ocs_sample_library_preview library which is also included in this github repo.  It is downloadable via pip.
 
 	
 To Run this Sample:
@@ -17,7 +18,16 @@ To Run this Sample:
 4. Update ``config.ini`` with the credentials provided by OSIsoft
 5. Run ``program.py``
 
-This example uses the ocs_sample_library_preview library which is also included in this github repo.  It is downloadable via pip.
+
+
+To test the sample after running it:
+1. Run ``python test.py``
+
+or
+
+1. Install pytest ``pip install pytest``
+2. Run ``pytest program.py``
+
 
 -------------
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=DataviewPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)

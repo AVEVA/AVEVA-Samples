@@ -10,7 +10,9 @@ jobs:
 
 - job: OMF_APIDotNet
   pool:
-    name: 00-OSIManaged-Build
+    name: 00-OSIManaged-Test
+    demands: USERNAME -equals IAC8188$
+
   steps :
     # Download Secure File
     # Download a secure file to a temporary location on the build or release agent
@@ -47,5 +49,92 @@ jobs:
         dotnet test
       workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/CSharp/OMF_APITests/
       displayName: 'Run Test'
+       
+- job: OMF_APIJava
 
-    
+  pool:
+    name: 00-OSIManaged-Test
+    demands: USERNAME -equals IAC8188$
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_onprem_omf_config.properties
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_onprem_omf_config.properties
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file      
+
+    - script: |
+        del config.properties
+      workingDirectory:  '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/'
+      displayName: 'del config file1'
+
+
+    - script: |
+        rename prod_onprem_omf_config.properties config.properties
+      workingDirectory: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/'
+      displayName: 'rename config file'    
+      
+    - script: |
+        mvn test
+      workingDirectory: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Java/omfapijava/'
+      displayName: 'Run Test'
+ 
+
+- job: OMF_APIPy
+
+  pool:
+    name: 00-OSIManaged-Test
+    demands: USERNAME -equals IAC8188$
+  steps :
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_onprem_omf_config.ini
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_onprem_omf_config.ini
+        targetFolder: '$(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file      
+
+    - script: |
+        del config.ini
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
+      displayName: 'del config file1'
+
+
+    - script: |
+        rename prod_onprem_omf_config.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
+      displayName: 'rename config file'   
+            
+      
+    - script: |
+        "C:\Program Files (x86)\Python37-32\Scripts\pip.exe" install -r requirements.txt
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
+      displayName: 'Install requirements'
+      
+    - script: |
+        "C:\Program Files (x86)\Python37-32\python.exe" ./test.py
+      displayName: 'Test with unittes'
+      workingDirectory: $(Build.SourcesDirectory)/omf_samples/basic_samples/OMF_API/Python3/
