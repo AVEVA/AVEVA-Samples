@@ -116,10 +116,6 @@ namespace HybridFlow
         {
             //embedded automated logging in.  Added for testing purposes as typically for a Hybrid application you want the user to login.
 
-            //works against the personal microsoft account option only
-
-            // not sure why specifying the current directory is needed on local testing but it is
-
             //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {

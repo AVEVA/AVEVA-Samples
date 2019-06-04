@@ -32,6 +32,7 @@ namespace ClientCredentialFlow
             catch (AggregateException ex)
             {
                 Console.WriteLine($"Authentication failed with the following error: {ex.InnerException.Message}");
+                throw (ex.InnerException);
             }
 
             // Make another request to OCS - this call should use the cached Access Token.
@@ -44,6 +45,7 @@ namespace ClientCredentialFlow
             catch (AggregateException ex)
             {
                 Console.WriteLine($"Authentication failed with the following error: {ex.InnerException.Message}");
+                throw (ex.InnerException);
             }
         }
 
