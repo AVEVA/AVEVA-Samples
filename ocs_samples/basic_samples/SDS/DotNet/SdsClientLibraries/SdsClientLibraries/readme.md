@@ -45,8 +45,8 @@ replace the placeholders with the authentication-related values you received fro
 "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
 "TenantId": "REPLACE_WITH_TENANT_ID",
 "Resource": "https://dat-b.osisoft.com",
-"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-"ClientKey": "REPLACE_WITH_CLIENT_SECRET"
+"ClientId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
+"ClientKey": "REPLACE_WITH_APPLICATION_SECRET"
 }
 ```
 
