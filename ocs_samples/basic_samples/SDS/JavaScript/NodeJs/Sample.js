@@ -343,7 +343,7 @@ var app = function (request1, response)
     var printWindowEventsTable = getWindowEventsTable.then(
         function(res){
             var allEvents = JSON.parse(res)
-            console.log("Values in table format")
+            console.log("\nValues in table format")
             console.log(JSON.stringify(allEvents))
             return allEvents
         }
@@ -405,7 +405,7 @@ var app = function (request1, response)
     // get updated events
     getWindowEvents = updateEvents.then(
         function (res) {
-            console.log("Getting updated events");
+            console.log("\nGetting updated events");
             // get updated values
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -503,7 +503,7 @@ var app = function (request1, response)
     var getInterpolatedEvents = printReplaceEvents.then(
         // Step 9 
         function (res) {
-            console.log("Getting replaced events");
+            console.log("\nGetting interpolated events");
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -531,7 +531,7 @@ var app = function (request1, response)
     var getFilteredEvents = printInterpolatedEvents.then(
         // Step 10
         function (res) {
-            console.log("Getting replaced events");
+            console.log("\nGetting filtered events");
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -544,7 +544,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var printFilteredEvents = getFilteredEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
@@ -553,9 +552,38 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
+         
+         
+    // get sampled events
+    var getSampledValues = printFilteredEvents.then(
+        // Step 11
+        function (res) {
+            console.log("\nGetting sampled values");
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getSampledValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 40, 4, "sin");
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getSamples(tenantId, sampleNamespaceId, sampleStreamId, 0, 40, 4, "sin");
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    var printSampledValues = getSampledValues.then(
+        function(res){
+            var sampledValues = JSON.parse(res)
+            console.log("Sampled values");
+            dumpEvents(sampledValues)
+        }
+    ).catch(function (err) { logError(err); });
+
+
+
     // Property Overrides
-    var getRangeEvents = printFilteredEvents.then(
-        
+    var getRangeEvents = printSampledValues.then(
+        //Fix step numbers
         // Step 11
         function (res) {
             if (client.tokenExpires < nowSeconds) {
