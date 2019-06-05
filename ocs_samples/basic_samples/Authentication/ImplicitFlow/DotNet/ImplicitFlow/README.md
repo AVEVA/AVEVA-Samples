@@ -1,6 +1,6 @@
 # Setup
 
-1. Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID.
+1. Replace the placeholders in the [config](./wwwroot/config.js) file with your Tenant Id and Client Id.
 2. Ensure that the client contains `http://localhost:5003/callback.html` in the list of RedirectUris
 
 ## Running the sample
@@ -14,7 +14,7 @@
 ### Using Visual Studio
 
 - Load the .csproj
-- Rebuild solution
+- Rebuild project
 - Run it
 - Pres the *login* button in the browser
 - Follow the prompts in the web browser to log in

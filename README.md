@@ -15,11 +15,7 @@ Note: The OMF samples work against both the on-prem PI System and OCS.
 ## About this repo
 
 There is a [style guide](StyleGuide.md) that helps explain the organization of the repo and helps explain the code samples provided.  There is also a [test guide](test_guide.md) that goes into more details about the included automated tests.
-
-
-## Request for example 
-
-Please raise an issue if you would like to see a new task, a new example inside of a task, or an existing example in a particular langauge.    
+ 
 
 ## Contributions
 

@@ -11,11 +11,6 @@ namespace HybridFlow
     {
         private static IConfiguration _configuration;
 
-        /// <summary>
-        /// Authorization header name.
-        /// </summary>
-        private const string AuthorizationHeaderName = "Authorization";
-
         public static void Main(string[] args)
         {
             try
@@ -40,16 +35,17 @@ namespace HybridFlow
                 var clientSecret = GetConfigValue("ClientKey");
                 var scope = GetConfigValue("Scope");
                 var ocsUrl = GetConfigValue("Resource");
-                var api = GetConfigValue("ApiVersion");
+                var apiVersion = GetConfigValue("ApiVersion");
 
                 // Get access token and refresh token.
-                var (accessToken, refreshToken, expiration) = HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
+                var (accessToken, refreshToken, expiration) =
+                    HybridFlow.GetHybridFlowAccessToken(clientId, clientSecret, scope, tenantId);
                 Console.WriteLine("Access Token: " + accessToken);
                 Console.WriteLine("Refresh Token: " + refreshToken);
                 Console.WriteLine("Expires: " + expiration);
 
-                //  Make a request to GetTenant endpoint
-                var result1 = GetRequest($"{ocsUrl}/api/{api}/Tenants/{tenantId}", accessToken).Result;
+                //  Make a request to Get Users endpoint
+                var result1 = GetRequest($"{ocsUrl}/api/{apiVersion}/Tenants/{tenantId}/Users", accessToken).Result;
                 Console.WriteLine(result1
                     ? "Request succeeded"
                     : "request failed");
@@ -58,25 +54,27 @@ namespace HybridFlow
 
                 // Get a new access token from a refresh token. If the previous access token has not expired it can still be used.
                 // This will also reissue a new refresh token. Old refresh token will no longer be valid after use.
-                (accessToken, refreshToken, expiration) = HybridFlow.GetAccessTokenFromRefreshToken(refreshToken, clientId, clientSecret);
+                (accessToken, refreshToken, expiration) =
+                    HybridFlow.GetAccessTokenFromRefreshToken(refreshToken, clientId, clientSecret);
                 Console.WriteLine("Access Token: " + accessToken);
                 Console.WriteLine("Refresh Token: " + refreshToken);
                 Console.WriteLine("Expires: " + expiration);
 
-                //  Make a request to GetTenant endpoint
-                var result2 = GetRequest($"{ocsUrl}/api/{api}/Tenants/{tenantId}", accessToken).Result;
+                //  Make a request to Get Users endpoint
+                var result2 = GetRequest($"{ocsUrl}/api/{apiVersion}/Tenants/{tenantId}/Users", accessToken).Result;
                 Console.WriteLine(result2
                     ? "Request succeeded"
                     : "request failed");
                 if (!result2)
                     throw new Exception("Request failed");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
                 if (SystemBrowser.test)
                     throw e;
             }
+
             if (!SystemBrowser.test)
                 Console.ReadLine();
         }
@@ -116,15 +114,16 @@ namespace HybridFlow
 
         private static void InitConfig()
         {
-            try {
+            try
+            {
                 _configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional:false, reloadOnChange:false)
-                .Build();
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .Build();
             }
             catch (FileNotFoundException e)
             {
                 Console.WriteLine("Config file missing");
-                throw e; 
+                throw e;
             }
             catch (Exception ex)
             {
@@ -135,7 +134,8 @@ namespace HybridFlow
 
         private static string GetConfigValue(string key)
         {
-            try {
+            try
+            {
                 if (_configuration == null)
                 {
                     Console.WriteLine("Config Null");
@@ -149,9 +149,10 @@ namespace HybridFlow
                     Console.WriteLine($"Missing the value for \"{key}\" in config file");
                     throw new Exception($"Missing the value for \"{key}\" in config file");
                 }
+
                 return value;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Configuration issue");
                 throw ex;

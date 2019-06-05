@@ -1,6 +1,6 @@
 {
     "serviceBaseUri": "https://dat-b.osisoft.com",
-    "tenantId": "SPECIFY",
-    "namespaceId": "SPECIFY",
+    "tenantId": "REPLACE_WITH_TENANT_ID",
+    "namespaceId": "REPLACE_WITH_NAMESPACE_ID",
     "apiVersion": "v1-preview"
 }
