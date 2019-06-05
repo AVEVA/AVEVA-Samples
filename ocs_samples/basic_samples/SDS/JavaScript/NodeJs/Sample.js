@@ -1021,31 +1021,8 @@ var app = function (request1, response)
     ).catch(function (err) { logError(err); });  
 
 
-    var getTypesFiltered = printTypes.then(
-        function (res) {
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
-            }
-        }
-    ).catch(function (err) { logError(err); });
-
-    var printTypesFiltered = getTypesFiltered.then(
-        function (res) {
-            console.log("\nFiltered Types:");
-            console.log(res);
-        }
-    ).catch(function (err) { logError(err); });  
-
-
-
     //tags and metadata
-    var createTags = printTypesFiltered.then( 
+    var createTags = printTypes.then( 
         // Step 15
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
