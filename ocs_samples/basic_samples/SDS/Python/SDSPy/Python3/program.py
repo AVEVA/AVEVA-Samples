@@ -599,14 +599,9 @@ def main():
         # Step 15
         
         types = ocsClient.Types.getTypes(namespaceId, 0, 100)
-        typesFiltered = ocsClient.Types.getTypes(namespaceId, 0, 100, "contains(Id,'Target')")
         
-        print("All Types: ")
+        print("Get Types: ")
         for typeI in types:
-            print(typeI.Id)
-
-        print("Filtered Types: ")
-        for typeI in typesFiltered:
             print(typeI.Id)
 
         # Step 16
