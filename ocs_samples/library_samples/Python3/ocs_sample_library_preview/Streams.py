@@ -922,10 +922,10 @@ class Streams(object):
             raise TypeError
         if joinMode is None:
             raise TypeError
-
+            
         response = requests.get(
             self.__uri_API + self.__bulkStreams.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_ids=stream_ids, start=start, end=end, join= joinMode),
+                                                       stream_ids=','.join(stream_ids), start=start, end=end, join= joinMode),
             headers=self.__baseClient.sdsHeaders())
         if response.status_code < 200 or response.status_code >= 300:
             response.close()

@@ -1,12 +1,12 @@
 Welcome
 ========
 
-The Basic SDS Client samples are introductory, language-specific examples of programming against the SDS Service. They are intended as instructional samples only.
+The SDS Client waveform samples are introductory, language-specific examples of programming against the SDS Service. They are intended as instructional samples only.
 
 Sample Pattern
 --------------
 
-All basic SDS samples are console applications that follow the same sequence of events, allowing you to select the langauge with which you are most comfortable without missing any instructional features. The pattern followed is:
+All SDS waveform samples are console applications that follow the same sequence of events, allowing you to select the langauge with which you are most comfortable without missing any instructional features. The pattern followed is:
 
 1.  Instantiate an SDS client and Obtain an authentication token
 2.  Create an SdsType to represent the data being stored
