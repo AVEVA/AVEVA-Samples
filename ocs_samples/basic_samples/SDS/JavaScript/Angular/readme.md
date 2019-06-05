@@ -34,7 +34,7 @@ Edit the following values in the src/app/config/oidc.config.json file:
     "redirect_uri": "http://localhost:4200/auth-callback/",
     "post_logout_redirect_uri": "http://localhost:4200/",
     "silent_redirect_uri": "http://localhost:4200/auth-callback/",
-    "client_id": "SPECIFY"
+    "client_id": "REPLACE_WITH_CLIENT_ID"
 }
 ```
 
@@ -45,8 +45,8 @@ Also edit the following values in the src/app/config/sdsconfig.json:
 ```json
 {
     "serviceBaseUri": "https://dat-b.osisoft.com",
-    "tenantId": "SPECIFY",
-    "namespaceId": "SPECIFY",
+    "tenantId": "REPLACE_WITH_TENANT_ID",
+    "namespaceId": "REPLACE_WITH_NAMESPACE_ID",
     "apiVersion": "v1-preview"
 }
 ```
