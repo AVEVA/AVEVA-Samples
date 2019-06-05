@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="OSIsoft.OCSClients" Version="2.0.0" />
+    <PackageReference Include="OSIsoft.OCSClients" Version="3.0.0-prerelease-20190604.2" />
   </ItemGroup>
 
   <ItemGroup>
