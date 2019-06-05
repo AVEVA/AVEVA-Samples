@@ -458,7 +458,7 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
                 List<SdsType> types = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
 
-                response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types?filter=contains(Id, 'Target')");
+                response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types?query=Id:*Target*");
                 CheckIfResponseWasSuccessful(response);
                 List<SdsType> typesFiltered = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
 

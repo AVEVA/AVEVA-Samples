@@ -610,7 +610,7 @@ def main():
         # Step 14
         
         types = ocsClient.Types.getTypes(namespaceId, 0, 100)
-        typesFiltered = ocsClient.Types.getTypes(namespaceId, 0, 100, "contains(Id,'Target')")
+        typesFiltered = ocsClient.Types.getTypes(namespaceId, 0, 100, "Id:*Target*")
         
         print("All Types: ")
         for typeI in types:

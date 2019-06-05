@@ -999,10 +999,10 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getTypes(tenantId, sampleNamespaceId, "contains(Id,'Target')", 0, 100);
+                        return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getTypes(tenantId, sampleNamespaceId, "contains(Id,'Target')", 0, 100);
+                return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
             }
         }
     ).catch(function (err) { logError(err); });

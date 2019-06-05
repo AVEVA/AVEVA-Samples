@@ -33,7 +33,7 @@ public class TypesClient {
     // type paths
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";
-    private String getTypesPath = typesBase + "?skip={skip}&count={count}&filter={filter}";
+    private String getTypesPath = typesBase + "?skip={skip}&count={count}&query={query}";
 
     /**
      * base constructor
@@ -169,11 +169,11 @@ public class TypesClient {
      * @param namespaceId namespace to work against
      * @param skip number of types to skip, useful in paging
      * @param count number of types to return
-     * @param filter filter query to reduce the number of types returned
+     * @param query query to reduce the number of types returned
      * @return string of the types
      * @throws SdsError any error that occurs
      */
-    public String getTypes(String tenantId, String namespaceId, int skip, int count, String filter) throws SdsError {
+    public String getTypes(String tenantId, String namespaceId, int skip, int count, String query) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -181,7 +181,7 @@ public class TypesClient {
 
         try {
             //string 
-            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{filter}", filter).replace("{skip}", String.valueOf(skip)).replace("{count}", String.valueOf(count)));
+            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{query}", query).replace("{skip}", String.valueOf(skip)).replace("{count}", String.valueOf(count)));
             urlConnection = baseClient.getConnection(url, "GET");
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
