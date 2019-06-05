@@ -78,6 +78,14 @@ CorsSupportsCredentials|True
 DisableWrites|False  
 
 
+On your client machine running this code, it is assumed that you have configured the system to trust the certficate used by PI Web API.
+
+If you don't you will see an error similar to this in the Result box on the webpage:
+
+```
+An error occured:  Http failure response for [...]: 0 Unknown Error
+```
+
 Functionality
 --------------
 
