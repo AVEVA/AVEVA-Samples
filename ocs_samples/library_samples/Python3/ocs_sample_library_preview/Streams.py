@@ -696,6 +696,66 @@ class Streams(object):
             values.append(value_class.fromJson(c))
         return values
 
+    def getSamples(self, namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
+        """
+        Returns data sampled by intervals between a specified start and end index.
+        :param namespace_id: id of namespace to work against
+        :param stream_id: id of the stream to get the data of
+        :param value_class: use this to cast the value into a given type.  Type must support .fromJson(). If None returns a dynamic Python object from the data.
+        :param start: starting index for intervals
+        :param end:  ending index for intervals
+        :param sample_by: property or properties to use when sampling
+        :param intervals: number of intervals requested
+        :param boundary: optional SdsBoundaryType specifies the handling of events at or near the startIndex and endIndex
+        :param start_boundary: optional SdsBoundaryType specifies the handling of events at or near the startIndex
+        :param end_boundary: optional SdsBoundaryType specifies the handling of events at or near the endIndex
+        :param filter: optional filter to apply
+        :param stream_view_id: optional streamview identifier
+        :return: An array of the data in type specified if value_class is defined.  Otherwise it is a dynamic Python object
+        """
+
+        if namespace_id is None:
+            raise TypeError
+        if stream_id is None:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
+        if sample_by is None:
+            raise TypeError
+        if intervals is None:
+            raise TypeError
+
+        # if stream_view_id is not set, do not specify /transform/ route and stream_view_id parameter
+        if len(stream_view_id) == 0:
+            _path = self.__getSamples.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id, start=start, end=end, sample_by=sample_by,intervals=intervals)
+                                                    
+        else:
+            _path = self.__getSamplesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id, start=start, end=end, sample_by=sample_by,intervals=intervals, 
+                                                       filter= filter, stream_view_id=stream_view_id)
+
+        response = requests.get(
+                self.__uri_API + _path,
+                headers=self.__baseClient.sdsHeaders()) 
+
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get sampled values for SdsStream, {stream_id}. {status}:{reason}".
+                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+        
+        content = json.loads(response.content.decode('utf-8'))
+        response.close()
+
+        if value_class is None:
+            return content
+        values = []
+        for c in content:
+            values.append(value_class.fromJson(c))
+        return values
+
     def getSummaries(self, namespace_id, stream_id, value_class, start, end, count, stream_view_id = "", filter = ""):
         """
         Retrieves JSON object representing a summary for the stream specified by 'stream_id'
@@ -926,6 +986,8 @@ class Streams(object):
         self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
         self.__getSummaries = self.__dataPath + "/Summaries?startIndex={start}&endIndex={end}&Count={count}&filter={filter}"
         self.__getSummariesT = self.__dataPath + "/Transform/Summaries?startIndex={start}&endIndex={end}&Count={count}&streamViewId={stream_view_id}&filter={filter}"
+        self.__getSamples = self.__dataPath + "/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}"
+        self.__getSamplesT = self.__dataPath + "/Transform/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}}&streamViewId={stream_view_id}"
         self.__getRangeInterpolatedQuery = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}"
 
 
