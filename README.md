@@ -22,9 +22,9 @@ If you have a need for a new sample.  If there is a feature or capability that s
  
 ## Support
 
-If your question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal  (https://my.osisoft.com).
+If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal  (https://my.osisoft.com).
 
-If your question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
+If your support question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
 
 ## Contributions
 
