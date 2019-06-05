@@ -350,7 +350,7 @@ namespace SdsClientLibraries
                 // Show filtering on Type, works the same as filtering on Streams
 
                 var types = await metadataService.GetTypesAsync();
-                var typesFiltered = await metadataService.GetTypesAsync("contains(Id, 'Target')");
+                var typesFiltered = await metadataService.GetTypesAsync("Id:*Target*");
 
                 Console.WriteLine($"The number of types returned without filtering: {types.Count()}.  With filtering {typesFiltered.Count()}.");
 
