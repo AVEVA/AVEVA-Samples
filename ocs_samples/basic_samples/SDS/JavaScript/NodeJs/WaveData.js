@@ -30,13 +30,8 @@ module.exports = {
 
     // creates a new wave event
     NextWave: function(interval, multiplier, order) {
-        now = new Date();
-        midnight = new Date();
-        midnight.setHours(0, 0, 0, 0);
-        totalSecondsDay = (now -
-            midnight);
-        _interval = (interval - midnight);
-        radians = ((totalSecondsDay % _interval) / _interval) * 2 * Math.PI;
+        
+        radians = Math.PI/32;
 
         newWave = new this.WaveData();
         newWave.Order = order;

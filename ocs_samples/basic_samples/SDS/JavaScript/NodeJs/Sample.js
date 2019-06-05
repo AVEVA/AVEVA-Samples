@@ -208,8 +208,6 @@ var app = function (request1, response)
 
     // insert data
     var event = [];
-    var interval = new Date();
-    interval.setHours(0, 1, 0, 0);
     var evt = null;
 
     // insert a single event
@@ -217,7 +215,7 @@ var app = function (request1, response)
         // Step 4
         function (res) {
             console.log("Inserting data")
-            evt = waveDataObj.NextWave(interval, 2.0, 0);
+            evt = waveDataObj.NextWave(200, 2.0, 0);
             event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -241,7 +239,7 @@ var app = function (request1, response)
 
     var buildEvents = function () {
         if (evtCount < totalEvents) {
-            evt1 = waveDataObj.NextWave(interval, mutliplier, evtCount);
+            evt1 = waveDataObj.NextWave(200, mutliplier, evtCount);
             events.push(evt1);
             evtCount += 2;
             buildEvents();
@@ -306,10 +304,10 @@ var app = function (request1, response)
                     function (res) {
                         refreshToken(res, client);
                         console.log("\nGetting all events")
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -332,10 +330,10 @@ var app = function (request1, response)
                     function (res) {
                         refreshToken(res, client);
                         console.log("\nGetting all events")
-                        return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -357,7 +355,7 @@ var app = function (request1, response)
             // update the first value
             event = [];
             evt = res[0];
-            evt = waveDataObj.NextWave(interval, 4.0, 0);
+            evt = waveDataObj.NextWave(200, 4.0, 0);
             event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -411,10 +409,10 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -427,18 +425,18 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
+
     // replace events
     var currentEvents;
+    //replace one event
     var replaceEvent = printUpdateEvents.then(
         // Step 8
         function (res) {
             console.log("\nReplacing events");
             var event = [];
-            var replaceEvent = res[0];
+            var replaceEvent = waveDataObj.NextWave(200, 2.0, 0);
+            //why currEvents
             currentEvents = res;
-            replaceEvent.sinProperty = 1/2;
-            replaceEvent.cosProperty = Math.sqrt(3)/2;
-            replaceEvent.tanProperty = 1;
             event.push(replaceEvent);
 
             if (client.tokenExpires < nowSeconds) {
@@ -453,14 +451,34 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-    var replaceEvents = replaceEvent.then(
+
+    // if updating single value successful, then create a list of new values to insert
+    var createReplaceEvents = replaceEvent.then(
         function (res) {
-            var replaceEvents = currentEvents;
-            replaceEvents.forEach(function (elem) {
-                elem.Sin = 5.0* 1.0/2.0;
-                elem.Cos = 5.0* Math.sqrt(3.0)/2.0;
-                elem.Tan = 5.0* 1.0;
+            mutliplier = 5.0;
+            var events = [];
+            evtCount = 2;
+            var prom = new Promise(function (resolve, reject) {
+                callback = resolve;
+                totalEvents = 40
+                buildEvents();
             });
+            return prom;
+        }
+    ).catch(function (err) { logError(err); });
+
+    
+    //replace multiple events
+    var replaceEvents = createReplaceEvents.then(
+        function (res) {
+
+            var replaceEvents = events;
+            // Fix undefined
+            // replaceEvents.forEach(function (elem) {
+            //     elem.Sin = 5.0* 1.0/2.0;
+            //     elem.Cos = 5.0* Math.sqrt(3.0)/2.0;
+            //     elem.Tan = 5.0* 1.0;
+            // });
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -482,10 +500,10 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -536,10 +554,10 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 50);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 50);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -554,7 +572,7 @@ var app = function (request1, response)
 
          
          
-    // get sampled events
+    // get sampled values
     var getSampledValues = printFilteredEvents.then(
         // Step 11
         function (res) {
@@ -584,7 +602,7 @@ var app = function (request1, response)
     // Property Overrides
     var getRangeEvents = printSampledValues.then(
         //Fix step numbers
-        // Step 11
+        // Step 12
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -660,7 +678,7 @@ var app = function (request1, response)
 
     // SdsStreamViews
     var streamViewMessage = printResultEvent.then(  
-        // Step 12
+        // Step 13
         function(res){ 
             console.log("\nSdsStreamViews")
             console.log("Here is some of our data as it is stored on the server:");
@@ -894,7 +912,7 @@ var app = function (request1, response)
 
 
     var getFirstValueSV = dumpMapResult.then(
-    // Step 13 
+    // Step 14 
         function (res) {
             console.log("We will now update the stream type based on the streamview")
             if (client.tokenExpires < nowSeconds) {
@@ -969,7 +987,7 @@ var app = function (request1, response)
 
     var printFirstValueSV2 = getFirstValueSV2.then(
         function (res) {
-            console.log("\New FirstValue:");
+            console.log("\nNew FirstValue:");
             console.log(res);
         }
     ).catch(function (err) { logError(err); });
@@ -999,7 +1017,7 @@ var app = function (request1, response)
 
 
     var getTypes = printFirstS2.then(
-    // Step 14
+    // Step 15
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -1023,7 +1041,7 @@ var app = function (request1, response)
 
     //tags and metadata
     var createTags = printTypes.then( 
-        // Step 15
+        // Step 16
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
            var tags = [ "waves", "periodic", "2018", "validated" ];
@@ -1107,7 +1125,7 @@ var app = function (request1, response)
 
     //delete an event
     var deleteOneEvent = printMetadata.then( 
-        // Step 16
+        // Step 17
         function(res) {
            console.log("\nDeleting values from the SdsStream");
            if (client.tokenExpires < nowSeconds) {
@@ -1148,7 +1166,7 @@ var app = function (request1, response)
         });
 
     var createSecondaryStream = deleteWindowEvents.then(
-        // Step 17 
+        // Step 18 
         function (res) {
             console.log("Creating an SdsStream with a secondary index")
             // create SdsStream
@@ -1301,10 +1319,9 @@ var app = function (request1, response)
     ).catch(function (err) { logError(err);});  
 
 
-            // Adding Compound Index Type
-       
-
+    // Adding Compound Index Type   
     var createCompoundType = printSecondaryStreamAfterUpdate.then( 
+        // Step 19
         function(res) {
             console.log("Creating an SdsType with a compound index");
             if (client.tokenExpires < nowSeconds) {
@@ -1341,7 +1358,7 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-    // Step 19
+    // Step 20
     
     var event2 = [];
 
@@ -1452,7 +1469,7 @@ var app = function (request1, response)
     // cleanup of namespace 
     var cleanup = testFinished
     .finally(        
-        // Step 20 
+        // Step 21 
         // delete the stream
         function () {
             console.log("Cleaning up");
