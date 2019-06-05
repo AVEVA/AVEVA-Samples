@@ -355,7 +355,7 @@ public class Program {
             // Step 14 
 
             String types = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100);
-            String typesFiltered = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100, "contains(Id,'Target')");
+            String typesFiltered = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100, "Id:*Target*");
             
             System.out.println("All Types: " + types);
             System.out.println("Filtered Types: " + typesFiltered);
