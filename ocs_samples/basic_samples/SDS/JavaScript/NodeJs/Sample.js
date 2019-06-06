@@ -435,7 +435,6 @@ var app = function (request1, response)
             console.log("\nReplacing events");
             var event = [];
             var replaceEvent = waveDataObj.NextWave(200, 2.0, 0);
-            //why currEvents
             currentEvents = res;
             event.push(replaceEvent);
 
@@ -455,7 +454,7 @@ var app = function (request1, response)
     // if updating single value successful, then create a list of new values to insert
     var createReplaceEvents = replaceEvent.then(
         function (res) {
-            mutliplier = 5.0;
+            mutliplier = 20.0;
             var events = [];
             evtCount = 2;
             var prom = new Promise(function (resolve, reject) {
@@ -473,12 +472,6 @@ var app = function (request1, response)
         function (res) {
 
             var replaceEvents = events;
-            // Fix undefined
-            // replaceEvents.forEach(function (elem) {
-            //     elem.Sin = 5.0* 1.0/2.0;
-            //     elem.Cos = 5.0* Math.sqrt(3.0)/2.0;
-            //     elem.Tan = 5.0* 1.0;
-            // });
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -601,7 +594,6 @@ var app = function (request1, response)
 
     // Property Overrides
     var getRangeEvents = printSampledValues.then(
-        //Fix step numbers
         // Step 12
         function (res) {
             if (client.tokenExpires < nowSeconds) {
@@ -930,7 +922,7 @@ var app = function (request1, response)
     var printFirstValueSV = getFirstValueSV.then(
         function (res) {
             console.log("\nReminder of FirstValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });  
 
@@ -988,7 +980,7 @@ var app = function (request1, response)
     var printFirstValueSV2 = getFirstValueSV2.then(
         function (res) {
             console.log("\nNew FirstValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });
 
@@ -1409,7 +1401,7 @@ var app = function (request1, response)
     var printLastValue2 = getLastValue2.then(
         function (res) {
             console.log("\nLastValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err);});  
     
@@ -1431,7 +1423,7 @@ var app = function (request1, response)
     var printFirstValue = getFirstValue.then(
         function (res) {
             console.log("\nFirstValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err);});  
 
@@ -1455,7 +1447,7 @@ var app = function (request1, response)
     var printWindowEvents2 = getWindowEvents2.then(
         function (res) {
             console.log("\nWindow Value:");
-            console.log(res);
+            dumpEvents(JSON.parse(res));
         }
     ).catch(function (err) { logError(err);});  
 
