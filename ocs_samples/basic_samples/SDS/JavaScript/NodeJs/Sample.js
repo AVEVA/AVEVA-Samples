@@ -38,6 +38,18 @@ var dumpEvent = function (elem) {
         ", Tanh:" + elem.Tanh);
 };
 
+var dumpEventTarget = function (elem) {
+    console.log("Order: " + elem.Order +
+        ", TauTarget: " + elem.TauTarget +
+        ", RadiansTarget: " + elem.RadiansTarget +
+        ", SinTarget: " + elem.SinTarget +
+        ", CosTarget: " + elem.CosTarget +
+        ", TanTarget: " + elem.TanTarget +
+        ", SinhTarget: " + elem.SinhTarget +
+        ", CoshTarget: " + elem.CoshTarget +
+        ", TanhTarget:" + elem.TanhTarget);
+};
+
 var dumpEvents = function (obj) {
     console.log("Total events found: " + obj.length)
     obj.forEach(function (elem, index) {
@@ -980,7 +992,7 @@ var app = function (request1, response)
     var printFirstValueSV2 = getFirstValueSV2.then(
         function (res) {
             console.log("\nNew FirstValue:");
-            dumpEvent(JSON.parse(res));
+            dumpEventTarget(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });
 
