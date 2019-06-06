@@ -316,6 +316,8 @@ capable of conversion to the type of the index assigned in the SdsType.
 
 This sample implements only a few of the many available retrieval methods.
 
+Getting window values:
+
 ```js
 restCall({
     url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end]),
@@ -328,6 +330,29 @@ restCall({
    values for the desired window Ex: For a time index, request url
    format will be
    "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
+
+Getting sampled values:
+
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getSamplesBase.format([streamId, start, end, intervals, sampleBy, filter, streamViewId]),
+    method: 'GET',
+    headers: this.getHeaders()
+});
+```
+Sampling is driven by a specified property or properties of the stream's Sds Type. 
+Property types that cannot be interpolated do not support sampling requests. Strings 
+are an example of a property that cannot be interpolated. For more information see 
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation)
+
+-  parameters are the SdsStream Id, the starting and ending index
+   values for the desired window, the number of intervals to select 
+   from, the property or properties to use when sampling, an 
+   optional filter by expression, and an optional streamViewId. 
+- Note: This method, implemented for example purposes in ``SdsClient``, 
+    does not include support for SdsBoundryTypes. For more 
+    information about SdsBoundaryTypes and how to implement them with 
+    sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
 Update Events and Replacing Values
 ----------------------------------
