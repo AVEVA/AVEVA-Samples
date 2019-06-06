@@ -378,7 +378,7 @@ export class DatasrcComponent {
   }
 
   newWaveDataEvent(order: number, range: number, multiplier: number) {
-    const radians = Math.PI / 32;
+    const radians = order * Math.PI / 32;
 
     const waveData = new WaveData();
     waveData.Order = order;
@@ -395,7 +395,7 @@ export class DatasrcComponent {
   }
 
   newWaveDataCompoundEvent(order: number, multiplier: number) {
-    const radians = Math.PI / 32;
+    const radians = order * Math.PI / 32;
 
     const waveData = new WaveDataCompound();
     waveData.Order = order;
@@ -517,8 +517,6 @@ export class DatasrcComponent {
       this.button3Message = this.unhealthyResponseMessage(err);
     });
   }
-
-
 
   writeWaveDataEvents() {
     const list: Array<WaveData> = [];
