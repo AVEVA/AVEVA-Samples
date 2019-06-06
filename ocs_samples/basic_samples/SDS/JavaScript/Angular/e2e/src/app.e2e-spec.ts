@@ -44,6 +44,8 @@ describe('workspace-project App', () => {
             .then((res) => {
         page.retrieveFilteredValues()
             .then((res) => {
+        page.retrieveSampledValues()
+            .then((res) => {
         page.propertyOverride()
             .then((res) => {
         page.createSdsType2()

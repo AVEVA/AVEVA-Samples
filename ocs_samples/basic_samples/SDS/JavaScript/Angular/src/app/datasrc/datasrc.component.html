@@ -105,6 +105,14 @@
   <span id= "retrieveFilteredValuesMessage"  *ngIf="getFilteredValuesMessage">Response: {{getFilteredValuesMessage}}</span>
   
   <!-- Step 11 -->
+  <h4>Get sampled values</h4>
+  <p>FIX THIS</p>
+  <button id= "retrieveSampledValues" class="btn btn-primary" (click)="retrieveSampledValues()" >Get Samples</button>
+  <br>
+   <!-- Fix getSampledValuesMessage -->
+  <span id= "retrieveSampledValuesMessage"  *ngIf="getSampledValuesMessage">Response: {{getSampledValuesMessage}}</span>
+
+  <!-- Step 11 -->
   <h3>Property Overrides</h3>
   <p>Sds can interpolate or extrapolate data at an index location where data does not explicitly exist. 
     Using the default (Continuous) read behavior and requesting data starting at index location '1', where we have not entered data, 
