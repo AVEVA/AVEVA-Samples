@@ -162,7 +162,7 @@ Near the end of the ``BaseClient.Java`` file is a method called
 is to connect to the Open ID discovery endpoint and get a URI for obtaining the token.
 Thereafter, the token based on ``clientId`` and ``clientSecret`` is retrieved.
 
-The token is cached, but as tokens have a fixed lifetime, typically one hour, but can be refreshed
+The token is cached, but as tokens have a fixed lifetime, typically one hour. It can be refreshed
 by the authenticating authority for a longer period. If the refresh
 period has expired, the credentials must be presented to the authority
 again. To streamline development, the ``AcquireToken`` method hides
@@ -298,11 +298,15 @@ events from a stream. Many of the retrieval methods accept indexes,
 which are passed using the URL. The index values must be capable of
 conversion to the type of the index assigned in the SdsType.
 
-In this sample, four of the available methods are implemented in
-StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
+In this sample, five of the available methods are implemented in
+StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, ``getRangeValues``, and ``getSampledValues``.
 ``getWindowValues`` can be used to retrieve events over a specific index
 range. ``getRangeValues`` can be used to retrieve a specified number of
-events from a starting index.
+events from a starting index. ``getSampledValues`` can retrieve a sample of your data to show the over-all 
+trend of your data. In addition to the start and end index, we also 
+provide the number of intervals and a sampleBy argument. Intervals 
+determines the depth of sampling performed and will affect how many values
+are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
 
 Get single value:
 
@@ -331,6 +335,13 @@ Get range of values:
 ```java
 jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
 foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);   
+```
+
+Get sampled values:
+
+```java
+jsonMultipleValues = ocsClient.Streams.getSampledValues(tenantId, namespaceId, sampleStreamId, "0", "40", 4, "Sin");
+foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
 ```
 
 Updating and Replacing Values

@@ -81,8 +81,9 @@ To use Sds, you define SdsTypes that describe the kinds of data you want to stor
 SdsStreams. SdsTypes are the model that define SdsStreams.
 
 SdsTypes can define simple atomic types, such as integers, floats or strings, or they 
-can define complex types by grouping other SdsTypes. For more information about SdsTypes, 
-refer to the SDS Documentation.
+can define complex types by grouping other SdsTypes. For
+more information about SdsTypes, refer to the `Sds
+documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 When working with the SDS Client Libraries, it is strongly recommended that you use 
 SdsTypeBuilder. SdsTypeBuilder uses reflection to build SdsTypes. The SdsTypeBuilder exposes 
@@ -244,6 +245,15 @@ When retreiving events you can also filter on what is being returned, so you onl
 IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
 ```
 
+You can retrieve a sample of your data to show the over-all 
+trend of your data. In addition to the start and end index, we also 
+provide the number of intervals and a sampleBy argument. Intervals 
+determines the depth of sampling performed and will affect how many values
+are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
+
+```C#
+IEnumerable<WaveData> sampledValues = await dataService.GetSampledValuesAsync<WaveData>(stream.Id, "0", "40", 4, new[] {nameof(WaveData.Sin)});
+```
 
 Update Events and Replacing Values
 ----------------------------------

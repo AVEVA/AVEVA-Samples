@@ -168,19 +168,14 @@ namespace SdsClientLibraries
                 Console.WriteLine("Replacing events");
 
                 // replace one event
-                var replaceEvent = allEvents.First();
-                replaceEvent.Sin = 0.717;
-                replaceEvent.Cos = 0.717;
-                replaceEvent.Tan = Math.Sqrt(2 * (0.717 * 0.717));
+                var replaceEvent = UpdateWave(allEvents.First(), multiplier:5);
 
                 await dataService.ReplaceValueAsync<WaveData>(streamId, replaceEvent);
 
                 // replace all events
-                foreach (var evnt in allEvents)
+                for (int i = 1; i < allEvents.Count; i++)
                 {
-                    evnt.Sin = 5.0 / 2;
-                    evnt.Cos = 5 * Math.Sqrt(3) / 2;
-                    evnt.Tan = 5 / Math.Sqrt(3);
+                    allEvents[i] = UpdateWave(allEvents[i], multiplier: 5);
                 }
 
                 await dataService.ReplaceValuesAsync<WaveData>(streamId, allEvents);
@@ -223,15 +218,26 @@ namespace SdsClientLibraries
                 // We will retrieve events filtered to only get the ones where the radians are less than 50.  Note, this can be done on index properties too.
 
                 var retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
-                Console.WriteLine(" Sds will only return the values where the radains are less than 50:");
+                Console.WriteLine(" Sds will only return the values where the radians are less than 50:");
                 foreach (var value in retrievedInterpolatedFiltered)
                 {
                     Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();
 
+                //Step 11
+                //We will retrieve a sample of our data
+                Console.WriteLine("SDS can return a sample of your data population to show trends.");
+                Console.WriteLine("Getting Sampled Values:");
+                var sampledValues = await dataService.GetSampledValuesAsync<WaveData>(stream.Id, "0",
+                    "40", 4, new[] {nameof(WaveData.Sin)});
+                foreach(var sample in sampledValues)
+                {
+                    Console.WriteLine(sample);
+                }
+                Console.WriteLine();
 
-                // Step 11
+                // Step 12
                 // create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream 
                 var propertyOverride = new SdsStreamPropertyOverride()
                 {
@@ -256,7 +262,7 @@ namespace SdsClientLibraries
                 Console.WriteLine();
 
 
-                // Step 12
+                // Step 13
                 // StreamViews
                 Console.WriteLine("SdsStreamViews");
 
@@ -332,7 +338,7 @@ namespace SdsClientLibraries
                 var manualStreamViewMap = await metadataService.GetStreamViewMapAsync(manualStreamViewId);
                 PrintStreamViewMapProperties(manualStreamViewMap);
 
-                // Step 13
+                // Step 14
                 // Update Stream Type based on SdsStreamView
                 Console.WriteLine("We will now update the stream type based on the streamview");
 
@@ -345,14 +351,6 @@ namespace SdsClientLibraries
 
                 Console.WriteLine($"The new type id {newStream.TypeId} compared to the original one {stream.TypeId}.");
                 Console.WriteLine($"The new type value {firstValUpdated.ToString()} compared to the original one {firstVal.ToString()}.");
-
-                // Step 14
-                // Show filtering on Type, works the same as filtering on Streams
-
-                var types = await metadataService.GetTypesAsync("");
-                var typesFiltered = await metadataService.GetTypesAsync("", "contains(Id, 'Target')");
-
-                Console.WriteLine($"The number of types returned without filtering: {types.Count()}.  With filtering {typesFiltered.Count()}.");
 
                 // Step 15
                 // tags and metadata
@@ -571,7 +569,7 @@ namespace SdsClientLibraries
 
         private static WaveData GetWave(int order, double range, double multiplier)
         {
-            var radians = order * 2 * Math.PI;
+            var radians = order * (Math.PI/32);
 
             return new WaveData
             {
@@ -600,10 +598,9 @@ namespace SdsClientLibraries
             return wave;
         }
 
-
         private static WaveDataCompound GetWaveMultiplier(int order, int multiplier)
         {
-            var radians = order * 2 * Math.PI;
+            var radians = order * (Math.PI/32);
 
             return new WaveDataCompound
             {
