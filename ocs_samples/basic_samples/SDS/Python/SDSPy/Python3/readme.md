@@ -170,8 +170,7 @@ To use SDS, you define SdsTypes that describe the kinds of data you want
 to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `SDS
-documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
+more information about SdsTypes, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html).
 
 In the sample code, the SdsType representing WaveData is defined in the
 ``getWaveDataType`` method of program.py. WaveData contains properties
@@ -196,7 +195,7 @@ orderProperty.SdsType = intType
 orderProperty.IsKey = True
 ```
 
-The WaveDatan SdsType is defined as a collection of the SdsTypeProperties.
+The WaveData SdsType is defined as a collection of the SdsTypeProperties.
 
 ```python
 #create an SdsType for WaveData Class
@@ -239,16 +238,26 @@ stream.Description = "A stream to store the WaveData events"
 stream.TypeId = type.Id
 stream = client.createStream(namespaceId, stream)
 ```
+The local SdsStream can be created in the SDS service by a POST request as
+follows:
+
+```python
+response = requests.post(
+            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
+            data=streamView.toJson(), 
+            headers=self.__baseClient.sdsHeaders())
+```
 
 Create and Insert Values into the Stream
 ----------------------------------------
 
-A single SdsValue is a data point in the stream. It cannot be
-empty and must have at least the key value of the SdsType for the
-event. Events are passed in JSON format and are serialized in which is then sent along with a POST request.
+A single SdsValue is a data point in the stream. An event object cannot be
+empty and should have at least the key value of the SDS type for the
+event. Events are passed in JSON format and are serialized before being 
+sent along with a POST request.
 
 When inserting single or multiple values, the payload has to be a
-collection of events. This is an example of how the client creates the request:
+collection of events. An event can be created using the following POST request:
 
 ```python
 payload = json.dumps(events)
@@ -293,6 +302,10 @@ for i in range(2, 20, 2):
     waves.append(nextWave(i, 2.0))
 ocsClient.Streams.insertValues(namespaceId, stream.Id, waves)
 ```
+
+The SDS REST API provides many more types of data insertion calls beyond
+those demonstrated in this application. Go to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for more 
+information on available REST API calls.
 
 Retrieve Values from a Stream
 -----------------------------
@@ -357,8 +370,10 @@ Here is how to use it:
 def getWindowValuesForm(self, namespace_id, stream_id, value_class, start, end, form="")
 ```
 
--  *start* and *end* (inclusive) represent the indices for the retrieval.
+- *start* and *end* (inclusive) represent the indices for the retrieval.
 - The namespace ID and stream ID must be provided to the function call.
+- *form* specifies the organization of a table, the two available 
+formats are table and header table
 
 Here is how it is called:
 
@@ -366,7 +381,7 @@ Here is how it is called:
 waves = ocsClient.Streams.getWindowValuesForm(namespaceId, stream.Id, None, 0, 180,"tableh")
 ```
 
-<h5>Get Samples</h5> 
+<h5>Get Sampled Values</h5> 
 
 For retrieving a representative sample of data between a start and end 
 index.  Sampling is driven by a specified property or properties of the 
@@ -376,23 +391,21 @@ cannot be interpolated. For more information see
 [Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation) Here is how to use it:
 
 ```python
-def getSamples(namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
+def getSampledValues(namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
 ```
 
 - *intervals* is the number of intervals requested.
-- *sample\_by* defines the 
-property or properties to use when sampling. 
-- *filter* is an optional
-expression to filter by.
+- *sample\_by* defines the property or properties to use when sampling. 
+- *filter* is an optional expression to filter by.
 
 Note: This method, implemented for example purposes in ``SdsClient``, does not 
-include support for SdsBoundryTypes. For more information about SdsBoundaryTypes
+include support for SdsBoundaryTypes. For more information about SdsBoundaryTypes
 and how to implement them with sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
 The  method is called as shown :
 
 ```python
-waves = ocsClient.Streams.getSamples(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
+waves = ocsClient.Streams.getSampledValues(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
 ```
 
 
@@ -409,7 +422,7 @@ methods.
 
 Here are the calls that accomplish these steps:
 
-Update values:
+<h5>Updating Values</h5>
 
 ```python
 # update one value
@@ -423,17 +436,16 @@ updatedEvents = []
 client.updateValues(namespaceId, stream.Id, updatedEvents)
 ```
 
-If you attempt to update values that do not exist they will be created. The sample updates
+If you attempt to update values that do not exist, they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
 collection of twenty values.
+
+<h5>Replacing Values</h5>
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
 program demonstrates this by replacing all twenty values. The calling conventions are
 identical to ``updateValue`` and ``updateValues``:
-
-
-Replace values:
 
 ```python
 # replace one value

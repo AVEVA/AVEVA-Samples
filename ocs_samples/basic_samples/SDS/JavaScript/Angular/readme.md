@@ -4,7 +4,12 @@
 Building a client to make REST API calls to the SDS Service
 ----------------------------------------------------------
 
-This example demonstrates how SDS REST APIs are invoked using Angular 7. Although this example uses Angular, other javascript frameworks should also work.
+
+The sample code in this topic demonstrates how to invoke SDS REST APIs
+using Angular 7. By examining the code, you will see how to establish a connection 
+to SDS, obtain an authorization token, create an SdsNamespace, SdsType, and SdsStream, 
+and how to create, read, update, and delete values in SDS. Although this example uses 
+Angular, other javascript frameworks should also work.
 
 
 Prerequisites
@@ -114,8 +119,7 @@ To use SDS, you define SdsTypes that describe the kinds of data you want
 to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the SDS
-documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>.
+more information about SdsTypes, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html).
 
 In the sample code, the SdsType representing WaveData is defined in the buildWaveDataType method of
 datasrc.component.ts. WaveData contains properties of integer and double atomic types. 
@@ -161,10 +165,13 @@ createType() {
 Create an SdsStream
 -----------------
 
-An ordered series of events is stored in an SdsStream. All you have to do
-is create a local SdsStream instance, give it an Id, assign it a type,
-and submit it to the SDS service. The value of the ``TypeId`` property is
-the value of the SdsType ``Id`` property.
+A SdsStream stores an ordered series of events. To create a
+SdsStream instance, you simply provide an Id, assign it a type, and
+submit it to the SDS service.  The value of the ``TypeId`` property is
+the value of the SdsType ``Id`` property. The ``SdsStream`` object of SdsClient is
+similar to ``SdsType``, except that it uses a different URL. Here is how
+it is called from the main program:
+
 
 ```js
 this.stream = new SdsStream();
@@ -192,9 +199,8 @@ A single event is a data point in the stream. An event object cannot be
 empty and should have at least the key value of the SDS type for the
 event. Events are passed in json format.
 
+When inserting single or multiple values, the payload has to be the list of events. 
 An event can be created using the following POST request.
-
-When inserting single or multiple values, the payload has to be the list of events:
 
 ```js
 insertValues(streamId: string, events: Array<any>) {
