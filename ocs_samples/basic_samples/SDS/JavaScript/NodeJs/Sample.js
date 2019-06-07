@@ -332,7 +332,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // get all events in table format
     var getWindowEventsTable = printWindowEvents.then(
         // Step 6
@@ -360,7 +359,6 @@ var app = function (request1, response)
     ).catch(function (err) { logError(err); });
     
     // update one event
-
     var updateEvent = printWindowEventsTable.then(
         // Step 7
         function (res) {
@@ -437,7 +435,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // replace events
     var currentEvents;
     //replace one event
@@ -462,11 +459,10 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // if updating single value successful, then create a list of new values to insert
     var createReplaceEvents = replaceEvent.then(
         function (res) {
-            mutliplier = 20.0;
+            multiplier = 20.0;
             var events = [];
             evtCount = 2;
             var prom = new Promise(function (resolve, reject) {
@@ -478,7 +474,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-    
     //replace multiple events
     var replaceEvents = createReplaceEvents.then(
         function (res) {
@@ -513,7 +508,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var printReplaceEvents = getReplacedEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
@@ -521,7 +515,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
     
-
     // get interpolated events
     var getInterpolatedEvents = printReplaceEvents.then(
         // Step 9 
@@ -539,7 +532,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var printInterpolatedEvents = getInterpolatedEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
@@ -547,8 +539,6 @@ var app = function (request1, response)
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
-    
-
 
     // get filtered events
     var getFilteredEvents = printInterpolatedEvents.then(
@@ -574,8 +564,6 @@ var app = function (request1, response)
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
-
-         
          
     // get sampled values
     var getSampledValues = printFilteredEvents.then(
@@ -601,8 +589,6 @@ var app = function (request1, response)
             dumpEvents(sampledValues)
         }
     ).catch(function (err) { logError(err); });
-
-
 
     // Property Overrides
     var getRangeEvents = printSampledValues.then(
