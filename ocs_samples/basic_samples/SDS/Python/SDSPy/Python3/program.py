@@ -458,7 +458,7 @@ def main():
         # Step 11
         # Sampling from all values
         print("Getting sampled values")
-        sampledWaves = ocsClient.Streams.getSamples(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
+        sampledWaves = ocsClient.Streams.getSampledValues(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
         print("Total events found: " + str(len(sampledWaves)))
         for wave in sampledWaves:
             print(toString(wave))

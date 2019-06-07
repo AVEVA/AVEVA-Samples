@@ -696,7 +696,7 @@ class Streams(object):
             values.append(value_class.fromJson(c))
         return values
 
-    def getSamples(self, namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
+    def getSampledValues(self, namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
         """
         Returns data sampled by intervals between a specified start and end index.
         :param namespace_id: id of namespace to work against
@@ -729,11 +729,11 @@ class Streams(object):
 
         # if stream_view_id is not set, do not specify /transform/ route and stream_view_id parameter
         if len(stream_view_id) == 0:
-            _path = self.__getSamples.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+            _path = self.__getSampledValues.format(tenant_id=self.__tenant, namespace_id=namespace_id,
                                                        stream_id=stream_id, start=start, end=end, sample_by=sample_by,intervals=intervals)
                                                     
         else:
-            _path = self.__getSamplesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+            _path = self.__getSampledValuesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
                                                        stream_id=stream_id, start=start, end=end, sample_by=sample_by,intervals=intervals, 
                                                        filter= filter, stream_view_id=stream_view_id)
 
@@ -986,8 +986,8 @@ class Streams(object):
         self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
         self.__getSummaries = self.__dataPath + "/Summaries?startIndex={start}&endIndex={end}&Count={count}&filter={filter}"
         self.__getSummariesT = self.__dataPath + "/Transform/Summaries?startIndex={start}&endIndex={end}&Count={count}&streamViewId={stream_view_id}&filter={filter}"
-        self.__getSamples = self.__dataPath + "/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}"
-        self.__getSamplesT = self.__dataPath + "/Transform/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}}&streamViewId={stream_view_id}"
+        self.__getSampledValues = self.__dataPath + "/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}"
+        self.__getSampledValuesT = self.__dataPath + "/Transform/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}}&streamViewId={stream_view_id}"
         self.__getRangeInterpolatedQuery = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}"
 
 
