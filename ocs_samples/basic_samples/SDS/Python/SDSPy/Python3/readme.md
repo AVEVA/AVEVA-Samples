@@ -1,5 +1,8 @@
-﻿Building a Python client to make REST API calls to the SDS Service
-==================================================================
+﻿SDS JavaScript Example using Python
+===================================
+
+Building a Python client to make REST API calls to the SDS Service
+----------------------------------------------------------
 
 The sample code in this topic demonstrates how to invoke SDS REST APIs
 using Python. By examining the code, you will see how to establish a connection 
@@ -244,6 +247,9 @@ A single SdsValue is a data point in the stream. It cannot be
 empty and must have at least the key value of the SdsType for the
 event. Events are passed in JSON format and are serialized in which is then sent along with a POST request.
 
+When inserting single or multiple values, the payload has to be a
+collection of events. This is an example of how the client creates the request:
+
 ```python
 payload = json.dumps(events)
 response = requests.post(
@@ -252,8 +258,41 @@ response = requests.post(
     headers=self.__sdsHeaders())
 ```
 
-When inserting single or multiple values, the payload has to be a
-collection of events. See the sample code for an example.
+First the event is created locally by populating a new waveData event  as follows:
+
+```python
+def nextWave(order, multiplier):
+    radians = (order) * math.pi/32
+        
+    newWave = WaveDataCompound()
+    newWave.Order = order
+    newWave.Multiplier = multiplier
+    newWave.Radians = radians
+    newWave.Tau = radians / (2 * math.pi)
+    newWave.Sin = multiplier * math.sin(radians)
+    newWave.Cos = multiplier * math.cos(radians)
+    newWave.Tan = multiplier * math.tan(radians)
+    newWave.Sinh = multiplier * math.sinh(radians)
+    newWave.Cosh = multiplier * math.cosh(radians)
+    newWave.Tanh = multiplier * math.tanh(radians)
+        
+    return newWave
+```
+
+Then use the data service client to submit the event using the insertValues method:
+
+```python
+ocsClient.Streams.insertValues(namespaceId, stream.Id, [event])
+```
+
+Similarly, we can build a list of objects and insert them in bulk:
+
+```python
+waves = []
+for i in range(2, 20, 2):
+    waves.append(nextWave(i, 2.0))
+ocsClient.Streams.insertValues(namespaceId, stream.Id, waves)
+```
 
 Retrieve Values from a Stream
 -----------------------------
@@ -261,15 +300,11 @@ Retrieve Values from a Stream
 There are many methods in the SDS REST API that allow the retrieval of
 events from a stream. Many of the retrieval methods accept indexes,
 which are passed using the URL. The index values must be capable of
-conversion to the type of the index assigned in the SdsType.
+conversion to the type of the index assigned in the SdsType. Below are 
+some of the available methods which have been implemented in SdsClient: 
 
-In this sample, four of the available methods are implemented in
-SdsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
-``getWindowValues`` can be used to retrieve events over a specific index
-range. ``getRangeValues`` can be used to retrieve a specified number of
-events from a starting index.
-
-Here is how to use ``getWindowValues``:
+<h5>getWindowValues</h5> 
+For retrieving events over a specific index range. Here is how to use it:
 
 ```python
 def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
@@ -278,17 +313,21 @@ def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
 *start* and *end* (inclusive) represent the starting and ending indices for the
 retrieval. Additionally, the namespace ID and stream ID must
 be provided to the function call. A JSON object containing a list of the
-found values is returned. In the sample the call is:
+found values is returned. 
+
+The  method is called as shown :
 
 ```python
 waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
 ```
 
-Optionally, you can retrieve a range of values from a start index using the
-``getRangeValues`` method in ``SdsClient``. The starting index is the ID
-of the ``SdsTypeProperty`` that corresponds to the key value of the
-WaveData type. In this case, it is ``Order``. Following is the
-declaration of getRangeValues:
+<h5>getRangeValues</h5>
+
+For retrieving a specified number of events from a starting index. 
+This method in ``SdsClient`` allows retrieval of a range of values 
+from a start index. The starting index is the ID of the ``SdsTypeProperty`` 
+that corresponds to the key value of the WaveData type. In this case, 
+it is ``Order``. Following is the declaration of getRangeValues:
 
 ```python
 def getRangeValues(self, namespace_id, stream_id, value_class, start, skip, count, reverse, boundary_type, streamView_id=""):
@@ -307,6 +346,33 @@ The ``getRangeValues`` method is called as shown :
 ```python
 waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
 ```
+
+<h5>getSamples</h5> 
+
+For retrieving a representative sample of data between a start and end 
+index.  Sampling is driven by a specified property or properties of the 
+stream's Sds Type. Property types that cannot be interpolated do not 
+support sampling requests. Strings are an example of a property that 
+cannot be interpolated. For more information see 
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation) Here is how to use it:
+
+```python
+def getSamples(namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
+```
+
+*intervals* is the number of intervals requested. *sample\_by* defines the 
+property or properties to use when sampling. Finally, *filter* is an optional
+expression to filter by. 
+Note: This method, implemented for example purposes in ``SdsClient``, does not 
+include support for SdsBoundryTypes. For more information about SdsBoundaryTypes
+and how to implement them with sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
+
+The  method is called as shown :
+
+```python
+waves = ocsClient.Streams.getSamples(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
+```
+
 
 Updating and Replacing Values
 -----------------------------
@@ -329,22 +395,32 @@ event = nextWave(start, span, 4.0, 0)
 client.updateValues(namespaceId, stream.Id, [event])
 # update multiple values
 updatedEvents = []
-for i in range(2, 40, 2):
-    event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 4.0, i)
-    updatedEvents.append(event)
+    for i in range(2, 40, 2):
+        event = nextWave(i, 4.0)
+        updatedEvents.append(event)
 client.updateValues(namespaceId, stream.Id, updatedEvents)
 ```
+
+If you attempt to update values that do not exist they will be created. The sample updates
+the original ten values and then adds another ten values by updating with a
+collection of twenty values.
+
+In contrast to updating, replacing a value only considers existing
+values and will not insert any new values into the stream. The sample
+program demonstrates this by replacing all twenty values. The calling conventions are
+identical to ``updateValue`` and ``updateValues``:
+
 
 Replace values:
 
 ```python
 # replace one value
-event = nextWave(start, span, 10.0, 0)
+event = nextWave(0, 5.0)
 client.replaceValues(namespaceId, stream.Id, [event])
 # replace multiple values
 replacedEvents = []
 for i in range(2, 40, 2):
-    event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 10.0, i)
+    event = nextWave(i, 5.0)
     replacedEvents.append(event)
 client.replaceValues(namespaceId, stream.Id, replacedEvents)
 ```
@@ -409,6 +485,12 @@ manualStreamView.Name = "SampleIntStreamView"
 manualStreamView.TargetTypeId = waveIntegerType.Id
 manualStreamView.SourceTypeId = waveType.Id
 manualStreamView.Properties = [vp1, vp2, vp3, vp4]
+```
+
+You can also use a streamview to change a Stream's type.
+
+```python
+ocsClient.Streams.updateStreamType(namespaceId, stream.Id, sampleStreamViewId)
 ```
 
 SdsStreamViewMap
