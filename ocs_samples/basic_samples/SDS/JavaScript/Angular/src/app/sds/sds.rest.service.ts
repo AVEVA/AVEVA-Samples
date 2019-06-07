@@ -196,7 +196,7 @@ export class SdsRestService {
   getSampledValues (streamId: string, start, end, intervals, sampleBy, filter: string = '', streamViewId=''): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
-      `/Data?startIndex=${start}&endIndex=${end}&intervals=${intervals}&sampleBy=${sampleBy}&filter=${filter}&streamViewId=${streamViewId}`;
+      `/Data/Sampled?startIndex=${start}&endIndex=${end}&intervals=${intervals}&sampleBy=${sampleBy}&filter=${filter}&streamViewId=${streamViewId}`;
     return this.authHttp.get(url, this.options);
   }
 

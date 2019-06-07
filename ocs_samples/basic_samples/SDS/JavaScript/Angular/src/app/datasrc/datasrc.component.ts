@@ -572,10 +572,9 @@ export class DatasrcComponent {
   }
 
   retrieveSampledValues() {
-    this.sdsService.getSampledValues(streamId, 0, 20, 2, "sin")
+    this.sdsService.getSampledValues(streamId, 0, 40, 4, "sin")
       .subscribe(res => {
         this.eventsSampled = res.body as string;
-        console.log(this.eventsSampled);
         this.getSampledValuesMessage = this.healthyResponseMessage(res) + JSON.stringify(this.eventsSampled);
       },
       err => {

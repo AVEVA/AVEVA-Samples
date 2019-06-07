@@ -71,7 +71,7 @@
   <span id="retrieveWaveDataEventsHeadersMessage" *ngIf="getDataWithHeadersMessage">Response: {{getDataWithHeadersMessage}}</span>
   
   <!-- Step 7 -->
-  <h4>Update values</h4>
+  <h3>Update values</h3>
   <p>A call to update values will either create or replace an event at the associated index location.  We will send a collection of
     twenty events to Sds, causing ten events to be updated and an additionaly ten to be created. Press Retrieve Events above to 
     see the updated data.
@@ -81,7 +81,7 @@
   <span id="updateWaveDataEventsMessage" *ngIf="button14Message">Response: {{button14Message}}</span>
 
   <!-- Step 8 -->
-  <h4>Replace values</h4>
+  <h3>Replace values</h3>
   <p>A call to replace values will either create or replace an event at the associated Index location. Press Retrieve Events above to 
     see the replaced data.</p>
   <button id="replaceWaveDataEvents" class="btn btn-primary" (click)="replaceWaveDataEvents()" >Replace values</button>
@@ -89,7 +89,7 @@
   <span id="replaceWaveDataEventsMessage" *ngIf="button15Message">Response: {{button15Message}}</span>
   
   <!-- Step 9 (getting the replaced values is done above^) -->
-  <h4>Get interpolated values</h4>
+  <h3>Get interpolated values</h3>
   <p>We can make a call using a start and end value with a certain number of points expected and interpolation will occur automatically.</p>
   <button id= "retrieveInterpolatedValues" class="btn btn-primary" (click)="retrieveInterpolatedValues()" >Get Interpolated</button>
   <br>
@@ -97,7 +97,7 @@
   
 
   <!-- Step 10 -->
-  <h4>Get filtered values</h4>
+  <h3>Get filtered values</h3>
   <p>We can make a call using a start and end value with a certain number of points expected and interpolation will occur automatically. 
      In this case we are asking for values with: radians < 3</p>
   <button id= "retrieveFilteredValues" class="btn btn-primary" (click)="retrieveFilteredValues()" >Get Filtered</button>
@@ -105,8 +105,11 @@
   <span id= "retrieveFilteredValuesMessage"  *ngIf="getFilteredValuesMessage">Response: {{getFilteredValuesMessage}}</span>
   
   <!-- Step 11 -->
-  <h4>Get sampled values</h4>
-  <p>FIX THIS</p>
+  <h3>Get sampled values</h3>
+  <p>Sds can return a sample of data that is representative of the trends in a larger dataset. In this case the call asks for 
+    selection across 4 intervals sampled by the sin property. Property types that cannot be interpolated do not support sampling 
+    requests. Strings are an example of a property that cannot be interpolated. For more information see 
+    <a href="https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation"> Interpolation.</a></p>
   <button id= "retrieveSampledValues" class="btn btn-primary" (click)="retrieveSampledValues()" >Get Samples</button>
   <br>
    <!-- Fix getSampledValuesMessage -->
@@ -229,7 +232,7 @@
                 </div>
 
   <!-- Step 13 -->
-  <h4>UpdateStreamType</h4>
+  <h3>UpdateStreamType</h3>
   <p>We can change the streams type using the streamview</p>
   <button id= "updateStreamType" class="btn btn-primary" (click)="updateStreamType()" >Update StreamType</button>
   <br>
@@ -237,7 +240,7 @@
 
   <!-- Step 14 -->
 
-  <h4>Filtering Types</h4>
+  <h3>Filtering Types</h3>
   <p>We can filter the types we return based upon many things, including in this example whether their Id contains: Target.</p>
   <button id= "filterTypes" class="btn btn-primary" (click)="filterTypes()" >Retreive Filtered Types</button>
   <br>
@@ -337,7 +340,7 @@
 
   
   <!-- Step 20 -->
-  <h4>Deleting types, streams and streamViews</h4>
+  <h3>Deleting types, streams and streamViews</h3>
   <p>Press the button below to delete the types, streams and streamViews that this sample has created. Failure to do
   so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
   written to that stream.</p>
