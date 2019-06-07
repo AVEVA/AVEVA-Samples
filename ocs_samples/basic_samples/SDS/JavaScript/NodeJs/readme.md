@@ -215,13 +215,11 @@ To use SDS, you define SdsTypes that describe the kinds of data you want
 to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `SDS
-documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
+more information about SdsTypes, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html).
 
 In the sample code, the SdsType representing WaveData is defined in Sample.js. 
 WaveData contains properties of integer and double atomic types. The 
-constructions begins by defining a base SdsType for each atomic type and then 
-defining properties of those atomic types.
+constructions begins by defining a base SdsType for each atomic type.
 
 ```js
 // define basic SdsTypes
@@ -310,9 +308,6 @@ restCall({
 });
 ```
 
--  sdsStream.Id is the stream Id
--  body is the list of event objects in json format
-
 First the event is created locally by populating a newWave event as follows:
 
 ```js
@@ -345,7 +340,7 @@ Similarly, we can build a list of objects and insert them in bulk:
 
 ```js
     //variable initialization
-
+        ...
     var buildEvents = function () {
         if (evtCount < totalEvents) {
             evt1 = waveDataObj.NextWave(200, mutliplier, evtCount);
@@ -356,9 +351,9 @@ Similarly, we can build a list of objects and insert them in bulk:
             callback();
         }
     };
-
-    //wrapper for build events
-
+        ...
+    //wrapper for buildEvents
+        ...
     client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
 ```
 
@@ -407,7 +402,7 @@ client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
 a starting index. This method in ``SdsClient`` allows retrieval of a range 
 of values from a start index. The starting index is the ID of the 
 ``SdsTypeProperty`` that corresponds to the key value of the WaveData type. 
-Following is the declaration of getRangeValues:
+Here is the request:
 
 ```js
 restCall({
@@ -434,7 +429,7 @@ client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "F
 <h5>Getting Table Form</h5>
 
 You can retreive the values in the form of a table (in this case with headers).
-Here is how to use it:
+Here is the request:
 
 ```js
 restCall({
@@ -462,7 +457,7 @@ index.  Sampling is driven by a specified property or properties of the
 stream's Sds Type. Property types that cannot be interpolated do not 
 support sampling requests. Strings are an example of a property that 
 cannot be interpolated. For more information see 
-[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation) Here is how the http request is made:
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation) Here is the request:
 
 ```js
 restCall({

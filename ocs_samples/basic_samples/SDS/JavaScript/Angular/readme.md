@@ -123,8 +123,7 @@ more information about SdsTypes, refer to the [SDS documentation](https://ocs-do
 
 In the sample code, the SdsType representing WaveData is defined in the buildWaveDataType method of
 datasrc.component.ts. WaveData contains properties of integer and double atomic types. 
-The constructions begins by defining a base SdsType for each atomic type and then defining
-Properties of those atomic types.
+The constructions begins by defining a base SdsType for each atomic type.
 
 ```js
 buildWaveDataType() {
@@ -135,7 +134,14 @@ buildWaveDataType() {
     const intType = new SdsType();
     intType.Id = 'intType';
     intType.SdsTypeCode = SdsTypeCode.Int32;
+```
 
+Next, the WaveData properties are each represented by an SdsTypeProperty.
+Each SdsType field in SdsTypeProperty is assigned an integer or double
+SdsType. The WaveData Order property represents the type’s key, and its
+IsKey property is set to true.
+
+```js
     const orderProperty = new SdsTypeProperty();
     orderProperty.Id = 'Order';
     orderProperty.SdsType = intType;
@@ -160,6 +166,15 @@ createType() {
     });
 }
 ```
+
+-  Returns in JSON format the SdsType object, or the url path of the existing SDS 
+type if a SDS type with the same Id exists.
+-  SdsType object is passed in json format
+
+All SdsTypes are constructed in a similar manner. Basic SdsTypes form the basis for
+SdsTypeProperties, which are then assigned to a complex user-defined
+type. These types can then be used in properties and become part of
+another SdsType's property list.
 
 
 Create an SdsStream
@@ -197,7 +212,8 @@ Create and Insert Values into the Stream
 
 A single event is a data point in the stream. An event object cannot be
 empty and should have at least the key value of the SDS type for the
-event. Events are passed in json format.
+event. Events are passed in json format and are serialized before being 
+sent along with a POST request.
 
 When inserting single or multiple values, the payload has to be the list of events. 
 An event can be created using the following POST request:
@@ -209,6 +225,46 @@ insertValues(streamId: string, events: Array<any>) {
     }
 ```
 
+First the event is created locally by populating a newWave event as follows:
+
+```js
+  newWaveDataEvent(order: number, range: number, multiplier: number) {
+    const radians = order * Math.PI / 32;
+
+    const waveData = new WaveData();
+    waveData.Order = order;
+    waveData.Radians = radians;
+    waveData.Tau = radians / (2 * Math.PI);
+    waveData.Sin = multiplier * Math.sin(radians);
+    waveData.Cos = multiplier * Math.cos(radians);
+    waveData.Tan = multiplier * Math.tan(radians);
+    waveData.Sinh = multiplier * Math.sinh(radians);
+    waveData.Cosh = multiplier * Math.cosh(radians);
+    waveData.Tanh = multiplier * Math.tanh(radians);
+
+    return waveData;
+  }
+```
+
+Then use the data service client to submit the event using the insertValues method:
+
+```js
+const list: Array<WaveData> = [];
+list.push(this.newWaveDataEvent(0, 2.5, 2));
+this.sdsService.insertValues(streamId, list)
+```
+
+Similarly, we can build a list of objects and insert them in bulk:
+
+```js
+const list: Array<WaveData> = [];
+for (let i = 0; i < 20; i += 2) {
+    list.push(this.newWaveDataEvent(i, 12, 24));
+}
+
+this.sdsService.insertValues(streamId, list)
+```
+
 The SDS REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for 
 more informationon available REST API calls.
@@ -216,14 +272,46 @@ more informationon available REST API calls.
 Retrieve Values from a Stream
 -----------------------------
 
-There are many methods in the SDS REST API allowing for the retrieval of
-events from a stream. The retrieval methods take string type start and
-end values; in our case, these are the start and end ordinal indices
-expressed as strings. The index values must
-capable of conversion to the type of the index assigned in the SdsType.
+There are many methods in the SDS REST API that allow the retrieval of
+events from a stream. Many of the retrieval methods accept indexes,
+which are passed using the URL. The index values must be capable of
+conversion to the type of the index assigned in the SdsType. Below are 
+some of the available methods which have been implemented in SdsClient: 
 
-This sample implements only two of the many available retrieval methods -
-Transform and Last.
+<h5>Getting Window Values</h5>
+
+``getWindowValues`` is used for retrieving events over a specific index range. 
+Here is the request:
+
+```js
+  getWindowValues (streamId: string, start, end, filter: string = ''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data?startIndex=${start}&endIndex=${end}&filter=${filter}`;
+    return this.authHttp.get(url, this.options);
+  }
+```
+
+- *start* and *end* (inclusive) represent the indices for the retrieval. 
+- The namespace ID and stream ID must be provided to the function call.
+- A JSON object containing a list of the found values is returned. 
+ Ex: For a time index, request url format will be
+    "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
+
+
+Here is how it is called:
+
+```js
+this.sdsService.getWindowValues(streamId, 0, 40, 'Radians%20lt%203')
+```
+
+<h5>Get Range Values</h5>
+
+``getRangeValues`` is used for retrieving a specified number of events from 
+a starting index. This method in ``SdsClient`` allows retrieval of a range 
+of values from a start index. The starting index is the ID of the 
+``SdsTypeProperty`` that corresponds to the key value of the WaveData type. 
+Here is the request:
 
 ```js
 getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
@@ -234,16 +322,93 @@ getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, stream
 }
 ```
 
+- *skip* is the increment by which the retrieval will happen.
+- *count* is how many values you wish to have returned.
+- *reverse* is a boolean that when ``true`` causes the retrieval to work 
+backwards from the starting point.
+- *boundary\_type* is a ``SdsBoundaryType`` value that determines the 
+behavior if the starting index cannot be found. Refer the to the 
+[SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for more information about SdsBoundaryTypes.
+
+The ``getRangeValues`` method is called as shown :
+
+```js
+this.sdsService.getRangeValues(streamId, '1', 40, SdsBoundaryType.ExactOrCalculated)
+```
+
+<h5>Getting Table Form</h5>
+
+You can retreive the values in the form of a table (in this case with headers).
+Here is the request:
+
+```js
+  getRangeValuesHeaders(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data/Transform?startIndex=${start}&count=${count}&boundaryType=${boundary}&streamViewId=${streamViewId}&form=tableh`;
+    return this.authHttp.get(url, this.options);
+  }
+```
+
+- *start* and *end* (inclusive) represent the indices for the retrieval.
+- The namespace ID and stream ID must be provided to the function call.
+- *form* specifies the organization of a table, the two available 
+formats are table and header table
+
+Here is how it is called:
+
+```js
+this.sdsService.getRangeValuesHeaders(streamId, '1', 40, SdsBoundaryType.ExactOrCalculated)
+```
+
+<h5>Getting Sampled Values</h5>
+
+Sampling allows retrieval of a representative sample of data between a start and end 
+index.  Sampling is driven by a specified property or properties of the 
+stream's Sds Type. Property types that cannot be interpolated do not 
+support sampling requests. Strings are an example of a property that 
+cannot be interpolated. For more information see 
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation) Here is the request:
+
+```js
+  getSampledValues (streamId: string, start, end, intervals, sampleBy, filter: string = '', streamViewId=''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data/Sampled?startIndex=${start}&endIndex=${end}&intervals=${intervals}&sampleBy=${sampleBy}&filter=${filter}&streamViewId=${streamViewId}`;
+    return this.authHttp.get(url, this.options);
+  }
+```
+-  parameters are the SdsStream Id, the starting and ending index
+   values for the desired window, the number of intervals to select 
+   from, the property or properties to use when sampling, an 
+   optional filter by expression, and an optional streamViewId. 
+- Note: This method, implemented for example purposes in ``SdsClient``, 
+    does not include support for SdsBoundaryTypes. For more 
+    information about SdsBoundaryTypes and how to implement them with 
+    sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
+
+Here is how it is called:
+
+```js
+this.sdsService.getSampledValues(streamId, 0, 40, 4, "sin")
+```
 
 Update Events and Replacing Values
 ----------------------------------
+Values can be updated or replaced after they are inserted into a stream. The
+distinction between updating and replacing operations is that updating inserts a
+value if none exists previously, but replacing does not. The sample
+demonstrates this behavior by first inserting ten values into the
+stream, then updating and adding ten more values using the update
+methods. Afterwards, it replaces all twenty values using the replace
+methods.
 
-Updating events is handled by PUT REST call as follows:
+<h5>Updating Events</h5>
 
--  the request body has the new event that will update an existing event
-   at the same index
+When updating single or multiple events, the payload has to be an array of event objects. 
+Updating events is handled by the following PUT request. The request body has the new 
+event that will update an existing event at the same index:
 
-When updating single or multiple values, the payload has to be the list of events.
 
 ```js
 updateValues(streamId: string, events: Array<any>) {
@@ -252,9 +417,20 @@ updateValues(streamId: string, events: Array<any>) {
 }
 ```
 
+This is called as follows:
+```js
+const list: Array<WaveData> = [];
+    for (let i = 0; i < 40; i += 2) {
+      list.push(this.newWaveDataEvent(i, 2.5, 5));
+    }
+    this.sdsService.updateValues(streamId, list)
+```
+
 If you attempt to update values that do not exist they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
 collection of twenty values.
+
+<h5>Replacing Events</h5>
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
@@ -267,6 +443,14 @@ replaceValues(streamId: string, events: Array<any>) {
 }
 ```
 
+This is called as follows:
+```js
+const list: Array<WaveData> = [];
+    for (let i = 0; i < 40; i += 2) {
+      list.push(this.newWaveDataEvent(i, 1.5, 10));
+    }
+    this.sdsService.replaceValues(streamId, list
+```
 
 Property Overrides
 ------------------
