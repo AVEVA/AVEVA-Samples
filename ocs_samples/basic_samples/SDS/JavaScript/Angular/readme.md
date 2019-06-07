@@ -229,6 +229,30 @@ getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, stream
 }
 ```
 
+Getting sampled values:
+
+```js
+getSampledValues (streamId: string, start, end, intervals, sampleBy, filter: string = '', streamViewId=''): Observable<any> {
+    const url = this.sdsUrl +
+        `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+        `/Data/Sampled?startIndex=${start}&endIndex=${end}&intervals=${intervals}&sampleBy=${sampleBy}&filter=${filter}&streamViewId=${streamViewId}`;
+    return this.authHttp.get(url, this.options);
+}
+```
+Sampling is driven by a specified property or properties of the stream's Sds Type. 
+Property types that cannot be interpolated do not support sampling requests. Strings 
+are an example of a property that cannot be interpolated. For more information see 
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation)
+
+-  parameters are the SdsStream Id, the starting and ending index
+   values for the desired window, the number of intervals to select 
+   from, the property or properties to use when sampling, an 
+   optional filter by expression, and an optional streamViewId. 
+- Note: This method, implemented for example purposes in ``SdsClient``, 
+    does not include support for SdsBoundryTypes. For more 
+    information about SdsBoundaryTypes and how to implement them with 
+    sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
+
 
 Update Events and Replacing Values
 ----------------------------------
