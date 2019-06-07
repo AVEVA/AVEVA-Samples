@@ -218,16 +218,23 @@ strings, or they can define complex types by grouping other SdsTypes. For
 more information about SdsTypes, refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
-In the sample code, the SdsType representing WaveData is defined in the 
-Sample.js. WaveData contains properties of integer and double atomic types. 
-The constructions begins by defining a base SdsType for each atomic type and then defining
-Properties of those atomic types.
+In the sample code, the SdsType representing WaveData is defined in Sample.js. 
+WaveData contains properties of integer and double atomic types. The 
+constructions begins by defining a base SdsType for each atomic type and then 
+defining properties of those atomic types.
 
 ```js
 // define basic SdsTypes
 var doubleType = new sdsObjs.SdsType({ "Id": "doubleType", "SdsTypeCode": sdsObjs.sdsTypeCode.Double });
 var intType = new sdsObjs.SdsType({ "Id": "intType", "SdsTypeCode": sdsObjs.sdsTypeCode.Int32 });
+```
 
+Next, the WaveData properties are each represented by an SdsTypeProperty.
+Each SdsType field in SdsTypeProperty is assigned an integer or double
+SdsType. The WaveData Order property represents the type’s key, and its
+IsKey property is set to true.
+
+```js
 // define properties
 var orderProperty = new sdsObjs.SdsTypeProperty({ "Id": "Order", "SdsType": intType, "IsKey": true });
 ```
@@ -242,11 +249,14 @@ restCall({
     body: JSON.stringify(type).toString()
 });
 ```
-
--  Returns the SdsType object in a json format
--  If a type with the same Id exists, url path of the existing SDS type
-   is returned
+-  Returns in JSON format the SdsType object, or the url path of the existing SDS 
+type if a SDS type with the same Id exists.
 -  SdsType object is passed in json format
+
+All SdsTypes are constructed in a similar manner. Basic SdsTypes form the basis for
+SdsTypeProperties, which are then assigned to a complex user-defined
+type. These types can then be used in properties and become part of
+another SdsType's property list.
 
 Create an SdsStream
 -----------------
@@ -268,7 +278,7 @@ var sampleStream = new sdsObjs.SdsStream({
 ```
 
 The local SdsStream can be created in the SDS service by a POST request as
-follows:
+follows.
 
 ```js
 restCall({
@@ -279,14 +289,13 @@ restCall({
 });
 ```
 
--  SdsStream object is passed in json format
-
 Create and Insert Values into the Stream
 ----------------------------------------
 
 A single event is a data point in the stream. An event object cannot be
 empty and should have at least the key value of the SDS type for the
-event. Events are passed in json format.
+event. Events are passed in JSON format and are serialized before being 
+sent along with a POST request.
 
 When inserting single or multiple values, the payload has to be a list of events.
 An event can be created using the following POST request:
@@ -353,26 +362,23 @@ Similarly, we can build a list of objects and insert them in bulk:
     client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
 ```
 
-
 The SDS REST API provides many more types of data insertion calls beyond
-those demonstrated in this application. Go to the 
-`SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for more information
-on available REST API calls.
+those demonstrated in this application. Go to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for more 
+information on available REST API calls.
 
 Retrieve Values from a Stream
 -----------------------------
 
-There are many methods in the SDS REST API allowing for the retrieval of
-events from a stream. The retrieval methods take string type start and
-end values; in our case, these are the start and end ordinal indices
-expressed as strings. The index values must
-capable of conversion to the type of the index assigned in the SdsType.
-
-This sample implements only a few of the many available retrieval methods.
+There are many methods in the SDS REST API that allow the retrieval of
+events from a stream. Many of the retrieval methods accept indexes,
+which are passed using the URL. The index values must be capable of
+conversion to the type of the index assigned in the SdsType. Below are 
+some of the available methods which have been implemented in SdsClient: 
 
 <h5>Getting Window Values</h5>
 
-Allows retrieval of events over a specific index range. Here is the request:
+``getWindowValues`` is used for retrieving events over a specific index range. 
+Here is the request:
 
 ```js
 restCall({
@@ -382,11 +388,10 @@ restCall({
 });
 ```
 
--  *start* and *end* (inclusive) represent the starting and ending indices for the
-    retrieval. Additionally, the namespace ID and stream ID must
-    be provided to the function call. A JSON object containing a list of the
-    found values is returned. Ex: For a time index, request url
-    format will be
+- *start* and *end* (inclusive) represent the indices for the retrieval. 
+- The namespace ID and stream ID must be provided to the function call.
+- A JSON object containing a list of the found values is returned. 
+ Ex: For a time index, request url format will be
     "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
 
 
@@ -398,11 +403,11 @@ client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
 
 <h5>Get Range Values</h5>
 
-For retrieving a specified number of events from a starting index. 
-This method in ``SdsClient`` allows retrieval of a range of values 
-from a start index. The starting index is the ID of the ``SdsTypeProperty`` 
-that corresponds to the key value of the WaveData type.
-Following is the http request of getRangeValues:
+``getRangeValues`` is used for retrieving a specified number of events from 
+a starting index. This method in ``SdsClient`` allows retrieval of a range 
+of values from a start index. The starting index is the ID of the 
+``SdsTypeProperty`` that corresponds to the key value of the WaveData type. 
+Following is the declaration of getRangeValues:
 
 ```js
 restCall({
@@ -412,15 +417,15 @@ restCall({
 });
 ```
 
-*skip* is the increment by which the retrieval will happen. *count* is
-how many values you wish to have returned. *reverse* is a boolean that
-when ``true`` causes the retrieval to work backwards from the starting
-point. Finally, *boundary\_type* is a ``SdsBoundaryType`` value that
-determines the behavior if the starting index cannot be found. Refer the
-to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
-for more information about SdsBoundaryTypes.
+- *skip* is the increment by which the retrieval will happen.
+- *count* is how many values you wish to have returned.
+- *reverse* is a boolean that when ``true`` causes the retrieval to work 
+backwards from the starting point.
+- *boundary\_type* is a ``SdsBoundaryType`` value that determines the 
+behavior if the starting index cannot be found. Refer the to the 
+[SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for more information about SdsBoundaryTypes.
 
-Here is how it is called:
+The ``getRangeValues`` method is called as shown :
 
 ```js
 client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
@@ -439,9 +444,10 @@ restCall({
 });
 ```
 
--  *start* and *end* (inclusive) represent the starting and ending indices for the
-    retrieval. Additionally, the namespace ID and stream ID must
-    be provided to the function call. 
+- *start* and *end* (inclusive) represent the indices for the retrieval.
+- The namespace ID and stream ID must be provided to the function call.
+- *form* specifies the organization of a table, the two available 
+formats are table and header table
 
 Here is how it is called:
 
@@ -470,7 +476,7 @@ restCall({
    from, the property or properties to use when sampling, an 
    optional filter by expression, and an optional streamViewId. 
 - Note: This method, implemented for example purposes in ``SdsClient``, 
-    does not include support for SdsBoundryTypes. For more 
+    does not include support for SdsBoundaryTypes. For more 
     information about SdsBoundaryTypes and how to implement them with 
     sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
@@ -490,8 +496,11 @@ stream, then updating and adding ten more values using the update
 methods. Afterwards, it replaces all twenty values using the replace
 methods.
 
+<h5>Updating Events</h5>
+
 When updating single or multiple events, the payload has to be an array of event objects. 
-Updating events is handled by PUT REST call as follows:
+Updating events is handled by the following PUT request. The request body has the new 
+event that will update an existing event at the same index:
 
 ```js
 restCall({
@@ -502,12 +511,23 @@ restCall({
     body: JSON.stringify(events)
 });
 ```
--  the request body has the new event that will update an existing event
-   at the same index
 
-If you attempt to update values that do not exist they will be created. The sample updates
+In Sample.js, this is called as follows:
+
+```js
+event = [];
+evt = res[0];
+evt = waveDataObj.NextWave(200, 4.0, 0);
+event.push(evt);
+    ...
+return client.updateEvents(tenantId, sampleNamespaceId, sampleStreamId, event);
+```
+
+If you attempt to update values that do not exist, they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
 collection of twenty values.
+
+<h5>Replacing Events</h5>
 
 In contrast to updating, replacing a value only considers existing
 values and will not insert any new values into the stream. The sample
@@ -522,6 +542,16 @@ restCall({
     headers: this.getHeaders(),
     body: JSON.stringify(events)
 });
+```
+
+In Sample.js, this is called as follows:
+
+```js
+var event = [];
+var replaceEvent = waveDataObj.NextWave(200, 2.0, 0);
+event.push(replaceEvent);
+    ...
+return client.replaceEvents(tenantId, sampleNamespaceId, sampleStreamId, event)
 ```
 
 Property Overrides

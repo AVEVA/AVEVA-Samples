@@ -200,7 +200,7 @@ empty and should have at least the key value of the SDS type for the
 event. Events are passed in json format.
 
 When inserting single or multiple values, the payload has to be the list of events. 
-An event can be created using the following POST request.
+An event can be created using the following POST request:
 
 ```js
 insertValues(streamId: string, events: Array<any>) {
@@ -210,9 +210,8 @@ insertValues(streamId: string, events: Array<any>) {
 ```
 
 The SDS REST API provides many more types of data insertion calls beyond
-those demonstrated in this application. Go to the 
-`SDS documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__ for more information
-on available REST API calls.
+those demonstrated in this application. Refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for 
+more informationon available REST API calls.
 
 Retrieve Values from a Stream
 -----------------------------
