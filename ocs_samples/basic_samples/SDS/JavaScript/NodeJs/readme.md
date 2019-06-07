@@ -1,5 +1,8 @@
-﻿JavaScript Samples: Building a Client to make REST API Calls to the SDS Service.
-===============================================================================
+﻿SDS JavaScript Example using NodeJS
+===================================
+
+Building a Client to make REST API Calls to the SDS Service.
+----------------------------------------------------------
 
 This sample demonstrates how SDS REST APIs are invoked using JavaScript.
 By examining the code, you will see how to establish a connection to SDS, 
@@ -248,10 +251,12 @@ restCall({
 Create an SdsStream
 -----------------
 
-An ordered series of events is stored in an SdsStream. All you have to do
-is create a local SdsStream instance, give it an Id, assign it a type,
-and submit it to the SDS service. The value of the ``TypeId`` property is
-the value of the SdsType ``Id`` property.
+A SdsStream stores an ordered series of events. To create a
+SdsStream instance, you simply provide an Id, assign it a type, and
+submit it to the SDS service.  The value of the ``TypeId`` property is
+the value of the SdsType ``Id`` property. The ``SdsStream`` object of SdsClient is
+similar to ``SdsType``, except that it uses a different URL. Here is how
+it is called from the main program:
 
 ```js
 var sampleStream = new sdsObjs.SdsStream({
@@ -283,12 +288,8 @@ A single event is a data point in the stream. An event object cannot be
 empty and should have at least the key value of the SDS type for the
 event. Events are passed in json format.
 
+When inserting single or multiple values, the payload has to be a list of events.
 An event can be created using the following POST request:
-
--  sdsStream.Id is the stream Id
--  body is the list of event objects in json format
-
-When inserting single or multiple values, the payload has to be a list of events:
 
 ```js
 restCall({
@@ -299,6 +300,59 @@ restCall({
     body: JSON.stringify(events)
 });
 ```
+
+-  sdsStream.Id is the stream Id
+-  body is the list of event objects in json format
+
+First the event is created locally by populating a newWave event as follows:
+
+```js
+NextWave: function(interval, multiplier, order) {
+        
+        radians = order * Math.PI/32 +1;
+
+        newWave = new this.WaveData();
+        newWave.Order = order;
+        newWave.Radians = radians;
+        newWave.Tau = radians / (2 * Math.PI);
+        newWave.Sin = multiplier * Math.sin(radians);
+        newWave.Cos = multiplier * Math.cos(radians);
+        newWave.Tan = multiplier * Math.tan(radians);
+        newWave.Sinh = multiplier * Math.sinh(radians);
+        newWave.Cosh = multiplier * Math.cosh(radians);
+        newWave.Tanh = multiplier * Math.tanh(radians);
+
+        return newWave;
+    }
+```
+
+Then use the data service client to submit the event using the insertValues method:
+
+```js
+client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
+```
+
+Similarly, we can build a list of objects and insert them in bulk:
+
+```js
+    //variable initialization
+
+    var buildEvents = function () {
+        if (evtCount < totalEvents) {
+            evt1 = waveDataObj.NextWave(200, mutliplier, evtCount);
+            events.push(evt1);
+            evtCount += 2;
+            buildEvents();
+        } else {
+            callback();
+        }
+    };
+
+    //wrapper for build events
+
+    client.insertEvents(tenantId, sampleNamespaceId, sampleStreamId, events);
+```
+
 
 The SDS REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Go to the 
@@ -316,7 +370,9 @@ capable of conversion to the type of the index assigned in the SdsType.
 
 This sample implements only a few of the many available retrieval methods.
 
-Getting window values:
+<h5>Getting Window Values</h5>
+
+Allows retrieval of events over a specific index range. Here is the request:
 
 ```js
 restCall({
@@ -326,12 +382,81 @@ restCall({
 });
 ```
 
--  parameters are the SdsStream Id and the starting and ending index
-   values for the desired window Ex: For a time index, request url
-   format will be
-   "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
+-  *start* and *end* (inclusive) represent the starting and ending indices for the
+    retrieval. Additionally, the namespace ID and stream ID must
+    be provided to the function call. A JSON object containing a list of the
+    found values is returned. Ex: For a time index, request url
+    format will be
+    "/{streamId}/Data?startIndex={startTime}&endIndex={endTime}
 
-Getting sampled values:
+
+Here is how it is called:
+
+```js
+client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
+```
+
+<h5>Get Range Values</h5>
+
+For retrieving a specified number of events from a starting index. 
+This method in ``SdsClient`` allows retrieval of a range of values 
+from a start index. The starting index is the ID of the ``SdsTypeProperty`` 
+that corresponds to the key value of the WaveData type.
+Following is the http request of getRangeValues:
+
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getRangeValuesBase.format([streamId, start, skip, count, reverse, boundaryType, streamView]),
+    method: 'GET',
+    headers: this.getHeaders()
+});
+```
+
+*skip* is the increment by which the retrieval will happen. *count* is
+how many values you wish to have returned. *reverse* is a boolean that
+when ``true`` causes the retrieval to work backwards from the starting
+point. Finally, *boundary\_type* is a ``SdsBoundaryType`` value that
+determines the behavior if the starting index cannot be found. Refer the
+to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
+for more information about SdsBoundaryTypes.
+
+Here is how it is called:
+
+```js
+client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
+```
+
+<h5>Getting Table Form</h5>
+
+You can retreive the values in the form of a table (in this case with headers).
+Here is how to use it:
+
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end,""]) +"&form=tableh",
+    method: 'GET',
+    headers: this.getHeaders()
+});
+```
+
+-  *start* and *end* (inclusive) represent the starting and ending indices for the
+    retrieval. Additionally, the namespace ID and stream ID must
+    be provided to the function call. 
+
+Here is how it is called:
+
+```js
+client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
+```
+
+<h5>Getting Sampled Values</h5>
+
+Sampling allows retrieval of a representative sample of data between a start and end 
+index.  Sampling is driven by a specified property or properties of the 
+stream's Sds Type. Property types that cannot be interpolated do not 
+support sampling requests. Strings are an example of a property that 
+cannot be interpolated. For more information see 
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation) Here is how the http request is made:
 
 ```js
 restCall({
@@ -340,11 +465,6 @@ restCall({
     headers: this.getHeaders()
 });
 ```
-Sampling is driven by a specified property or properties of the stream's Sds Type. 
-Property types that cannot be interpolated do not support sampling requests. Strings 
-are an example of a property that cannot be interpolated. For more information see 
-[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation)
-
 -  parameters are the SdsStream Id, the starting and ending index
    values for the desired window, the number of intervals to select 
    from, the property or properties to use when sampling, an 
@@ -354,15 +474,24 @@ are an example of a property that cannot be interpolated. For more information s
     information about SdsBoundaryTypes and how to implement them with 
     sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
+Here is how it is called:
+
+```js
+client.getSampledValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 40, 4, "sin");
+```
+
 Update Events and Replacing Values
 ----------------------------------
+Values can be updated or replaced after they are inserted into a stream. The
+distinction between updating and replacing operations is that updating inserts a
+value if none exists previously, but replacing does not. The sample
+demonstrates this behavior by first inserting ten values into the
+stream, then updating and adding ten more values using the update
+methods. Afterwards, it replaces all twenty values using the replace
+methods.
 
+When updating single or multiple events, the payload has to be an array of event objects. 
 Updating events is handled by PUT REST call as follows:
-
--  the request body has the new event that will update an existing event
-   at the same index
-
-When updating single or multiple events, the payload has to be an array of event objects:
 
 ```js
 restCall({
@@ -373,6 +502,8 @@ restCall({
     body: JSON.stringify(events)
 });
 ```
+-  the request body has the new event that will update an existing event
+   at the same index
 
 If you attempt to update values that do not exist they will be created. The sample updates
 the original ten values and then adds another ten values by updating with a
@@ -406,7 +537,7 @@ or the default value for the data type, is returned by the SDS Service.
 The following shows how this is done in the code:
 
 ```js
-// create a Property Override    
+// Create a Discrete stream PropertyOverride indicating that we do not want SDS to calculate a value for Radians and update our stream 
 var propertyOverride = new sdsObjs.SdsPropertyOverride({ "SdsTypePropertyId": "Radians", "InterpolationMode": sdsObjs.sdsStreamMode.Discrete });
 var propertyOverrides = [propertyOverride]
 
@@ -435,7 +566,7 @@ the properties are in the same position and of the same data type,
 or when the properties have the same name, SDS will map the properties automatically.
 
 ```js
-client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id)
+client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, start, skip, count, reverse, sdsObjs.sdsBoundaryType.ExactOrCalculated, autoStreamView.Id)
 ```
 
 To map a property that is beyond the ability of SDS to map on its own, 
@@ -452,6 +583,12 @@ var manualStreamView = new sdsObjs.SdsStreamView({
     "Properties" : [sinStreamViewProperty, cosStreamViewProperty, tanStreamViewProperty]
 });
 ```
+You can also use a streamview to change a Stream's type.
+
+```js
+client.updateStreamType(tenantId, namespaceId, streamId, streamViewId)
+```
+
 
 SdsStreamViewMap
 ---------
