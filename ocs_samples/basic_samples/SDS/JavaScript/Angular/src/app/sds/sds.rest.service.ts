@@ -221,12 +221,6 @@ export class SdsRestService {
     return this.authHttp.get(url, this.options);
   }
 
-  getTypes(skip: number, count: number, query: string = ''): Observable<any> {
-    const url = this.sdsUrl +
-      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types?skip=${skip}&count=${count}&query=${query}`;
-    return this.authHttp.get(url, this.options);
-  }
-
   createType(sdsType: SdsType): Observable<any> {
     const url = this.sdsUrl + `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types/${sdsType.Id}`;
     return this.authHttp.post(url, sdsType, this.options);

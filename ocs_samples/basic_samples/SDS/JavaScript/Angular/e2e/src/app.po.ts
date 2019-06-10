@@ -107,10 +107,6 @@ export class AppPage {
         return this.helper('updateStreamType', '');
     }
 
-    filterTypes(): any {
-        return this.helper('filterTypes', '');
-    }
-
     createTagsAndMetaData(): any {
         return this.helper('createTagsAndMetadata', '20');
     }

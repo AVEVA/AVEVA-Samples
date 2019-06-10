@@ -115,7 +115,6 @@ export class DatasrcComponent {
   getFilteredValuesMessage: string;
   getSampledValuesMessage: String;
   updateStreamTypeMessage: string;
-  filterTypesMessage: string;
   secondaryCreateMessage: string;
   secondaryUpdateMessage: string;
   secondaryDeleteMessage: string;
@@ -592,20 +591,6 @@ export class DatasrcComponent {
         this.updateStreamTypeMessage = this.unhealthyResponseMessage(err);
       });
   }
-
-
-  filterTypes() {
-    this.sdsService.getTypes(0, 100, 'Id:*Target*')
-      .subscribe(res => {
-        const resp = res.body as string;
-        this.filterTypesMessage = this.healthyResponseMessage(res) + JSON.stringify(resp);
-      },
-      err => {
-        this.filterTypesMessage = this.unhealthyResponseMessage(err);
-      });
-  }
-
-
 
   retrieveInterpolatedValues() {
     this.hasEventsInterpolated = false;

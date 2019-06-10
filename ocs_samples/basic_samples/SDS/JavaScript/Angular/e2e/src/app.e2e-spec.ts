@@ -62,8 +62,6 @@ describe('workspace-project App', () => {
             .then((res) => {
         page.updateStreamType()
             .then((res) => {
-        page.filterTypes()
-            .then((res) => {
         page.createTagsAndMetaData()
             .then((res) => {
         page.getTags()
