@@ -224,7 +224,7 @@ another SdsType's property list.
 Create an SdsStream
 -----------------
 
-A SdsStream stores an ordered series of events. To create a
+An SdsStream stores an ordered series of events. To create a
 SdsStream instance, you simply provide an Id, assign it a type, and
 submit it to the SDS service. The ``createStream`` method of SdsClient is
 similar to createType, except that it uses a different URL. Here is how
@@ -337,11 +337,10 @@ waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
 
 <h5>Get Range Values</h5>
 
-``getRangeValues`` is used for retrieving a specified number of events from 
-a starting index. This method in ``SdsClient`` allows retrieval of a range 
-of values from a start index. The starting index is the ID of the 
-``SdsTypeProperty`` that corresponds to the key value of the WaveData type. 
-Following is the declaration of getRangeValues:
+``getRangeValues`` is a method in ``SdsClient`` used for retrieving a 
+specified number of events from a starting index. The starting index is 
+the ID of the ``SdsTypeProperty`` that corresponds to the key value of 
+the WaveData type. Here is the request:
 
 ```python
 def getRangeValues(self, namespace_id, stream_id, value_class, start, skip, count, reverse, boundary_type, streamView_id=""):
@@ -411,16 +410,6 @@ waves = ocsClient.Streams.getSampledValues(namespaceId, stream.Id, WaveData, 0, 
 
 Updating and Replacing Values
 -----------------------------
-
-Values can be updated or replaced after they are inserted into a stream. The
-distinction between updating and replacing operations is that updating inserts a
-value if none exists previously, but replacing does not. The sample
-demonstrates this behavior by first inserting ten values into the
-stream, then updating and adding ten more values using the update
-methods. Afterwards, it replaces all twenty values using the replace
-methods.
-
-Here are the calls that accomplish these steps:
 
 <h5>Updating Values</h5>
 
@@ -493,7 +482,7 @@ more information about SDS Property Overrides.
 SdsStreamViews
 -------
 
-A SdsStreamView provides a way to map stream data requests from one data type 
+An SdsStreamView provides a way to map stream data requests from one data type 
 to another. You can apply an SdsStreamView to any read or GET operation. SdsStreamView 
 is used to specify the mapping between source and target types.
 

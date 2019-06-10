@@ -167,9 +167,9 @@ createType() {
 }
 ```
 
--  Returns in JSON format the SdsType object, or the url path of the existing SDS 
-type if a SDS type with the same Id exists.
--  SdsType object is passed in json format
+-  Returns the SdsType object in JSON format, or, if an SDS type with the same Id already exists, 
+returns the url path of the existing SDS type.
+-  The SdsType object is passed in json format
 
 All SdsTypes are constructed in a similar manner. Basic SdsTypes form the basis for
 SdsTypeProperties, which are then assigned to a complex user-defined
@@ -180,7 +180,7 @@ another SdsType's property list.
 Create an SdsStream
 -----------------
 
-A SdsStream stores an ordered series of events. To create a
+An SdsStream stores an ordered series of events. To create a
 SdsStream instance, you simply provide an Id, assign it a type, and
 submit it to the SDS service.  The value of the ``TypeId`` property is
 the value of the SdsType ``Id`` property. The ``SdsStream`` object of SdsClient is
@@ -267,7 +267,7 @@ this.sdsService.insertValues(streamId, list)
 
 The SDS REST API provides many more types of data insertion calls beyond
 those demonstrated in this application. Refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html) for 
-more informationon available REST API calls.
+more information on available REST API calls.
 
 Retrieve Values from a Stream
 -----------------------------
@@ -278,7 +278,7 @@ which are passed using the URL. The index values must be capable of
 conversion to the type of the index assigned in the SdsType. Below are 
 some of the available methods which have been implemented in SdsClient: 
 
-<h5>Getting Window Values</h5>
+<h5>Get Window Values</h5>
 
 ``getWindowValues`` is used for retrieving events over a specific index range. 
 Here is the request:
@@ -307,11 +307,10 @@ this.sdsService.getWindowValues(streamId, 0, 40, 'Radians%20lt%203')
 
 <h5>Get Range Values</h5>
 
-``getRangeValues`` is used for retrieving a specified number of events from 
-a starting index. This method in ``SdsClient`` allows retrieval of a range 
-of values from a start index. The starting index is the ID of the 
-``SdsTypeProperty`` that corresponds to the key value of the WaveData type. 
-Here is the request:
+``getRangeValues`` is a method in ``SdsClient`` used for retrieving a 
+specified number of events from a starting index. The starting index is 
+the ID of the ``SdsTypeProperty`` that corresponds to the key value of 
+the WaveData type. Here is the request:
 
 ```js
 getRangeValues(streamId: string, start, count, boundary: SdsBoundaryType, streamViewId: string = ''): Observable<any> {
@@ -336,7 +335,7 @@ The ``getRangeValues`` method is called as shown :
 this.sdsService.getRangeValues(streamId, '1', 40, SdsBoundaryType.ExactOrCalculated)
 ```
 
-<h5>Getting Table Form</h5>
+<h5>Get Table Form</h5>
 
 You can retreive the values in the form of a table (in this case with headers).
 Here is the request:
@@ -361,7 +360,7 @@ Here is how it is called:
 this.sdsService.getRangeValuesHeaders(streamId, '1', 40, SdsBoundaryType.ExactOrCalculated)
 ```
 
-<h5>Getting Sampled Values</h5>
+<h5>Get Sampled Values</h5>
 
 Sampling allows retrieval of a representative sample of data between a start and end 
 index.  Sampling is driven by a specified property or properties of the 
@@ -378,7 +377,7 @@ cannot be interpolated. For more information see
     return this.authHttp.get(url, this.options);
   }
 ```
--  parameters are the SdsStream Id, the starting and ending index
+-  Parameters are the SdsStream Id, the starting and ending index
    values for the desired window, the number of intervals to select 
    from, the property or properties to use when sampling, an 
    optional filter by expression, and an optional streamViewId. 
@@ -395,13 +394,6 @@ this.sdsService.getSampledValues(streamId, 0, 40, 4, "sin")
 
 Update Events and Replacing Values
 ----------------------------------
-Values can be updated or replaced after they are inserted into a stream. The
-distinction between updating and replacing operations is that updating inserts a
-value if none exists previously, but replacing does not. The sample
-demonstrates this behavior by first inserting ten values into the
-stream, then updating and adding ten more values using the update
-methods. Afterwards, it replaces all twenty values using the replace
-methods.
 
 <h5>Updating Events</h5>
 
