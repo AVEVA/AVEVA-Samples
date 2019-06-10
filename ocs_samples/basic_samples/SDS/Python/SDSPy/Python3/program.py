@@ -458,7 +458,7 @@ def main():
         # Step 11
         # Sampling from all values
         print("Getting sampled values")
-        sampledWaves = ocsClient.Streams.getSamples(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
+        sampledWaves = ocsClient.Streams.getSampledValues(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
         print("Total events found: " + str(len(sampledWaves)))
         for wave in sampledWaves:
             print(toString(wave))
@@ -597,19 +597,6 @@ def main():
         print("The new type value " + str(firstVal) + " compared to the original one " + str(firstValUpdated))
 
         # Step 15
-        
-        types = ocsClient.Types.getTypes(namespaceId, 0, 100)
-        typesFiltered = ocsClient.Types.getTypes(namespaceId, 0, 100, "contains(Id,'Target')")
-        
-        print("All Types: ")
-        for typeI in types:
-            print(typeI.Id)
-
-        print("Filtered Types: ")
-        for typeI in typesFiltered:
-            print(typeI.Id)
-
-        # Step 16
         ######################################################################################################
         # Tags and Metadata
         ######################################################################################################
@@ -637,7 +624,7 @@ def main():
         print("Metadata key Province: ", province)
         print()
         
-        # Step 17
+        # Step 16
         ######################################################################################################
         # Delete events
         ######################################################################################################
@@ -656,7 +643,7 @@ def main():
             pass
         print("All values deleted successfully!")
         
-        # Step 18
+        # Step 17
         print("Adding a stream with a secondary index.")
         index  = SdsStreamIndex()
         index.SdsTypePropertyId = "Radians"
@@ -705,7 +692,7 @@ def main():
 
         print("Secondary indexes on streams original:" +  originalLength + ". New one:  " + secondaryLength)
     
-        # Step 19
+        # Step 18
         # Adding Compound Index Type
         print("Creating an SdsType with a compound index")
         typeCompound = getWaveCompoundDataType(compoundTypeId)        
@@ -718,7 +705,7 @@ def main():
         streamCompound.TypeId = typeCompound.Id    
         ocsClient.Streams.createOrUpdateStream( namespaceId, streamCompound)
         
-        # Step 20 
+        # Step 29 
 
         print("Inserting data")
 
@@ -748,7 +735,7 @@ def main():
 
     finally:
 
-        # Step 21
+        # Step 20
 
         ######################################################################################################
         # SdsType, SdsStream, and SdsStreamView deletion

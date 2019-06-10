@@ -31,7 +31,7 @@ module.exports = {
     // creates a new wave event
     NextWave: function(interval, multiplier, order) {
         
-        radians = Math.PI/32;
+        radians = order * Math.PI/32 +1;
 
         newWave = new this.WaveData();
         newWave.Order = order;
