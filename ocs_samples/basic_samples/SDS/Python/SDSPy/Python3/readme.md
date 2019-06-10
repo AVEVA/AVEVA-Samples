@@ -1,4 +1,4 @@
-Building a Python client to make REST API calls to the SDS Service
+﻿Building a Python client to make REST API calls to the SDS Service
 ==================================================================
 
 The sample code in this topic demonstrates how to invoke SDS REST APIs
@@ -112,7 +112,7 @@ The values to be replaced are in ``config.ini``:
 
 ```ini
 [Configurations]
-Namespace = Samples
+Namespace = REPLACE_WITH_NAMESPACE_ID
 
 [Access]
 Resource = https://dat-b.osisoft.com

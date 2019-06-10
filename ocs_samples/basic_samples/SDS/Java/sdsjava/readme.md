@@ -147,10 +147,10 @@ The values to be replaced are in ``config.properties``:
 
 '''
 resource = https://dat-b.osisoft.com
-clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
-clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
-tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
-namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
+clientId = REPLACE_WITH_APPLICATION_IDENTIFIER
+clientSecret = REPLACE_WITH_APPLICATION_SECRET
+tenantId = REPLACE_WITH_TENANT_ID
+namespaceId = REPLACE_WITH_NAMESPACE_ID
 apiVersion = v1-preview
 '''
 

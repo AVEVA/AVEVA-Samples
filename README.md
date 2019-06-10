@@ -15,11 +15,16 @@ Note: The OMF samples work against both the on-prem PI System and OCS.
 ## About this repo
 
 There is a [style guide](StyleGuide.md) that helps explain the organization of the repo and helps explain the code samples provided.  There is also a [test guide](test_guide.md) that goes into more details about the included automated tests.
+ 
+## Feedback
 
+If you have a need for a new sample.  If there is a feature or capability that should be demonstrated.  If there is an existing sample that should be in your favorite language.  Please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel.  It should be marked with the 'OSIsoft Samples' Category.  [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).   
+ 
+## Support
 
-## Request for example 
+If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal  (https://my.osisoft.com).
 
-Please raise an issue if you would like to see a new task, a new example inside of a task, or an existing example in a particular langauge.    
+If your support question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
 
 ## Contributions
 

@@ -584,7 +584,7 @@ export class DatasrcComponent {
 
 
   filterTypes() {
-    this.sdsService.getTypes(0, 100, 'contains(Id,\'Target\')')
+    this.sdsService.getTypes(0, 100, 'Id:*Target*')
       .subscribe(res => {
         const resp = res.body as string;
         this.filterTypesMessage = this.healthyResponseMessage(res) + JSON.stringify(resp);

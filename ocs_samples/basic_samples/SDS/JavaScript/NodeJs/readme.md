@@ -129,8 +129,8 @@ The values to be replaced are in ``config.js``:
 ```js
 authItems : {'resource' : "https://sdshomeprod.onmicrosoft.com/ocsapi",
                     'authority' : "https://login.windows.net/<TENANT-ID>.onmicrosoft.com/oauth2/token",
-                    'clientId' : "PLACEHOLDER_REPLACE_WITH_USER_ID",
-                    'clientSecret' : "PLACEHOLDER_REPLACE_WITH_USER_SECRET"}
+                    'clientId' : "PLACEHOLDER_REPLACE_WITH_APPLICATION_IDENTIFIER",
+                    'clientSecret' : "PLACEHOLDER_REPLACE_WITH_APPLICATION_SECRET"}
 sdsServerUrl : "PLACEHOLDER_REPLACE_WITH_SDS_SERVER_URL",
 tenantId: "PLACEHOLDER_REPLACE_WITH_TENANT_ID",
 namespaceId: "PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID",

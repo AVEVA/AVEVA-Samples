@@ -25,6 +25,8 @@ In order to run these samples, you must configure PI Web API with the proper sec
 - Write and read element attributes
 - Delete all the above AF/PI Data Archive objects  
 
+On your client machine running this code, it is assumed that you have configured the system to trust the certficate used by PI Web API.
+
 Common Actions
 --------------
 

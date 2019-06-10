@@ -43,7 +43,7 @@ namespace HybridFlow
         {
             var listener = new TcpListener(IPAddress.Loopback, 0);
             listener.Start();
-            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            var port = ((IPEndPoint) listener.LocalEndpoint).Port;
             listener.Stop();
             return port;
         }
@@ -59,29 +59,31 @@ namespace HybridFlow
                     var result = await listener.WaitForCallbackAsync();
                     if (String.IsNullOrWhiteSpace(result))
                     {
-                        return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = "Empty response." };
+                        return new BrowserResult
+                            {ResultType = BrowserResultType.UnknownError, Error = "Empty response."};
                     }
 
-                    return new BrowserResult { Response = result, ResultType = BrowserResultType.Success };
+                    return new BrowserResult {Response = result, ResultType = BrowserResultType.Success};
                 }
                 catch (TaskCanceledException ex)
                 {
-                    return new BrowserResult { ResultType = BrowserResultType.Timeout, Error = ex.Message };
+                    return new BrowserResult {ResultType = BrowserResultType.Timeout, Error = ex.Message};
                 }
                 catch (Exception ex)
                 {
-                    return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = ex.Message };
+                    return new BrowserResult {ResultType = BrowserResultType.UnknownError, Error = ex.Message};
                 }
             }
         }
 
         public static void OpenBrowser(string url)
         {
-            if(test)
+            if (test)
             {
                 AutoLogin(url);
                 return;
             }
+
             try
             {
                 Process.Start(url);
@@ -92,7 +94,7 @@ namespace HybridFlow
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") {CreateNoWindow = true});
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
@@ -113,10 +115,6 @@ namespace HybridFlow
         private static void AutoLogin(string url)
         {
             //embedded automated logging in.  Added for testing purposes as typically for a Hybrid application you want the user to login.
-
-            //works against the personal microsoft account option only
-
-            // not sure why specifying the current directory is needed on local testing but it is
 
             //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
@@ -163,7 +161,7 @@ namespace HybridFlow
             path = path ?? String.Empty;
             if (path.StartsWith("/")) path = path.Substring(1);
 
-            _url = $"http://127.0.0.1:{port}/{path}";
+            _url = $"https://127.0.0.1:{port}/{path}";
 
             _host = new WebHostBuilder()
                 .UseKestrel()
@@ -192,7 +190,8 @@ namespace HybridFlow
                 }
                 else if (ctx.Request.Method == "POST")
                 {
-                    if (!ctx.Request.ContentType.Equals("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase))
+                    if (!ctx.Request.ContentType.Equals("application/x-www-form-urlencoded",
+                        StringComparison.OrdinalIgnoreCase))
                     {
                         ctx.Response.StatusCode = 415;
                     }
