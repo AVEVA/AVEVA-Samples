@@ -109,15 +109,6 @@ module.exports = {
             });
         };
 
-        // get streams from the Sds Service
-        this.getTypes = function (tenantId, namespaceId, queryString, skip, count) {
-            return restCall({
-                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString + "&skip=" + skip + "&count=" + count  ,
-                method: 'GET',
-                headers: this.getHeaders()
-            });
-        };
-
         // get stream from the Sds Service
         this.getStream = function (tenantId, namespaceId, streamId) {
             return restCall({

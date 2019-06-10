@@ -332,7 +332,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // get all events in table format
     var getWindowEventsTable = printWindowEvents.then(
         // Step 6
@@ -360,7 +359,6 @@ var app = function (request1, response)
     ).catch(function (err) { logError(err); });
     
     // update one event
-
     var updateEvent = printWindowEventsTable.then(
         // Step 7
         function (res) {
@@ -437,7 +435,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // replace events
     var currentEvents;
     //replace one event
@@ -462,11 +459,10 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // if updating single value successful, then create a list of new values to insert
     var createReplaceEvents = replaceEvent.then(
         function (res) {
-            mutliplier = 20.0;
+            multiplier = 20.0;
             var events = [];
             evtCount = 2;
             var prom = new Promise(function (resolve, reject) {
@@ -478,7 +474,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-    
     //replace multiple events
     var replaceEvents = createReplaceEvents.then(
         function (res) {
@@ -513,7 +508,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var printReplaceEvents = getReplacedEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
@@ -521,7 +515,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
     
-
     // get interpolated events
     var getInterpolatedEvents = printReplaceEvents.then(
         // Step 9 
@@ -539,7 +532,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var printInterpolatedEvents = getInterpolatedEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
@@ -547,8 +539,6 @@ var app = function (request1, response)
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
-    
-
 
     // get filtered events
     var getFilteredEvents = printInterpolatedEvents.then(
@@ -574,8 +564,6 @@ var app = function (request1, response)
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
-
-         
          
     // get sampled values
     var getSampledValues = printFilteredEvents.then(
@@ -601,8 +589,6 @@ var app = function (request1, response)
             dumpEvents(sampledValues)
         }
     ).catch(function (err) { logError(err); });
-
-
 
     // Property Overrides
     var getRangeEvents = printSampledValues.then(
@@ -910,11 +896,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err);});   
 
-
-
-
-
-
     var getFirstValueSV = dumpMapResult.then(
     // Step 14 
         function (res) {
@@ -937,7 +918,6 @@ var app = function (request1, response)
             dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });  
-
 
     var getFirstS= printFirstValueSV.then(
         function (res) {
@@ -974,7 +954,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var getFirstValueSV2 = updateStreamType.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
@@ -995,7 +974,6 @@ var app = function (request1, response)
             dumpEventTarget(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });
-
 
     var getFirstS2 = printFirstValueSV2.then(
         function (res) {
@@ -1018,34 +996,9 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });  
 
-
-
-    var getTypes = printFirstS2.then(
-    // Step 15
-        function (res) {
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.getTypes(tenantId, sampleNamespaceId, "", 0,100);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.getTypes(tenantId, sampleNamespaceId, "", 0, 100);
-            }
-        }
-    ).catch(function (err) { logError(err); });
-
-    var printTypes = getTypes.then(
-        function (res) {
-            console.log("\nTypes:");
-            console.log(res);
-        }
-    ).catch(function (err) { logError(err); });  
-
-
     //tags and metadata
-    var createTags = printTypes.then( 
-        // Step 16
+    var createTags = printFirstS2.then( 
+        // Step 15
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
            var tags = [ "waves", "periodic", "2018", "validated" ];
@@ -1129,7 +1082,7 @@ var app = function (request1, response)
 
     //delete an event
     var deleteOneEvent = printMetadata.then( 
-        // Step 17
+        // Step 16
         function(res) {
            console.log("\nDeleting values from the SdsStream");
            if (client.tokenExpires < nowSeconds) {
@@ -1170,7 +1123,7 @@ var app = function (request1, response)
         });
 
     var createSecondaryStream = deleteWindowEvents.then(
-        // Step 18 
+        // Step 17 
         function (res) {
             console.log("Creating an SdsStream with a secondary index")
             // create SdsStream
@@ -1325,7 +1278,7 @@ var app = function (request1, response)
 
     // Adding Compound Index Type   
     var createCompoundType = printSecondaryStreamAfterUpdate.then( 
-        // Step 19
+        // Step 18
         function(res) {
             console.log("Creating an SdsType with a compound index");
             if (client.tokenExpires < nowSeconds) {
@@ -1362,7 +1315,7 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-    // Step 20
+    // Step 19
     
     var event2 = [];
 
@@ -1473,7 +1426,7 @@ var app = function (request1, response)
     // cleanup of namespace 
     var cleanup = testFinished
     .finally(        
-        // Step 21 
+        // Step 20 
         // delete the stream
         function () {
             console.log("Cleaning up");
