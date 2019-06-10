@@ -55,6 +55,7 @@ public class StreamsClient {
     private String replaceMultiplePath = dataBase + "?allowCreate=false";
     private String removeSingleQuery = dataBase + "?index={index}";
     private String removeMultipleQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
+    private String getSampledValuesQuery = dataBase + "/Sampled?startIndex={startIndex}&endIndex={endIndex}&intervals={intervals}&sampleBy={sampleBy}";
 
     //dataview path
     private String dataviewBase = requestBase + "/Dataviews";
@@ -927,6 +928,56 @@ public class StreamsClient {
         return jsonResults.toString();
     }
 
+    /**
+     * gets sampled values from the stream
+     * @param tenantId tenant to work under
+     * @param namespaceId namespace within tenant
+     * @param streamId name of stream to get data from
+     * @param startIndex starting index
+     * @param endIndex ending index
+     * @param intervals number of intervals to run sample
+     * @param sampleBy property to sample by
+     * @return
+     * @throws SdsError errors that may occur
+     */
+    public String getSampledValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int intervals, String sampleBy){
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        try{
+            url = new URL(baseUrl + getSampledValuesQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId)
+            .replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endIndex}", endIndex)
+            .replace("{intervals}", "" + intervals).replace("{sampleBy}", sampleBy));
+            urlConnection = baseClient.getConnection(url, "GET");
+        }
+         catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        try{
+            int httpResult = urlConnection.getResponseCode();
+            if(httpResult != HttpURLConnection.HTTP_OK){
+                throw new SdsError(urlConnection, "get sampled values request failed");
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+            while((inputLine = in.readLine()) != null){
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (SdsError sdsError) {
+            sdsError.print();
+            //throw sdsError;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response.toString();
+    }
 
     /**
      * gets the specified range of values from the stream

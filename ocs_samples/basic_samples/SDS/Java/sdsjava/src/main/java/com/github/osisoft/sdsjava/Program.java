@@ -122,7 +122,7 @@ public class Program {
             // update the first value
             System.out.println("Updating events");
             List<WaveData> newEvent = new ArrayList<WaveData>();
-            evt = WaveData.next(1, 1.0, 0);
+            evt = WaveData.next(1, 4.0, 0);
             newEvent.add(evt);
             ocsClient.Streams.updateValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(newEvent));
 
@@ -131,7 +131,7 @@ public class Program {
             for (int i = 2; i < 40; i += 2) // note: update will replace a value if it already exists, and create one if
                                             // it does not
             {
-                WaveData newEvt = WaveData.next(1, 1.0, i);
+                WaveData newEvt = WaveData.next(1, 4.0, i);
                 newEvents.add(newEvt);
                 Thread.sleep(10); // sleep for a bit because WaveData.radians is based on clock
             }
@@ -149,14 +149,14 @@ public class Program {
             // replace the first value
             System.out.println("Replacing events");
             newEvent = new ArrayList<WaveData>();
-            evt = WaveData.next(1, 0.5, 0);
+            evt = WaveData.next(1, 5.0, 0);
             newEvent.add(evt);
             ocsClient.Streams.replaceValues(tenantId, namespaceId, sampleStreamId, ocsClient.mGson.toJson(newEvent));
 
             // replace the remaining values
             newEvents = new ArrayList<WaveData>();
-            for (int i = 2; i < 20; i += 2) {
-                WaveData newEvt = WaveData.next(1, 0.5, i);
+            for (int i = 2; i < 40; i += 2) {
+                WaveData newEvt = WaveData.next(1, 5.0, i);
                 newEvents.add(newEvt);
                 Thread.sleep(10);
             }
@@ -171,7 +171,7 @@ public class Program {
             dumpEvents(foundEvents);
             System.out.println();
             
-            //tring tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
+            //String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int skip, int count, boolean reverse, SdsBoundaryType boundaryType) throws SdsError {
        
             String retrievedInterpolated = ocsClient.Streams.getRangeValuesInterpolated(tenantId, namespaceId, sampleStreamId, "5", "32",4);
       
@@ -186,9 +186,17 @@ public class Program {
             System.out.println("Total events found: " + foundEvents.size());
             dumpEvents(foundEvents);
             System.out.println();
-
             
-            // Step 11
+            //Step 11
+            //We will retrieve a sample of our data
+            System.out.println("SDS can return a sample of your data population to show trends.");
+            System.out.println("Getting Sampled Values:");
+            jsonMultipleValues = ocsClient.Streams.getSampledValues(tenantId, namespaceId, sampleStreamId, "0", "40", 4, "Sin");
+            foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
+            dumpEvents(foundEvents);
+            System.out.println();
+
+            // Step 12
             // Property Overrides
             System.out.println("Property Overrides");
             System.out.println(
@@ -233,7 +241,7 @@ public class Program {
             }
             System.out.println();
 
-            // Step 12
+            // Step 13
             // SdsStreamViews
             System.out.println("SdsStreamViews");
             System.out.println("Here is some of our data as it is stored on the server:");
@@ -338,7 +346,7 @@ public class Program {
             dumpSdsStreamViewMap(streamViewMap);
             System.out.println();
             
-            // Step 13
+            // Step 14
             System.out.println("We will now update the stream type based on the streamview");
             
             String firstVal = ocsClient.Streams.getFirstValue(tenantId, namespaceId, sampleStreamId);
@@ -351,15 +359,7 @@ public class Program {
 
             System.out.println("The new type id" + newStream.getTypeId() + " compared to the original one " + sampleStream.getTypeId());
             System.out.println("The new type value " + firstVal + " compared to the original one " + newStreamString);
-            
-            // Step 14 
-
-            String types = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100);
-            String typesFiltered = ocsClient.Types.getTypes(tenantId, namespaceId, 0, 100, "contains(Id,'Target')");
-            
-            System.out.println("All Types: " + types);
-            System.out.println("Filtered Types: " + typesFiltered);
-
+      
             
             // Step 15
             // tags and metadata
