@@ -302,8 +302,8 @@ In this sample, five of the available methods are implemented in
 StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, ``getRangeValues``, and ``getSampledValues``.
 ``getWindowValues`` can be used to retrieve events over a specific index
 range. ``getRangeValues`` can be used to retrieve a specified number of
-events from a starting index. ``getSampledValues`` can retrieve a sample of your data to show the over-all 
-trend of your data. In addition to the start and end index, we also 
+events from a starting index. ``getSampledValues`` can retrieve a sample of your data to show the overall 
+trend. In addition to the start and end index, we also 
 provide the number of intervals and a sampleBy argument. Intervals 
 determines the depth of sampling performed and will affect how many values
 are returned. SampleBy allows you to select which property within your data you want the samples to be based on.

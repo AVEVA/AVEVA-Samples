@@ -156,8 +156,8 @@ You can retreive the values in the form of a table (in this case with headers)
 ```C#
 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex=0&endIndex={waves[waves.Count - 1].Order}&form=tableh");
 ```
-You can retrieve a sample of your data to show the over-all 
-trend of your data. In addition to the start and end index, we also 
+You can retrieve a sample of your data to show the overall 
+trend. In addition to the start and end index, we also 
 provide the number of intervals and a sampleBy argument. Intervals 
 determines the depth of sampling performed and will affect how many values
 are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
@@ -212,7 +212,7 @@ Meaning we apply a change to a specific SDS Stream without changing the SDS Type
 read behavior of any other SDS Streams based on that type.  
 
 In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
-Now if a requested index does not correspond to a real value in the stream then ``null``, 
+Now if a requested index does not correspond to a real value in the stream, null, 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 ```C#

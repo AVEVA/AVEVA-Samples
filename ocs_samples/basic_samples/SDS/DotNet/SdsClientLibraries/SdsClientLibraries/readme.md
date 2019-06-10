@@ -245,8 +245,8 @@ When retreiving events you can also filter on what is being returned, so you onl
 IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
 ```
 
-You can retrieve a sample of your data to show the over-all 
-trend of your data. In addition to the start and end index, we also 
+You can retrieve a sample of your data to show the overall 
+trend. In addition to the start and end index, we also 
 provide the number of intervals and a sampleBy argument. Intervals 
 determines the depth of sampling performed and will affect how many values
 are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
