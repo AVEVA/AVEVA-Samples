@@ -458,7 +458,6 @@ namespace SdsRestApiCore
 
 
                 Console.WriteLine($"The new type id {steamnew.TypeId} compared to the original one {waveStream.TypeId}.");
-                Console.WriteLine($"The new type value {lastDataUpdated.ToString()} compared to the original one {lastData.ToString()}.");
 
 
                 // Step 15
