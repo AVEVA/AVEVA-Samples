@@ -66,12 +66,12 @@ response = await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Name
 Create an SdsType
 ---------------
 
-To use Sds, you define SdsTypes that describe the kinds of data you want to store in 
+To use SDS, you define SdsTypes that describe the kinds of data you want to store in 
 SdsStreams. SdsTypes are the model that define SdsStreams.
 
 SdsTypes can define simple atomic types, such as integers, floats or strings, or they 
 can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `Sds
+more information about SdsTypes, refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 To create an SdsType with a rest call:

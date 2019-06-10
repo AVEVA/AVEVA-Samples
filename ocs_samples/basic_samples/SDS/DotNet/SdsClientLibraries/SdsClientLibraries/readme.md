@@ -77,12 +77,12 @@ var dataService = sdsService.GetDataService(tenantId, namespaceId);
 Create an SdsType
 ---------------
 
-To use Sds, you define SdsTypes that describe the kinds of data you want to store in 
+To use SDS, you define SdsTypes that describe the kinds of data you want to store in 
 SdsStreams. SdsTypes are the model that define SdsStreams.
 
 SdsTypes can define simple atomic types, such as integers, floats or strings, or they 
 can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `Sds
+more information about SdsTypes, refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 When working with the SDS Client Libraries, it is strongly recommended that you use 
@@ -104,7 +104,7 @@ public class WaveData
 }
 ```
     
-To define the SdsType in Sds, use the metadata client as follows:
+To define the SdsType in SDS, use the metadata client as follows:
 
 ```c#
 SdsType type = config.GetOrCreateTypeAsync(type).GetAwaiter().GetResult();
@@ -298,7 +298,7 @@ Meaning we apply a change to a specific SDS Stream without changing the SDS Type
 read behavior of any other SDS Streams based on that type.  
 
 In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
-Now if a requested index does not correspond to a real value in the stream then ``null``, 
+Now if a requested index does not correspond to a real value in the stream, null, 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 

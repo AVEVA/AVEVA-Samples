@@ -176,7 +176,7 @@ To use SDS, you define SdsTypes that describe the kinds of data you want
 to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `Sds
+more information about SdsTypes, refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 In the sample code, the SdsType representing WaveData is defined in the
@@ -379,7 +379,7 @@ Meaning we apply a change to a specific SDS Stream without changing the SDS Type
 read behavior of any other SDS Streams based on that type.  
 
 In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
-Now if a requested index does not correspond to a real value in the stream then ``null``, 
+Now if a requested index does not correspond to a real value in the stream, null, 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
@@ -485,7 +485,7 @@ Type streamListType = new TypeToken<ArrayList<SdsStream>>(){}.getType();
 ArrayList<SdsStream> streams = ocsClient.mGson.fromJson(returnedStreams, streamListType);
 ```
 
-For a complete list of HTTP request URLs refer to the `Sds
+For a complete list of HTTP request URLs refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 Cleanup: Deleting Types, Stream Views and Streams
