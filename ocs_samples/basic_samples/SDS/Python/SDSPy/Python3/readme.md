@@ -335,6 +335,24 @@ The  method is called as shown :
 waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
 ```
 
+You can also retreive the values in the form of a table (in this case with headers).
+Here is how to use it:
+
+```python
+def getWindowValuesForm(self, namespace_id, stream_id, value_class, start, end, form="")
+```
+
+- *start* and *end* (inclusive) represent the indices for the retrieval.
+- The namespace ID and stream ID must be provided to the function call.
+- *form* specifies the organization of a table, the two available 
+formats are table and header table
+
+Here is how it is called:
+
+```python
+waves = ocsClient.Streams.getWindowValuesForm(namespaceId, stream.Id, None, 0, 180,"tableh")
+```
+
 <h5>Get Range Values</h5>
 
 ``getRangeValues`` is a method in ``SdsClient`` used for retrieving a 
@@ -358,26 +376,6 @@ The ``getRangeValues`` method is called as shown :
 
 ```python
 waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
-```
-
-<h5>Get Table Form</h5>
-
-You can retreive the values in the form of a table (in this case with headers).
-Here is how to use it:
-
-```python
-def getWindowValuesForm(self, namespace_id, stream_id, value_class, start, end, form="")
-```
-
-- *start* and *end* (inclusive) represent the indices for the retrieval.
-- The namespace ID and stream ID must be provided to the function call.
-- *form* specifies the organization of a table, the two available 
-formats are table and header table
-
-Here is how it is called:
-
-```python
-waves = ocsClient.Streams.getWindowValuesForm(namespaceId, stream.Id, None, 0, 180,"tableh")
 ```
 
 <h5>Get Sampled Values</h5> 

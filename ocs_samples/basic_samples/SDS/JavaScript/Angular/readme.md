@@ -335,9 +335,7 @@ The ``getRangeValues`` method is called as shown :
 this.sdsService.getRangeValues(streamId, '1', 40, SdsBoundaryType.ExactOrCalculated)
 ```
 
-<h5>Get Table Form</h5>
-
-You can retreive the values in the form of a table (in this case with headers).
+You can also retreive the values in the form of a table (in this case with headers).
 Here is the request:
 
 ```js

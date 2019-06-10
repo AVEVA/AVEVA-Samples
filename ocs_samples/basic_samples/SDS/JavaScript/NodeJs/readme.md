@@ -396,6 +396,28 @@ Here is how it is called:
 client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
 ```
 
+You can also retreive the values in the form of a table (in this case with headers).
+Here is the request:
+
+```js
+restCall({
+    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end,""]) +"&form=tableh",
+    method: 'GET',
+    headers: this.getHeaders()
+});
+```
+
+- *start* and *end* (inclusive) represent the indices for the retrieval.
+- The namespace ID and stream ID must be provided to the function call.
+- *form* specifies the organization of a table, the two available 
+formats are table and header table
+
+Here is how it is called:
+
+```js
+client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
+```
+
 <h5>Get Range Values</h5>
 
 ``getRangeValues`` is a method in ``SdsClient`` used for retrieving a 
@@ -423,30 +445,6 @@ The ``getRangeValues`` method is called as shown :
 
 ```js
 client.getRangeValues(tenantId, sampleNamespaceId, sampleStreamId, "1", 0, 3, "False", sdsObjs.sdsBoundaryType.ExactOrCalculated);
-```
-
-<h5>Table Form</h5>
-
-You can retreive the values in the form of a table (in this case with headers).
-Here is the request:
-
-```js
-restCall({
-    url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getWindowValuesBase.format([streamId, start, end,""]) +"&form=tableh",
-    method: 'GET',
-    headers: this.getHeaders()
-});
-```
-
-- *start* and *end* (inclusive) represent the indices for the retrieval.
-- The namespace ID and stream ID must be provided to the function call.
-- *form* specifies the organization of a table, the two available 
-formats are table and header table
-
-Here is how it is called:
-
-```js
-client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
 ```
 
 <h5>Getting Sampled Values</h5>
