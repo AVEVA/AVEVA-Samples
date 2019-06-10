@@ -263,11 +263,12 @@ events from a stream. Many of the retrieval methods accept indexes,
 which are passed using the URL. The index values must be capable of
 conversion to the type of the index assigned in the SdsType.
 
-In this sample, four of the available methods are implemented in
-SdsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
-``getWindowValues`` can be used to retrieve events over a specific index
-range. ``getRangeValues`` can be used to retrieve a specified number of
-events from a starting index.
+In this sample, five of the available methods are implemented in
+SdsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, ``getRangeValues``, 
+and ``getSamples``. ``getWindowValues`` can be used to retrieve events over a 
+specific index range. ``getRangeValues`` can be used to retrieve a specified 
+number of events from a starting index. ``getSamples`` can be used to retrieve
+a representative sample of data between a start and end index. 
 
 Here is how to use ``getWindowValues``:
 
@@ -278,17 +279,20 @@ def getWindowValues(self, namespace_id, stream_id, value_class, start, end):
 *start* and *end* (inclusive) represent the starting and ending indices for the
 retrieval. Additionally, the namespace ID and stream ID must
 be provided to the function call. A JSON object containing a list of the
-found values is returned. In the sample the call is:
+found values is returned. 
+
+The  method is called as shown :
 
 ```python
 waves = client.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
 ```
 
-Optionally, you can retrieve a range of values from a start index using the
-``getRangeValues`` method in ``SdsClient``. The starting index is the ID
-of the ``SdsTypeProperty`` that corresponds to the key value of the
-WaveData type. In this case, it is ``Order``. Following is the
-declaration of getRangeValues:
+Here is how to use ``getRangeValues``:
+
+This method in ``SdsClient`` allows retrieval of a range of values 
+from a start index. The starting index is the ID of the ``SdsTypeProperty`` 
+that corresponds to the key value of the WaveData type. In this case, 
+it is ``Order``. Following is the declaration of getRangeValues:
 
 ```python
 def getRangeValues(self, namespace_id, stream_id, value_class, start, skip, count, reverse, boundary_type, streamView_id=""):
@@ -302,10 +306,35 @@ determines the behavior if the starting index cannot be found. Refer the
 to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 for more information about SdsBoundaryTypes.
 
-The ``getRangeValues`` method is called as shown :
+The  method is called as shown :
 
 ```python
 waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
+```
+
+Here is how to use ``getSamples``:
+
+Sampling is driven by a specified property or properties of the stream's Sds Type. 
+Property types that cannot be interpolated do not support sampling requests. Strings 
+are an example of a property that cannot be interpolated. For more information see 
+[Interpolation.](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/SDS_Types.html#interpolation)
+
+```python
+def getSamples(namespace_id, stream_id, value_class, start, end, sample_by, intervals, filter="", stream_view_id=""):
+```
+
+*intervals* is the number of intervals requested. *sample\_by* defines the 
+property or properties to use when sampling. Finally, *filter* is an optional
+expression to filter by. 
+
+Note: This method, implemented for example purposes in ``SdsClient``, does not 
+include support for SdsBoundryTypes. For more information about SdsBoundaryTypes
+and how to implement them with sampling, refer to the [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
+
+The  method is called as shown :
+
+```python
+waves = ocsClient.Streams.getSamples(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
 ```
 
 Updating and Replacing Values
