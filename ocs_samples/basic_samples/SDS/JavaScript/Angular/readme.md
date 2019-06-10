@@ -123,7 +123,7 @@ more information about SdsTypes, refer to the [SDS documentation](https://ocs-do
 
 In the sample code, the SdsType representing WaveData is defined in the buildWaveDataType method of
 datasrc.component.ts. WaveData contains properties of integer and double atomic types. 
-The constructions begins by defining a base SdsType for each atomic type.
+The construction begins by defining a base SdsType for each atomic type.
 
 ```js
 buildWaveDataType() {
@@ -225,7 +225,7 @@ insertValues(streamId: string, events: Array<any>) {
     }
 ```
 
-First the event is created locally by populating a newWave event as follows:
+First the event is created locally by populating a new waveData event as follows:
 
 ```js
   newWaveDataEvent(order: number, range: number, multiplier: number) {

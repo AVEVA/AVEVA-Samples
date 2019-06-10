@@ -267,7 +267,7 @@ response = requests.post(
     headers=self.__sdsHeaders())
 ```
 
-First the event is created locally by populating a new waveData event as follows:
+First the event is created locally by populating a newWave event as follows:
 
 ```python
 def nextWave(order, multiplier):
