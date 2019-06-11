@@ -970,6 +970,7 @@ class Streams(object):
         """
         self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types/{type_id}"
+        self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
         self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
         self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
         self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
