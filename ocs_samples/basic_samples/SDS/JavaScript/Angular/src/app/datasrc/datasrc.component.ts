@@ -75,6 +75,7 @@ export class DatasrcComponent {
   eventsHeaders: string;
   eventsInterpolated: string;
   eventsFiltered: string;
+  eventsSampled: string;
 
   targetEvents: WaveDataTarget[];
   integerEvents: WaveDataInteger[];
@@ -112,8 +113,8 @@ export class DatasrcComponent {
   getDataWithHeadersMessage: string;
   getDataInterpolatedMessage: string;
   getFilteredValuesMessage: string;
+  getSampledValuesMessage: String;
   updateStreamTypeMessage: string;
-  filterTypesMessage: string;
   secondaryCreateMessage: string;
   secondaryUpdateMessage: string;
   secondaryDeleteMessage: string;
@@ -376,7 +377,7 @@ export class DatasrcComponent {
   }
 
   newWaveDataEvent(order: number, range: number, multiplier: number) {
-    const radians = 2 * Math.PI / multiplier;
+    const radians = order * Math.PI / 32;
 
     const waveData = new WaveData();
     waveData.Order = order;
@@ -393,7 +394,7 @@ export class DatasrcComponent {
   }
 
   newWaveDataCompoundEvent(order: number, multiplier: number) {
-    const radians = 2 * Math.PI / multiplier;
+    const radians = order * Math.PI / 32;
 
     const waveData = new WaveDataCompound();
     waveData.Order = order;
@@ -516,12 +517,10 @@ export class DatasrcComponent {
     });
   }
 
-
-
   writeWaveDataEvents() {
     const list: Array<WaveData> = [];
     for (let i = 0; i < 20; i += 2) {
-      list.push(this.newWaveDataEvent(i, 12, 24));
+      list.push(this.newWaveDataEvent(i, 12, 2));
     }
 
     this.sdsService.insertValues(streamId, list).subscribe(res => {
@@ -560,7 +559,7 @@ export class DatasrcComponent {
   
   retrieveFilteredValues() {
     this.hasEventsFiltered = false;
-    this.sdsService.getWindowValues(streamId, 0, 40, 'Radians%20lt%203')
+    this.sdsService.getWindowValues(streamId, 0, 50, 'Radians%20lt%203')
       .subscribe(res => {
         this.eventsFiltered = res.body as string;
         this.hasEventsFiltered = true;
@@ -568,6 +567,17 @@ export class DatasrcComponent {
       },
       err => {
         this.getFilteredValuesMessage = this.unhealthyResponseMessage(err);
+      });
+  }
+
+  retrieveSampledValues() {
+    this.sdsService.getSampledValues(streamId, 0, 40, 4, "sin")
+      .subscribe(res => {
+        this.eventsSampled = res.body as string;
+        this.getSampledValuesMessage = this.healthyResponseMessage(res) + JSON.stringify(this.eventsSampled);
+      },
+      err => {
+        this.getSampledValuesMessage = this.unhealthyResponseMessage(err);
       });
   }
 
@@ -581,20 +591,6 @@ export class DatasrcComponent {
         this.updateStreamTypeMessage = this.unhealthyResponseMessage(err);
       });
   }
-
-
-  filterTypes() {
-    this.sdsService.getTypes(0, 100, 'Id:*Target*')
-      .subscribe(res => {
-        const resp = res.body as string;
-        this.filterTypesMessage = this.healthyResponseMessage(res) + JSON.stringify(resp);
-      },
-      err => {
-        this.filterTypesMessage = this.unhealthyResponseMessage(err);
-      });
-  }
-
-
 
   retrieveInterpolatedValues() {
     this.hasEventsInterpolated = false;
@@ -635,7 +631,7 @@ export class DatasrcComponent {
   updateWaveDataEvents() {
     const list: Array<WaveData> = [];
     for (let i = 0; i < 40; i += 2) {
-      list.push(this.newWaveDataEvent(i, 2.5, 5));
+      list.push(this.newWaveDataEvent(i, 2.5, 4));
     }
     this.sdsService.updateValues(streamId, list).subscribe(res => {
       this.button14Message = this.healthyResponseMessage(res);
@@ -648,7 +644,7 @@ export class DatasrcComponent {
   replaceWaveDataEvents() {
     const list: Array<WaveData> = [];
     for (let i = 0; i < 40; i += 2) {
-      list.push(this.newWaveDataEvent(i, 1.5, 10));
+      list.push(this.newWaveDataEvent(i, 1.5, 5));
     }
     this.sdsService.replaceValues(streamId, list).subscribe(res => {
       this.button15Message = this.healthyResponseMessage(res);

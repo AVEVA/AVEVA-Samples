@@ -44,6 +44,8 @@ describe('workspace-project App', () => {
             .then((res) => {
         page.retrieveFilteredValues()
             .then((res) => {
+        page.retrieveSampledValues()
+            .then((res) => {
         page.propertyOverride()
             .then((res) => {
         page.createSdsType2()
@@ -59,8 +61,6 @@ describe('workspace-project App', () => {
         page.sdsStreamViewMap()
             .then((res) => {
         page.updateStreamType()
-            .then((res) => {
-        page.filterTypes()
             .then((res) => {
         page.createTagsAndMetaData()
             .then((res) => {
