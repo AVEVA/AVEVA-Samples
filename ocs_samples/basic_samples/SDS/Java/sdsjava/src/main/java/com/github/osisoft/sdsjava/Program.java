@@ -359,6 +359,7 @@ public class Program {
 
             System.out.println("The new type id" + newStream.getTypeId() + " compared to the original one " + sampleStream.getTypeId());
             System.out.println("The new type value " + firstVal + " compared to the original one " + newStreamString);
+            System.out.println();
             
             // Step 15 
 
@@ -367,6 +368,7 @@ public class Program {
             
             System.out.println("All Types: " + types);
             System.out.println("Filtered Types: " + typesFiltered);
+            System.out.println();
             
             // Step 16
             // tags and metadata

@@ -458,6 +458,7 @@ namespace SdsRestApiCore
 
 
                 Console.WriteLine($"The new type id {steamnew.TypeId} compared to the original one {waveStream.TypeId}.");
+                Console.WriteLine();
 
                 // Step 15
 
@@ -470,6 +471,7 @@ namespace SdsRestApiCore
                 List<SdsType> typesFiltered = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
 
                 Console.WriteLine($"The number of types returned without filtering: {types.Count}.  With filtering {typesFiltered.Count}.");
+                Console.WriteLine();
 
                 // Step 16
                 // tags and metadata

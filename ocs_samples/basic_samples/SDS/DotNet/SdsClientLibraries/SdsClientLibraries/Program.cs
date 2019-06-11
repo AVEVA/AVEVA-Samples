@@ -351,6 +351,7 @@ namespace SdsClientLibraries
 
                 Console.WriteLine($"The new type id {newStream.TypeId} compared to the original one {stream.TypeId}.");
                 Console.WriteLine($"The new type value {firstValUpdated.ToString()} compared to the original one {firstVal.ToString()}.");
+                Console.WriteLine();
 
                 // Step 15
                 // Show filtering on Type, works the same as filtering on Streams
@@ -359,6 +360,7 @@ namespace SdsClientLibraries
                 var typesFiltered = await metadataService.GetTypesAsync("Id:*Target*");
 
                 Console.WriteLine($"The number of types returned without filtering: {types.Count()}.  With filtering {typesFiltered.Count()}.");
+                Console.WriteLine();
 
                 // Step 16
                 // tags and metadata
