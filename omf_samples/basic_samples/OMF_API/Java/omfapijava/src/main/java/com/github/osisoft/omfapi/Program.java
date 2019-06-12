@@ -61,9 +61,11 @@ public class Program
 
     
     static boolean sendToOCS = true;
+    static boolean VERIFY_SSL = true;
 
     // Step 1
     static String resource = getConfiguration("resource");;
+    static String verify = getConfiguration("VERIFY_SSL");;
     static String clientId = getConfiguration("clientId");
     static String clientSecret = getConfiguration("clientSecret");
     static String apiVersion = getConfiguration("apiVersion");
@@ -81,7 +83,7 @@ public class Program
     static int integer_index2_1 = 1;
     static int integer_index2_2 = 1;
 	
-    public static void main( String[] args )
+    public static void main(String[] args)
     {
         try
         {
@@ -130,7 +132,6 @@ public class Program
     
     
     public static boolean toRun(Boolean test) throws Exception {
-        disableSslVerification();
 
         // Create Sds client to communicate with server
         System.out.println("------------------------------------------------------------------");
@@ -157,6 +158,20 @@ public class Program
             else{
                 checkBase = resource;
                 omfEndPoint = checkBase + "/omf";
+            }
+
+            if(verify != null && !verify.isEmpty())
+            {
+                if(verify.equals("false"))
+                {
+                    VERIFY_SSL = false;
+                 }
+            }
+
+            if(!VERIFY_SSL)
+            {
+                disableSslVerification();
+                System.out.println("You are not verifying the certificate of the end point.  This is not advised for any system as there are security issues with doing this.");
             }
 
             // Step 2 
