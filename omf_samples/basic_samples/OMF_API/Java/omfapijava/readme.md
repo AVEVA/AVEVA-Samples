@@ -96,6 +96,11 @@ Resource = REPLACE_WITH_PI_WEB_API_URL
 See the general readme for information on setting up your endpoint.
 
 
+If your client computer Java does not trust the PI Web API certificate you will see an error like:
+
+```
+javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+```
 
 ----------
 
