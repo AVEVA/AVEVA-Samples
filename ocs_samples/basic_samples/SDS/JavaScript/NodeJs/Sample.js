@@ -1017,7 +1017,7 @@ var app = function (request1, response)
             }
         ).catch(function (err) { logError(err); });  
     
-        var getTypesFiltered = printTypes.then(
+        var getTypesQuery = printTypes.then(
             function (res) {
                 if (client.tokenExpires < nowSeconds) {
                     return checkTokenExpired(client).then(
@@ -1031,15 +1031,15 @@ var app = function (request1, response)
             }
         ).catch(function (err) { logError(err); });
     
-        var printTypesFiltered = getTypesFiltered.then(
+        var printTypesQuery = getTypesQuery.then(
             function (res) {
-                console.log("\nFiltered Types:");
+                console.log("\nTypes after Query:");
                 console.log(res);
             }
         ).catch(function (err) { logError(err); });  
     
     //tags and metadata
-    var createTags = printTypesFiltered.then( 
+    var createTags = printTypesQuery.then( 
         // Step 15
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
