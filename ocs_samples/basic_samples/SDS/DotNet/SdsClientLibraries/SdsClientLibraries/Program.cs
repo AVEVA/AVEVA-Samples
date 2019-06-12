@@ -351,8 +351,18 @@ namespace SdsClientLibraries
 
                 Console.WriteLine($"The new type id {newStream.TypeId} compared to the original one {stream.TypeId}.");
                 Console.WriteLine($"The new type value {firstValUpdated.ToString()} compared to the original one {firstVal.ToString()}.");
+                Console.WriteLine();
 
                 // Step 15
+                // Show filtering on Type, works the same as filtering on Streams
+
+                var types = await metadataService.GetTypesAsync();
+                var typesFiltered = await metadataService.GetTypesAsync("Id:*Target*");
+
+                Console.WriteLine($"The number of types returned without filtering: {types.Count()}.  With filtering {typesFiltered.Count()}.");
+                Console.WriteLine();
+
+                // Step 16
                 // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
                 var tags = new List<string> { "waves", "periodic", "2018", "validated" };
@@ -377,7 +387,7 @@ namespace SdsClientLibraries
 
                 Console.WriteLine();
 
-                // Step 16
+                // Step 17
                 // delete values
                 Console.WriteLine("Deleting values from the SdsStream");
 
@@ -394,7 +404,7 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
-                // Step 17
+                // Step 18
                 // Adding a new stream with a secondary index.
                 Console.WriteLine("Adding a stream with a secondary index.");
 
@@ -450,7 +460,7 @@ namespace SdsClientLibraries
 
 
 
-                // Step 18
+                // Step 19
                 // Adding Compound Index Type
                 Console.WriteLine("Creating an SdsType with a compound index");
                 SdsType typeCompound = SdsTypeBuilder.CreateSdsType<WaveDataCompound>();
@@ -468,7 +478,7 @@ namespace SdsClientLibraries
                 };
                 streamCompound = await metadataService.GetOrCreateStreamAsync(streamCompound);
 
-                // Step 19
+                // Step 20
                 // insert compound data
                 Console.WriteLine("Inserting data");
                 await dataService.InsertValueAsync(streamCompound.Id, GetWaveMultiplier(1, 10));
@@ -502,7 +512,7 @@ namespace SdsClientLibraries
             }
             finally
             {
-                //step 20
+                //step 21
                 Console.WriteLine("Cleaning up");
                 // Delete the stream, types and streamViews making sure
                 Console.WriteLine("Deleting stream");

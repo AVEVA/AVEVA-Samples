@@ -458,9 +458,22 @@ namespace SdsRestApiCore
 
 
                 Console.WriteLine($"The new type id {steamnew.TypeId} compared to the original one {waveStream.TypeId}.");
-
+                Console.WriteLine();
 
                 // Step 15
+
+                response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types");
+                CheckIfResponseWasSuccessful(response);
+                List<SdsType> types = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
+
+                response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types?query=Id:*Target*");
+                CheckIfResponseWasSuccessful(response);
+                List<SdsType> typesFiltered = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
+
+                Console.WriteLine($"The number of types returned without filtering: {types.Count}.  With filtering {typesFiltered.Count}.");
+                Console.WriteLine();
+
+                // Step 16
                 // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
                 var tags = new List<string> { "waves", "periodic", "2018", "validated" };
@@ -517,7 +530,7 @@ namespace SdsRestApiCore
 
                 Console.WriteLine("Deleting values from the SdsStream");
 
-                // Step 16
+                // Step 17
                 // delete one event
                 response = await httpClient.DeleteAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?index=0");
@@ -536,7 +549,7 @@ namespace SdsRestApiCore
                 }
                 Console.WriteLine();
 
-                // Step 17
+                // Step 18
 
                 Console.WriteLine("Creating a SdsStream with secondary index");
 
@@ -617,7 +630,7 @@ namespace SdsRestApiCore
                 Console.WriteLine();
                 
 
-                // Step 18
+                // Step 19
 
                 Console.WriteLine("Creating a SdsType with a compound index");
                 SdsType waveCompound = BuildWaveDataCompoundType(compoundTypeId);
@@ -642,7 +655,7 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
 
 
-                // Step 19
+                // Step 20
 
                 Console.WriteLine("Inserting data");
 
@@ -699,7 +712,7 @@ namespace SdsRestApiCore
             finally
             {
 
-                // Step 20
+                // Step 21
                 Console.WriteLine("Cleaning up");
                 // Delete the stream, types and streamViews
                 Console.WriteLine("Deleting stream");
