@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <Version>0.0.2</Version>
+    <Version>0.0.3</Version>
     <Company>OSISoft</Company>
     <Authors>OSIsoft</Authors>
   </PropertyGroup>

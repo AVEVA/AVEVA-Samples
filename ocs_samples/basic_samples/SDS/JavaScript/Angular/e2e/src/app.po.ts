@@ -70,6 +70,11 @@ export class AppPage {
         return this.helper('retrieveFilteredValues', '');
     }
 
+    // todo update this
+    retrieveSampledValues(): any {
+        return this.helper('retrieveSampledValues', '');
+    }
+
     propertyOverride(): any {
         return this.helper('createPropertyOverrideAndUpdateStream', '20');
     }
@@ -100,10 +105,6 @@ export class AppPage {
 
     updateStreamType(): any {
         return this.helper('updateStreamType', '');
-    }
-
-    filterTypes(): any {
-        return this.helper('filterTypes', '');
     }
 
     createTagsAndMetaData(): any {
