@@ -107,10 +107,13 @@ export class AppPage {
         return this.helper('updateStreamType', '');
     }
 
+    queryTypes(): any {
+        return this.helper('queryTypes', '');
+    }
+
     createTagsAndMetaData(): any {
         return this.helper('createTagsAndMetadata', '20');
     }
-
 
     getTags(): any {
         return this.helper('getAndPrintTags', '');

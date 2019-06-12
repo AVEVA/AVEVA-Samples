@@ -232,8 +232,15 @@
   <button id= "updateStreamType" class="btn btn-primary" (click)="updateStreamType()" >Update StreamType</button>
   <br>
   <span id= "updateStreamTypeMessage"  *ngIf="updateStreamTypeMessage">Response: {{updateStreamTypeMessage}}</span>
-                
+
   <!-- Step 15 -->
+  <h3>Querying Types</h3>
+  <p>We can query the types we return based upon many things, including in this example whether their Id contains: Target.</p>
+  <button id= "queryTypes" class="btn btn-primary" (click)="queryTypes()" >Get type query</button>
+  <br>
+  <span id= "queryTypesMessage"  *ngIf="queryTypesMessage">Response: {{queryTypesMessage}}</span>
+                
+  <!-- Step 16 -->
   <h3>Tags and Metadata</h3>
   <p>Let's add some tags and metadata to our stream</p>
   <button id="createTagsAndMetadata" class="btn btn-primary" (click)="createTagsAndMetadata()">Create Tags and Metadata</button>
@@ -271,7 +278,7 @@
     </div>
   <p></p>  
 
-  <!-- Step 16 -->
+  <!-- Step 17 -->
   <h3>Delete Values</h3>
   <p>Press the button below to delete all values from the SdsStream, pressing Retrieve Events 
     above should now return an empty array.
@@ -280,7 +287,7 @@
   <br>
   <span id="deleteAllValuesMessage" *ngIf="button13Message">Response: {{button13Message}}</span>
 
-  <!-- Step 17 -->
+  <!-- Step 18 -->
   <h3>Create Stream with Secondary Index Values</h3>
   <p> Streams can have a secondary index that is different than its type primary index. 
     In this case we create a new stream to show this, with a seconadry index on radians.
@@ -304,7 +311,7 @@
   <br>
   <span id= 'secondaryDeleteMessage' *ngIf="secondaryDeleteMessage">Response: {{secondaryDeleteMessage}}</span>
 
-  <!-- Step 18 -->
+  <!-- Step 19 -->
   <h3>Add a type and stream with a compound index</h3>
   <p> Types can have a compound index.
   </p>
@@ -312,7 +319,7 @@
   <br>
   <span id= 'createCompoundTypeandStreamMessage' *ngIf="createCompoundTypeandStreamMessage">Response: {{createCompoundTypeandStreamMessage}}</span>
 
-  <!-- Step 19 -->
+  <!-- Step 20 -->
   <h3>Data with a compound index</h3>
   <p> Types can have a compound index.  With that you send data normally and retreive data using the complex indicies
   </p>
@@ -321,7 +328,7 @@
   <span id= 'createAndRetreiveCompoundDataMessage' *ngIf="createAndRetreiveCompoundDataMessage">Response: {{createAndRetreiveCompoundDataMessage}}</span>
   <span id= 'createAndRetreiveCompoundDataMessageData' *ngIf="createAndRetreiveCompoundDataMessageData">Response: {{createAndRetreiveCompoundDataMessageData}}</span>
   
-  <!-- Step 20 -->
+  <!-- Step 21 -->
   <h3>Deleting types, streams and streamViews</h3>
   <p>Press the button below to delete the types, streams and streamViews that this sample has created. Failure to do
   so could cause conflicts if the sample runs again. Please note that deleting a stream deletes all of the data
