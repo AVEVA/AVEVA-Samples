@@ -13,6 +13,14 @@ available at `node.js <https://nodejs.org/en/>`__ \* Request-Promise,
 HTTP client Request with Promises/A+ compliance.
 `request-promise <https://www.npmjs.com/package/request-promise>`__
 
+Prerequisites
+-------------
+ - This application by default will use Port 8080
+
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
+
 Sample Setup
 ------------
 

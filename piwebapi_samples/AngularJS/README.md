@@ -1,5 +1,13 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in AngularJS. You must have already [downloaded AngularJS](https://angularjs.org/) to run this sample application.  
 
+Prerequisites
+-------------
+ - This application by default will use Port 8000
+
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
+
 Getting Started
 ------------
 

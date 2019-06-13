@@ -1,6 +1,14 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in Angular. You must have already [configured your Angular development environment](https://angular.io/guide/quickstart) in order to run this sample application.  
 
 
+Prerequisites
+-------------
+ - This application by default will use Port 4200
+ 
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
+
 Getting Started
 ------------
 
