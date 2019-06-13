@@ -1,5 +1,4 @@
 // Sample.js
-//
 
 var http = require("http");
 var restCall = require("request-promise");
@@ -996,8 +995,51 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });  
 
+    var getTypes = printFirstS2.then(
+        // Step 14
+            function (res) {
+                if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.getTypes(tenantId, sampleNamespaceId, "", 0,100);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.getTypes(tenantId, sampleNamespaceId, "", 0, 100);
+                }
+            }
+        ).catch(function (err) { logError(err); });
+    
+        var printTypes = getTypes.then(
+            function (res) {
+                console.log("\nTypes:");
+                console.log(res);
+            }
+        ).catch(function (err) { logError(err); });  
+    
+        var getTypesQuery = printTypes.then(
+            function (res) {
+                if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
+                }
+            }
+        ).catch(function (err) { logError(err); });
+    
+        var printTypesQuery = getTypesQuery.then(
+            function (res) {
+                console.log("\nTypes after Query:");
+                console.log(res);
+            }
+        ).catch(function (err) { logError(err); });  
+    
     //tags and metadata
-    var createTags = printFirstS2.then( 
+    var createTags = printTypesQuery.then( 
         // Step 15
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
