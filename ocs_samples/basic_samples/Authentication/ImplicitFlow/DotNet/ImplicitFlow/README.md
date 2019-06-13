@@ -10,6 +10,11 @@
 - .net core 2.2.1 or later
 - Reliable internet connection
 - A web browser
+- This application by default will use Port 5003
+
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
 
 ### Using Visual Studio
 
@@ -31,7 +36,6 @@ dotnet run
 
 - Follow the prompts in the web browser to log in
 - Return to the application after having been authenticated in the browser
-
 
 ## Test
 

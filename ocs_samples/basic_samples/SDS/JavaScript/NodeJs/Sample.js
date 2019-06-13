@@ -1546,6 +1546,7 @@ var app = function (request1, response)
 
 //if you want to run a server
 var toRun =  function() {
+    //This server is hosted over HTTP.  This is not secure and should not be used beyond local testing.
     http.createServer(app).listen(8080);
 }
 

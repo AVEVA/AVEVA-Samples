@@ -19,7 +19,11 @@ You must have the following software installed on your computer:
  - Angular version 7 (available on GitHub/npm)
  - Angular CLI
  - A modern browser (OSIsoft recommends Google Chrome or Mozilla Firefox)
-
+ - This application by default will use Port 4200
+ 
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
 
 Preparation
 -----------
