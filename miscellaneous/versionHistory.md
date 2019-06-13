@@ -99,6 +99,7 @@ Version | Date |  Notes
 0.0.15 | 5-9-19 | adding accept verbosity and summaries
 0.0.16 | 5-28-19 | fixing IsKey for dataview
 0.0.17 | 5-30-19 | dataview calls supporting csv and updating param passing
+0.0.20 | 6-13-19 | dsupport for SampledValues
 
 Lib_Java
 
