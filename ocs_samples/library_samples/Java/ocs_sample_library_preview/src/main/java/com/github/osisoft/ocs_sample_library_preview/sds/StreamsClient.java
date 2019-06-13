@@ -972,7 +972,7 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            //throw sdsError;
+            throw sdsError;
         } catch (Exception e) {
             e.printStackTrace();
         }

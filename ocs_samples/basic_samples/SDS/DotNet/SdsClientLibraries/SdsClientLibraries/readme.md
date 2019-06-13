@@ -226,14 +226,14 @@ IEnumerable<WaveData> retrieved =
 		client.GetWindowValuesAsync<WaveData>(stream.Id, "0", "20").GetAwaiter().GetResult();
 ```
 	
-You can retreive the values in the form of a table (in this case with headers)
+SDS can retreive the values in the form of a table (in this case with headers)
 
 ```C#
 SdsTable tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
 ```
 	
 	
-You can retreive interpolated values.  In this case we are asking for values at 5, 14, 23, and 32.  We onlt have values stored at the even numbers, so the odd numbers will be interpolated for.
+SDS can retreive interpolated values.  In this case we are asking for values at 5, 14, 23, and 32.  We onlt have values stored at the even numbers, so the odd numbers will be interpolated for.
 
 ```C#
 IEnumerable<WaveData> retrievedInterpolated = await dataService.GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
@@ -245,9 +245,9 @@ When retreiving events you can also filter on what is being returned, so you onl
 IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
 ```
 
-You can retrieve a sample of your data to show the overall 
+SDS can be used to retrieve a sample of your data to show the overall 
 trend. In addition to the start and end index, we also 
-provide the number of intervals and a sampleBy argument. Intervals 
+provide the number of intervals and a sampleBy parameter. Intervals parameter 
 determines the depth of sampling performed and will affect how many values
 are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
 

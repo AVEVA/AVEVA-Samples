@@ -18,9 +18,6 @@ namespace SdsRestApiCore
 
         public static async Task<bool> MainAsync(bool test = false)
         {
-            bool success = true;
-            Exception toThrow = null;
-
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -221,7 +218,6 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
 
                 // Step 9
-
                 Console.WriteLine("Getting replaced events");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex={updateWaves[0].Order}&endIndex={updateWaves[updateWaves.Count - 1].Order}");
@@ -254,7 +250,6 @@ namespace SdsRestApiCore
 
                 // Step 10
                 // We will retrieve events filtered to only get the ones where the radians are less than 50.  Note, this can be done on index properties too.
-
                 Console.WriteLine("Getting replaced events");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex={updateWaves[0].Order}&endIndex={updateWaves[updateWaves.Count - 1].Order}&filter=Radians lt 50");
@@ -452,7 +447,6 @@ namespace SdsRestApiCore
                 Console.WriteLine();
 
                 // Step 15
-
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types");
                 CheckIfResponseWasSuccessful(response);
                 List<SdsType> types = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
@@ -516,7 +510,6 @@ namespace SdsRestApiCore
                 Console.WriteLine("Metadata key Region: " + region);
                 Console.WriteLine("Metadata key Country: " + country);
                 Console.WriteLine("Metadata key Province: " + province);
-
                 Console.WriteLine();
 
                 Console.WriteLine("Deleting values from the SdsStream");
@@ -541,7 +534,6 @@ namespace SdsRestApiCore
                 Console.WriteLine();
 
                 // Step 18
-
                 Console.WriteLine("Creating a SdsStream with secondary index");
 
                 SdsStreamIndex measurementIndex = new SdsStreamIndex()
@@ -610,17 +602,21 @@ namespace SdsRestApiCore
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
                 
                 var count = 0;
-                if(waveStream.Indexes !=null )
+                if (waveStream.Indexes != null)
+                {
                     count = waveStream.Indexes.Count();
+                }
+
                 var count2 = 0;
-                if(waveStreamSecond.Indexes !=null )
+                if (waveStreamSecond.Indexes != null)
+                {
                     count2 = waveStreamSecond.Indexes.Count();
+                }
 
                 Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}.");
                 Console.WriteLine();
                 
                 // Step 19
-
                 Console.WriteLine("Creating a SdsType with a compound index");
                 SdsType waveCompound = BuildWaveDataCompoundType(compoundTypeId);
                 response = await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{waveCompound.Id}",
@@ -642,7 +638,6 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
 
                 // Step 20
-
                 Console.WriteLine("Inserting data");
 
                 response = await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{streamCompound.Id}/Data", new StringContent(JsonConvert.SerializeObject(new List<WaveDataCompound>() { GetWaveMultiplier(1, 10) })));
@@ -696,7 +691,6 @@ namespace SdsRestApiCore
             }
             finally
             {
-
                 // Step 21
                 Console.WriteLine();
                 Console.WriteLine("Cleaning up");
@@ -713,7 +707,6 @@ namespace SdsRestApiCore
                 RunInTryCatch(httpClient.DeleteAsync, ($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{compoundTypeId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetTypeId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetIntTypeId}"));
-
                 Console.WriteLine("done");
             }
 

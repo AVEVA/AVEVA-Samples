@@ -790,10 +790,12 @@ public class Program {
     
     private static void dumpSdsStreamViewMap(SdsStreamViewMap sdsStreamViewMap) { 
         for (SdsStreamViewProperty prop : sdsStreamViewMap.getProperties()) {
-            if(prop.getTargetId() != null)
-           	 System.out.println(prop.getSourceId() + " => " + prop.getTargetId());
-            else
-           	 System.out.println(prop.getSourceId() + " => Not mapped");
+            if(prop.getTargetId() != null){
+				System.out.println(prop.getSourceId() + " => " + prop.getTargetId());
+			}
+            else {
+				System.out.println(prop.getSourceId() + " => Not mapped");
+			}
         }
     }
     

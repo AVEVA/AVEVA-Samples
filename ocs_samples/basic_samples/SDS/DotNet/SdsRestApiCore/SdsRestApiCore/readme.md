@@ -152,13 +152,13 @@ capable of conversion to the type of the index assigned in the SdsType.
 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex=0&endIndex={waves[waves.Count - 1].Order}");
 List<WaveData> retrievedList = JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
 ```
-You can retreive the values in the form of a table (in this case with headers)
+The values can be retrieved in the form of a table (in this case with headers):
 ```C#
 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex=0&endIndex={waves[waves.Count - 1].Order}&form=tableh");
 ```
 You can retrieve a sample of your data to show the overall 
 trend. In addition to the start and end index, we also 
-provide the number of intervals and a sampleBy argument. Intervals 
+provide the number of intervals and a sampleBy parameter. Intervals parameter 
 determines the depth of sampling performed and will affect how many values
 are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
 

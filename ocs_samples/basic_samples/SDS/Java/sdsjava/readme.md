@@ -304,7 +304,7 @@ StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, ``getRangeVa
 range. ``getRangeValues`` can be used to retrieve a specified number of
 events from a starting index. ``getSampledValues`` can retrieve a sample of your data to show the overall 
 trend. In addition to the start and end index, we also 
-provide the number of intervals and a sampleBy argument. Intervals 
+provide the number of intervals and a sampleBy parameter. Intervals parameter 
 determines the depth of sampling performed and will affect how many values
 are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
 
