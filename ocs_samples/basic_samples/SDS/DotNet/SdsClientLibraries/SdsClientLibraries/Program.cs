@@ -19,8 +19,6 @@ namespace SdsClientLibraries
 
         public static async Task<bool> MainAsync(bool test = false)
         {
-            bool success = true;
-            Exception toThrow = null;
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -57,7 +55,6 @@ namespace SdsClientLibraries
             var tableService = sdsService.GetTableService(tenantId, namespaceId);
 
             // LoggerCallbackHandler.UseDefaultLogging = false;
-
 
             Console.WriteLine(@"-------------------------------------------------------------");
             Console.WriteLine(@"  _________    .___           _______  ______________________");
@@ -204,7 +201,6 @@ namespace SdsClientLibraries
                 }
                 Console.WriteLine();
 
-
                 var retrievedInterpolated = await dataService
                     .GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
                 Console.WriteLine("SDS will interpolate a value for each index asked for (5,14,23,32):");
@@ -260,7 +256,6 @@ namespace SdsClientLibraries
                     Console.WriteLine(value.ToString());
                 }
                 Console.WriteLine();
-
 
                 // Step 13
                 // StreamViews
@@ -427,20 +422,16 @@ namespace SdsClientLibraries
                 Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes.Count()}. ");
                 Console.WriteLine();
 
-
                 // Modifying an existing stream with a secondary index.
                 Console.WriteLine("Modifying a stream to have a secondary index.");
 
-
                 stream = await metadataService.GetStreamAsync(stream.Id);
                 type = await metadataService.GetTypeAsync(stream.TypeId);
-
 
                 SdsStreamIndex measurementTargetIndex = new SdsStreamIndex()
                 {
                     SdsTypePropertyId = type.Properties.First(p => p.Id.Equals("RadiansTarget")).Id
                 };
-
                 stream.Indexes = new List<SdsStreamIndex>() { measurementTargetIndex };
 
                 await metadataService.CreateOrUpdateStreamAsync(stream);
@@ -451,14 +442,10 @@ namespace SdsClientLibraries
                 Console.WriteLine("Removing a secondary index from a stream.");
 
                 secondary.Indexes = null;
-
                 await metadataService.CreateOrUpdateStreamAsync(secondary);
                 secondary = await metadataService.GetStreamAsync(secondary.Id);
                 Console.WriteLine($"Secondary indexes on streams. {stream.Id}:{stream.Indexes?.Count()}. {secondary.Id}:{secondary.Indexes?.Count()}. ");
                 Console.WriteLine();
-
-
-
 
                 // Step 19
                 // Adding Compound Index Type
