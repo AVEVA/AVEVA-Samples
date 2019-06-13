@@ -62,7 +62,7 @@ namespace SdsRestApiCore
             Console.WriteLine(@"        \/      \/    \/        \/        \/        \/            ");
             Console.WriteLine(@"-------------------------------------------------------");
             Console.WriteLine();
-            Console.WriteLine($"Sds endpoint at {resource}");
+            Console.WriteLine($"SDS endpoint at {resource}");
             Console.WriteLine();
 
             try
@@ -238,7 +238,7 @@ namespace SdsRestApiCore
 
                 // Property Overrides
                 Console.WriteLine("Property Overrides");
-                Console.WriteLine("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
+                Console.WriteLine("SDS can interpolate or extrapolate data at an index location where data does not explicitly exist:");
                 Console.WriteLine();
 
                 // We will retrieve three events using the default behavior, Continuous
@@ -247,7 +247,7 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
                 List<WaveData> rangeValuesContinuous =
                     JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine("Default (Continuous) stream read behavior, requesting data starting at index location '1', Sds will interpolate this value:");
+                Console.WriteLine("Default (Continuous) stream read behavior, requesting data starting at index location '1', SDS will interpolate this value:");
                 foreach (var waveData in rangeValuesContinuous)
                 {
                     Console.WriteLine($"Order: {waveData.Order}, Radians: {waveData.Radians}, Cos: {waveData.Cos}");
@@ -303,8 +303,8 @@ namespace SdsRestApiCore
                     new StringContent(JsonConvert.SerializeObject(waveStream)));
                 CheckIfResponseWasSuccessful(response);
 
-                Console.WriteLine("We can override this read behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
-                Console.WriteLine("Sds will now return the default value for the data type:");
+                Console.WriteLine("We can override this read behavior on a property by property basis, here we override the Radians property instructing SDS not to interpolate.");
+                Console.WriteLine("SDS will now return the default value for the data type:");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/Transform?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}");
                 CheckIfResponseWasSuccessful(response);
@@ -415,7 +415,7 @@ namespace SdsRestApiCore
                 Console.WriteLine();
 
                 // get SdsStreamViewMap
-                Console.WriteLine("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+                Console.WriteLine("We can query SDS to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
 
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}/Map");
@@ -578,7 +578,7 @@ namespace SdsRestApiCore
 
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
 
-                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}. ");
+                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}.");
                 Console.WriteLine();
 
                 Console.WriteLine("Modifying a stream to have a secondary index.");
@@ -626,7 +626,7 @@ namespace SdsRestApiCore
                 if(waveStreamSecond.Indexes !=null )
                     count2 = waveStreamSecond.Indexes.Count();
 
-                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}. ");
+                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}.");
                 Console.WriteLine();
                 
 
@@ -713,6 +713,7 @@ namespace SdsRestApiCore
             {
 
                 // Step 21
+                Console.WriteLine();
                 Console.WriteLine("Cleaning up");
                 // Delete the stream, types and streamViews
                 Console.WriteLine("Deleting stream");

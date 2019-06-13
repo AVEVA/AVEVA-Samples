@@ -175,7 +175,7 @@ public class Program {
        
             String retrievedInterpolated = ocsClient.Streams.getRangeValuesInterpolated(tenantId, namespaceId, sampleStreamId, "5", "32",4);
       
-            System.out.println("Sds will interpolate a value for each index asked for (5,14,23,32):");
+            System.out.println("SDS will interpolate a value for each index asked for (5,14,23,32):");
             System.out.println(retrievedInterpolated);
 
             // Step 10
@@ -209,7 +209,7 @@ public class Program {
             foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
 
             System.out.println(
-                    "Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for each property:");
+                    "Default (Continuous) requesting data starting at index location '1', where we have not entered data, SDS will interpolate a value for each property:");
             for (WaveData evnt : foundEvents) {
                 System.out.println(
                         "Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
@@ -233,8 +233,8 @@ public class Program {
                     false, SdsBoundaryType.ExactOrCalculated);
             foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
             System.out.println(
-                    "We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
-            System.out.println("Sds will now return the default value for the data type:");
+                    "We can override this behavior on a property by property basis, here we override the Radians property instructing SDS not to interpolate.");
+            System.out.println("SDS will now return the default value for the data type:");
             for (WaveData evnt : foundEvents) {
                 System.out.println(
                         "Order: " + evnt.getOrder() + ", Radians: " + evnt.getRadians() + ", Cos: " + evnt.getCos());
@@ -329,7 +329,7 @@ public class Program {
 
             // SdsStreamViewMaps
             System.out.println(
-                    "We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+                    "We can query SDS to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
             Type sdsStreamViewType = new TypeToken<SdsStreamViewMap>() {
             }.getType();
             String jsonStreamViewMap = ocsClient.Streams.getStreamViewMap(tenantId, namespaceId, sampleStreamViewId);
@@ -522,6 +522,7 @@ public class Program {
         } finally {
             try {
                 // Step 21
+				System.out.println();
                 System.out.println("Cleaning up");
                 cleanUp(ocsClient);
                 System.out.println("done");

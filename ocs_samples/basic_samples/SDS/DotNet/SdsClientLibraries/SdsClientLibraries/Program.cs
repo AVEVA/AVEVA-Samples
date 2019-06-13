@@ -68,7 +68,7 @@ namespace SdsClientLibraries
             Console.WriteLine(@"        \/      \/    \/  \/         \/        \/            ");
             Console.WriteLine(@"-------------------------------------------------------------");
             Console.WriteLine();
-            Console.WriteLine($"Sds endpoint at {resource}");
+            Console.WriteLine($"SDS endpoint at {resource}");
             Console.WriteLine();
 
             try
@@ -191,13 +191,13 @@ namespace SdsClientLibraries
 
                 // Step 9
                 // Property Overrides
-                Console.WriteLine("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
+                Console.WriteLine("SDS can interpolate or extrapolate data at an index location where data does not explicitly exist:");
                 Console.WriteLine();
 
                 // We will retrieve three events using the default behavior, Continuous
                 var retrieved = await dataService
                     .GetRangeValuesAsync<WaveData>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated);
-                Console.WriteLine("Default (Continuous) requesting data starting at index location '1', where we have not entered data, Sds will interpolate a value for this property and then return entered values:");
+                Console.WriteLine("Default (Continuous) requesting data starting at index location '1', where we have not entered data, SDS will interpolate a value for this property and then return entered values:");
                 foreach (var value in retrieved)
                 {
                     Console.WriteLine(value.ToString());
@@ -207,7 +207,7 @@ namespace SdsClientLibraries
 
                 var retrievedInterpolated = await dataService
                     .GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
-                Console.WriteLine(" Sds will interpolate a value for each index asked for (5,14,23,32):");
+                Console.WriteLine("SDS will interpolate a value for each index asked for (5,14,23,32):");
                 foreach (var value in retrievedInterpolated)
                 {
                     Console.WriteLine(value.ToString());
@@ -218,7 +218,7 @@ namespace SdsClientLibraries
                 // We will retrieve events filtered to only get the ones where the radians are less than 50.  Note, this can be done on index properties too.
 
                 var retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
-                Console.WriteLine(" Sds will only return the values where the radians are less than 50:");
+                Console.WriteLine("SDS will only return the values where the radians are less than 50:");
                 foreach (var value in retrievedInterpolatedFiltered)
                 {
                     Console.WriteLine(value.ToString());
@@ -253,7 +253,7 @@ namespace SdsClientLibraries
                 retrieved = await dataService
                     .GetRangeValuesAsync<WaveData>(stream.Id, "1", 3, SdsBoundaryType.ExactOrCalculated);
                 Console.WriteLine("We can override this behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
-                Console.WriteLine("Sds will now return the default value for the data type:");
+                Console.WriteLine("SDS will now return the default value for the data type:");
 
                 foreach (var value in retrieved)
                 {
@@ -330,7 +330,7 @@ namespace SdsClientLibraries
                 Console.WriteLine();
 
                 // get SdsStreamViewMap
-                Console.WriteLine("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+                Console.WriteLine("We can query SDS to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
                 var autoStreamViewMap = await metadataService.GetStreamViewMapAsync(autoStreamViewId);
                 PrintStreamViewMapProperties(autoStreamViewMap);
 
@@ -513,6 +513,7 @@ namespace SdsClientLibraries
             finally
             {
                 //step 21
+                Console.WriteLine();
                 Console.WriteLine("Cleaning up");
                 // Delete the stream, types and streamViews making sure
                 Console.WriteLine("Deleting stream");
