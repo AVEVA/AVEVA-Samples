@@ -157,8 +157,6 @@ namespace HybridFlow
                 Console.WriteLine($"Configuration issue");
                 throw ex;
             }
-
-            return "";
         }
     }
 }

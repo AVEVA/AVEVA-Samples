@@ -740,7 +740,7 @@ def getConfig(section, field):
     #Reads the config file for the field specified
     config = configparser.ConfigParser()
     config.read('config.ini')
-    return config.has_option(section,field) and config.get(section,field) or None
+    return config.has_option(section,field) and config.get(section,field) or ""
 
 # ************************************************************************
 # Note: PI points will be created on the first data value message
@@ -779,7 +779,7 @@ def main(test = False):
                 VERIFY_SSL =  False
 
         if not forceSending:
-            if tenant is None:
+            if tenant is "":
                 sendingToOCS = False
             else:
                 sendingToOCS = True
