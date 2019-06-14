@@ -10,22 +10,7 @@ to SDS, obtain an authorization token, create an SdsNamespace, SdsType, and SdsS
 and how to create, read, update, and delete values in SDS.
 
 The sections that follow provide a brief description of the process from
-beginning to end.
-
-Python Version:
----------------
-
-Two versions of the sample code are provided, one targets environments running Python 2.x 
-and the other targets those running Python 3.x.  Please use the sample that is appropriate 
-for your environment.  You can determine which version of Python you are running by typing 
-the following at the command line:
-
-```
-	python -V
-```
-
-The samples were built and tested against Python 3.6.4 and Python 2.7.14.  If you are using 
-a different version you might encounter errors or unexepected behavior.    
+beginning to end.    
 	
 To Run this Sample:
 -------------------
@@ -48,7 +33,7 @@ or
 Establish a Connection
 ----------------------
 
-The sample code uses the ``requests`` module, which 
+The sample code uses the samples library which uses the ``requests`` module, which 
 exposes simple methods for specifying request types to a given
 destination address. The client calls the requests method by passing a destination
 URL, payload, and headers. The server's response is stored.
@@ -144,6 +129,7 @@ data = {"client_id" : self.clientId,
 token = json.loads(tokenInformation.content)
 ```
 
+This is handled by the python library
 
 Acquire an SdsNamespace
 ---------------------
@@ -213,7 +199,7 @@ The WaveData type is created in SDS using the ``createType`` method.
 
 ```python
 type = getWaveDataType(sampleTypeId)
-type = client.createType(namespaceId, type)
+type = ocsClient.Types.getOrCreateType(namespaceId, type)
 ```
 
 All SdsTypes are constructed in a similar manner. Basic SdsTypes form the basis for
@@ -236,7 +222,7 @@ stream.Id = sampleStreamId
 stream.Name = "WaveStreamPySample"
 stream.Description = "A stream to store the WaveData events"
 stream.TypeId = type.Id
-stream = client.createStream(namespaceId, stream)
+stream = ocsClient.Streams.createOrUpdateStream(namespaceId, stream)
 ```
 The local SdsStream can be created in the SDS service by a POST request as
 follows:
@@ -258,6 +244,12 @@ sent along with a POST request.
 
 When inserting single or multiple values, the payload has to be a
 collection of events. An event can be created using the following POST request:
+
+```python
+ocsClient.Streams.insertValues(namespaceId, stream.Id, [event])
+```
+
+That code looks like this:
 
 ```python
 payload = json.dumps(events)
@@ -375,7 +367,7 @@ behavior if the starting index cannot be found. Refer the to the
 The ``getRangeValues`` method is called as shown :
 
 ```python
-waves = client.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
+waves = ocsClient.Streams.getRangeValues(namespaceId, stream.Id, WaveData, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated)
 ```
 
 <h5>Get Sampled Values</h5> 
@@ -414,7 +406,7 @@ Updating and Replacing Values
 ```python
 # update one value
 event = nextWave(start, span, 4.0, 0)
-client.updateValues(namespaceId, stream.Id, [event])
+ocsClient.Streams.updateValues(namespaceId, stream.Id, [event])
 # update multiple values
 updatedEvents = []
     for i in range(2, 40, 2):
@@ -443,7 +435,7 @@ replacedEvents = []
 for i in range(2, 40, 2):
     event = nextWave(i, 5.0)
     replacedEvents.append(event)
-client.replaceValues(namespaceId, stream.Id, replacedEvents)
+ocsClient.Streams.replaceValues(namespaceId, stream.Id, replacedEvents)
 ```
 
 Property Overrides
@@ -468,7 +460,7 @@ propertyOverride.InterpolationMode = 3
 # update the stream
 props = [propertyOverride]
 stream.PropertyOverrides = props	
-client.createOrUpdateStream(namespaceId, stream)
+ocsClient.Streams.createOrUpdateStream(namespaceId, stream)
 ```
 
 The process consists of two steps. First, the Property Override must be created, then the
@@ -490,7 +482,7 @@ the properties are in the same position and of the same data type,
 or when the properties have the same name, SDS will map the properties automatically.
 
 ```python
-rangeWaves = client.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
+rangeWaves = ocsClient.Streams.getRangeValues(namespaceId, stream.Id, WaveDataTarget, "1", 0, 3, False, SdsBoundaryType.ExactOrCalculated, automaticStreamView.Id)
 ```
 
 To map a property that is beyond the ability of SDS to map on its own, 
@@ -523,7 +515,7 @@ The SdsStreamViewMap provides a detailed Property-by-Property definition of the 
 The SdsStreamViewMap cannot be written, it can only be retrieved from SDS.
 
 ```python
-streamViewMap2 = client.getStreamViewMap(namespaceId, manualStreamView.Id)
+streamViewMap2 = ocsClient.Streams.getStreamViewMap(namespaceId, manualStreamView.Id)
 ```
 
 
@@ -547,8 +539,8 @@ def removeWindowValues(self, namespaceId, stream_id, index):
 Here is how the methods are used in the sample:
 
 ```python
-client.removeValue(namespaceId, stream.Id, 0)
-client.removeWindowValues(namespaceId, stream.Id, 0, 40)
+ocsClient.Streams.removeValue(namespaceId, stream.Id, 0)
+ocsClient.Streams.removeWindowValues(namespaceId, stream.Id, 0, 40)
 ```
 
 As when retrieving a window of values, removing a window is
@@ -581,9 +573,9 @@ performs some cleanup before exiting. Deleting streams, stream views and types c
 the corresponding Id. The following calls are made in the sample code.
 
 ```python
-client.deleteStream(namespaceId, sampleStreamId)
-client.deleteType(namespaceId, sampleTypeId)
-client.deleteStreamView(namespaceId, sampleStreamViewId)
+ocsClient.Streams.deleteStream(namespaceId, sampleStreamId)
+ocsClient.Streams.deleteType(namespaceId, sampleTypeId)
+ocsClient.Streams.deleteStreamView(namespaceId, sampleStreamViewId)
 ```
 
 *Note: Types and Stream Views cannot be deleted until any streams

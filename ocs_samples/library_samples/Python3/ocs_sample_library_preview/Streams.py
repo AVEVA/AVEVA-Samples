@@ -958,7 +958,54 @@ class Streams(object):
             raise SdsError("Failed to remove all values for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
         response.close()
-		
+
+    def getStreamsWindow(self, namespace_id, stream_ids, value_class, start, end, joinMode= 1):
+        """
+        Retrieves JSON object representing a window of values from the stream specified by 'stream_id'
+        :param namespace_id: id of namespace to work against
+        :param stream_ids: ids of the streams to get the data of
+        :param value_class: use this to cast the value into a given type.  Type must support .fromJson(). If None returns a dynamic Python object from the data.
+        :param start: Starting index
+        :param end: Ending index
+        :param joinMode: Join mode, supports numbers or strings.  Defaults to outer
+        :return: an array of values.  If value_class is defined it is in this type.  Otherwise it is a dynamic Python object
+        """
+        if namespace_id is None:
+            raise TypeError
+        if stream_ids is None:
+            raise TypeError
+        if not stream_ids:
+            raise TypeError
+        if start is None:
+            raise TypeError
+        if end is None:
+            raise TypeError
+        if joinMode is None:
+            raise TypeError
+            
+        response = requests.get(
+            self.__uri_API + self.__bulkStreams.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_ids=','.join(stream_ids), start=start, end=end, join= joinMode),
+            headers=self.__baseClient.sdsHeaders())
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            raise SdsError("Failed to get bulk values for SdsStreams {stream_ids}. {status}:{reason}".
+                          format(stream_ids=stream_ids, status=response.status_code, reason=response.text))
+
+        content = json.loads(response.content.decode('utf-8'))
+        response.close()
+        if value_class is None:
+            return content
+
+        values = []
+        for valueArray in content:
+            valuesInside = []
+            for value in valueArray:
+                valuesInside.append(value_class.fromDictionary(value))
+            values.append(valuesInside)
+        return values
+        
+    		
 		
     # private methods
 
@@ -969,8 +1016,6 @@ class Streams(object):
         :return:
         """
         self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
-        self.__typesPath = self.__basePath + "/Types/{type_id}"
-        self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}"
         self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
         self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
         self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
@@ -997,10 +1042,5 @@ class Streams(object):
         self.__removeValue = self.__dataPath + "?index={index}"
         self.__removeWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"	
 		
-        self.__dataviewsPath = self.__basePath + "/Dataviews"
-        self.__getDataviews= self.__dataviewsPath + "?skip={skip}&count={count}"
-        self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
-        self.__datagroupPath= self.__dataviewPath + "/Datagroups"
-        self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
-        self.__getDatagroups = self.__datagroupPath + "?skip={skip}&count={count}"
-        self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"
+        self.__bulkStreams = self.__basePath + "/Bulk/Streams/Data/Joins?streams={stream_ids}&joinMode={join}&startIndex={start}&endIndex={end}"
+

@@ -104,6 +104,62 @@ jobs:
       displayName: 'Test with pytest'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/
 
+
+- job: SDS_TSPy
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        architecture: 'x64'
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_config.ini
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_config.ini
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/'
+        #cleanTargetFolder: false # Optional
+        overWrite: true # Optional
+        #flattenFolders: false # Optional
+      displayName: copy file
+
+    - script: |
+        mv prod_config.ini config.ini
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/'
+      displayName: 'rename config file'
+      
+
+      
+    - script: |
+        pip install setuptools wheel
+        pip install unittest-xml-reporting    
+        pip install pytest
+        pip install pytest-cov
+      displayName: 'Install tools'
+      
+      
+    - script: |
+        pip install -r requirements.txt
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/
+      displayName: 'Install requirements'
+      
+    - script: |
+        python -m pytest ./program.py
+      displayName: 'Test with pytest'
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/
+
+
 - job: OMF_APIPy
 
   pool:

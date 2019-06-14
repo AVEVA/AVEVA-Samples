@@ -164,9 +164,10 @@ class SdsTypeProperty(object):
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
 
-        if hasattr(self, 'SdsType'):            
-            from .SdsType import SdsType
-            dictionary['SdsType'] = self.SdsType.toDictionary()
+        if hasattr(self, 'SdsType'):     
+            if(self.SdsType):       
+                from .SdsType import SdsType
+                dictionary['SdsType'] = self.SdsType.toDictionary()
 
         if hasattr(self, 'Value'):
             if (isinstance(self.Value, Enum)):
