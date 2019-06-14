@@ -940,7 +940,7 @@ public class StreamsClient {
      * @return
      * @throws SdsError errors that may occur
      */
-    public String getSampledValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int intervals, String sampleBy){
+    public String getSampledValues(String tenantId, String namespaceId, String streamId, String startIndex, String endIndex, int intervals, String sampleBy) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
