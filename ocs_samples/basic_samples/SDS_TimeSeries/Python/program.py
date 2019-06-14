@@ -1,3 +1,6 @@
+# version 0.0.1
+
+
 from ocs_sample_library_preview import *
 import configparser
 import time
@@ -180,7 +183,6 @@ def main():
 #step 7
         ocsClient.Streams.insertValues(namespaceId,streamTank1, json.dumps(GetData()) )
 
-
         print()
         print()
         print('Looking at the data in the system.  In this case we have some null values that are encoded as 0 for the value.')
@@ -192,7 +194,6 @@ def main():
         firstTime = tank1Sorted[0]['time']
         lastTime = tank1Sorted[-1]['time']
 
-
 #step 8
         results = ocsClient.Streams.getWindowValues(namespaceId, streamPressureName, None, firstTime, lastTime)
         
@@ -203,9 +204,7 @@ def main():
         print()
         print('Value from tank1 stream:')
         results = ocsClient.Streams.getWindowValues(namespaceId, streamTank1, None, firstTime, lastTime)
-        print((results)[1])
-
-    
+        print((results)[1]) 
 
 #step 9
         print()
@@ -214,8 +213,6 @@ def main():
         ocsClient.acceptverbosity = True
 
         print("This means that will get default values back (in our case 0.0 since we are looking at doubles)")
-
-
 
         print()
         print('Value from pressure stream:')
@@ -226,21 +223,20 @@ def main():
         results = ocsClient.Streams.getWindowValues(namespaceId, streamTank1, None, firstTime, lastTime)
         print((results)[1])
 
-
 #step 10
-        #the count of 1 refers to the number of intervals requested
+
         print()
         print()
         print("Getting data summary")
+        #the count of 1 refers to the number of intervals requested
         summaryResults = ocsClient.Streams.getSummaries(namespaceId, streamTank1, None, firstTime, lastTime,1)
         print(summaryResults)
-
 
         print()
         print()
         
         print('Now we want to look at data across multiple tanks.  For that we can take advantage of bulk stream calls')
-        print('Creating a new tank streams')
+        print('Creating new tank streams')
         tankStream = SdsStream(id = streamTank2, typeId = tankType.Id, description = "A stream for data of tank2")
         ocsClient.Streams.createOrUpdateStream(namespaceId, tankStream)
 

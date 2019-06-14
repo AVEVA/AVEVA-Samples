@@ -3,6 +3,10 @@ Welcome
 
 The SDS Client waveform samples are introductory, language-specific examples of programming against the SDS Service. They are intended as instructional samples only.
 
+There are some differences between these samples and the TimesSeries samples.  The differences include the Type being used and some of the calls being highlighted.  Please check out the Sample Patterns and the code to determine which sample is most appropriate for you.
+
+Note: The calls highlighted here which are not in the other sample are not specific to non-Time-Series data.
+
 Sample Pattern
 --------------
 
@@ -38,9 +42,6 @@ Step numbers are searchable in the code.  For find the relevant part of the code
 ------|------------
 <a href="DotNet/SdsClientLibraries/SdsClientLibraries">.NET</a><br /><a href="DotNet/SdsRestApiCore">.NET*</a><br /><a href="Java/sdsjava">JAVA</a><br /><a href="JavaScript/Angular">Angular</a><br /><a href="JavaScript/NodeJs">nodeJS</a><br /><a href="Python/SDSPy/Python3">Python3</a> | [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNetAPI)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSangJS)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSnodeJS)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br /> [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
-
-
-Note: the Angular app only fails in automation due to login issues.  Testing locally it is ok... 
 
 For the main OCS page [ReadMe](../../)<br />
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
