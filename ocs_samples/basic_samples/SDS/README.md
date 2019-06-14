@@ -21,17 +21,18 @@ All SDS waveform samples are console applications that follow the same sequence 
 7.  Update events
 8.  Replace events
 9.  Retrieve events and interpolated events 
-10. Retrieve filtered events 
-11. Demonstrate SdsStream Property Overrides
-12. Use SdsStreamViews and SdsStreamViewMaps
-13. Use SdsStreamViews to update StreamType
-14. Filtering on types 
-15. Tags & Metadata
-16. Delete events
-17. Create an SdsStream with a secondary index, update an existing stream to a secondary index and remove a secondary index
-18. Created an SdsType and SdsStream with Compound index
-19. Inserting and retreiving compound index data
-20. Delete objects
+10. Retrieve filtered events
+11. Retrieve Sampled values 
+12. Demonstrate SdsStream Property Overrides
+13. Use SdsStreamViews and SdsStreamViewMaps
+14. Use SdsStreamViews to update StreamType
+15. Filtering on types 
+16. Tags & Metadata
+17. Delete events
+18. Create an SdsStream with a secondary index, update an existing stream to a secondary index and remove a secondary index
+19. Created an SdsType and SdsStream with Compound index
+20. Inserting and retreiving compound index data
+21. Delete objects
 
 These steps illustrate the fundamental programming steps of SDS.  Feel free to modify the samples and propose changes.
 

@@ -34,6 +34,11 @@ namespace OMF_API
         // set this to try to force the above bool, otherwise it is determined by what is found in appsettins.json file
         static bool sendingToOCSBoolforced = false;
 
+        static bool VERIFY_SSL = true;
+
+
+
+
         // The version of the OMFmessages
         static string omfVersion = "1.1";
 
@@ -47,6 +52,7 @@ namespace OMF_API
         static string pidataserver = "";
         static string piassetserver = "";
         static string afomfdatabase = "";
+        static string verify = "";
         
 
         // Holds the token that is used for Auth for OCS.
@@ -75,9 +81,6 @@ namespace OMF_API
         /// <returns></returns>
         public static bool runMain(bool test= false)
         {
-            // this turns off SSL verification
-            //This should not be done in production.  please properly handle your certificates
-            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             //hold on to these in case there is a failure in deleting
             var success = true;
@@ -110,6 +113,7 @@ namespace OMF_API
                 clientId = configuration["clientId"];
                 clientSecret = configuration["ClientKey"];
                 pidataserver = configuration["dataservername"];
+                verify = configuration["VERIFY_SSL"];
                 /* not currently used, but would be needed to check AF creation
                 piassetserver = configuration["assetservername"];
                 afomfdatabase = configuration["afomfdatabase"];
@@ -130,7 +134,20 @@ namespace OMF_API
                 {   
                     checkBase = resource;
                     omfendpoint = checkBase + $"/omf";
-                }                
+                }           
+
+                if(!String.IsNullOrEmpty(verify) && verify == "false")    
+                {
+                    VERIFY_SSL = false;
+                }
+
+                if(!VERIFY_SSL)
+                {
+                    Console.WriteLine("You are not verifying the certificate of the end point.  This is not advised for any system as there are security issues with doing this.");
+                    // this turns off SSL verification
+                    //This should not be done in production.  please properly handle your certificates
+                    ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                }
 
                 // Step 2
                 getToken();
@@ -213,7 +230,7 @@ namespace OMF_API
                 json1 = checkValue(checkBase + $"/Streams" + $"/Container1" + $"/Data/last");
                 var valueJ = JsonConvert.DeserializeObject<List<JObject>>(value);
                 var jsonJ = JsonConvert.DeserializeObject<JObject>(json1);
-                if (valueJ[0]["values"][0]["IntegerProperty"].ToString() != jsonJ["IntegerProperty"].ToString())
+                if (valueJ[0]["values"][0]["IntegerProperty"]?.ToString() != jsonJ["IntegerProperty"]?.ToString())
                     throw new Exception("Returned value is not expected.");
             }
             else
@@ -490,18 +507,24 @@ namespace OMF_API
         private static string Send(WebRequest request)
         {
             // ServicePointManager.SecurityProtocol = SecurityProtocolType.;s
-            var resp = request.GetResponse();
-            HttpWebResponse response = (HttpWebResponse)resp;
-            
-            var stream  = resp.GetResponseStream();
-            var code = (int)response.StatusCode;
+            using (var resp = request.GetResponse())
+            {
+                using (HttpWebResponse response = (HttpWebResponse)resp)
+                {
 
-            StreamReader reader = new StreamReader(stream);
-            // Read the content.  
-            string responseString = reader.ReadToEnd();
-            // Display the content.  
+                    var stream = resp.GetResponseStream();
+                    var code = (int)response.StatusCode;
 
-            return responseString;
+                    using (StreamReader reader = new StreamReader(stream))
+                    { 
+                        // Read the content.  
+                        string responseString = reader.ReadToEnd();
+                        // Display the content.  
+
+                        return responseString;
+                    }
+                }
+            }
         }
 
 

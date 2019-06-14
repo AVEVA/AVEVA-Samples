@@ -1,6 +1,6 @@
 # Setup
 
-1. Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID.
+1. Replace the placeholders in the [config](./wwwroot/config.js) file with your Tenant Id and Client Id.
 2. Ensure that the client contains `http://localhost:5003/callback.html` in the list of RedirectUris
 
 ## Running the sample
@@ -10,11 +10,16 @@
 - .net core 2.2.1 or later
 - Reliable internet connection
 - A web browser
+- This application by default will use Port 5003
+
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
 
 ### Using Visual Studio
 
 - Load the .csproj
-- Rebuild solution
+- Rebuild project
 - Run it
 - Pres the *login* button in the browser
 - Follow the prompts in the web browser to log in
@@ -31,7 +36,6 @@ dotnet run
 
 - Follow the prompts in the web browser to log in
 - Return to the application after having been authenticated in the browser
-
 
 ## Test
 

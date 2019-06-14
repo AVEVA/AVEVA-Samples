@@ -31,12 +31,6 @@ namespace Tests
 
         private static void AutoLogin(string url, string userName, string password)
         {
-            //embedded automated logging in.  Added for testing purposes as typically for a Hybrid application you want the user to login.
-
-            //works against the personal account option only
-
-            //not sure why specifying the current directory is needed on local testing but it is
-
             //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
@@ -65,11 +59,10 @@ namespace Tests
 
                 Thread.Sleep(4000);
 
-                driver.FindElement(By.XPath("//*[@id=\"tenant\"]")).Click();
+                driver.FindElement(By.XPath("//*[@id=\"users\"]")).Click();
                 Thread.Sleep(4000);
-
-                //   //*[@id="results"]
-                var results = driver.FindElement(By.XPath("//*[@id=\"tenant\"]")).Text;
+                
+                var results = driver.FindElement(By.XPath("//*[@id=\"users\"]")).Text;
 
                 if (results.Contains("not logged"))
                     throw new Exception("Looging in failed");

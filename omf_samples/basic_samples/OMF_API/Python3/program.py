@@ -6,8 +6,8 @@
 #*************************************************************************************
 
 # OMF_API_Python3
-# version 0.0.2s
-# 3-20-19
+# version 0.0.3
+# 6-12-19
 
 # ************************************************************************
 # Import necessary packages
@@ -39,8 +39,10 @@ sendingToOCS = True
 # sending it to ingress endpoint
 USE_COMPRESSION = False
 
-# Set this to true if going against self signed certs and you don't want to see the error
-VERIFY_SSL = False
+# Set this to the path of the certificate pem file if you using a self signed cert.  
+# Set this to True if your cert is trusted by the Python certify.  
+# Set to False if you do not want to check the certificate (NOT RECOMMENDED)
+VERIFY_SSL = True
 
 # Specify the timeout, in seconds, for sending web requests
 # (if it takes longer than this to send a message, an error will be thrown)
@@ -738,7 +740,7 @@ def getConfig(section, field):
     #Reads the config file for the field specified
     config = configparser.ConfigParser()
     config.read('config.ini')
-    return config.has_option(section,field) and config.get(section,field) or None
+    return config.has_option(section,field) and config.get(section,field) or ""
 
 # ************************************************************************
 # Note: PI points will be created on the first data value message
@@ -746,7 +748,7 @@ def getConfig(section, field):
 # ************************************************************************
 def main(test = False):
     # Main program.  Seperated out so that we can add a test function and call this easily
-    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase, dataServerName, forceSending, sendingToOCS
+    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase, dataServerName, forceSending, sendingToOCS, VERIFY_SSL
     success = True
     try:
         print('------------------------------------------------------------------')
@@ -770,9 +772,14 @@ def main(test = False):
         producerToken = getConfig('Credentials', 'ProducerToken')
         clientId = getConfig('Credentials', 'ClientId')
         clientSecret = getConfig('Credentials', 'ClientSecret')
+        verify = getConfig('Configurations', 'VERIFY_SSL') 
+
+        if verify is not None:
+            if verify == "False":
+                VERIFY_SSL =  False
 
         if not forceSending:
-            if tenant is None:
+            if tenant is "":
                 sendingToOCS = False
             else:
                 sendingToOCS = True
@@ -784,16 +791,14 @@ def main(test = False):
             checkBase = resourceBase 
             omfEndPoint = checkBase + '/omf'
         
+        if not VERIFY_SSL:
+            print("You are not verifying the certificate of the end point.  This is not advised for any system as there are security issues with doing this.")
 
         # Step 2
         getToken()
 
-    # ************************************************************************
-    # Turn off HTTPS warnings, if desired
-    # ************************************************************************
 
-    #    if not VERIFY_SSL:
-    #        requests.packages.urllib3.disable_warnings()
+
 
         # Steps 3-8 contained in here
         oneTimeSendMessages()

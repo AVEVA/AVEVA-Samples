@@ -18,9 +18,6 @@ namespace SdsRestApiCore
 
         public static async Task<bool> MainAsync(bool test = false)
         {
-            bool success = true;
-            Exception toThrow = null;
-
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -62,7 +59,7 @@ namespace SdsRestApiCore
             Console.WriteLine(@"        \/      \/    \/        \/        \/        \/            ");
             Console.WriteLine(@"-------------------------------------------------------");
             Console.WriteLine();
-            Console.WriteLine($"Sds endpoint at {resource}");
+            Console.WriteLine($"SDS endpoint at {resource}");
             Console.WriteLine();
 
             try
@@ -117,7 +114,6 @@ namespace SdsRestApiCore
                     throw new HttpRequestException();
                 }
 
-
                 // Step 5
                 // get last event
                 Console.WriteLine("Getting latest event");
@@ -142,7 +138,6 @@ namespace SdsRestApiCore
                     Console.WriteLine(evnt.ToString());
                 }
                 Console.WriteLine();
-
 
                 // Step 6
                 // get all events in table header format
@@ -175,7 +170,7 @@ namespace SdsRestApiCore
                 List<WaveData> updateWaves = new List<WaveData>();
                 for (int i = 0; i < 40; i += 2)
                 {
-                    WaveData newEvent = GetWave(i, 4, 6.0);
+                    WaveData newEvent = GetWave(i, 4, 4.0);
                     updateWaves.Add(newEvent);
                 }
 
@@ -202,10 +197,7 @@ namespace SdsRestApiCore
 
                 // replace one event
                 var replaceSingleWaveList = new List<WaveData>();
-                var replaceEvent = retrievedList[0];
-                replaceEvent.Sin = 4 * (Math.Sqrt(2) / 2) + replaceEvent.Radians;
-                replaceEvent.Cos = 4 * (Math.Sqrt(2) / 2) - replaceEvent.Radians;
-                replaceEvent.Tan = 4;
+                var replaceEvent = GetWave(order: 0, range: 4, multiplier: 5.0);
                 replaceSingleWaveList.Add(replaceEvent);
 
                 response = await httpClient.PutAsync(
@@ -215,19 +207,17 @@ namespace SdsRestApiCore
 
                 // replace all events
                 var replaceEvents = retrievedList;
-                foreach (var evnt in replaceEvents)
+                for (int i = 1; i < replaceEvents.Count; i++)
                 {
-                    evnt.Sin = 6 * (Math.Sqrt(2) / 2) + evnt.Radians;
-                    evnt.Cos = 6 * (Math.Sqrt(2) / 2) - evnt.Radians;
-                    evnt.Tan = 6;
+                    replaceEvents[i] = GetWave(order: i*2, range: 4, multiplier: 5.0);
                 }
+              
                 response = await httpClient.PutAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?allowCreate=false",
                 new StringContent(JsonConvert.SerializeObject(replaceEvents)));
                 CheckIfResponseWasSuccessful(response);
 
                 // Step 9
-
                 Console.WriteLine("Getting replaced events");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex={updateWaves[0].Order}&endIndex={updateWaves[updateWaves.Count - 1].Order}");
@@ -242,7 +232,7 @@ namespace SdsRestApiCore
 
                 // Property Overrides
                 Console.WriteLine("Property Overrides");
-                Console.WriteLine("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:");
+                Console.WriteLine("SDS can interpolate or extrapolate data at an index location where data does not explicitly exist:");
                 Console.WriteLine();
 
                 // We will retrieve three events using the default behavior, Continuous
@@ -251,18 +241,15 @@ namespace SdsRestApiCore
                 CheckIfResponseWasSuccessful(response);
                 List<WaveData> rangeValuesContinuous =
                     JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine("Default (Continuous) stream read behavior, requesting data starting at index location '1', Sds will interpolate this value:");
+                Console.WriteLine("Default (Continuous) stream read behavior, requesting data starting at index location '1', SDS will interpolate this value:");
                 foreach (var waveData in rangeValuesContinuous)
                 {
                     Console.WriteLine($"Order: {waveData.Order}, Radians: {waveData.Radians}, Cos: {waveData.Cos}");
                 }
                 Console.WriteLine();
 
-
-
                 // Step 10
                 // We will retrieve events filtered to only get the ones where the radians are less than 50.  Note, this can be done on index properties too.
-
                 Console.WriteLine("Getting replaced events");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?startIndex={updateWaves[0].Order}&endIndex={updateWaves[updateWaves.Count - 1].Order}&filter=Radians lt 50");
@@ -275,9 +262,21 @@ namespace SdsRestApiCore
                 }
                 Console.WriteLine();
 
+                //Step 11
+                //We will retrieve a sample of our data
+                Console.WriteLine("SDS can return a sample of your data population to show trends.");
+                Console.WriteLine("Getting Sampled Values:");
+                response = await httpClient.GetAsync(
+                    $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/Sampled?startIndex={updateWaves[0].Order}&endIndex={updateWaves[updateWaves.Count-1].Order}&intervals={4}&sampleBy={nameof(WaveData.Sin)}");
+                var retrievedSamples =
+                    JsonConvert.DeserializeObject<List<WaveData>>(await response.Content.ReadAsStringAsync());
+                foreach (var sample in retrievedSamples)
+                {
+                    Console.WriteLine(sample);
+                }
+                Console.WriteLine();
 
-                // Step 11
-
+                // Step 12
                 // Create a Discrete stream PropertyOverride indicating that we do not want Sds to calculate a value for Radians and update our stream
                 SdsStreamPropertyOverride propertyOverride = new SdsStreamPropertyOverride
                 {
@@ -294,8 +293,8 @@ namespace SdsRestApiCore
                     new StringContent(JsonConvert.SerializeObject(waveStream)));
                 CheckIfResponseWasSuccessful(response);
 
-                Console.WriteLine("We can override this read behavior on a property by property basis, here we override the Radians property instructing Sds not to interpolate.");
-                Console.WriteLine("Sds will now return the default value for the data type:");
+                Console.WriteLine("We can override this read behavior on a property by property basis, here we override the Radians property instructing SDS not to interpolate.");
+                Console.WriteLine("SDS will now return the default value for the data type:");
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/Transform?startIndex={1}&count={3}&boundaryType={SdsBoundaryType.ExactOrCalculated}");
                 CheckIfResponseWasSuccessful(response);
@@ -307,8 +306,7 @@ namespace SdsRestApiCore
                 }
                 Console.WriteLine();
 
-
-                // Step 12
+                // Step 13
                 // Stream views
                 Console.WriteLine("SdsStreamViews");
 
@@ -406,11 +404,10 @@ namespace SdsRestApiCore
                 Console.WriteLine();
 
                 // get SdsStreamViewMap
-                Console.WriteLine("We can query Sds to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
+                Console.WriteLine("We can query SDS to return the SdsStreamViewMap for our SdsStreamView, here is the one generated automatically:");
 
                 response = await httpClient.GetAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/StreamViews/{AutoStreamViewId}/Map");
-
 
                 CheckIfResponseWasSuccessful(response);
 
@@ -429,13 +426,12 @@ namespace SdsRestApiCore
 
                 PrintStreamViewMapProperties(sdsStreamViewMap);
 
-                // Step 13
+                // Step 14
                 // Update Stream Type based on SdsStreamView
                 Console.WriteLine("We will now update the stream type based on the streamview");
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data/Last");
                 CheckIfResponseWasSuccessful(response);
                 WaveData lastData = JsonConvert.DeserializeObject<WaveData>(await response.Content.ReadAsStringAsync());
-
 
                 response = await httpClient.PutAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Type?streamViewId={AutoStreamViewId}", null);
                 CheckIfResponseWasSuccessful(response);
@@ -447,24 +443,22 @@ namespace SdsRestApiCore
 
                 WaveDataTarget lastDataUpdated = JsonConvert.DeserializeObject<WaveDataTarget>(await response.Content.ReadAsStringAsync());
 
-
                 Console.WriteLine($"The new type id {steamnew.TypeId} compared to the original one {waveStream.TypeId}.");
-                Console.WriteLine($"The new type value {lastDataUpdated.ToString()} compared to the original one {lastData.ToString()}.");
+                Console.WriteLine();
 
-
-                // Step 14
-
+                // Step 15
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types");
                 CheckIfResponseWasSuccessful(response);
                 List<SdsType> types = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
 
-                response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types?filter=contains(Id, 'Target')");
+                response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types?query=Id:*Target*");
                 CheckIfResponseWasSuccessful(response);
                 List<SdsType> typesFiltered = JsonConvert.DeserializeObject<List<SdsType>>(await response.Content.ReadAsStringAsync());
 
                 Console.WriteLine($"The number of types returned without filtering: {types.Count}.  With filtering {typesFiltered.Count}.");
+                Console.WriteLine();
 
-                // Step 15
+                // Step 16
                 // tags and metadata
                 Console.WriteLine("Let's add some Tags and Metadata to our stream:");
                 var tags = new List<string> { "waves", "periodic", "2018", "validated" };
@@ -516,12 +510,11 @@ namespace SdsRestApiCore
                 Console.WriteLine("Metadata key Region: " + region);
                 Console.WriteLine("Metadata key Country: " + country);
                 Console.WriteLine("Metadata key Province: " + province);
-
                 Console.WriteLine();
 
                 Console.WriteLine("Deleting values from the SdsStream");
 
-                // Step 16
+                // Step 17
                 // delete one event
                 response = await httpClient.DeleteAsync(
                     $"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}/Data?index=0");
@@ -540,8 +533,7 @@ namespace SdsRestApiCore
                 }
                 Console.WriteLine();
 
-                // Step 17
-
+                // Step 18
                 Console.WriteLine("Creating a SdsStream with secondary index");
 
                 SdsStreamIndex measurementIndex = new SdsStreamIndex()
@@ -569,11 +561,10 @@ namespace SdsRestApiCore
 
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
 
-                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}. ");
+                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{waveStream.Indexes?.Count()}. {waveStreamSecond.Id}:{waveStreamSecond.Indexes.Count()}.");
                 Console.WriteLine();
 
                 Console.WriteLine("Modifying a stream to have a secondary index.");
-
 
                 response = await httpClient.GetAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{waveStream.Id}");
                 CheckIfResponseWasSuccessful(response);
@@ -611,24 +602,26 @@ namespace SdsRestApiCore
                 waveStreamSecond = JsonConvert.DeserializeObject<SdsStream>(await response.Content.ReadAsStringAsync());
                 
                 var count = 0;
-                if(waveStream.Indexes !=null )
+                if (waveStream.Indexes != null)
+                {
                     count = waveStream.Indexes.Count();
-                var count2 = 0;
-                if(waveStreamSecond.Indexes !=null )
-                    count2 = waveStreamSecond.Indexes.Count();
+                }
 
-                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}. ");
+                var count2 = 0;
+                if (waveStreamSecond.Indexes != null)
+                {
+                    count2 = waveStreamSecond.Indexes.Count();
+                }
+
+                Console.WriteLine($"Secondary indexes on streams. {waveStream.Id}:{count}. {waveStreamSecond.Id}:{count2}.");
                 Console.WriteLine();
                 
-
-                // Step 18
-
+                // Step 19
                 Console.WriteLine("Creating a SdsType with a compound index");
                 SdsType waveCompound = BuildWaveDataCompoundType(compoundTypeId);
                 response = await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{waveCompound.Id}",
                         new StringContent(JsonConvert.SerializeObject(waveCompound)));
                 CheckIfResponseWasSuccessful(response);
-
 
                 // create an SdsStream
                 Console.WriteLine("Creating an SdsStream off of type with compound index");
@@ -640,14 +633,11 @@ namespace SdsRestApiCore
                     Description = "This is a sample SdsStream for storing WaveData type measurements"
                 };
 
-
                 response = await httpClient.PutAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{streamCompound.Id}",
                     new StringContent(JsonConvert.SerializeObject(streamCompound)));
                 CheckIfResponseWasSuccessful(response);
 
-
-                // Step 19
-
+                // Step 20
                 Console.WriteLine("Inserting data");
 
                 response = await httpClient.PostAsync($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{streamCompound.Id}/Data", new StringContent(JsonConvert.SerializeObject(new List<WaveDataCompound>() { GetWaveMultiplier(1, 10) })));
@@ -683,7 +673,6 @@ namespace SdsRestApiCore
                 List<WaveDataCompound> data = JsonConvert.DeserializeObject<List<WaveDataCompound>>(await response.Content.ReadAsStringAsync());                
 
                 Console.WriteLine($"First data: {firstCompound.ToString()}.  Latest data: {lastCompound.ToString()}.");
-
                 Console.WriteLine();
 
                 Console.WriteLine("Window Data:");
@@ -702,8 +691,8 @@ namespace SdsRestApiCore
             }
             finally
             {
-
-                // Step 20
+                // Step 21
+                Console.WriteLine();
                 Console.WriteLine("Cleaning up");
                 // Delete the stream, types and streamViews
                 Console.WriteLine("Deleting stream");
@@ -718,10 +707,8 @@ namespace SdsRestApiCore
                 RunInTryCatch(httpClient.DeleteAsync, ($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{compoundTypeId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetTypeId}"));
                 RunInTryCatch(httpClient.DeleteAsync,($"api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{TargetIntTypeId}"));
-
                 Console.WriteLine("done");
             }
-
 
             if (test && !success)
                 throw toThrow;
@@ -735,7 +722,6 @@ namespace SdsRestApiCore
                 throw new HttpRequestException(response.ToString());
             }
         }
-
 
         /// <summary>
         /// Use this to run a method that you don't want to stop the program if there is an error
@@ -1109,11 +1095,9 @@ namespace SdsRestApiCore
             return waveType;
         }
 
-
         private static WaveData GetWave(int order, int range, double multiplier)
         {
-            Random random = new Random();
-            var radians = ( random.Next(1,100)* 2 * Math.PI) % 2*Math.PI;
+            var radians = order * (Math.PI / 32);
 
             return new WaveData
             {

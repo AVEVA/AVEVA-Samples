@@ -1,6 +1,6 @@
 # Setup
 
-Replace the placeholders in the [apsettings](./apsettings.json) file with your TenantID, ClientID and ClientSecret.
+Replace the placeholders in the [apsettings](./apsettings.json) file with your Tenant Id, Client Id and Client Secret, and the current Api Version. There is no need to replace the Namespace Id for this sample.
 
 ## Running the sample
 
@@ -12,7 +12,7 @@ Replace the placeholders in the [apsettings](./apsettings.json) file with your T
 ### Using Visual Studio
 
 - Load the .csproj
-- Rebuild solution
+- Rebuild project
 - Run it
   - If you want to see the token and other outputs from the program, put a breakpoint at the end of the main method and run in debug mode
 

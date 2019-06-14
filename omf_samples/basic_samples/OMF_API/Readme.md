@@ -41,6 +41,9 @@ This list is not exhuastive, but rather a few key details to know.
 3) OCS does not accept Link type
 
 
+PI System Client Configuration
+-----------------
+If this sample is used against the PI Web API endpoint the client computer must trust the certificate of PI Web API.
 
 ---------
 

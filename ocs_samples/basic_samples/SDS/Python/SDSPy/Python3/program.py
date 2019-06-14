@@ -244,27 +244,8 @@ def getWaveDataIntegerType(sampleTypeId):
     return wave
 
 # Generate a new WaveData event
-def nextWave(now, interval, multiplier, order):
-    totalSecondsDay = (now - now.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds() * 1000
-    intervalSeconds = (interval - interval.replace(hour=0, minute=0, second = 0, microsecond = 0)).total_seconds() * 1000
-    radians = ((totalSecondsDay % intervalSeconds ) / intervalSeconds) * 2 * math.pi
-        
-    newWave = WaveData()
-    newWave.Order = order
-    newWave.Radians = radians
-    newWave.Tau = radians / (2 * math.pi)
-    newWave.Sin = multiplier * math.sin(radians)
-    newWave.Cos = multiplier * math.cos(radians)
-    newWave.Tan = multiplier * math.tan(radians)
-    newWave.Sinh = multiplier * math.sinh(radians)
-    newWave.Cosh = multiplier * math.cosh(radians)
-    newWave.Tanh = multiplier * math.tanh(radians)
-        
-    return newWave
-
-# Generate a new WaveData event
-def nextWaveCompound(order, multiplier):
-    radians = (order) * 2 * math.pi
+def nextWave(order, multiplier):
+    radians = (order) * math.pi/32
         
     newWave = WaveDataCompound()
     newWave.Order = order
@@ -383,17 +364,15 @@ def main():
         # CRUD operations for events
         ######################################################################################################
 
-        start = datetime.datetime.now()
-        span = datetime.datetime.strptime("0:1:0", "%H:%M:%S")
         print("Inserting data")
         # Insert a single event
-        event = nextWave(start, span, 2.0, 0)
+        event = nextWave(0, 2.0)
         ocsClient.Streams.insertValues(namespaceId, stream.Id, [event])
 
         # Insert a list of events
         waves = []
         for i in range(2, 20, 2):
-            waves.append(nextWave(start + datetime.timedelta(seconds = i * 0.2), span, 2.0, i))
+            waves.append(nextWave(i, 2.0))
         ocsClient.Streams.insertValues(namespaceId, stream.Id, waves)
 
         # Step 5
@@ -404,7 +383,7 @@ def main():
         print()
 
         # Get all the events
-        waves = ocsClient.Streams.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
+        waves = ocsClient.Streams.getWindowValues(namespaceId, stream.Id, WaveData, 0, 180)
         print("Getting all events")
         print("Total events found: " + str(len(waves)))
         for wave in waves:
@@ -414,7 +393,7 @@ def main():
 
         # Step 6
         # get all values with headers
-        waves = ocsClient.Streams.getWindowValuesForm(namespaceId, stream.Id, None, 0, 40,"tableh")
+        waves = ocsClient.Streams.getWindowValuesForm(namespaceId, stream.Id, None, 0, 180,"tableh")
         print("Getting all events in table format")
         print(waves)
 
@@ -422,13 +401,13 @@ def main():
         # Step 7
         print("Updating events")
         # Update the first event
-        event = nextWave(start, span, 4.0, 0)
+        event = nextWave(0, 4.0)
         ocsClient.Streams.updateValues(namespaceId, stream.Id, [event])
 
         # Update the rest of the events, adding events that have no prior index entry
         updatedEvents = []
         for i in range(2, 40, 2):
-            event = nextWave(start + datetime.timedelta(seconds = i * 0.2), span, 4.0, i)
+            event = nextWave(i, 4.0)
             updatedEvents.append(event)
         ocsClient.Streams.updateValues(namespaceId, stream.Id, updatedEvents)
 
@@ -443,19 +422,19 @@ def main():
         # Step 8
         print("Replacing events")
         # replace one value
-        event = nextWave(start, span, 10.0, 0)
+        event = nextWave(0, 5.0)
         ocsClient.Streams.replaceValues(namespaceId, stream.Id, [event])
         
         # replace multiple values
         replacedEvents = []
         for i in range(2, 40, 2):
-            event = nextWave(start + datetime.timedelta(seconds=i * 0.2), span, 10.0, i)
+            event = nextWave(i, 5.0)
             replacedEvents.append(event)
         ocsClient.Streams.replaceValues(namespaceId, stream.Id, replacedEvents)
 
         # Step 9
         # Get all the events
-        waves = ocsClient.Streams.getWindowValues(namespaceId, stream.Id, WaveData, 0, 40)
+        waves = ocsClient.Streams.getWindowValues(namespaceId, stream.Id, WaveData, 0, 180) 
         print("Getting replaced events")
         print("Total events found: " + str(len(waves)))
         for wave in waves:
@@ -463,19 +442,29 @@ def main():
         print()
        
         retrievedInterpolated = ocsClient.Streams.getRangeValuesInterpolated(namespaceId, stream.Id, None, "5", "32",4) 
-    
-        print("Sds will interpolate a value for each index asked for (5,14,23,32):")
+        print("Sds can interpolate or extrapolate data at an index location where data does not explicitly exist:")
         print(retrievedInterpolated)
+        print()
 
         # Step 10
+        # Filtering from all values
         print("Getting filtered events")
-        filteredEvents = ocsClient.Streams.getWindowValues(namespaceId, sampleStreamId, WaveData, 0, 40, "Radians%20lt%203") 
+        filteredEvents = ocsClient.Streams.getWindowValues(namespaceId, sampleStreamId, WaveData, 0, 50, "Radians%20lt%203") 
         print ("Total events found: " + str(len(filteredEvents)))
         for wave in filteredEvents:
             print(toString(wave))
         print()
 
         # Step 11
+        # Sampling from all values
+        print("Getting sampled values")
+        sampledWaves = ocsClient.Streams.getSampledValues(namespaceId, stream.Id, WaveData, 0, 40, "sin", 4)
+        print("Total events found: " + str(len(sampledWaves)))
+        for wave in sampledWaves:
+            print(toString(wave))
+        print()
+
+        # Step 12
         ######################################################################################################
         # Property Overrides
         ######################################################################################################
@@ -508,7 +497,7 @@ def main():
         for wave in waves:
             print(("Order: {order}: Radians: {radians} Cos: {cos}".format(order = wave.Order, radians = wave.Radians, cos = wave.Cos)))
 
-        # Step 12
+        # Step 13
         ######################################################################################################
         # Stream Views
         ######################################################################################################
@@ -594,8 +583,7 @@ def main():
             else:
                 print(("{source} => {dest}".format(source = prop.SourceId, dest = 'Not mapped')))
 
-        # Step 13
-        
+        # Step 14
         print("We will now update the stream type based on the streamview")
         
         firstVal = ocsClient.Streams.getFirstValue(namespaceId, stream.Id, None)
@@ -607,20 +595,20 @@ def main():
         print("The new type id" + newStream.TypeId + " compared to the original one " + stream.TypeId)
         print("The new type value " + str(firstVal) + " compared to the original one " + str(firstValUpdated))
 
-        # Step 14
-        
+        # Step 15
         types = ocsClient.Types.getTypes(namespaceId, 0, 100)
-        typesFiltered = ocsClient.Types.getTypes(namespaceId, 0, 100, "contains(Id,'Target')")
-        
+        typesQuery = ocsClient.Types.getTypes(namespaceId, 0, 100, "Id:*Target*")
+
+        print ()
         print("All Types: ")
         for typeI in types:
             print(typeI.Id)
 
-        print("Filtered Types: ")
-        for typeI in typesFiltered:
+        print("Types after Query: ")
+        for typeI in typesQuery:
             print(typeI.Id)
-
-        # Step 15
+        
+        # Step 16
         ######################################################################################################
         # Tags and Metadata
         ######################################################################################################
@@ -648,7 +636,7 @@ def main():
         print("Metadata key Province: ", province)
         print()
         
-        # Step 16
+        # Step 17
         ######################################################################################################
         # Delete events
         ######################################################################################################
@@ -667,7 +655,7 @@ def main():
             pass
         print("All values deleted successfully!")
         
-        # Step 17
+        # Step 18
         print("Adding a stream with a secondary index.")
         index  = SdsStreamIndex()
         index.SdsTypePropertyId = "Radians"
@@ -685,7 +673,6 @@ def main():
         print("Secondary indexes on streams original:" +  str(count) + ". New one:  " + str(len(secondary.Indexes)))
         print()
 
-        
         # Modifying an existing stream with a secondary index.
         print("Modifying a stream to have a secondary index.")
 
@@ -716,7 +703,7 @@ def main():
 
         print("Secondary indexes on streams original:" +  originalLength + ". New one:  " + secondaryLength)
     
-        # Step 18
+        # Step 19
         # Adding Compound Index Type
         print("Creating an SdsType with a compound index")
         typeCompound = getWaveCompoundDataType(compoundTypeId)        
@@ -729,24 +716,21 @@ def main():
         streamCompound.TypeId = typeCompound.Id    
         ocsClient.Streams.createOrUpdateStream( namespaceId, streamCompound)
         
-        # Step 19 
-
+        # Step 20 
         print("Inserting data")
-
         waves = []
-        waves.append(nextWaveCompound(1, 10))
-        waves.append(nextWaveCompound(2, 2))
-        waves.append(nextWaveCompound(3, 1))
-        waves.append(nextWaveCompound(10, 3))
-        waves.append(nextWaveCompound(10, 8))
-        waves.append(nextWaveCompound(10, 10))
+        waves.append(nextWave(1, 10))
+        waves.append(nextWave(2, 2))
+        waves.append(nextWave(3, 1))
+        waves.append(nextWave(10, 3))
+        waves.append(nextWave(10, 8))
+        waves.append(nextWave(10, 10))
         ocsClient.Streams.insertValues(namespaceId, streamIdCompound, waves)
 
         latestCompound = ocsClient.Streams.getLastValue(namespaceId, streamIdCompound, None)
         firstCompound = ocsClient.Streams.getFirstValue(namespaceId, streamIdCompound, None)
 
         windowVal = ocsClient.Streams.getWindowValues(namespaceId, streamIdCompound,None, "2|1", "10|8")
-
 
         print( "First data: "+ str(firstCompound) + " Latest data: " + str(latestCompound))
         print("Window Data:")
@@ -756,10 +740,9 @@ def main():
         assert False, (("Encountered Error: {error}".format(error = i)))
         print()
 
-
     finally:
 
-        # Step 20
+        # Step 21
 
         ######################################################################################################
         # SdsType, SdsStream, and SdsStreamView deletion
