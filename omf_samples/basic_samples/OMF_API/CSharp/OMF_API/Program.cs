@@ -230,7 +230,7 @@ namespace OMF_API
                 json1 = checkValue(checkBase + $"/Streams" + $"/Container1" + $"/Data/last");
                 var valueJ = JsonConvert.DeserializeObject<List<JObject>>(value);
                 var jsonJ = JsonConvert.DeserializeObject<JObject>(json1);
-                if (valueJ[0]["values"][0]["IntegerProperty"].ToString() != jsonJ["IntegerProperty"].ToString())
+                if (valueJ[0]["values"][0]["IntegerProperty"]?.ToString() != jsonJ["IntegerProperty"]?.ToString())
                     throw new Exception("Returned value is not expected.");
             }
             else
@@ -507,18 +507,24 @@ namespace OMF_API
         private static string Send(WebRequest request)
         {
             // ServicePointManager.SecurityProtocol = SecurityProtocolType.;s
-            var resp = request.GetResponse();
-            HttpWebResponse response = (HttpWebResponse)resp;
-            
-            var stream  = resp.GetResponseStream();
-            var code = (int)response.StatusCode;
+            using (var resp = request.GetResponse())
+            {
+                using (HttpWebResponse response = (HttpWebResponse)resp)
+                {
 
-            StreamReader reader = new StreamReader(stream);
-            // Read the content.  
-            string responseString = reader.ReadToEnd();
-            // Display the content.  
+                    var stream = resp.GetResponseStream();
+                    var code = (int)response.StatusCode;
 
-            return responseString;
+                    using (StreamReader reader = new StreamReader(stream))
+                    { 
+                        // Read the content.  
+                        string responseString = reader.ReadToEnd();
+                        // Display the content.  
+
+                        return responseString;
+                    }
+                }
+            }
         }
 
 
