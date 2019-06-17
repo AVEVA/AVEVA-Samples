@@ -717,6 +717,9 @@ namespace SdsRestApiCore
 
         private static void CheckIfResponseWasSuccessful(HttpResponseMessage response)
         {
+            //if support is needed please know the Operation-ID header information for support purposes (it is included in the exception below automatically too)
+            //string operationId = response.Headers.GetValues("Operation-Id").First();
+
             if (!response.IsSuccessStatusCode)
             {
                 throw new HttpRequestException(response.ToString());

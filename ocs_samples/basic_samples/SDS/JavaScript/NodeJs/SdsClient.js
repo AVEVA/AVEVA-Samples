@@ -7,6 +7,23 @@
 var sdsObjs = require("./SdsObjects.js");
 var restCall = require("request-promise");
 
+
+var logError = function (err) {    
+    success = false;
+    errorCap = err;
+    if  (typeof (err.statusCode) !== "undefined" && err.statusCode === 302) {
+        console.log("Sds Object already present in the Service\n");
+        console.trace();
+    }
+    else {
+        console.trace();
+        console.log(err.message)
+        console.log(err.stack)
+        throw err;
+    }
+    
+    console.log('Operation Id:' + err);
+};
 String.prototype.format = function (args) {
     var str = this;
     return str.replace(String.prototype.format.regex, function (item) {

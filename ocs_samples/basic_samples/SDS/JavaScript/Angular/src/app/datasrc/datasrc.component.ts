@@ -866,6 +866,6 @@ export class DatasrcComponent {
 
   unhealthyResponseMessage(err: HttpErrorResponse) {
     console.log(err);
-    return `${err.status} (${err.statusText}) [${err.error ? err.error.Reason: 'No error message'}]`;
+    return `${err.status} (${err.statusText}) [${err.error ? err.error.Reason: 'No error message'}] Op-Id:${err.headers.get('Operation-Id')}`;
   }
 }
