@@ -111,8 +111,8 @@ describe('workspace-project App', () => {
         });
         });
         });
+        });
         })
-
   });
 
     afterEach((done) => {
