@@ -19,6 +19,7 @@ var logError = function (err) {
         console.trace();
         console.log(err.message)
         console.log(err.stack)
+        console.log(err.options.headers['Operation-Id'])
         throw err;
     }
     

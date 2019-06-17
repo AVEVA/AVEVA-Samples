@@ -39,16 +39,13 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__typePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsType, {type_id}. {status}:{reason}".
-                          format(type_id=type_id, status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, f"Failed to get SdsType, {type_id}.")
         
         type = SdsType.fromJson(json.loads(response.content))
         response.close()
-        return type
+        return type 
 
     def getTypeReferenceCount(self, namespace_id, type_id):
         """
@@ -63,12 +60,10 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id) + "/ReferenceCount",
+            self.__typeRefCountPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsType reference count, {type_id}. {status}:{reason}".
-                          format(type_id=type_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get SdsType reference count, {type_id}.")
         
         counts = json.loads(response.content)
         response.close()
@@ -87,12 +82,10 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__url + self.__getTypesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count, query = query),
+            self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id),
+            params = {"skip":skip, "count":count, "query" : query},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get all SdsTypes. {status}:{reason}".
-                          format(status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, "Failed to get all SdsTypes.")
 
         types = json.loads(response.content) 
         results = []
@@ -114,15 +107,12 @@ class Types(object):
         if type is None or not isinstance(type, SdsType):
             raise TypeError
         response = requests.post(
-            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
+            self.__typePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
             data=type.toJson(), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to create type, {type_id}. {status}:{reason}".format(type_id=type.Id, status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, "Failed to create type, {type_id}.".format(type_id=type.Id))
         
-        type = SdsType.fromJson(json.loads(response.content.decode('utf-8')))
+        type = SdsType.fromJson(json.loads(response.text))
         response.close()
         return type
 
@@ -140,13 +130,10 @@ class Types(object):
             raise TypeError
 
         response = requests.delete(
-            self.__url + self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__typePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
 
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to delete SdsType, {type_id}. {status}:{reason}".
-                          format(type_id=type_id, status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, f"Failed to delete SdsType, {type_id}.")
 
         response.close()
 		
@@ -159,31 +146,7 @@ class Types(object):
         used to create needed URI for the other calls
         :return:
         """
-        self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
-        self.__typesPath = self.__basePath + "/Types/{type_id}"
-        self.__getTypesPath = self.__basePath + "/Types?skip={skip}&count={count}&query={query}"
-        self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
-        self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
-        self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
-        self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
-
-        self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
-        self.__getValueQuery = self.__dataPath + "?index={index}"
-        self.__getFirstValue = self.__dataPath + "/First?"
-        self.__getLastValue = self.__dataPath + "/Last?"
-        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"
-        self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
-
-        self.__insertValuesPath = self.__dataPath
-        self.__updateValuesPath = self.__dataPath
-        self.__replaceValuesPath = self.__dataPath + "?allowCreate=false"
-        self.__removeValue = self.__dataPath + "?index={index}"
-        self.__removeWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"	
-		
-        self.__dataviewsPath = self.__basePath + "/Dataviews"
-        self.__getDataviews= self.__dataviewsPath + "?skip={skip}&count={count}"
-        self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
-        self.__datagroupPath= self.__dataviewPath + "/Datagroups"
-        self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
-        self.__getDatagroups = self.__datagroupPath + "?skip={skip}&count={count}"
-        self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"
+        self.__basePath = self.__url + "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__typesPath = self.__basePath + "/Types"
+        self.__typePath = self.__typesPath + "/{type_id}"
+        self.__typeRefCountPath = self.__typePath + "/ReferenceCount"

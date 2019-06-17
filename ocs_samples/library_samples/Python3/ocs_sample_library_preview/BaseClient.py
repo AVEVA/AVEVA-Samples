@@ -115,3 +115,9 @@ class BaseClient(object):
         if (self.__acceptVerbosity):
             headers['Accept-Verbosity'] = "verbose"
         return headers
+
+    def checkResponse(self, response, main_message):
+        if response.status_code < 200 or response.status_code >= 300:
+            response.close()
+            message = main_message + "  {status}:{reason}.  URL {url}  OperationId {opId}".format(status=response.status_code, reason=response.text, url = response.url, opId=response.headers["Operation-Id"])
+            raise SdsError(message)
