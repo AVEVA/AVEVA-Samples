@@ -41,13 +41,11 @@ class Dataviews(object):
             raise TypeError		
 		
         response = requests.post(
-            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers= self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to create dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview.Id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to create dataview, {dataview_id}.".format(dataview_id=dataview.Id))  
 		
         dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
@@ -64,13 +62,11 @@ class Dataviews(object):
         if dataview is None or not isinstance(dataview, Dataview):
             raise TypeError
         response = requests.put(
-            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
+            self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview.Id),
             data=dataview.toJson(), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to update dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview.Id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to update dataview, {dataview_id}.".format(dataview_id=dataview.Id))  
         
         dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
@@ -89,12 +85,10 @@ class Dataviews(object):
             raise TypeError
 	
         response = requests.delete(
-            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError(
-                "Failed to delete dataview, {dataview_id}. {status}:{reason}".format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to delete dataview, {dataview_id}.")  
         
         response.close()
         return
@@ -113,12 +107,10 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri_API + self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            self.__dataviewPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get dataview, {dataview_id}. {status}:{reason}".
-                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+
+        self.__baseClient.checkResponse(response, f"Failed to get dataview, {dataview_id}.")  
 
         dataview = Dataview.fromJson(json.loads(response.content))
         response.close()
@@ -136,12 +128,11 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri_API + self.__getDataviews.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__dataviewsPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id),
+            params={"skip":skip, "count":count },
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get dataviews. {status}:{reason}".
-                          format( status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to get dataviews.")  
         
         dataviews = json.loads(response.content)
 
@@ -166,12 +157,11 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri_API + self.__getDatagroups.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, skip=skip, count=count),
+            self.__datagroupPath.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id),
+            params={"skip":skip, "count":count},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get datagroups for dataview, . {status}:{reason}".
-                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get datagroups for dataview, {dataview_id}.")  
         
         datagroups = json.loads(response.content)   
 
@@ -201,13 +191,10 @@ class Dataviews(object):
             raise TypeError
 
         response = requests.get(
-            self.__baseClient.uri_API + self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
+            self.__getDatagroup.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id, datagroup_id=datagroup_id),
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get datagroup for dataview, . {status}:{reason}".
-                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
-        
+            
+        self.__baseClient.checkResponse(response, f"Failed to get datagroup, {datagroup_id}, for dataview, {dataview_id}.")  
 
         datagroup = Datagroup.fromJson(json.loads(response.content))
         return datagroup
@@ -234,14 +221,12 @@ class Dataviews(object):
 
         params = {"startIndex": startIndex, "endIndex": endIndex, "interval": interval, "form": form, "count": count}
         response = requests.get(
-            self.__baseClient.uri_API + self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id), 
+            self.__getDataviewPreview.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id), 
             headers=self.__baseClient.sdsHeaders(),
             params=params
         )  
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get dataview preview for dataview {dataview_id}. {status}:{reason}".
-                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get dataview preview for dataview, {dataview_id}.")  
 
         if form is not None: 
             content = response.text
@@ -273,14 +258,12 @@ class Dataviews(object):
 
         params = { "count": count, "skip": skip, "form": form, "sessionId": sessionId }  
         response = requests.get(
-            self.__baseClient.uri_API + self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id), 
+            self.__getDataInterpolated.format(tenant_id=self.__baseClient.tenant, namespace_id=namespace_id, dataview_id=dataview_id), 
             headers=self.__baseClient.sdsHeaders(),
             params=params,
         )
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get dataview data interpolated for dataview {dataview_id}. {status}:{reason}".
-                          format(dataview_id=dataview_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get dataview data interpolated for dataview, {dataview_id}.")  
                           
         if form is not None:
             return response.text 
@@ -298,13 +281,11 @@ class Dataviews(object):
         Internal  Sets the needed URLS
         :return:
         """
-        self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__basePath = self.__baseClient.uri_API + "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
               
         self.__dataviewsPath = self.__basePath + "/Dataviews"
-        self.__getDataviews= self.__dataviewsPath + "?skip={skip}&count={count}"
         self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
         self.__datagroupPath= self.__dataviewPath + "/Datagroups"
         self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
-        self.__getDatagroups = self.__datagroupPath + "?skip={skip}&count={count}"
         self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"
         self.__getDataInterpolated= self.__dataviewPath + "/data/interpolated"

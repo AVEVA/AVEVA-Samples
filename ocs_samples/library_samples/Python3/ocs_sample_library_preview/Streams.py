@@ -45,13 +45,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+            self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
             streamView_id=streamView_id), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsStreamView, {streamView_id}. {status}:{reason}".
-                          format(streamView_id=streamView_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get SdsStreamView, {streamView_id}.")
 
         streamView = SdsStreamView.fromJson(json.loads(response.content))
         response.close()
@@ -70,14 +68,12 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id) + "/Map",
+            self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id) + "/Map",
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsStreamView, {streamView_id}. {status}:{reason}".
-                          format(streamView_id=streamView_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get SdsStreamViewMap, {streamView_id}.")
 
-        streamViewMap = SdsStreamViewMap.fromJson(json.loads(response.content.decode('utf-8')))
+        streamViewMap = SdsStreamViewMap.fromJson(json.loads(response.text))
         response.close()
         return streamViewMap
 
@@ -93,12 +89,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getStreamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, skip=skip, count=count),
+            self.__getStreamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id),
+            params={"skip":skip, "count":count},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get all SdsStreamViews. {status}:{reason}".
-                          format(status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, "Failed to get all SdsStreamViews.")
 
         content = json.loads(response.content)
         results = []
@@ -120,15 +114,13 @@ class Streams(object):
             raise TypeError
 
         response = requests.post(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
+            self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
             data=streamView.toJson(), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to create SdsStreamView, {streamView_id}. {status}:{reason}".
-                          format(streamView_id=streamView.Id, status=response.status_code, reason=response.text))
 
-        streamView = SdsStreamView.fromJson(json.loads(response.content.decode('utf-8')))
+        self.__baseClient.checkResponse(response, "Failed to create SdsStreamView, {streamView_id}.".format(streamView_id=streamView.Id))
+
+        streamView = SdsStreamView.fromJson(json.loads(response.text))
         response.close()
         return streamView
 
@@ -145,13 +137,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
+            self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView.Id),
             data=streamView.toJson(), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to create SdsStreamView, {streamView_id}. {status}:{reason}".
-                          format(streamView_id=streamView.Id, status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, "Failed to create SdsStreamView, {streamView_id}.".format(streamView_id=streamView.Id))
 
         response.close()
 
@@ -168,12 +157,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__uri_API + self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id), 
+            self.__streamViewsPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, streamView_id=streamView_id), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to delete SdsStreamView, {streamView_id}. {status}:{reason}".
-                          format(streamView_id=streamView_id, status=response.status_code, reason=response.text))
+
+        self.__baseClient.checkResponse(response, f"Failed to delete SdsStreamView, {streamView_id}.")
 
         response.close()
 
@@ -190,12 +177,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get SdsStream, {stream_id}.")
 
         stream = SdsStream.fromJson(json.loads(response.content))
         response.close()
@@ -214,12 +199,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id) + "/Type", 
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id) + "/Type", 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+
+        self.__baseClient.checkResponse(response, f"Failed to get SdsStream type,  {stream_id}.")
 
         type = SdsType.fromJson(json.loads(response.content))
         response.close()
@@ -240,12 +223,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getStreamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, query=query, skip=skip, count=count),
+            self.__getStreamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id),
+            params = {"query":query, "skip":skip, "count":count},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get all SdsStreams. {status}:{reason}".
-                          format(status=response.status_code, reason=response.text))
+
+        self.__baseClient.checkResponse(response, "Failed to get all SdsStreams.")
 
         content = json.loads(response.content)
         results: [SdsStream] = []
@@ -266,14 +248,11 @@ class Streams(object):
         if stream is None or not isinstance(stream, SdsStream):
             raise TypeError
         response = requests.post(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
             data=stream.toJson(), 
             headers=self.__baseClient.sdsHeaders())
 
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to create SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream.Id, status=response.status_code, reason=response.text))
+        self.__baseClient.checkResponse(response, "Failed to create SdsStream, {stream_id}.".format(stream_id=stream.Id))
 
         stream = SdsStream.fromJson(json.loads(response.content))
         response.close()
@@ -292,20 +271,18 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream.Id),
             data=stream.toJson(), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to create SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream.Id, status=response.status_code, reason=response.text))
-
+            
+        self.__baseClient.checkResponse(response, "Failed to create SdsStream, {stream_id}.".format(stream_id=stream.Id))
+        
         response.close()
         
 
     def updateStreamType(self, namespace_id, streamId, streamViewId):
         """
-        Tells Sds Service to create a stream based on the local 'stream' SdsStream object
+        Tells Sds Service to update a stream based on the local 'stream' SdsStream object
         :param namespace_id: namespace to work against
         :param stream_id: id of the stream to change the type of
         :param streamViewId: if of the streamview to change the type to
@@ -319,12 +296,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__uri_API + self.__updateStreamTypePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, streamId=streamId, streamViewId=streamViewId),
+            self.__updateStreamTypePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId),
+            params= {"streamViewId":streamViewId},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to update SdsStream type, {stream_id}. {status}:{reason}".
-                          format(stream_id=streamId, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to update SdsStream type, {stream_id}.".format(stream_id=streamId))
 
         response.close()
 
@@ -341,12 +317,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to delete SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to delete SdsStream, {stream_id}.")
 
         response.close()
 
@@ -362,13 +336,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
             data=json.dumps(tags), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to create tags for Stream: {stream_id}. {status}:{reason}".
-                          format(stream_id=streamId, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to create tags for Stream: {stream_id}.".format(stream_id=streamId))
 
     def createOrUpdateMetadata(self, namespace_id, streamId, metadata):
         """
@@ -382,13 +354,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.put(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata",
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata",
             data=json.dumps(metadata), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to create metadata for Stream: {stream_id}. {status}:{reason}".
-                          format(stream_id=streamId, status=response.status_code, reason=response.text))                          
+            
+        self.__baseClient.checkResponse(response, "Failed to create metadata for Stream: {stream_id}.".format(stream_id=streamId))                       
 
     def getTags(self, namespace_id, streamId):
         """
@@ -401,14 +371,12 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Tags",
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get tags for Stream: {stream_id}. {status}:{reason}".
-                          format(stream_id=streamId, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to get tags for Stream: {stream_id}.".format(stream_id=streamId))  
                 
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         return content
 
@@ -425,14 +393,12 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata/" + key,
+            self.__streamsPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=streamId) + "/Metadata/" + key,
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get metadata for Stream: {stream_id} and Key {key}. {status}:{reason}".
-                          format(stream_id=streamId, status=response.status_code, reason=response.text))        
+            
+        self.__baseClient.checkResponse(response, "Failed to get metadata for Stream: {stream_id}.".format(stream_id=streamId))        
 
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         return content
 
@@ -456,11 +422,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getValueQuery.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=index), 
+            self.__dataPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            params={"index":index},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get value for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get value for SdsStream: {stream_id}.")    
 
         content = json.loads(response.content)
         response.close()
@@ -483,12 +449,10 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getFirstValue.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__getFirstValue.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get first value for SdsStream {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get first value for SdsStream: {stream_id}.")    
 
         content = json.loads(response.content)
         response.close()
@@ -510,14 +474,12 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getLastValue.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__getLastValue.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
            headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get last value for SdsStream {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+           
+        self.__baseClient.checkResponse(response, f"Failed to get last value for SdsStream: {stream_id}.")    
 
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -544,15 +506,14 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getWindowValues.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end, filter= filter),
+            self.__dataPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id),
+            params={"startIndex":start, "endIndex":end, "filter": filter},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get window values for SdsStream {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to get window values for SdsStream: {stream_id}.")    
 
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -583,15 +544,14 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self._Streams__getWindowValuesform.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end, form=form),
+            self.__dataPath.format(tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                       stream_id=stream_id),
+            params={"startIndex":start, "endIndex":end, "form":form},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get window values for SdsStream {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
 
-        content = json.loads(response.content.decode('utf-8'))
+        self.__baseClient.checkResponse(response, f"Failed to get window values for SdsStream, form : {stream_id}.")    
+
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -635,17 +595,14 @@ class Streams(object):
             boundary = boundary_type.value
 
         response = requests.get(
-            self.__uri_API + self.__getRangeValuesQuery.format( tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                           stream_id=stream_id, start=start, skip=skip, count=count,
-                                                           reverse=reverse, boundary_type=boundary,
-                                                           streamView_id=streamView_id),
-           headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get range of values from SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            self.__transform.format( tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                           stream_id=stream_id),
+            params = {"startIndex":start, "skip":skip, "count":count, "reverse":reverse, "boundary_type":boundary, "streamView_id":streamView_id},
+           headers=self.__baseClient.sdsHeaders())           
 
-        content = json.loads(response.content.decode('utf-8'))
+        self.__baseClient.checkResponse(response, f"Failed to get range values for SdsStream: {stream_id}.")    
+
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -678,16 +635,14 @@ class Streams(object):
             raise TypeError
 
         response = requests.get(
-            self.__uri_API + self.__getRangeInterpolatedQuery.format( tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                           stream_id=stream_id, start=start, end=end, count=count),
-           headers=self.__baseClient.sdsHeaders())
+            self.__getRangeInterpolatedQuery.format( tenant_id=self.__tenant, namespace_id=namespace_id,
+                                                           stream_id=stream_id), 
+            params = {"startIndex":start, "endIndex":end, "count":count},
+            headers=self.__baseClient.sdsHeaders())
+           
+        self.__baseClient.checkResponse(response, f"Failed to get range values for SdsStream: {stream_id}.")    
 
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get range of values from SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
-
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -729,24 +684,19 @@ class Streams(object):
 
         # if stream_view_id is not set, do not specify /transform/ route and stream_view_id parameter
         if len(stream_view_id) == 0:
-            _path = self.__getSampledValues.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end, sample_by=sample_by,intervals=intervals)
+            _path = self.__getSampledValues.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id= stream_id)
                                                     
         else:
-            _path = self.__getSampledValuesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end, sample_by=sample_by,intervals=intervals, 
-                                                       filter= filter, stream_view_id=stream_view_id)
+            _path = self.__getSampledValuesT.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id= stream_id)
 
         response = requests.get(
-                self.__uri_API + _path,
+                _path,
+                params={"startIndex":start, "endIndex":end, "sampleBy":sample_by,"intervals":intervals, "filter": filter, "stream_view_id":stream_view_id},
                 headers=self.__baseClient.sdsHeaders()) 
-
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get sampled values for SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+                
+        self.__baseClient.checkResponse(response, f"Failed to get sampled values for SdsStream: {stream_id}.")    
         
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
 
         if value_class is None:
@@ -784,22 +734,18 @@ class Streams(object):
 
         # if stream_view_id is not set, do not specify /transform/ route and stream_view_id parameter
         if len(stream_view_id) == 0:
-            _path = self.__getSummaries.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_id=stream_id, start=start, end=end, count=count,filter= filter)
+            _path = self.__getSummaries.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id = stream_id)
         else:
-            _path = self.__getSummariesT.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                        stream_id=stream_id, start=start, end=end, count=count,filter= filter,stream_view_id=stream_view_id)
+            _path = self.__getSummariesT.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id = stream_id)
 
         response = requests.get(
-                self.__uri_API + _path,
+                _path,
+                params={"startIndex":start, "endIndex":end, "count":count,"filter":filter,"streamViewId":stream_view_id},
                 headers=self.__baseClient.sdsHeaders())          
+                
+        self.__baseClient.checkResponse(response, f"Failed to get summaries for SdsStream: {stream_id}.")  
 
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get summaries for SdsStream {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
-
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -834,12 +780,11 @@ class Streams(object):
             payload = values
 
         response = requests.post(
-            self.__uri_API + self.__insertValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__insertValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             data=payload, 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            raise SdsError("Failed to insert multiple values for SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to insert multiple values for SdsStream: {stream_id}.")  
 
     def updateValues(self, namespace_id, stream_id, values):
         """
@@ -864,12 +809,11 @@ class Streams(object):
         else:
             payload = values
 
-        response = requests.put(self.__uri_API + self.__updateValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+        response = requests.put(self.__updateValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
                                 data=payload, 
                                 headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to update all values for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
+                                
+        self.__baseClient.checkResponse(response,  f"Failed to update all values for SdsStream: {stream_id}.")  
 
         response.close()
 
@@ -897,13 +841,11 @@ class Streams(object):
             payload = values
 
         response = requests.put(
-            self.__uri_API + self.__replaceValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
+            self.__replaceValuesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id), 
             data=payload, 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to replace value for SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to replace values for SdsStream: {stream_id}.")  
 
         response.close()
 
@@ -923,12 +865,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__uri_API + self.__removeValue.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, index=key), 
+            self.__dataPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id),
+            params={"index":key},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to remove value for SdsStream, {stream_id}. {status}:{reason}".
-                          format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to remove value for SdsStream: {stream_id}.")  
 
         response.close()
 
@@ -951,11 +892,11 @@ class Streams(object):
             raise TypeError
 
         response = requests.delete(
-            self.__uri_API + self.__removeWindowValues.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id, start=start, end=end), 
+            self.__dataPath.format(tenant_id=self.__tenant, namespace_id=namespace_id, stream_id=stream_id),
+            params = {"startIndex":start, "endIndex":end}, 
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to remove all values for SdsStream, {stream_id}. {status}:{reason}".format(stream_id=stream_id, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, f"Failed to remove all values for SdsStream: {stream_id}.")  
 
         response.close()
 
@@ -984,15 +925,13 @@ class Streams(object):
             raise TypeError
             
         response = requests.get(
-            self.__uri_API + self.__bulkStreams.format(tenant_id=self.__tenant, namespace_id=namespace_id,
-                                                       stream_ids=','.join(stream_ids), start=start, end=end, join= joinMode),
+            self.__bulkStreams.format(tenant_id=self.__tenant, namespace_id=namespace_id),
+            params={"streams":','.join(stream_ids), "startIndex":start, "endIndex":end, "joinMode": joinMode},
             headers=self.__baseClient.sdsHeaders())
-        if response.status_code < 200 or response.status_code >= 300:
-            response.close()
-            raise SdsError("Failed to get bulk values for SdsStreams {stream_ids}. {status}:{reason}".
-                          format(stream_ids=stream_ids, status=response.status_code, reason=response.text))
+            
+        self.__baseClient.checkResponse(response, "Failed to get bulk values for SdsStream: {stream_id}.".format(stream_id=stream_ids))  
 
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.text)
         response.close()
         if value_class is None:
             return content
@@ -1015,32 +954,27 @@ class Streams(object):
         creates the urls that are used
         :return:
         """
-        self.__basePath = "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
-        self.__streamViewsPath = self.__basePath + "/StreamViews/{streamView_id}"
-        self.__getStreamViewsPath = self.__basePath + "/StreamViews?skip={skip}&count={count}"
-        self.__streamsPath = self.__basePath + "/Streams/{stream_id}"
-        self.__getStreamsPath = self.__basePath + "/Streams?query={query}&skip={skip}&count={count}"
-        self.__updateStreamTypePath = self.__basePath + "/Streams/{streamId}/Type?streamViewId={streamViewId}";
+        self.__basePath = self.__uri_API + "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__getStreamViewsPath = self.__basePath + "/StreamViews"
+        self.__streamViewsPath = self.__getStreamViewsPath + "/{streamView_id}"
+        self.__getStreamsPath = self.__basePath + "/Streams"
+        self.__streamsPath = self.__getStreamsPath + "/{stream_id}"
+        self.__updateStreamTypePath = self.__streamsPath + "/Type"
 
-        self.__dataPath = self.__basePath + "/Streams/{stream_id}/Data"
-        self.__getValueQuery = self.__dataPath + "?index={index}"
-        self.__getFirstValue = self.__dataPath + "/First?"
-        self.__getLastValue = self.__dataPath + "/Last?"
-        self.__getWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}&filter={filter}"
-        self.__getWindowValuesform = self.__dataPath + "?startIndex={start}&endIndex={end}&form={form}"
-        self.__getRangeValuesQuery = self.__dataPath + "/Transform?startIndex={start}&skip={skip}&count={count}&reversed={reverse}&boundaryType={boundary_type}&streamViewId={streamView_id}"
-        self.__getSummaries = self.__dataPath + "/Summaries?startIndex={start}&endIndex={end}&Count={count}&filter={filter}"
-        self.__getSummariesT = self.__dataPath + "/Transform/Summaries?startIndex={start}&endIndex={end}&Count={count}&streamViewId={stream_view_id}&filter={filter}"
-        self.__getSampledValues = self.__dataPath + "/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}"
-        self.__getSampledValuesT = self.__dataPath + "/Transform/Sampled?startIndex={start}&endIndex={end}&sampleBy={sample_by}&intervals={intervals}}&streamViewId={stream_view_id}"
-        self.__getRangeInterpolatedQuery = self.__dataPath + "/Transform/Interpolated?startIndex={start}&endindex={end}&count={count}"
+        self.__dataPath = self.__streamsPath + "/Data"
+        self.__getFirstValue = self.__dataPath + "/First"
+        self.__getLastValue = self.__dataPath + "/Last"
+        self.__transform = self.__dataPath + "/Transform"
+        self.__getSummaries = self.__dataPath + "/Summaries"
+        self.__getSummariesT = self.__transform + "/Summaries"
+        self.__getSampledValues = self.__dataPath + "/Sampled"
+        self.__getSampledValuesT = self.__transform + "/Sampled"
+        self.__getRangeInterpolatedQuery = self.__transform + "/Interpolated"
 
 
         self.__insertValuesPath = self.__dataPath
         self.__updateValuesPath = self.__dataPath
         self.__replaceValuesPath = self.__dataPath + "?allowCreate=false"
-        self.__removeValue = self.__dataPath + "?index={index}"
-        self.__removeWindowValues = self.__dataPath + "?startIndex={start}&endIndex={end}"	
 		
-        self.__bulkStreams = self.__basePath + "/Bulk/Streams/Data/Joins?streams={stream_ids}&joinMode={join}&startIndex={start}&endIndex={end}"
+        self.__bulkStreams = self.__basePath + "/Bulk/Streams/Data/Joins"
 

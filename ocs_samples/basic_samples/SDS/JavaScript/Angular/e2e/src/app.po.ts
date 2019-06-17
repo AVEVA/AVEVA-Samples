@@ -149,7 +149,7 @@ export class AppPage {
     }
 
     deleteRest(): any {
-        return this.helper('cleanup', 'All Objects Deleted');
+        return this.helper('cleanup', '');
     }
 
 

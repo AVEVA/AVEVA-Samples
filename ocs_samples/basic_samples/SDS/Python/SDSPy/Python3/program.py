@@ -449,7 +449,7 @@ def main():
         # Step 10
         # Filtering from all values
         print("Getting filtered events")
-        filteredEvents = ocsClient.Streams.getWindowValues(namespaceId, sampleStreamId, WaveData, 0, 50, "Radians%20lt%203") 
+        filteredEvents = ocsClient.Streams.getWindowValues(namespaceId, sampleStreamId, WaveData, 0, 50, 'Radians lt 3') 
         print ("Total events found: " + str(len(filteredEvents)))
         for wave in filteredEvents:
             print(toString(wave))
@@ -741,7 +741,7 @@ def main():
         print()
 
     finally:
-
+        
         # Step 21
 
         ######################################################################################################
