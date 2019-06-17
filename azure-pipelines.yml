@@ -30,15 +30,9 @@ jobs:
         #flattenFolders: false # Optional
       displayName: copy file
 
-
-    - script: |
-        dir
-        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/'
-      displayName: 'rename config file'
-
     - script: |
         mv prod_config.ini config.ini
-        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/'
+      workingDirectory: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/'
       displayName: 'rename config file'
       
 
