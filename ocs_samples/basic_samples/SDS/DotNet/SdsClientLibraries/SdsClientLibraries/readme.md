@@ -11,6 +11,8 @@ from https://api.nuget.org/v3/index.json. The libraries offer a framework of cla
 [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
 
+Developed against DotNet 2.2.300.
+
 Getting Starting
 ----------------------------
 
@@ -414,6 +416,8 @@ await metadataService.DeleteTypeAsync(typeId);
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
 -----------
+
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />

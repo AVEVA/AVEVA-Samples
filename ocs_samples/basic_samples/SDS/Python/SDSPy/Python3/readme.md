@@ -12,6 +12,9 @@ and how to create, read, update, and delete values in SDS.
 The sections that follow provide a brief description of the process from
 beginning to end.    
 	
+
+Developed against Python 3.7.2.
+
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
@@ -586,6 +589,8 @@ deletion will fail if any streams still reference them.*
  [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
  ----------
+
+ Automated test uses Python 3.6.8 x64
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />

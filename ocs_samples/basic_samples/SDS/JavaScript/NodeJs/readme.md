@@ -21,6 +21,8 @@ Prerequisites
 Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
 ```
 
+Developed against Node 10.14.1.
+
 Sample Setup
 ------------
 
@@ -681,6 +683,8 @@ restCall({
 --------
 
 
+
+ Automated test uses Node 8.16.0 x64
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />

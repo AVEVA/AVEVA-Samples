@@ -9,6 +9,8 @@ summaries value call, and how to do bulk streams calls.
 The sections that follow provide a brief description of the process from
 beginning to end.    
 	
+Developed against Python 3.7.2.
+
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
@@ -58,6 +60,7 @@ ClientSecret = REPLACE_WITH_APPLICATION_SECRET
 
  ----------
 
+ Automated test uses Python 3.6.8 x64
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />

@@ -1,5 +1,7 @@
 # Setup
 
+Developed against DotNet 2.2.105.
+
 1. Replace the placeholders in the [config](./wwwroot/config.js) file with your Tenant Id and Client Id.
 2. Ensure that the client contains `http://localhost:5003/callback.html` in the list of RedirectUris
 
@@ -45,6 +47,10 @@ To test update the appsettings.json to appropriate url for the app, username and
 
 
 To test locally please either set the environmental variable ChromeWebDriver appropriately or update that line of code to use what the location of your Chrome Drive as appropriate in your case (it might be Environment.CurrentDirectory).  
+
+
+Tested against DotNet 2.2.105.
+
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />
