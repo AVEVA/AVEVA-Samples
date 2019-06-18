@@ -57,7 +57,7 @@ Also edit the following values in the src/app/config/sdsconfig.json:
     "serviceBaseUri": "https://dat-b.osisoft.com",
     "tenantId": "REPLACE_WITH_TENANT_ID",
     "namespaceId": "REPLACE_WITH_NAMESPACE_ID",
-    "apiVersion": "v1-preview"
+    "apiVersion": "v1"
 }
 ```
 

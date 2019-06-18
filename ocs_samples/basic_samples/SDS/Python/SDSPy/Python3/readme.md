@@ -108,7 +108,7 @@ Namespace = REPLACE_WITH_NAMESPACE_ID
 [Access]
 Resource = https://dat-b.osisoft.com
 Tenant = REPLACE_WITH_TENANT_ID
-ApiVersion = v1-preview
+ApiVersion = v1
 
 [Credentials]
 ClientId = REPLACE_WITH_APPLICATION_IDENTIFIER

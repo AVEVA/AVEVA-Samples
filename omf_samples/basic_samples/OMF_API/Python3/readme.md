@@ -44,7 +44,7 @@ Namespace = Samples
 [Access]
 Resource = https://dat-b.osisoft.com
 Tenant = REPLACE_WITH_TENANT_ID
-ApiVersion = v1-preview
+ApiVersion = v1
 
 [Credentials]
 ProducerToken = REPLACE_WITH_TOKEN_STRING
