@@ -18,7 +18,7 @@ namespace SdsClientLibraries
         public static void Main() => MainAsync().GetAwaiter().GetResult();
 
         public static async Task<bool> MainAsync(bool test = false)
-        {
+        {            
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -54,7 +54,6 @@ namespace SdsClientLibraries
             var dataService = sdsService.GetDataService(tenantId, namespaceId);
             var tableService = sdsService.GetTableService(tenantId, namespaceId);
 
-            // LoggerCallbackHandler.UseDefaultLogging = false;
 
             Console.WriteLine(@"-------------------------------------------------------------");
             Console.WriteLine(@"  _________    .___           _______  ______________________");

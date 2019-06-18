@@ -27,6 +27,8 @@ public class SdsError extends Exception {
     }
 
     /**
+     * if support is needed please know the Operation-ID header information for (it is included in the exception below automatically too)
+     * 
      * Use this to capture an OCS action error
      * @param urlConnection the failed action
      * @param msg message to help illuminate the issue
