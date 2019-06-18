@@ -15,6 +15,8 @@ must first download and install the Apache Maven software. See
 for more information. All of the necessary dependencies are specified within 
 the pom.xml file.
 
+Developed against Maven 3.6.1 and Java 1.8.0_181.
+
 Summary of steps to run the Java demo
 --------------------------------------
 Using VSCode, Eclipse or any IDE:
@@ -513,6 +515,7 @@ ocsClient.Types.deleteType(tenantId, namespaceId, sampleTypeId);
 
 --------------
 
+Tested against Maven 3.6.1 and Java 1.8.0_212.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />

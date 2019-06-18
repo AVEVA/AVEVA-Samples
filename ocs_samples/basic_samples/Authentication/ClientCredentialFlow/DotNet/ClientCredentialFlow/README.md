@@ -1,5 +1,7 @@
 # Setup
 
+Developed against DotNet 2.2.105.
+
 Replace the placeholders in the [apsettings](./apsettings.json) file with your Tenant Id, Client Id and Client Secret, and the current Api Version. There is no need to replace the Namespace Id for this sample.
 
 ## Running the sample
@@ -30,6 +32,7 @@ dotnet run
 
 -----------
 
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />

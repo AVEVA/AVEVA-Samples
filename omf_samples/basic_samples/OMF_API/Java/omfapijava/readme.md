@@ -5,6 +5,7 @@ The sample code in this topic demonstrates how to send OMF messages
 using Java.
 
 
+Developed against Maven 3.6.1 and Java 1.8.0_181.
 
 
 Summary of steps to run the Java demo
@@ -102,12 +103,14 @@ If your client computer Java does not trust the PI Web API certificate you will 
 javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
 ```
 
+
 ----------
 
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
 ---------
 
+Tested against Maven 3.6.1 and Java 1.8.0_212.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OMF page [ReadMe](../../../../)<br />

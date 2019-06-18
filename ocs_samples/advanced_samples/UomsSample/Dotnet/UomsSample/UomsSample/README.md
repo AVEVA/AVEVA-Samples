@@ -1,5 +1,7 @@
 # Setup
 
+Developed against DotNet 2.2.105.
+
 Replace the placeholders in the [apsettings](./apsettings.json) file with your TenantID, NamespaceId, ClientID and ClientSecret.
 
 ## Running the sample
@@ -30,6 +32,8 @@ dotnet run
 
 -----------
 
+
+Tested against DotNet 2.2.105.
 
 For the main OCS page [ReadMe](../../../../../)<br />
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

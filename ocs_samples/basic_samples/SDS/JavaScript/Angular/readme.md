@@ -24,6 +24,7 @@ You must have the following software installed on your computer:
 ```
 Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
 ```
+Developed against Node 10.14.1
 
 Preparation
 -----------
@@ -578,8 +579,9 @@ Test
 ------------------
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSangJS)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
-Note this samaple  only fails in automation due to login issues.  Testing manually, locally it is ok... 
+Note this samaple  sometimes fails in automation due to automation issues.  Testing manually, locally it is normally ok... 
 
+ Automated test uses Node10.16.0 x64
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />
