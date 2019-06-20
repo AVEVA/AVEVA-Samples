@@ -8,7 +8,7 @@ The sample described in this section makes use of the OSIsoft Ingress Client Lib
 it is recommended that you use these libraries. The libraries are available as NuGet packages. The packages used are:
 
 * OSIsoft.Omf
-* OSIsoft.OmfIngress.Contracts
+* OSIsoft.OmfIngress
 * OSIsoft.Identity.AuthenticationHandler
 
 The libraries offer a framework of classes that make client development easier.
@@ -49,18 +49,18 @@ Set up IngressService
 
 The example works through one interface: 
 
-* IIngressService for for configuring OMF Connections and sending OMF Messages
+* IOmfIngress for for configuring OMF Connections and sending OMF Messages
 
 The following code block illustrates how to configure the IngressService to use throughout the sample:
 
 ```
     AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientSecret);
 
-    IngressService baseIngressService = new IngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
-    IIngressService ingressService = baseIngressService.GetIngressService(tenantId, namespaceId);
+    OmfIngressService baseOmfIngressService = new OmfIngressService(new Uri(address), null, HttpCompressionMethod.None, authenticationHandler);
+    IOmfIngressService omfIngressService = baseOmfIngressService.GetOmfIngressService(tenantId, namespaceId);
 ```
 
-Note that the instance of the IIngressService is scoped to a tenant and namespace. If you wish to work in a different tenant or namespace, you would need another instance scoped to that tenant and namespace.
+Note that the instance of the IOmfIngressService is scoped to a tenant and namespace. If you wish to work in a different tenant or namespace, you would need another instance scoped to that tenant and namespace.
 
 OMF Connections
 -------------------------
@@ -86,8 +86,6 @@ a new Topic object:
 ```
     Topic topic = new Topic()
     {
-        TenantId = tenantId,
-        NamespaceId = namespaceId,
         Name = "REPLACE_WITH_TOPIC_NAME",
         Description = "This is a sample Topic",
         ClientIds = new List<string>() { mappedClientId }
@@ -115,8 +113,8 @@ First, we create the Subscription locally by instantiating a new Subscription ob
         Description = "This is a sample OCS Data Store Subscription",
         Type = SubscriptionType.Sds,
         TopicId = createdTopic.Id,
-        TopicTenantId = createdTopic.TenantId,
-        TopicNamespaceId = createdTopic.NamespaceId
+        TopicTenantId = "REPLACE_WITH_TOPIC_TENANT_ID",
+        TopicNamespaceId = "REPLACE_WITH_TOPIC_NAMESPACE_ID"
     };
 ```
 
