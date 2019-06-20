@@ -16,7 +16,7 @@ The libraries offer a framework of classes that make client development easier.
 Configure constants for connecting and authentication
 -----------------------------------------------------
 
-The Ingress Service is secured by obtaining tokens from the Identity Server. Such clients 
+The OMF Ingress Service is secured by obtaining tokens from the Identity Server. Such clients 
 provide a client application identifier and an associated secret (or key) that are 
 authenticated against the server. The sample includes an appsettings.json configuration 
 file to hold configuration strings, including the authentication strings. You must 
@@ -44,14 +44,14 @@ Other Configuration
 
 The aforementioned appsettings.json file has placeholders for the names of the connection, as well as a client Id to map a device to the topic. You must fill in those values as well.
 
-Set up IngressService
+Set up OmfIngressService
 ----------------------
 
 The example works through one interface: 
 
-* IOmfIngress for for configuring OMF Connections and sending OMF Messages
+* IOmfIngressService for for configuring OMF Connections and sending OMF Messages
 
-The following code block illustrates how to configure the IngressService to use throughout the sample:
+The following code block illustrates how to configure the OmfIngressService to use throughout the sample:
 
 ```
     AuthenticationHandler authenticationHandler = new AuthenticationHandler(address, clientId, clientSecret);
@@ -95,7 +95,7 @@ a new Topic object:
 Then use the Ingress client to create the Topic in OCS:
 
 ```
-    Topic createdTopic = await ingressService.CreateOrUpdateTopicAsync(topic);
+    Topic createdTopic = await omfIngressService.CreateOrUpdateTopicAsync(topic);
 ```
 
 Subscriptions
@@ -121,7 +121,7 @@ First, we create the Subscription locally by instantiating a new Subscription ob
 Then use the Ingress client to create the Subscription in OCS:
 
 ```
-    Subscription createdSubscription = await ingressService.CreateOrUpdateSubscriptionAsync(subscription);
+    Subscription createdSubscription = await omfIngressService.CreateOrUpdateSubscriptionAsync(subscription);
 ```	
 
 Send OMF Messages
@@ -145,7 +145,7 @@ to the Topic that the clientId is mapped to. Note that the message must be seria
 
 ```
     var serializedMessage = OmfMessageSerializer.Serialize(omfMessage);
-    await deviceIngressService.SendOMFMessageAsync(serializedMessage);
+    await deviceOmfIngressService.SendOMFMessageAsync(serializedMessage);
 ```
 
 Cleanup: Deleting Topics and Subscriptions
@@ -168,6 +168,6 @@ Then serialize the message and send as shown in the prior section.
 Deleting Subscriptions and Topics can be achieved using the Ingress client and passing the corresponding object Ids:
 
 ```
-    await ingressService.DeleteSubscriptionAsync(createdSubscription.Id);
-    await ingressService.DeleteTopicAsync(createdTopic.Id);
+    await omfIngressService.DeleteSubscriptionAsync(createdSubscription.Id);
+    await omfIngressService.DeleteTopicAsync(createdTopic.Id);
 ```
