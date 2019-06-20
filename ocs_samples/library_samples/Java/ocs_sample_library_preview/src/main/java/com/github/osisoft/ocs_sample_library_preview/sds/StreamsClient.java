@@ -53,15 +53,6 @@ public class StreamsClient {
     private String removeMultipleQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
     private String getSampledValuesQuery = dataBase + "/Sampled?startIndex={startIndex}&endIndex={endIndex}&intervals={intervals}&sampleBy={sampleBy}";
 
-    //dataview path
-    private String dataviewBase = requestBase + "/Dataviews";
-    //private String getDataviews = dataviewBase + "?skip={skip}&count={count}";
-    private String dataviewPath = dataviewBase + "/{dataview_id}";
-    //private String getDataviewPreview = dataviewPath + "/preview/interpolated";
-
-    private String datagroupPath = dataviewPath + "/Datagroups";
-    //private String getDatagroup  = datagroupPath + "/{datagroup_id}";
-    //private String getDatagroups  = datagroupPath + "?skip={skip}&count={count}";
 
 
     /**

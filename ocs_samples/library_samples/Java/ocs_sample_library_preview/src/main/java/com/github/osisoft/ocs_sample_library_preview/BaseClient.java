@@ -102,11 +102,11 @@ public class BaseClient {
                 //Do nothing
             }
         } catch (SocketTimeoutException e) {
-            e.getMessage();
+            e.printStackTrace();
         } catch (ProtocolException e) {
-            e.getMessage();
+            e.printStackTrace();
         } catch (IllegalStateException e) {
-            e.getMessage();
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,10 +162,11 @@ public class BaseClient {
             cachedAccessToken = response.get("access_token").getAsString();
             Integer timeOut = response.get("expires_in").getAsInt();
             accessTokenExpiration = new Date(System.currentTimeMillis() + timeOut * 1000);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            // Do nothing
-        } 
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return cachedAccessToken;
     }
@@ -176,10 +177,7 @@ public class BaseClient {
      * @return the value retreived
      */
     private String getConfiguration(String propertyId) {
-        String property = "";
-        Properties props = new Properties();
-        InputStream inputStream;
-
+        
          if(propertyId.equals("clientId") && !gclientId.isEmpty()){
             return gclientId;
         }
@@ -192,8 +190,10 @@ public class BaseClient {
             return gresource;
         }
 
-        try {
-            inputStream = new FileInputStream("config.properties");
+        String property = "";
+        try(InputStream inputStream = new FileInputStream("config.properties")) {
+            Properties props = new Properties();
+
             props.load(inputStream);
             property = props.getProperty(propertyId);
             inputStream.close();

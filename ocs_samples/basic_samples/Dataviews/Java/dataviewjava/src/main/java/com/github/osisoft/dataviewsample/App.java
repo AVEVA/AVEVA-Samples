@@ -114,6 +114,10 @@ public class App {
             System.out.println();
             System.out.println("Getting dataviews");
             ArrayList<Dataview> dataviews = ocsClient.Dataviews.getDataviews(tenantId, namespaceId);
+            if(dataviews ==null)
+            {
+                throw new SdsError("Dataviews return failed");
+            }
             for (Dataview dv : dataviews) {
                 System.out.println(ocsClient.mGson.toJson(dv));
             }
@@ -235,8 +239,8 @@ public class App {
             SdsStream temperatureStream = new SdsStream(sampleTemperatureStreamId, sampleTemperatureTypeId, "", sampleTemperatureStreamName);
             
             System.out.println("Creating SDS Streams");
-            String jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, pressureStream);
-            jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, temperatureStream);
+            ocsClient.Streams.createStream(tenantId, namespaceId, pressureStream);
+            ocsClient.Streams.createStream(tenantId, namespaceId, temperatureStream);
 
             Instant start = Instant.now().minus(Duration.ofHours(1));
 
@@ -284,10 +288,9 @@ public class App {
         
         String property = "";
         Properties props = new Properties();
-        InputStream inputStream;
+        
 
-        try {
-            inputStream = new FileInputStream("config.properties"); 
+        try(InputStream inputStream = new FileInputStream("config.properties")) {
             //if launching from git folder use this:
             // "\\basic_samples\\Dataviews\\JAVA\\config.properties");
             props.load(inputStream);

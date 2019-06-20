@@ -488,8 +488,7 @@ public class Program {
             System.out.println("Creating an SdsStream off of type with compound index");
             SdsStream streamCompound = new SdsStream (streamIdCompound,  typeCompound.getId(),  "This is a sample SdsStream for storing WaveData type measurements");
      
-            secondaryS = ocsClient.Streams.createStream(tenantId, namespaceId, streamCompound);
-            streamCompound = ocsClient.mGson.fromJson(secondaryS, SdsStream.class);
+            ocsClient.Streams.createStream(tenantId, namespaceId, streamCompound);
 
             
             // Step 20
@@ -801,15 +800,11 @@ public class Program {
     private static String getConfiguration(String propertyId) {
         String property = "";
         Properties props = new Properties();
-        InputStream inputStream;
+        System.out.println(new File(".").getAbsolutePath());
 
-        try {
-            //
-            System.out.println(new File(".").getAbsolutePath());
-            inputStream = new FileInputStream("config.properties");
+        try(InputStream inputStream = new FileInputStream("config.properties")) {
             props.load(inputStream);
             property = props.getProperty(propertyId);
-            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
