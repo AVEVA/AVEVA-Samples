@@ -16,9 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
-import  com.github.osisoft.ocs_sample_library_preview.*;
+import com.github.osisoft.ocs_sample_library_preview.*;
 import  com.github.osisoft.ocs_sample_library_preview.sds.*;
 
 public class Program {
@@ -38,13 +36,13 @@ public class Program {
     static String streamIdCompound = "SampleStream_Compound";
     static String compoundTypeId = "SampleType_Compound";
     
+    static Boolean success = true;
     
     public static void main(String[] args) throws InterruptedException {    	
         toRun();
     }
 
     public static boolean toRun() {
-        Boolean success = true;
         // Create Sds client to communicate with server
         System.out.println("---------------------------------------------------");
         System.out.println("  _________    .___          ____.                    ");
@@ -295,8 +293,8 @@ public class Program {
             manualStreamView.setSourceTypeId(sampleTypeId);
             manualStreamView.setTargetTypeId(integerTargetTypeId);
             manualStreamView.setProperties(props);
-            String jsonManualStreamView = ocsClient.Streams.createStreamView(tenantId, namespaceId, manualStreamView);
-            manualStreamView = ocsClient.mGson.fromJson(jsonManualStreamView, SdsStreamView.class);
+            ocsClient.Streams.createStreamView(tenantId, namespaceId, manualStreamView);
+          
 
             // range values with automatically mapped SdsStreamView
             System.out.println(
@@ -358,7 +356,7 @@ public class Program {
             String firstValUpdated = ocsClient.Streams.getFirstValue(tenantId, namespaceId, sampleStreamId);
 
             System.out.println("The new type id" + newStream.getTypeId() + " compared to the original one " + sampleStream.getTypeId());
-            System.out.println("The new type value " + firstVal + " compared to the original one " + newStreamString);
+            System.out.println("The new type value " + firstValUpdated + " compared to the original one " + firstVal);
             System.out.println();
             
             // Step 15 
@@ -497,7 +495,6 @@ public class Program {
             // Step 20
 
             System.out.println("Inserting data");
-            String dataIn = ocsClient.mGson.toJson(WaveDataCompound.next(1, 10));
             ocsClient.Streams.insertValues(tenantId, namespaceId, streamIdCompound, ocsClient.mGson.toJson(new WaveDataCompound[]{WaveDataCompound.next(1, 10)}));
             ocsClient.Streams.insertValues(tenantId, namespaceId, streamIdCompound, ocsClient.mGson.toJson(new WaveDataCompound[]{WaveDataCompound.next(2, 2)}));
             ocsClient.Streams.insertValues(tenantId, namespaceId, streamIdCompound, ocsClient.mGson.toJson(new WaveDataCompound[]{WaveDataCompound.next(3, 1)}));
@@ -516,8 +513,9 @@ public class Program {
             System.out.println("Window Data:");
             System.out.println(windowVal);
 
-        } catch (Exception e) {
-            success = false;
+        } catch (SdsError e) {
+            handleException(e);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -526,8 +524,9 @@ public class Program {
                 System.out.println("Cleaning up");
                 cleanUp(ocsClient);
                 System.out.println("done");
-            } catch (Exception e) {
+            } catch (SdsError e) {
                 printError("Error deleting the Sds Objects", e);
+                handleException(e);
             }
         }
         return success;
@@ -805,41 +804,49 @@ public class Program {
         InputStream inputStream;
 
         try {
+            //
             System.out.println(new File(".").getAbsolutePath());
             inputStream = new FileInputStream("config.properties");
             props.load(inputStream);
             property = props.getProperty(propertyId);
+            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         
         return property;
     }
+    public static void handleException(SdsError e) 
+	{
+        success = false;
+        e.printStackTrace();
+    }
+
 	
     public static void cleanUp(OCSClient ocsClient) throws SdsError 
 	{
         System.out.println("Deleting the stream");
         try{ocsClient.Streams.deleteStream(tenantId, namespaceId, sampleStreamId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
         try{ocsClient.Streams.deleteStream(tenantId, namespaceId, streamIdSecondary);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
         try{ocsClient.Streams.deleteStream(tenantId, namespaceId, streamIdCompound);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
 
         System.out.println("Deleting the streamViews");
         try{ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleStreamViewId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
         try{ocsClient.Streams.deleteStreamView(tenantId, namespaceId, sampleManualStreamViewId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
 
         System.out.println("Deleting the types");
         try{ocsClient.Types.deleteType(tenantId, namespaceId, sampleTypeId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
         try{ocsClient.Types.deleteType(tenantId, namespaceId, targetTypeId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
         try{ocsClient.Types.deleteType(tenantId, namespaceId, integerTargetTypeId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
         try{ocsClient.Types.deleteType(tenantId, namespaceId, compoundTypeId);}
-        catch(Exception e){}
+        catch(SdsError e){handleException(e);}
 	}
 }

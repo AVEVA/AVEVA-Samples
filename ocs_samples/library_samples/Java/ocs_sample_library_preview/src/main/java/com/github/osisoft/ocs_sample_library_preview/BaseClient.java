@@ -38,7 +38,6 @@ public class BaseClient {
     private Date accessTokenExpiration = new Date(Long.MIN_VALUE);
     private long FIVE_SECONDS_IN_MILLISECONDS = 5000;
 
-    private String requestBase = "api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}";
 
     //config parameters
     private String gclientId = "";
@@ -197,6 +196,7 @@ public class BaseClient {
             inputStream = new FileInputStream("config.properties");
             props.load(inputStream);
             property = props.getProperty(propertyId);
+            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
