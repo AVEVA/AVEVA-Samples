@@ -98,7 +98,7 @@ public class StreamsClient {
                 throw new SdsError(urlConnection, "create streamView request failed");
             }
 
-            BufferedReader in = new BufferedReader(
+            BufferedReader in = new BufferedReader( 
                     new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {

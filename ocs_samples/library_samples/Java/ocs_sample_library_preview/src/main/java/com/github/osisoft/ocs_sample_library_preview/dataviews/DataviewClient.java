@@ -2,13 +2,14 @@
  * 
  */
 
-package  com.github.osisoft.ocs_sample_library_preview.dataviews;
+package com.github.osisoft.ocs_sample_library_preview.dataviews;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import  com.github.osisoft.ocs_sample_library_preview.*;
@@ -66,7 +67,7 @@ public class DataviewClient {
         try {
             url = new URL(baseUrl + dataviewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{dataview_id}", dataviewId));
             urlConnection = baseClient.getConnection(url, "POST");
-            
+
             String body = mGson.toJson(dataviewDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             OutputStreamWriter writer = new OutputStreamWriter(out);
@@ -80,7 +81,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -135,7 +136,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -182,7 +183,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -227,7 +228,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -273,7 +274,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -339,7 +340,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -386,7 +387,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -438,7 +439,7 @@ public class DataviewClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -502,8 +503,8 @@ public class DataviewClient {
                 throw new SdsError(urlConnection, "get dataview data interpolated request failed");
             }
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader( 
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);

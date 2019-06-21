@@ -135,7 +135,7 @@ public class BaseClient {
             URLConnection request = discoveryUrl.openConnection();
             request.connect();
             JsonParser jp = new JsonParser(); 
-            JsonObject rootObj = jp.parse(new InputStreamReader((InputStream) request.getContent())).getAsJsonObject(); 
+            JsonObject rootObj = jp.parse(new InputStreamReader((InputStream) request.getContent(), StandardCharsets.UTF_8)).getAsJsonObject(); 
             String tokenUrl = rootObj.get("token_endpoint").getAsString(); 
 
             URL token = new URL(tokenUrl);

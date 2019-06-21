@@ -263,8 +263,7 @@ public class Program {
             autoStreamView.setDescription("This is a StreamView mapping SampleType to SampleTargetType");
             autoStreamView.setSourceTypeId(sampleTypeId);
             autoStreamView.setTargetTypeId(targetTypeId);
-            String jsonAutoStreamView = ocsClient.Streams.createStreamView(tenantId, namespaceId, autoStreamView);
-            autoStreamView = ocsClient.mGson.fromJson(jsonAutoStreamView, SdsStreamView.class);
+            ocsClient.Streams.createStreamView(tenantId, namespaceId, autoStreamView);
 
             // create SdsStreamViewProperties
             SdsStreamViewProperty vp1 = new SdsStreamViewProperty();

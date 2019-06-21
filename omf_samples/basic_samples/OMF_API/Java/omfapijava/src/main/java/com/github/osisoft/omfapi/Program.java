@@ -521,11 +521,10 @@ public class Program {
     private static String getConfiguration(String propertyId) {
         String property = "";
         Properties props = new Properties();
-        InputStream inputStream;
 
-        try {
-            System.out.println(new File(".").getAbsolutePath());
-            inputStream = new FileInputStream("config.properties");
+        System.out.println(new File(".").getAbsolutePath());
+        
+        try(InputStream inputStream = new FileInputStream("config.properties")) {
             props.load(inputStream);
             property = props.getProperty(propertyId);
             inputStream.close();
@@ -605,7 +604,7 @@ public class Program {
             urlConnection = getConnection(url, "POST", message_type, action);
 
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(messageToSend);
             writer.close();
 
