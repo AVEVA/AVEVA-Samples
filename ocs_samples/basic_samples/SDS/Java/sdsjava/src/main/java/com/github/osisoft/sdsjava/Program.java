@@ -253,8 +253,7 @@ public class Program {
             String jsonTargetType = ocsClient.Types.createType(tenantId, namespaceId, targetType);
             targetType = ocsClient.mGson.fromJson(jsonTargetType, SdsType.class);
             SdsType targetIntegerType = getWaveDataTargetIntegerType(integerTargetTypeId);
-            String jsonTargetIntegerType = ocsClient.Types.createType(tenantId, namespaceId, targetIntegerType);
-            targetIntegerType = ocsClient.mGson.fromJson(jsonTargetIntegerType, SdsType.class);
+            ocsClient.Types.createType(tenantId, namespaceId, targetIntegerType);
 
             // create a SdsStreamView
             SdsStreamView autoStreamView = new SdsStreamView();
