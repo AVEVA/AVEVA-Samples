@@ -70,7 +70,7 @@ public class DataviewClient {
 
             String body = mGson.toJson(dataviewDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -125,7 +125,7 @@ public class DataviewClient {
 
             String body = mGson.toJson(dataviewDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); 
             writer.write(body);
             writer.close();
 
