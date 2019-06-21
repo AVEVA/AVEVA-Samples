@@ -363,7 +363,7 @@ public class StreamsClient {
 
             String body = mGson.toJson(streamDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); 
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 

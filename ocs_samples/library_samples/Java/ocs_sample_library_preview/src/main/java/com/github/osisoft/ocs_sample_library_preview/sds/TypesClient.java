@@ -68,7 +68,7 @@ public class TypesClient {
 
             String body = mGson.toJson(typeDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); 
             writer.write(body);
             writer.close();
 
