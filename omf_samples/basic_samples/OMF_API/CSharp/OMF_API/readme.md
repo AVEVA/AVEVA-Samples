@@ -1,6 +1,7 @@
 Building a .NET sample to send OMF to PI or OCS
 ==================================================================
 
+Developed against DotNet 2.2.300.
 
 Building a sample with the rest calls directly
 ----------------------------------------------
@@ -80,6 +81,7 @@ System.Net.WebException: The SSL connection could not be established, see inner 
 
 -----------
 
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OMF page [ReadMe](../../../../)<br />

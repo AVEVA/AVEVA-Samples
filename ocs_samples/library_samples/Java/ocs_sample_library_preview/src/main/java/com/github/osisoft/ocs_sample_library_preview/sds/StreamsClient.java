@@ -2,22 +2,18 @@
  * 
  */
 
-package  com.github.osisoft.ocs_sample_library_preview.sds;
+package com.github.osisoft.ocs_sample_library_preview.sds;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import  com.github.osisoft.ocs_sample_library_preview.BaseClient;
-import  com.github.osisoft.ocs_sample_library_preview.SdsError;
+import com.github.osisoft.ocs_sample_library_preview.BaseClient;
+import com.github.osisoft.ocs_sample_library_preview.SdsError;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 
 /**
@@ -57,15 +53,6 @@ public class StreamsClient {
     private String removeMultipleQuery = dataBase + "?startIndex={startIndex}&endIndex={endIndex}";
     private String getSampledValuesQuery = dataBase + "/Sampled?startIndex={startIndex}&endIndex={endIndex}&intervals={intervals}&sampleBy={sampleBy}";
 
-    //dataview path
-    private String dataviewBase = requestBase + "/Dataviews";
-    private String getDataviews = dataviewBase + "?skip={skip}&count={count}";
-    private String dataviewPath = dataviewBase + "/{dataview_id}";
-    private String getDataviewPreview = dataviewPath + "/preview/interpolated";
-
-    private String datagroupPath = dataviewPath + "/Datagroups";
-    private String getDatagroup  = datagroupPath + "/{datagroup_id}";
-    private String getDatagroups  = datagroupPath + "?skip={skip}&count={count}";
 
 
     /**
@@ -98,18 +85,10 @@ public class StreamsClient {
             url = new URL(baseUrl + getStreamViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamViewId}", streamViewId));
 
             urlConnection = baseClient.getConnection(url, "POST");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             String body = mGson.toJson(streamViewDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -119,8 +98,8 @@ public class StreamsClient {
                 throw new SdsError(urlConnection, "create streamView request failed");
             }
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader( 
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -128,8 +107,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -154,22 +137,14 @@ public class StreamsClient {
             url = new URL(baseUrl + getStreamViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamViewId}", streamViewId) + "/Map");
 
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
+            
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get streamView map request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
@@ -177,8 +152,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -200,15 +179,7 @@ public class StreamsClient {
             url = new URL(baseUrl + getStreamViewPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamViewId}", streamViewId));
 
             urlConnection = baseClient.getConnection(url, "DELETE");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (baseClient.isSuccessResponseCode(httpResult)) {
             } else {
@@ -216,8 +187,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -240,18 +215,10 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "POST");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             String body = mGson.toJson(streamDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -264,7 +231,7 @@ public class StreamsClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -272,8 +239,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -298,30 +269,26 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResponse = urlConnection.getResponseCode();
             if (httpResponse == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get single stream request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
             }
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -348,30 +315,26 @@ public class StreamsClient {
             url = new URL(baseUrl + getStreamsPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{query}", query)
                     .replace("{skip}", skip).replace("{count}", count));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
+            
             int httpResponse = urlConnection.getResponseCode();
             if (httpResponse == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get multiple streams request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
             }
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
      
@@ -397,19 +360,10 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-
-        try {
             String body = mGson.toJson(streamDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -420,8 +374,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -440,15 +398,7 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "DELETE");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (baseClient.isSuccessResponseCode(httpResult)) {
             } else {
@@ -456,8 +406,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -479,19 +433,10 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
             urlConnection = baseClient.getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-
-        try {
             String body = mGson.toJson(tags);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -502,8 +447,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -525,33 +474,28 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Tags");
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResponse = urlConnection.getResponseCode();
             if (httpResponse == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get multiple streams request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
             }
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        ArrayList<String> test = new ArrayList<String>();
         
         ArrayList<String> results = mGson.fromJson(jsonResults.toString(), new TypeToken<ArrayList<String>>(){}.getType());
         return results;
@@ -574,19 +518,10 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata");
             urlConnection = baseClient.getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-
-        try {
             String body = mGson.toJson(metadata);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -597,8 +532,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -621,30 +560,26 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getStreamPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId) + "/Metadata/" + key);
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResponse = urlConnection.getResponseCode();
             if (httpResponse == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get metadata request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
             }
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -665,17 +600,9 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + insertMultiplePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "POST");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -687,8 +614,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -711,15 +642,7 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getSingleQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
 
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
@@ -728,7 +651,7 @@ public class StreamsClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
@@ -736,8 +659,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -761,22 +688,14 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + getLastValuePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get last value request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
@@ -784,8 +703,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -812,18 +735,12 @@ public class StreamsClient {
             url = new URL(baseUrl + getFirstValuePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "GET");
 
-        }   catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-
             int httpResult = urlConnection.getResponseCode();
             if (httpResult != HttpURLConnection.HTTP_OK) {
                 throw new SdsError(urlConnection, "get first value request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
@@ -832,8 +749,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e){
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -894,15 +815,7 @@ public class StreamsClient {
             }
             url = new URL(baseUrl + intermediate);
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
 
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
@@ -911,7 +824,7 @@ public class StreamsClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
 
             while ((inputLine = in.readLine()) != null) {
@@ -920,8 +833,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -950,21 +867,12 @@ public class StreamsClient {
             .replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endIndex}", endIndex)
             .replace("{intervals}", "" + intervals).replace("{sampleBy}", sampleBy));
             urlConnection = baseClient.getConnection(url, "GET");
-        }
-         catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         
-        try{
             int httpResult = urlConnection.getResponseCode();
             if(httpResult != HttpURLConnection.HTTP_OK){
                 throw new SdsError(urlConnection, "get sampled values request failed");
             }
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while((inputLine = in.readLine()) != null){
                 response.append(inputLine);
@@ -972,8 +880,12 @@ public class StreamsClient {
             in.close();
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return response.toString();
@@ -1026,15 +938,7 @@ public class StreamsClient {
             }
             url = new URL(baseUrl + intermediate );
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
 
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
@@ -1042,15 +946,19 @@ public class StreamsClient {
                 throw new SdsError(urlConnection, "get range of values request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -1079,15 +987,7 @@ public class StreamsClient {
             .replace("{streamId}", streamId).replace("{startIndex}", startIndex).replace("{endindex}", endIndex).replace("{count}", "" + count);
             url = new URL(baseUrl + intermediate );
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
 
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
@@ -1095,15 +995,19 @@ public class StreamsClient {
                 throw new SdsError(urlConnection, "get range of interpolated values request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -1137,15 +1041,7 @@ public class StreamsClient {
                     .replace("{reverse}", "" + reverse).replace("{boundaryType}", "" + boundaryType)
                     .replace("{streamViewId}", "" + streamViewId));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
 
             if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
@@ -1153,15 +1049,19 @@ public class StreamsClient {
                 throw new SdsError(urlConnection, "get range of values request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -1183,17 +1083,9 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + updateMultiplePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -1204,8 +1096,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -1225,17 +1121,9 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + replaceMultiplePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId));
             urlConnection = baseClient.getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -1246,8 +1134,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -1267,15 +1159,7 @@ public class StreamsClient {
         try {
             url = new URL(baseUrl + removeSingleQuery.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{streamId}", streamId).replace("{index}", index));
             urlConnection = baseClient.getConnection(url, "DELETE");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (baseClient.isSuccessResponseCode(httpResult)) {
             } else {
@@ -1283,8 +1167,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -1307,15 +1195,7 @@ public class StreamsClient {
                     .replace("{namespaceId}", namespaceId).replace("{streamId}", streamId)
                     .replace("{startIndex}", startIndex).replace("{endIndex}", endIndex));
             urlConnection = baseClient.getConnection(url, "DELETE");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (baseClient.isSuccessResponseCode(httpResult)) {
             } else {
@@ -1323,8 +1203,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -1346,18 +1230,10 @@ public class StreamsClient {
                     .replace("{namespaceId}", namespaceId).replace("{streamId}", streamId)
                     .replace("{streamViewId}", streamViewId));
             urlConnection = baseClient.getConnection(url, "PUT");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             String json = "";
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -1368,8 +1244,12 @@ public class StreamsClient {
             }
         } catch (SdsError sdsError) {
             sdsError.print();
-            throw sdsError;
-        } catch (Exception e) {
+            throw sdsError;        
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 	}
