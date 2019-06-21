@@ -88,7 +88,7 @@ public class StreamsClient {
 
             String body = mGson.toJson(streamViewDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -218,7 +218,7 @@ public class StreamsClient {
 
             String body = mGson.toJson(streamDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -363,7 +363,7 @@ public class StreamsClient {
 
             String body = mGson.toJson(streamDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); 
             writer.write(body);
             writer.close();
 
@@ -436,7 +436,7 @@ public class StreamsClient {
 
             String body = mGson.toJson(tags);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -521,7 +521,7 @@ public class StreamsClient {
 
             String body = mGson.toJson(metadata);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(body);
             writer.close();
 
@@ -602,7 +602,7 @@ public class StreamsClient {
             urlConnection = baseClient.getConnection(url, "POST");
 
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -1085,7 +1085,7 @@ public class StreamsClient {
             urlConnection = baseClient.getConnection(url, "PUT");
 
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -1123,7 +1123,7 @@ public class StreamsClient {
             urlConnection = baseClient.getConnection(url, "PUT");
 
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
@@ -1233,7 +1233,7 @@ public class StreamsClient {
 
             String json = "";
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             writer.write(json);
             writer.close();
 
