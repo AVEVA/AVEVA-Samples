@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using ImplicitFlow;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -31,12 +30,11 @@ namespace Tests
 
         private static void AutoLogin(string url, string userName, string password)
         {
-            //embedded automated logging in.  Added for testing purposes as typically for a Hybrid application you want the user to login.
-
-            //works against the personal account option only
+            // Automatic login works against Microsoft personal account option only
+            // Must use Live account email that isn't also an AAD account
+            // Account must have no 2FA enabled and the login flow must not have any other additional prompts after password entry
 
             //not sure why specifying the current directory is needed on local testing but it is
-
             //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
@@ -47,9 +45,9 @@ namespace Tests
 
                 Thread.Sleep(4000);
 
-                
 
-                driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[2]")).Click();
+
+                driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[@title=\"Personal Account\"]")).Click();
 
 
                 Thread.Sleep(4000);
@@ -72,7 +70,7 @@ namespace Tests
                 var results = driver.FindElement(By.XPath("//*[@id=\"tenant\"]")).Text;
 
                 if (results.Contains("not logged"))
-                    throw new Exception("Looging in failed");
+                    throw new Exception("Logging in failed");
 
 
                 driver.Close();
