@@ -54,7 +54,7 @@ myApp.controller('AppController', function AppController($scope, $http, $q) {
   $scope.statusText = 'statusText';
 
   // Define string constants for the AF objects created for the sandbox.
-  $scope.databaseName = 'OSIAngularJSDatabase_BILL';
+  $scope.databaseName = 'OSIAngularJSDatabase';
   $scope.categoryName = 'OSIAngularJSCategory';
   $scope.templateName = 'OSIAngularJSTemplate';
   $scope.elementName = 'OSIAngularJSElement';
