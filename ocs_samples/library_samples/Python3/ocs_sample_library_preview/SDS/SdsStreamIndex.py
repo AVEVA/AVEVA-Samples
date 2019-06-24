@@ -3,6 +3,7 @@
 
 import json
 
+
 class SdsStreamIndex(object):
     """
     Sds Stream Index definitions
@@ -15,6 +16,7 @@ class SdsStreamIndex(object):
         :return:
         """
         return self.__sdsTypePropertyId
+
     @SdsTypePropertyId.setter
     def SdsTypePropertyId(self, sdsTypePropertyId):
         """
@@ -26,10 +28,10 @@ class SdsStreamIndex(object):
 
     def toJson(self):
         return json.dumps(self.toDictionary())
-    
+
     def toDictionary(self):
         # required properties
-        dictionary = { 'SdsTypePropertyId' : self.SdsTypePropertyId }
+        dictionary = {'SdsTypePropertyId': self.SdsTypePropertyId}
 
         return dictionary
 

@@ -3,6 +3,7 @@
 
 from enum import Enum
 
+
 class SdsTypeCode(Enum):
     """
     enum 0-712  not fully inclusive
@@ -87,4 +88,3 @@ class SdsTypeCode(Enum):
     NullableUInt32Enum = 710
     NullableInt64Enum = 711
     NullableUInt64Enum = 712
-        

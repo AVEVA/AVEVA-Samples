@@ -3,6 +3,7 @@
 
 import json
 
+
 class SdsNamespace(object):
     """
     definition of SdsNamespace
@@ -11,6 +12,7 @@ class SdsNamespace(object):
     @property
     def Id(self):
         return self.__id
+
     @Id.setter
     def Id(self, id):
         self.__id = id
@@ -20,14 +22,14 @@ class SdsNamespace(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Id' : self.Id }
+        dictionary = {'Id': self.Id}
 
         return dictionary
 
     @staticmethod
     def fromString(content):
-         dictionary = json.loads(content)
-         return SdsNamespace.fromDictionary(dictionary)
+        dictionary = json.loads(content)
+        return SdsNamespace.fromDictionary(dictionary)
 
     @staticmethod
     def fromDictionary(content):
@@ -38,5 +40,5 @@ class SdsNamespace(object):
 
         if "Id" in content:
             namespace.Id = content["Id"]
-            
+
         return namespace

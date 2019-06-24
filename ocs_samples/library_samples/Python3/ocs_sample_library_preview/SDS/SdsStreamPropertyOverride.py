@@ -3,6 +3,7 @@
 
 import json
 
+
 class SdsStreamPropertyOverride(object):
     """
     Sds Stream PropertyOverride definitions
@@ -15,6 +16,7 @@ class SdsStreamPropertyOverride(object):
         :return:
         """
         return self.__sdsTypePropertyId
+
     @SdsTypePropertyId.setter
     def SdsTypePropertyId(self, sdsTypePropertyId):
         """
@@ -31,6 +33,7 @@ class SdsStreamPropertyOverride(object):
         :return:
         """
         return self.__interpolationMode
+
     @InterpolationMode.setter
     def InterpolationMode(self, interpolationMode):
         """
@@ -47,6 +50,7 @@ class SdsStreamPropertyOverride(object):
         :return:
         """
         return self.__uom
+
     @Uom.setter
     def Uom(self, uom):
         """
@@ -58,10 +62,10 @@ class SdsStreamPropertyOverride(object):
 
     def toJson(self):
         return json.dumps(self.toDictionary())
-    
+
     def toDictionary(self):
         # required properties
-        dictionary = { 'SdsTypePropertyId' : self.SdsTypePropertyId }
+        dictionary = {'SdsTypePropertyId': self.SdsTypePropertyId}
 
         # optional properties
         if hasattr(self, 'Uom'):
