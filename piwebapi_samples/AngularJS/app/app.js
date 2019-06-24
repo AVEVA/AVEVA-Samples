@@ -1121,7 +1121,7 @@ myApp.controller('AppController', function AppController($scope, $http, $q) {
       return $scope.makeGETRequest(callURI, httpOptions, authType)
           .then(function(result) {
             // Build the next URI for the DELETE request.
-            callURI = $scope.piWebAPIUrl + '/assetdatabases/' + result[$scope.resultBody][$scope.resultWebId];
+            callURI = piWebAPIUrl + '/assetdatabases/' + result[$scope.resultBody][$scope.resultWebId];
 
             // Write the URI we're about to call to the textarea in the UI.
             $scope.callURIText += '\nDELETE request URI to delete the database: ' + callURI;
