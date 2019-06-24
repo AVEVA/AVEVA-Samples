@@ -2,6 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { PIWebAPIService } from './piwebapi.service';
 import { HttpClientModule } from '@angular/common/http';
 
+// Increase timeout interval for longer running http calls.
+// jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
 describe('Service: PIWebAPIService', () => {
 
     let testService: PIWebAPIService;

@@ -59,7 +59,10 @@ const userPassword = 'MyUserPassword';
   ```
   
 - In the terminal, use the following command to run the tests:   ```karma start```
-
+- If you run into any issues with the Jasmine tests timing out, you can search for the __jasmine.DEFAULT_TIMEOUT_INTERVAL__ setting, uncomment it, and set it to a higher value.  For example:
+```typescript
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+``` 
 
 System Configuration
 ----------------------------
