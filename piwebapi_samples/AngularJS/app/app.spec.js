@@ -10,6 +10,9 @@ const userName = '';
 const userPassword = '';
 const authType = '';
 
+// Increase timeout interval for longer running http calls.
+// jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
 describe('AppComponent', function() {
   beforeEach(module('myApp'));
 
