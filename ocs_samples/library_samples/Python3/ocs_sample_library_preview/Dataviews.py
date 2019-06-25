@@ -185,12 +185,9 @@ class Dataviews(object):
         if returnAsDynamicObject:
             return datagroups
 
-        results = {}
-        for key, value in datagroups.items():
-            innerobj = {}
-            for key2, value2 in value.items():
-                innerobj[key2] = Datagroup.fromJson(value2)
-            results[key] = innerobj
+        results = []
+        for datagroup in datagroups['DataGroups']:
+            results.append(Datagroup.fromJson(datagroup))
         response.close()
 
         return results
