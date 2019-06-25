@@ -42,6 +42,7 @@ function getTenant() {
 
             // form url
             var host = window.config.authority.replace('identity', '');
+            var ApiVersion = window.config.ApiVersion.replace('ApiVersion:', '');
             const url = host + 'api/' + ApiVersion + '/tenants/' + user.profile.tid;
 
             // Set header

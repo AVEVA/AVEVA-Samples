@@ -114,16 +114,17 @@ namespace HybridFlow
 
         private static void AutoLogin(string url)
         {
-            //embedded automated logging in.  Added for testing purposes as typically for a Hybrid application you want the user to login.
+            // Automatic login works against Microsoft personal account option only
+            // Must use Live account email that isn't also an AAD account
+            // Account must have no 2FA enabled and the login flow must not have any other additional prompts after password entry
 
-            //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
                 driver.Url = url;
 
                 Thread.Sleep(4000);
 
-                driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[2]")).Click();
+                driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[@title=\"Personal Account\"]")).Click();
 
 
                 Thread.Sleep(4000);

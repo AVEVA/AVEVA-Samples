@@ -34,8 +34,6 @@ namespace Tests
             // Must use Live account email that isn't also an AAD account
             // Account must have no 2FA enabled and the login flow must not have any other additional prompts after password entry
 
-            //not sure why specifying the current directory is needed on local testing but it is
-            //  using (IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory))
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
                 driver.Url = url;
@@ -66,8 +64,7 @@ namespace Tests
                 driver.FindElement(By.XPath("//*[@id=\"tenant\"]")).Click();
                 Thread.Sleep(4000);
 
-                //   //*[@id="results"]
-                var results = driver.FindElement(By.XPath("//*[@id=\"tenant\"]")).Text;
+                var results = driver.FindElement(By.XPath("//*[@id=\"results\"]")).Text;
 
                 if (results.Contains("not logged"))
                     throw new Exception("Logging in failed");
