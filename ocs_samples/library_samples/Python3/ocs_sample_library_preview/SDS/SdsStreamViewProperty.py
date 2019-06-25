@@ -1,7 +1,8 @@
 # SdsStreamViewProperty.py
 #
 
-import json 
+import json.decoder
+
 
 class SdsStreamViewProperty(object):
     """Sds StreamView Property definition"""
@@ -12,6 +13,7 @@ class SdsStreamViewProperty(object):
         :return:
         """
         return self.__sourceId
+
     @SourceId.setter
     def SourceId(self, id):
         """
@@ -20,7 +22,7 @@ class SdsStreamViewProperty(object):
         :return:
         """
         self.__sourceId = id
-    
+
     @property
     def TargetId(self):
         """
@@ -28,6 +30,7 @@ class SdsStreamViewProperty(object):
         :return:
         """
         return self.__targetId
+
     @TargetId.setter
     def TargetId(self, name):
         """
@@ -36,7 +39,7 @@ class SdsStreamViewProperty(object):
         :return:
         """
         self.__targetId = name
-    
+
     @property
     def SdsStreamView(self):
         """
@@ -44,6 +47,7 @@ class SdsStreamViewProperty(object):
         :return:
         """
         return self.__sdsStreamView
+
     @SdsStreamView.setter
     def SdsStreamView(self, description):
         """
@@ -56,16 +60,17 @@ class SdsStreamViewProperty(object):
     @property
     def Mode(self):
         return self.__mode
+
     @Mode.setter
     def Mode(self, mode):
         self.__mode = mode
-        
+
     def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'SourceId' : self.SourceId }
+        dictionary = {'SourceId': self.SourceId}
 
         if hasattr(self, 'TargetId'):
             dictionary['TargetId'] = self.TargetId
@@ -74,8 +79,7 @@ class SdsStreamViewProperty(object):
             dictionary['Mode'] = self.Mode
 
         if hasattr(self, 'SdsStreamView'):
-            
-            from .SdsStreamView import SdsStreamView 
+            from .SdsStreamView import SdsStreamView
             dictionary['SdsStreamView'] = self.SdsStreamView.toDictionary()
 
         return dictionary
@@ -99,11 +103,10 @@ class SdsStreamViewProperty(object):
 
         if 'Mode' in content:
             streamViewProperty.Mode = content['Mode']
-		
+
         if 'SdsStreamView' in content:
-            
-            from .SdsStreamView import SdsStreamView 
-            streamViewProperty.SdsStreamView = SdsStreamView.fromDictionary(content['SdsStreamView'])
+            from .SdsStreamView import SdsStreamView
+            streamViewProperty.SdsStreamView = SdsStreamView.fromDictionary(
+                content['SdsStreamView'])
 
         return streamViewProperty
-

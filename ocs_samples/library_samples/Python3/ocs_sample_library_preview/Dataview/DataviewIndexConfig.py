@@ -3,11 +3,12 @@
 
 import json
 
+
 class DataviewIndexConfig(object):
     """
     DataviewIndexConfig
     """
-    
+
     @property
     def StartIndex(self):
         """
@@ -15,15 +16,16 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__startIndex
+
     @StartIndex.setter
-    def StartIndex(self, startIndex ):
+    def StartIndex(self, startIndex):
         """
         start index in ISO 8601 format   required
         :param startIndex:
         :return:
         """
-        self.__startIndex = startIndex    
-    
+        self.__startIndex = startIndex
+
     @property
     def EndIndex(self):
         """
@@ -31,15 +33,16 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__endIndex
+
     @EndIndex.setter
-    def EndIndex(self, endIndex ):
+    def EndIndex(self, endIndex):
         """
         end index in  ISO 8601 format   required
         :param endIndex:
         :return:
         """
-        self.__endIndex = endIndex    
-		
+        self.__endIndex = endIndex
+
     @property
     def Mode(self):
         """
@@ -47,15 +50,16 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__mode
+
     @Mode.setter
-    def Mode(self, mode ):
+    def Mode(self, mode):
         """
         data retrieval mode, for example: Interpolated  required
         :param mode:
         :return:
         """
-        self.__mode = mode 
-		
+        self.__mode = mode
+
     @property
     def Interval(self):
         """
@@ -63,15 +67,15 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__interval
+
     @Interval.setter
-    def Interval(self, interval ):
+    def Interval(self, interval):
         """
         data retrieval interval   required
         :param interval:
         :return:
         """
-        self.__interval = interval 
-
+        self.__interval = interval
 
     def toJson(self):
         return json.dumps(self.toDictionary())
@@ -80,8 +84,8 @@ class DataviewIndexConfig(object):
         # required properties
         dictionary = {}
         if hasattr(self, 'IsDefault'):
-           dictionary = { 'IsDefault' : self.IsDefault}
-	
+            dictionary = {'IsDefault': self.IsDefault}
+
         if hasattr(self, 'StartIndex'):
             dictionary['StartIndex'] = self.StartIndex
 
@@ -92,7 +96,7 @@ class DataviewIndexConfig(object):
             dictionary['Mode'] = self.Mode
 
         if hasattr(self, 'Interval'):
-            dictionary['Interval'] = self.Interval			
+            dictionary['Interval'] = self.Interval
 
         return dictionary
 
@@ -121,8 +125,5 @@ class DataviewIndexConfig(object):
 
         if 'Interval' in content:
             dataviewIndexConfig.Interval = content['Interval']
-        
-            
 
         return dataviewIndexConfig
-

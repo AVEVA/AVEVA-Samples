@@ -2,14 +2,9 @@
 #
 
 
-from urllib.parse import urlparse
-import urllib.request, urllib.parse, urllib.error
-import http.client as http
 import json
 
-from .SdsError import SdsError
 from .SDS.SdsType import SdsType
-from .SDS.SdsBoundaryType import SdsBoundaryType
 import requests
 
 
@@ -39,13 +34,17 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__typePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__typePath.format(
+                tenant_id=self.__tenant,
+                namespace_id=namespace_id,
+                type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
-        self.__baseClient.checkResponse(response, f"Failed to get SdsType, {type_id}.")
-        
-        type = SdsType.fromJson(json.loads(response.content))
+        self.__baseClient.checkResponse(
+            response, f"Failed to get SdsType, {type_id}.")
+
+        _type = SdsType.fromJson(json.loads(response.content))
         response.close()
-        return type 
+        return _type
 
     def getTypeReferenceCount(self, namespace_id, type_id):
         """
@@ -60,18 +59,23 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__typeRefCountPath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__typeRefCountPath.format(
+                tenant_id=self.__tenant,
+                namespace_id=namespace_id,
+                type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
-            
-        self.__baseClient.checkResponse(response, f"Failed to get SdsType reference count, {type_id}.")
-        
+
+        self.__baseClient.checkResponse(
+            response, f"Failed to get SdsType reference count, {type_id}.")
+
         counts = json.loads(response.content)
         response.close()
         return counts
 
-    def getTypes(self, namespace_id, skip=0, count=100, query = ""):
+    def getTypes(self, namespace_id, skip=0, count=100, query=""):
         """
-        Retrieves a list of types associated with the specified 'namespace_id' under the current tenant
+        Retrieves a list of types associated with the specified 'namespace_id'
+            under the current tenant
         :param namespace_id: id of namespace to work against
         :param skip: number of types to skip, used for paging
         :param count: number of types to retrieve
@@ -82,12 +86,15 @@ class Types(object):
             raise TypeError
 
         response = requests.get(
-            self.__typesPath.format( tenant_id=self.__tenant, namespace_id=namespace_id),
-            params = {"skip":skip, "count":count, "query" : query},
+            self.__typesPath.format(
+                tenant_id=self.__tenant,
+                namespace_id=namespace_id),
+            params={"skip": skip, "count": count, "query": query},
             headers=self.__baseClient.sdsHeaders())
-        self.__baseClient.checkResponse(response, "Failed to get all SdsTypes.")
+        self.__baseClient.checkResponse(
+            response, "Failed to get all SdsTypes.")
 
-        types = json.loads(response.content) 
+        types = json.loads(response.content)
         results = []
         for t in types:
             results.append(SdsType.fromJson(t))
@@ -96,7 +103,8 @@ class Types(object):
 
     def getOrCreateType(self, namespace_id, type):
         """
-        Tells Sds Service to create or get a type based on local 'type' or get if existing type matches
+        Tells Sds Service to create or get a type based on local 'type'
+        or get if existing type matches
 
         :param namespace_id: id of namespace to work against
         :param type:  the SdsType to create or get
@@ -107,11 +115,15 @@ class Types(object):
         if type is None or not isinstance(type, SdsType):
             raise TypeError
         response = requests.post(
-            self.__typePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type.Id),
-            data=type.toJson(), 
+            self.__typePath.format(
+                tenant_id=self.__tenant,
+                namespace_id=namespace_id,
+                type_id=type.Id),
+            data=type.toJson(),
             headers=self.__baseClient.sdsHeaders())
-        self.__baseClient.checkResponse(response, "Failed to create type, {type_id}.".format(type_id=type.Id))
-        
+        self.__baseClient.checkResponse(
+            response, f"Failed to create type, {type.Id}.")
+
         type = SdsType.fromJson(json.loads(response.text))
         response.close()
         return type
@@ -130,23 +142,26 @@ class Types(object):
             raise TypeError
 
         response = requests.delete(
-            self.__typePath.format( tenant_id=self.__tenant, namespace_id=namespace_id, type_id=type_id),
+            self.__typePath.format(
+                tenant_id=self.__tenant,
+                namespace_id=namespace_id,
+                type_id=type_id),
             headers=self.__baseClient.sdsHeaders())
 
-        self.__baseClient.checkResponse(response, f"Failed to delete SdsType, {type_id}.")
+        self.__baseClient.checkResponse(
+            response, f"Failed to delete SdsType, {type_id}.")
 
         response.close()
-		
-		
-    # private methods
 
+    # private methods
 
     def __setPathAndQueryTemplates(self):
         """
         used to create needed URI for the other calls
         :return:
         """
-        self.__basePath = self.__url + "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
+        self.__basePath = self.__url + \
+            "/Tenants/{tenant_id}/Namespaces/{namespace_id}"
         self.__typesPath = self.__basePath + "/Types"
         self.__typePath = self.__typesPath + "/{type_id}"
         self.__typeRefCountPath = self.__typePath + "/ReferenceCount"

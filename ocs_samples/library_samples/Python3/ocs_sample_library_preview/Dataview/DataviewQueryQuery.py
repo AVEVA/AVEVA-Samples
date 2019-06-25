@@ -3,12 +3,12 @@
 
 import json
 
+
 class DataviewQueryQuery(object):
 
-
-    def __init__(self, resource = None, field = None, value= None, function = None):
+    def __init__(self, resource=None, field=None, value=None, function=None):
         self.__resource = resource
-        self.__field= field
+        self.__field = field
         self.__value = value
         self.__function = function
 
@@ -16,10 +16,12 @@ class DataviewQueryQuery(object):
     @property
     def Resource(self):
         """
-        query resource can be something like "Streams", "TypeProperties"   required
+        query resource can be something like "Streams", "TypeProperties"
+                       required
         :return:
         """
         return self.__resource
+
     @Resource.setter
     def Resource(self, resource):
         """
@@ -32,20 +34,23 @@ class DataviewQueryQuery(object):
     @property
     def Field(self):
         """
-        query field can be something like "Id", "Name", "Tag", "Description", "TypeId", "MetadataKey"   required
+        query field can be something like "Id", "Name", "Tag",
+               "Description", "TypeId", "MetadataKey"   required
 
         :return:
         """
         return self.__field
+
     @Field.setter
     def Field(self, field):
         """
-        query field can be something like "Id", "Name", "Tag", "Description", "TypeId", "MetadataKey"   required
+        query field can be something like "Id", "Name"
+               "Tag", "Description", "TypeId", "MetadataKey"   required
         :param field:
         :return:
         """
         self.__field = field
-    
+
     @property
     def Value(self):
         """
@@ -53,6 +58,7 @@ class DataviewQueryQuery(object):
         :return:
         """
         return self.__value
+
     @Value.setter
     def Value(self, value):
         """
@@ -61,32 +67,35 @@ class DataviewQueryQuery(object):
         :return:
         """
         self.__value = value
-    
+
     @property
     def Function(self):
         """
-        QueryFunction can be something like "Contains", "Equals", "EndsWith", "StartsWith"    required
+        QueryFunction can be something like "Contains", "Equals",
+                     "EndsWith", "StartsWith"    required
         :return:
         """
+
         return self.__function
+
     @Function.setter
     def Function(self, function):
         """
-        QueryFunction can be something like "Contains", "Equals", "EndsWith", "StartsWith"    required
+        QueryFunction can be something like "Contains", "Equals",
+                    "EndsWith", "StartsWith"    required
         :param function:
         :return:
         """
-        self.__function= function
-    
-
+        self.__function = function
 
     def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Resource' : self.Resource,'Field' : self.Field, 'Value' : self.Value, 'Function' : self.Function}
-	
+        dictionary = {'Resource': self.Resource, 'Field': self.Field,
+                      'Value': self.Value, 'Function': self.Function}
+
         return dictionary
 
     @staticmethod
@@ -111,7 +120,5 @@ class DataviewQueryQuery(object):
 
         if 'Function' in content:
             dataviewQueryQuery.Function = content['Function']
-        
 
         return dataviewQueryQuery
-
