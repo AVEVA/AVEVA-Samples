@@ -197,7 +197,6 @@ def checkValue(url):
     msg_headers = {
         "Authorization": "Bearer %s" % getToken()
     }
-    print(getToken())
 
     # Send the request, and collect the response
     response = requests.get(
