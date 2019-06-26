@@ -1,6 +1,7 @@
 Building a .NET sample to send OMF to PI or OCS
 ==================================================================
 
+Developed against DotNet 2.2.300.
 
 Building a sample with the rest calls directly
 ----------------------------------------------
@@ -68,11 +69,19 @@ Note: In this sample the tenantId is used to autodetect if you are going against
 
 See the general readme for information on setting up your endpoint.
 
+
+If your client computer does not trust the PI Web API certificate you will see an error like:
+
+```
+System.Net.WebException: The SSL connection could not be established, see inner exception. The remote certificate is invalid according to the validation procedure. ---> System.Net.Http.HttpRequestException: The SSL connection could not be established, see inner exception. ---> System.Security.Authentication.AuthenticationException: The remote certificate is invalid according to the validation procedure.
+```
+
 -----------
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
 -----------
 
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OMF page [ReadMe](../../../../)<br />

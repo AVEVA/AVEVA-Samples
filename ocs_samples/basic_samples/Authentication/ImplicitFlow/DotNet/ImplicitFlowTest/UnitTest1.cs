@@ -33,7 +33,6 @@ namespace Tests
             // Automatic login works against Microsoft personal account option only
             // Must use Live account email that isn't also an AAD account
             // Account must have no 2FA enabled and the login flow must not have any other additional prompts after password entry
-
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
                 driver.Url = url;

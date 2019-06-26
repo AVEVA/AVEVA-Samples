@@ -6,6 +6,10 @@ This client uses the OAuth2/OIDC Client Credential Flow to obtain an access toke
 
 - .Net Core 2.2.1 or later
 
+Replace the placeholders in the [apsettings](./apsettings.json) file with your Tenant Id, Client Id and Client Secret, and the current Api Version. There is no need to replace the Namespace Id for this sample.
+
+Developed against DotNet 2.2.105.
+
 ## Running the sample
 
 ### Prerequisites
@@ -51,6 +55,7 @@ dotnet test
 
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_CC_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />

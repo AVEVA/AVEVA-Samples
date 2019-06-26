@@ -24,7 +24,6 @@ namespace ClientCredentialFlow
             // authenticate and acquire an Access Token and cache it.
             try
             {
-                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/{version}/Tenants/{tenantId}/Users").Result;
                 response.EnsureSuccessStatusCode();
                 Console.WriteLine(response.Content.ReadAsStringAsync().Result);
                 Console.WriteLine($"HTTP GET api/{version}/Tenants/{tenantId}/Users successful");

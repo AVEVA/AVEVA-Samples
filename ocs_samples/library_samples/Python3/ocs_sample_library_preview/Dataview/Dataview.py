@@ -7,13 +7,15 @@ from .DataviewMapping import DataviewMapping
 from .DataviewIndexConfig import DataviewIndexConfig
 from .DataviewGroupRule import DataviewGroupRule
 
+
 class Dataview(object):
     """
     Dataview definition
     """
 
-
-    def __init__(self, id = None, name= None, description = None, queries = [], mappings = None, indexConfig = None, indexDataType =None, groupRules = []):
+    def __init__(self, id=None, name=None, description=None, queries=[],
+                 mappings=None, indexConfig=None, indexDataType=None,
+                 groupRules=[]):
         """
 
         :param id: required
@@ -30,11 +32,11 @@ class Dataview(object):
         self.__description = description
         self.__queries = queries
         if mappings:
-            self.__mappings = mappings 
+            self.__mappings = mappings
         else:
-            self.__mappings  = DataviewMapping()
-        self.__indexConfig = indexConfig 
-        self.__indexDataType = indexDataType 
+            self.__mappings = DataviewMapping()
+        self.__indexConfig = indexConfig
+        self.__indexDataType = indexDataType
         self.__groupRules = groupRules
 
     @property
@@ -44,6 +46,7 @@ class Dataview(object):
         :return:
         """
         return self.__id
+
     @Id.setter
     def Id(self, id):
         """
@@ -52,7 +55,7 @@ class Dataview(object):
         :return:
         """
         self.__id = id
-    
+
     @property
     def Name(self):
         """
@@ -60,6 +63,7 @@ class Dataview(object):
         :return:
         """
         return self.__name
+
     @Name.setter
     def Name(self, name):
         """
@@ -68,7 +72,7 @@ class Dataview(object):
         :return:
         """
         self.__name = name
-    
+
     @property
     def Description(self):
         """
@@ -76,6 +80,7 @@ class Dataview(object):
         :return:
         """
         return self.__description
+
     @Description.setter
     def Description(self, description):
         """
@@ -84,7 +89,7 @@ class Dataview(object):
         :return:
         """
         self.__description = description
-        		
+
     @property
     def Queries(self):
         """
@@ -92,6 +97,7 @@ class Dataview(object):
         :return:
         """
         return self.__queries
+
     @Queries.setter
     def Queries(self, queries):
         """
@@ -125,6 +131,7 @@ class Dataview(object):
         :return:
         """
         return self.__indexConfig
+
     @IndexConfig.setter
     def IndexConfig(self, indexConfig):
         """
@@ -141,6 +148,7 @@ class Dataview(object):
         :return:
         """
         return self.__indexDataType
+
     @IndexDataType.setter
     def IndexDataType(self, indexDataType):
         """
@@ -157,6 +165,7 @@ class Dataview(object):
         :return:
         """
         return self.__groupRules
+
     @GroupRules.setter
     def GroupRules(self, groupRules):
         """
@@ -166,17 +175,16 @@ class Dataview(object):
         """
         self.__groupRules = groupRules
 
-
     def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Id' : self.Id}
-	
+        dictionary = {'Id': self.Id}
+
         dictionary['Queries'] = []
         for value in self.Queries:
-            dictionary['Queries'].append(value.toDictionary())			
+            dictionary['Queries'].append(value.toDictionary())
 
         # optional properties
         if hasattr(self, 'Name'):
@@ -193,7 +201,6 @@ class Dataview(object):
 
         if hasattr(self, 'IndexDataType'):
             dictionary['IndexDataType'] = self.IndexDataType
-
 
         if hasattr(self, 'GroupRules'):
             dictionary['GroupRules'] = []
@@ -222,31 +229,31 @@ class Dataview(object):
         if 'Description' in content:
             dataview.Description = content['Description']
 
-        
         if 'Queries' in content:
             queries = content['Queries']
             if queries is not None and len(queries) > 0:
                 dataview.Queries = []
                 for value in queries:
-                    dataview.Queries.append(DataviewQuery.fromDictionary(value))
+                    dataview.Queries.append(
+                        DataviewQuery.fromDictionary(value))
 
         if 'Mappings' in content:
-            dataview.Mappings = DataviewMapping.fromDictionary(content['Mappings'])
+            dataview.Mappings = DataviewMapping.fromDictionary(
+                content['Mappings'])
 
         if 'IndexConfig' in content:
-            dataview.IndexConfig = DataviewIndexConfig.fromDictionary(content['IndexConfig'])
+            dataview.IndexConfig = DataviewIndexConfig.fromDictionary(
+                content['IndexConfig'])
 
         if 'IndexDataType' in content:
             dataview.IndexDataType = content['IndexDataType']
-            
-        
+
         if 'GroupRules' in content:
             groupRules = content['GroupRules']
             if groupRules is not None and len(groupRules) > 0:
                 dataview.GroupRules = []
                 for value in groupRules:
-                    dataview.GroupRules.append(DataviewGroupRule.fromDictionary(value))
-
+                    dataview.GroupRules.append(
+                        DataviewGroupRule.fromDictionary(value))
 
         return dataview
-

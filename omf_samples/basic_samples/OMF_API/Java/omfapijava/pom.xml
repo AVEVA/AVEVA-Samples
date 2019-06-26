@@ -6,7 +6,7 @@
 
   <groupId>com.github.osisoft.omfapi</groupId>
   <artifactId>omfapijava</artifactId>
-  <version>1.0.0.1-SNAPSHOT</version>
+  <version>1.0.0.2-SNAPSHOT</version>
 
   <name>omfapijava</name>
   <!-- FIXME change it to the project's website -->
@@ -78,6 +78,21 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>        
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <mainClass>com.github.osisoft.omfapi.Program</mainClass>
+            </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

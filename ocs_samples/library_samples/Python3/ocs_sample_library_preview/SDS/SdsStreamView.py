@@ -2,8 +2,8 @@
 #
 
 import json
-import inspect
 from .SdsStreamViewProperty import SdsStreamViewProperty
+
 
 class SdsStreamView(object):
     """
@@ -17,6 +17,7 @@ class SdsStreamView(object):
         :return:
         """
         return self.__id
+
     @Id.setter
     def Id(self, id):
         """
@@ -25,7 +26,7 @@ class SdsStreamView(object):
         :return:
         """
         self.__id = id
-    
+
     @property
     def Name(self):
         """
@@ -33,6 +34,7 @@ class SdsStreamView(object):
         :return:
         """
         return self.__name
+
     @Name.setter
     def Name(self, name):
         """
@@ -41,7 +43,7 @@ class SdsStreamView(object):
         :return:
         """
         self.__name = name
-    
+
     @property
     def Description(self):
         """
@@ -49,6 +51,7 @@ class SdsStreamView(object):
         :return:
         """
         return self.__description
+
     @Description.setter
     def Description(self, description):
         """
@@ -65,6 +68,7 @@ class SdsStreamView(object):
         :return:
         """
         return self.__sourceTypeId
+
     @SourceTypeId.setter
     def SourceTypeId(self, baseType):
         """
@@ -73,7 +77,7 @@ class SdsStreamView(object):
         :return:
         """
         self.__sourceTypeId = baseType
-    
+
     @property
     def TargetTypeId(self):
         """
@@ -81,6 +85,7 @@ class SdsStreamView(object):
         :return:
         """
         return self.__targetTypeId
+
     @TargetTypeId.setter
     def TargetTypeId(self, typeCode):
         """
@@ -97,6 +102,7 @@ class SdsStreamView(object):
         :return:
         """
         return self.__properties
+
     @Properties.setter
     def Properties(self, properties):
         """
@@ -111,7 +117,8 @@ class SdsStreamView(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Id' : self.Id, 'SourceTypeId' : self.SourceTypeId, 'TargetTypeId' : self.TargetTypeId }
+        dictionary = {'Id': self.Id, 'SourceTypeId': self.SourceTypeId,
+                      'TargetTypeId': self.TargetTypeId}
 
         # optional properties
         if hasattr(self, 'Properties'):
@@ -152,12 +159,13 @@ class SdsStreamView(object):
 
         if 'SourceTypeId' in content:
             streamView.SourceTypeId = content['SourceTypeId']
-       
+
         if 'Properties' in content:
             properties = content['Properties']
             if properties is not None and len(properties) > 0:
                 streamView.Properties = []
                 for value in properties:
-                    streamView.Properties.append(SdsStreamViewProperty.fromDictionary(value))
+                    streamView.Properties.append(
+                        SdsStreamViewProperty.fromDictionary(value))
 
         return streamView

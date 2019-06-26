@@ -1,5 +1,13 @@
 The sample code in this folder demonstrates how to utilize the PI Web API in AngularJS. You must have already [downloaded AngularJS](https://angularjs.org/) to run this sample application.  
 
+Prerequisites
+-------------
+ - This application by default will use Port 8000
+
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
+
 Getting Started
 ------------
 
@@ -51,7 +59,10 @@ const userPassword = 'MyUserPassword';
   ```
   
 - In the terminal, use the following command to run the tests:   ```karma start```
-
+- If you run into any issues with the Jasmine tests timing out, you can search for the __jasmine.DEFAULT_TIMEOUT_INTERVAL__ setting, uncomment it, and set it to a higher value.  For example:
+```typescript
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+``` 
 
 System Configuration
 ----------------------------
@@ -77,6 +88,14 @@ CorsOrigins|*
 CorsSupportsCredentials|True  
 DisableWrites|False  
 
+
+On your client machine running this code, it is assumed that you have configured the system to trust the certficate used by PI Web API.
+
+If you don't you will see an error similar to this in the Result box on the webpage:
+
+```
+An error occurred. 
+```
 
 Functionality
 ------------

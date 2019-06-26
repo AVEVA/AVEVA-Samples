@@ -1,14 +1,13 @@
 # WaveData.py
 #
 
-import datetime
-import math
 import json
 import inspect
 
+
 class WaveData:
     """Represents a data point to be injected into Sds Service"""
-    
+
     def __init__(self):
         self._order = None
         self._tau = None
@@ -19,10 +18,11 @@ class WaveData:
         self._sinh = None
         self._cosh = None
         self._tanh = None
-    
+
     @property
     def Order(self):
         return self._order
+
     @Order.setter
     def Order(self, order):
         self._order = order
@@ -30,27 +30,31 @@ class WaveData:
     @property
     def Tau(self):
         return self._tau
+
     @Tau.setter
     def Tau(self, tau):
         self._tau = tau
-    
+
     @property
     def Radians(self):
         return self._radians
+
     @Radians.setter
     def Radians(self, radians):
         self._radians = radians
-    
+
     @property
     def Sin(self):
         return self._sin
+
     @Sin.setter
     def Sin(self, sin):
         self._sin = sin
-    
+
     @property
     def Cos(self):
         return self._cos
+
     @Cos.setter
     def Cos(self, cos):
         self._cos = cos
@@ -58,6 +62,7 @@ class WaveData:
     @property
     def Tan(self):
         return self._tan
+
     @Tan.setter
     def Tan(self, tan):
         self._tan = tan
@@ -65,6 +70,7 @@ class WaveData:
     @property
     def Sinh(self):
         return self._sinh
+
     @Sinh.setter
     def Sinh(self, sinh):
         self._sinh = sinh
@@ -72,17 +78,19 @@ class WaveData:
     @property
     def Cosh(self):
         return self._cosh
+
     @Cosh.setter
     def Cosh(self, cosh):
         self._cosh = cosh
-    
+
     @property
     def Tanh(self):
         return self._tanh
+
     @Tanh.setter
     def Tanh(self, tanh):
         self._tanh = tanh
-        
+
     def isprop(self):
         return isinstance(self, property)
 
@@ -90,8 +98,9 @@ class WaveData:
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
-        dictionary = { }
-        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
+        dictionary = {}
+        for prop in inspect.getmembers(type(self),
+                                       lambda v: isinstance(v, property)):
             if hasattr(self, prop[0]):
                 dictionary[prop[0]] = prop[1].fget(self)
 
@@ -108,7 +117,8 @@ class WaveData:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
+        for prop in inspect.getmembers(type(wave),
+                                       lambda v: isinstance(v, property)):
             # Pre-Assign the default
             prop[1].fset(wave, 0)
 
@@ -121,33 +131,35 @@ class WaveData:
         return wave
 
 
-
 class WaveDataInteger:
     """Represents a data point to be injected into Sds Service"""
-    
+
     def __init__(self):
         self._OrderTarget = None
         self._SinInt = None
         self._CosInt = None
         self._TanInt = None
-   
+
     @property
     def OrderTarget(self):
         return self._OrderTarget
+
     @OrderTarget.setter
     def OrderTarget(self, OrderTarget):
         self._OrderTarget = OrderTarget
-    
+
     @property
     def SinInt(self):
         return self._SinInt
+
     @SinInt.setter
     def SinInt(self, SinInt):
         self._SinInt = SinInt
-    
+
     @property
     def CosInt(self):
         return self._CosInt
+
     @CosInt.setter
     def CosInt(self, CosInt):
         self._CosInt = CosInt
@@ -155,10 +167,11 @@ class WaveDataInteger:
     @property
     def TanInt(self):
         return self._TanInt
+
     @TanInt.setter
     def TanInt(self, TanInt):
         self._TanInt = TanInt
-        
+
     def isprop(self):
         return isinstance(self, property)
 
@@ -166,8 +179,9 @@ class WaveDataInteger:
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
-        dictionary = { }
-        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
+        dictionary = {}
+        for prop in inspect.getmembers(type(self),
+                                       lambda v: isinstance(v, property)):
             if hasattr(self, prop[0]):
                 dictionary[prop[0]] = prop[1].fget(self)
 
@@ -184,7 +198,8 @@ class WaveDataInteger:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
+        for prop in inspect.getmembers(type(wave),
+                                       lambda v: isinstance(v, property)):
             # Pre-Assign the default
             prop[1].fset(wave, 0)
 
@@ -198,7 +213,7 @@ class WaveDataInteger:
 
 class WaveDataTarget:
     """Represents a data point to be injected into Sds Service"""
-    
+
     def __init__(self):
         self._OrderTarget = None
         self._TauTarget = None
@@ -209,10 +224,11 @@ class WaveDataTarget:
         self._SinhTarget = None
         self._CoshTarget = None
         self._TanhTarget = None
-    
+
     @property
     def OrderTarget(self):
         return self._OrderTarget
+
     @OrderTarget.setter
     def OrderTarget(self, OrderTarget):
         self._OrderTarget = OrderTarget
@@ -220,27 +236,31 @@ class WaveDataTarget:
     @property
     def TauTarget(self):
         return self._TauTarget
+
     @TauTarget.setter
     def TauTarget(self, TauTarget):
         self._TauTarget = TauTarget
-    
+
     @property
     def RadiansTarget(self):
         return self._RadiansTarget
+
     @RadiansTarget.setter
     def RadiansTarget(self, RadiansTarget):
         self._RadiansTarget = RadiansTarget
-    
+
     @property
     def SinTarget(self):
         return self._SinTarget
+
     @SinTarget.setter
     def SinTarget(self, SinTarget):
         self._SinTarget = SinTarget
-    
+
     @property
     def CosTarget(self):
         return self._CosTarget
+
     @CosTarget.setter
     def CosTarget(self, CosTarget):
         self._CosTarget = CosTarget
@@ -248,6 +268,7 @@ class WaveDataTarget:
     @property
     def TanTarget(self):
         return self._TanTarget
+
     @TanTarget.setter
     def TanTarget(self, TanTarget):
         self._TanTarget = TanTarget
@@ -255,6 +276,7 @@ class WaveDataTarget:
     @property
     def SinhTarget(self):
         return self._SinhTarget
+
     @SinhTarget.setter
     def SinhTarget(self, SinhTarget):
         self._SinhTarget = SinhTarget
@@ -262,17 +284,19 @@ class WaveDataTarget:
     @property
     def CoshTarget(self):
         return self._CoshTarget
+
     @CoshTarget.setter
     def CoshTarget(self, CoshTarget):
         self._CoshTarget = CoshTarget
-    
+
     @property
     def TanhTarget(self):
         return self._TanhTarget
+
     @TanhTarget.setter
     def TanhTarget(self, TanhTarget):
         self._TanhTarget = TanhTarget
-        
+
     def isprop(self):
         return isinstance(self, property)
 
@@ -280,8 +304,9 @@ class WaveDataTarget:
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
-        dictionary = { }
-        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
+        dictionary = {}
+        for prop in inspect.getmembers(type(self),
+                                       lambda v: isinstance(v, property)):
             if hasattr(self, prop[0]):
                 dictionary[prop[0]] = prop[1].fget(self)
 
@@ -298,7 +323,8 @@ class WaveDataTarget:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
+        for prop in inspect.getmembers(type(wave),
+                                       lambda v: isinstance(v, property)):
             # Pre-Assign the default
             prop[1].fset(wave, 0)
 
@@ -310,9 +336,10 @@ class WaveDataTarget:
 
         return wave
 
+
 class WaveDataCompound:
     """Represents a data point to be injected into Sds Service"""
-    
+
     def __init__(self):
         self._order = None
         self._multiplier = None
@@ -324,17 +351,19 @@ class WaveDataCompound:
         self._sinh = None
         self._cosh = None
         self._tanh = None
-    
+
     @property
     def Order(self):
         return self._order
+
     @Order.setter
     def Order(self, order):
         self._order = order
-    
+
     @property
     def Multiplier(self):
         return self._multiplier
+
     @Multiplier.setter
     def Multiplier(self, multiplier):
         self._multiplier = multiplier
@@ -342,27 +371,31 @@ class WaveDataCompound:
     @property
     def Tau(self):
         return self._tau
+
     @Tau.setter
     def Tau(self, tau):
         self._tau = tau
-    
+
     @property
     def Radians(self):
         return self._radians
+
     @Radians.setter
     def Radians(self, radians):
         self._radians = radians
-    
+
     @property
     def Sin(self):
         return self._sin
+
     @Sin.setter
     def Sin(self, sin):
         self._sin = sin
-    
+
     @property
     def Cos(self):
         return self._cos
+
     @Cos.setter
     def Cos(self, cos):
         self._cos = cos
@@ -370,6 +403,7 @@ class WaveDataCompound:
     @property
     def Tan(self):
         return self._tan
+
     @Tan.setter
     def Tan(self, tan):
         self._tan = tan
@@ -377,6 +411,7 @@ class WaveDataCompound:
     @property
     def Sinh(self):
         return self._sinh
+
     @Sinh.setter
     def Sinh(self, sinh):
         self._sinh = sinh
@@ -384,17 +419,19 @@ class WaveDataCompound:
     @property
     def Cosh(self):
         return self._cosh
+
     @Cosh.setter
     def Cosh(self, cosh):
         self._cosh = cosh
-    
+
     @property
     def Tanh(self):
         return self._tanh
+
     @Tanh.setter
     def Tanh(self, tanh):
         self._tanh = tanh
-        
+
     def isprop(self):
         return isinstance(self, property)
 
@@ -402,8 +439,9 @@ class WaveDataCompound:
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
-        dictionary = { }
-        for prop in inspect.getmembers(type(self), lambda v : isinstance(v, property)):
+        dictionary = {}
+        for prop in inspect.getmembers(type(self),
+                                       lambda v: isinstance(v, property)):
             if hasattr(self, prop[0]):
                 dictionary[prop[0]] = prop[1].fget(self)
 
@@ -420,7 +458,8 @@ class WaveDataCompound:
         if len(content) == 0:
             return wave
 
-        for prop in inspect.getmembers(type(wave), lambda v : isinstance(v, property)):
+        for prop in inspect.getmembers(type(wave),
+                                       lambda v: isinstance(v, property)):
             # Pre-Assign the default
             prop[1].fset(wave, 0)
 
@@ -431,4 +470,3 @@ class WaveDataCompound:
                     prop[1].fset(wave, value)
 
         return wave
-

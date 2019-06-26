@@ -44,7 +44,7 @@ Namespace = Samples
 [Access]
 Resource = https://dat-b.osisoft.com
 Tenant = REPLACE_WITH_TENANT_ID
-ApiVersion = v1-preview
+ApiVersion = v1
 
 [Credentials]
 ProducerToken = REPLACE_WITH_TOKEN_STRING
@@ -68,6 +68,14 @@ Resource = REPLACE_WITH_PI_WEB_API_URL
 ```
 
 See the general readme for information on setting up your endpoint.
+
+
+If your client computer Python does not trust the PI Web API certificate you will see an error like:
+
+```
+requests.exceptions.SSLError: HTTPSConnectionPool(host='...', port=443): Max retries exceeded with url: /piwebapi/omf (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate (_ssl.c:1051)')))
+```
+
 
 -----------
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)

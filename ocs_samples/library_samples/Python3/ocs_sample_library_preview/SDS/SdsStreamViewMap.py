@@ -2,8 +2,8 @@
 #
 
 import json
-import inspect
 from .SdsStreamViewProperty import SdsStreamViewProperty
+
 
 class SdsStreamViewMap(object):
     """
@@ -17,6 +17,7 @@ class SdsStreamViewMap(object):
         :return:
         """
         return self.__sourceTypeId
+
     @SourceTypeId.setter
     def SourceTypeId(self, baseType):
         """
@@ -25,7 +26,7 @@ class SdsStreamViewMap(object):
         :return:
         """
         self.__sourceTypeId = baseType
-    
+
     @property
     def TargetTypeId(self):
         """
@@ -33,6 +34,7 @@ class SdsStreamViewMap(object):
         :return:
         """
         return self.__targetTypeId
+
     @TargetTypeId.setter
     def TargetTypeId(self, typeCode):
         """
@@ -49,6 +51,7 @@ class SdsStreamViewMap(object):
         :return:
         """
         return self.__properties
+
     @Properties.setter
     def Properties(self, properties):
         """
@@ -63,7 +66,8 @@ class SdsStreamViewMap(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'SourceTypeId' : self.SourceTypeId, 'TargetTypeId' : self.TargetTypeId }
+        dictionary = {'SourceTypeId': self.SourceTypeId,
+                      'TargetTypeId': self.TargetTypeId}
 
         # optional properties
         if hasattr(self, 'Properties'):
@@ -89,12 +93,13 @@ class SdsStreamViewMap(object):
 
         if 'SourceTypeId' in content:
             streamViewMap.SourceTypeId = content['SourceTypeId']
-       
+
         if 'Properties' in content:
             properties = content['Properties']
             if properties is not None and len(properties) > 0:
                 streamViewMap.Properties = []
                 for value in properties:
-                    streamViewMap.Properties.append(SdsStreamViewProperty.fromDictionary(value))
+                    streamViewMap.Properties.append(
+                        SdsStreamViewProperty.fromDictionary(value))
 
         return streamViewMap

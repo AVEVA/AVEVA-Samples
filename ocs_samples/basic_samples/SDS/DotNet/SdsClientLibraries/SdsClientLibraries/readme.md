@@ -11,6 +11,8 @@ from https://api.nuget.org/v3/index.json. The libraries offer a framework of cla
 [SDS documentation](https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html)
 
 
+Developed against DotNet 2.2.300.
+
 Getting Starting
 ----------------------------
 
@@ -45,8 +47,8 @@ replace the placeholders with the authentication-related values you received fro
 "NamespaceId": "REPLACE_WITH_NAMESPACE_ID",
 "TenantId": "REPLACE_WITH_TENANT_ID",
 "Resource": "https://dat-b.osisoft.com",
-"ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
-"ClientKey": "REPLACE_WITH_CLIENT_SECRET"
+"ClientId": "REPLACE_WITH_APPLICATION_IDENTIFIER",
+"ClientKey": "REPLACE_WITH_APPLICATION_SECRET"
 }
 ```
 
@@ -77,12 +79,13 @@ var dataService = sdsService.GetDataService(tenantId, namespaceId);
 Create an SdsType
 ---------------
 
-To use Sds, you define SdsTypes that describe the kinds of data you want to store in 
+To use SDS, you define SdsTypes that describe the kinds of data you want to store in 
 SdsStreams. SdsTypes are the model that define SdsStreams.
 
 SdsTypes can define simple atomic types, such as integers, floats or strings, or they 
-can define complex types by grouping other SdsTypes. For more information about SdsTypes, 
-refer to the SDS Documentation.
+can define complex types by grouping other SdsTypes. For
+more information about SdsTypes, refer to the `SDS
+documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 When working with the SDS Client Libraries, it is strongly recommended that you use 
 SdsTypeBuilder. SdsTypeBuilder uses reflection to build SdsTypes. The SdsTypeBuilder exposes 
@@ -103,7 +106,7 @@ public class WaveData
 }
 ```
     
-To define the SdsType in Sds, use the metadata client as follows:
+To define the SdsType in SDS, use the metadata client as follows:
 
 ```c#
 SdsType type = config.GetOrCreateTypeAsync(type).GetAwaiter().GetResult();
@@ -225,14 +228,14 @@ IEnumerable<WaveData> retrieved =
 		client.GetWindowValuesAsync<WaveData>(stream.Id, "0", "20").GetAwaiter().GetResult();
 ```
 	
-You can retreive the values in the form of a table (in this case with headers)
+SDS can retreive the values in the form of a table (in this case with headers)
 
 ```C#
 SdsTable tableEvents = await tableService.GetWindowValuesAsync(stream.Id, "0", "180");
 ```
 	
 	
-You can retreive interpolated values.  In this case we are asking for values at 5, 14, 23, and 32.  We onlt have values stored at the even numbers, so the odd numbers will be interpolated for.
+SDS can retreive interpolated values.  In this case we are asking for values at 5, 14, 23, and 32.  We onlt have values stored at the even numbers, so the odd numbers will be interpolated for.
 
 ```C#
 IEnumerable<WaveData> retrievedInterpolated = await dataService.GetValuesAsync<WaveData>(stream.Id, "5", "32", 4);
@@ -244,6 +247,15 @@ When retreiving events you can also filter on what is being returned, so you onl
 IEnumerable<WaveData> retrievedInterpolatedFiltered = (await dataService.GetWindowFilteredValuesAsync<WaveData>(stream.Id, "0", "180", SdsBoundaryType.ExactOrCalculated, "Radians lt 50"));
 ```
 
+SDS can be used to retrieve a sample of your data to show the overall 
+trend. In addition to the start and end index, we also 
+provide the number of intervals and a sampleBy parameter. Intervals parameter 
+determines the depth of sampling performed and will affect how many values
+are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
+
+```C#
+IEnumerable<WaveData> sampledValues = await dataService.GetSampledValuesAsync<WaveData>(stream.Id, "0", "40", 4, new[] {nameof(WaveData.Sin)});
+```
 
 Update Events and Replacing Values
 ----------------------------------
@@ -288,7 +300,7 @@ Meaning we apply a change to a specific SDS Stream without changing the SDS Type
 read behavior of any other SDS Streams based on that type.  
 
 In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
-Now if a requested index does not correspond to a real value in the stream then ``null``, 
+Now if a requested index does not correspond to a real value in the stream, null, 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
@@ -404,6 +416,8 @@ await metadataService.DeleteTypeAsync(typeId);
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=SDSDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
 -----------
+
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />

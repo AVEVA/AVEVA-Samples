@@ -7,6 +7,14 @@ This client uses the OIDC Hybrid Flow to obtain an access token. See the root fo
 - .Net Core 2.2.1 or later
 - Web Browser with Javascript enabled
   - You will need Google Chrome if you want to run the automated test
+  
+1. Replace the placeholders in the [appsettings](./appsettings.json) file with your Tenant Id, Client Id and Client Secret
+2. Ensure that this client was created to allow Refresh Tokens
+  - If this client does not allow refresh tokens, no refresh token will be issued upon authentication
+3. Ensure that the client contains $"{RedirectHost}:{RedirectPort}/{RedirectPath}" in the list of RedirectUris
+  - Default value from config is: `https://127.0.0.1:54567/signin-oidc`
+  - You can change the values to match your preferences
+  
 
 ## Running the sample
 
@@ -40,10 +48,13 @@ dotnet run
 ## Running the automated test
 
 ### Prerequisites
-
 - Make sure Google Chrome is the default browser on your test system.
 - Download the ChromeDriver version from `http://chromedriver.storage.googleapis.com/index.html` corresponding to the version of Google Chrome that is installed. Set the environmental variable ChromeWebDriver to the directory containing the Chrome Driver executable).
 - Update the [appsettings.json](../HybridFlowTest/appsettings.json) with the username and password for the Microsoft account that will be used to log in. The test is only written to work with a personal Microsoft account and must only prompt for only username followed by password (no Two-Factor authentication or other consent or informational prompts). Also if the location of the sample application has been modified then change the RedirectHost and/or RedirectPort.
+
+----------------
+
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Hybrid_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
 
 ### Using Visual Studio 
@@ -62,9 +73,10 @@ dotnet run
 dotnet test
 ```
 
-&nbsp;
 
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Hybrid_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+Tested against DotNet 2.2.105.
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />

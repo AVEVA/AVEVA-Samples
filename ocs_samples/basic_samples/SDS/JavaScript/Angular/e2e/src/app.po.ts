@@ -70,6 +70,11 @@ export class AppPage {
         return this.helper('retrieveFilteredValues', '');
     }
 
+    // todo update this
+    retrieveSampledValues(): any {
+        return this.helper('retrieveSampledValues', '');
+    }
+
     propertyOverride(): any {
         return this.helper('createPropertyOverrideAndUpdateStream', '20');
     }
@@ -102,14 +107,13 @@ export class AppPage {
         return this.helper('updateStreamType', '');
     }
 
-    filterTypes(): any {
-        return this.helper('filterTypes', '');
+    queryTypes(): any {
+        return this.helper('queryTypes', '');
     }
 
     createTagsAndMetaData(): any {
         return this.helper('createTagsAndMetadata', '20');
     }
-
 
     getTags(): any {
         return this.helper('getAndPrintTags', '');
@@ -145,7 +149,7 @@ export class AppPage {
     }
 
     deleteRest(): any {
-        return this.helper('cleanup', 'All Objects Deleted');
+        return this.helper('cleanup', '');
     }
 
 

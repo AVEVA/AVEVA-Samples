@@ -1,5 +1,4 @@
 // Sample.js
-//
 
 var http = require("http");
 var restCall = require("request-promise");
@@ -36,6 +35,18 @@ var dumpEvent = function (elem) {
         ", Sinh: " + elem.Sinh +
         ", Cosh: " + elem.Cosh +
         ", Tanh:" + elem.Tanh);
+};
+
+var dumpEventTarget = function (elem) {
+    console.log("Order: " + elem.Order +
+        ", TauTarget: " + elem.TauTarget +
+        ", RadiansTarget: " + elem.RadiansTarget +
+        ", SinTarget: " + elem.SinTarget +
+        ", CosTarget: " + elem.CosTarget +
+        ", TanTarget: " + elem.TanTarget +
+        ", SinhTarget: " + elem.SinhTarget +
+        ", CoshTarget: " + elem.CoshTarget +
+        ", TanhTarget:" + elem.TanhTarget);
 };
 
 var dumpEvents = function (obj) {
@@ -78,6 +89,7 @@ var logError = function (err) {
         console.trace();
         console.log(err.message)
         console.log(err.stack)
+        console.log(err.options.headers['Operation-Id'])
         throw err;
     }
 };
@@ -208,8 +220,6 @@ var app = function (request1, response)
 
     // insert data
     var event = [];
-    var interval = new Date();
-    interval.setHours(0, 1, 0, 0);
     var evt = null;
 
     // insert a single event
@@ -217,7 +227,7 @@ var app = function (request1, response)
         // Step 4
         function (res) {
             console.log("Inserting data")
-            evt = waveDataObj.NextWave(interval, 2.0, 0);
+            evt = waveDataObj.NextWave(200, 2.0, 0);
             event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -241,7 +251,7 @@ var app = function (request1, response)
 
     var buildEvents = function () {
         if (evtCount < totalEvents) {
-            evt1 = waveDataObj.NextWave(interval, mutliplier, evtCount);
+            evt1 = waveDataObj.NextWave(200, mutliplier, evtCount);
             events.push(evt1);
             evtCount += 2;
             buildEvents();
@@ -306,10 +316,10 @@ var app = function (request1, response)
                     function (res) {
                         refreshToken(res, client);
                         console.log("\nGetting all events")
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -322,7 +332,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     // get all events in table format
     var getWindowEventsTable = printWindowEvents.then(
         // Step 6
@@ -332,10 +341,10 @@ var app = function (request1, response)
                     function (res) {
                         refreshToken(res, client);
                         console.log("\nGetting all events")
-                        return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValuesTable(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -343,21 +352,20 @@ var app = function (request1, response)
     var printWindowEventsTable = getWindowEventsTable.then(
         function(res){
             var allEvents = JSON.parse(res)
-            console.log("Values in table format")
+            console.log("\nValues in table format")
             console.log(JSON.stringify(allEvents))
             return allEvents
         }
     ).catch(function (err) { logError(err); });
     
     // update one event
-
     var updateEvent = printWindowEventsTable.then(
         // Step 7
         function (res) {
             // update the first value
             event = [];
             evt = res[0];
-            evt = waveDataObj.NextWave(interval, 4.0, 0);
+            evt = waveDataObj.NextWave(200, 4.0, 0);
             event.push(evt);
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -405,16 +413,16 @@ var app = function (request1, response)
     // get updated events
     getWindowEvents = updateEvents.then(
         function (res) {
-            console.log("Getting updated events");
+            console.log("\nGetting updated events");
             // get updated values
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
@@ -429,16 +437,14 @@ var app = function (request1, response)
 
     // replace events
     var currentEvents;
+    //replace one event
     var replaceEvent = printUpdateEvents.then(
         // Step 8
         function (res) {
             console.log("\nReplacing events");
             var event = [];
-            var replaceEvent = res[0];
+            var replaceEvent = waveDataObj.NextWave(200, 2.0, 0);
             currentEvents = res;
-            replaceEvent.sinProperty = 1/2;
-            replaceEvent.cosProperty = Math.sqrt(3)/2;
-            replaceEvent.tanProperty = 1;
             event.push(replaceEvent);
 
             if (client.tokenExpires < nowSeconds) {
@@ -453,14 +459,26 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-    var replaceEvents = replaceEvent.then(
+    // if updating single value successful, then create a list of new values to insert
+    var createReplaceEvents = replaceEvent.then(
         function (res) {
-            var replaceEvents = currentEvents;
-            replaceEvents.forEach(function (elem) {
-                elem.Sin = 5.0* 1.0/2.0;
-                elem.Cos = 5.0* Math.sqrt(3.0)/2.0;
-                elem.Tan = 5.0* 1.0;
+            multiplier = 20.0;
+            var events = [];
+            evtCount = 2;
+            var prom = new Promise(function (resolve, reject) {
+                callback = resolve;
+                totalEvents = 40
+                buildEvents();
             });
+            return prom;
+        }
+    ).catch(function (err) { logError(err); });
+
+    //replace multiple events
+    var replaceEvents = createReplaceEvents.then(
+        function (res) {
+
+            var replaceEvents = events;
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -482,14 +500,13 @@ var app = function (request1, response)
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 180);
             }
         }
     ).catch(function (err) { logError(err); });
-
 
     var printReplaceEvents = getReplacedEvents.then(
         function(res){
@@ -498,12 +515,11 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
     
-
     // get interpolated events
     var getInterpolatedEvents = printReplaceEvents.then(
         // Step 9 
         function (res) {
-            console.log("Getting replaced events");
+            console.log("\nGetting interpolated events");
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
@@ -516,7 +532,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var printInterpolatedEvents = getInterpolatedEvents.then(
         function(res){
             var updatedEvents = JSON.parse(res)
@@ -524,26 +539,23 @@ var app = function (request1, response)
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
-    
-
 
     // get filtered events
     var getFilteredEvents = printInterpolatedEvents.then(
         // Step 10
         function (res) {
-            console.log("Getting replaced events");
+            console.log("\nGetting filtered events");
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
                     function (res) {
                         refreshToken(res, client);
-                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                        return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 50);
                     }).catch(function (err) { logError(err); });
             } else {
-                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 198);
+                return client.getWindowValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 50);
             }
         }
     ).catch(function (err) { logError(err); });
-
 
     var printFilteredEvents = getFilteredEvents.then(
         function(res){
@@ -552,11 +564,35 @@ var app = function (request1, response)
             dumpEvents(updatedEvents)
         }
     ).catch(function (err) { logError(err); });
+         
+    // get sampled values
+    var getSampledValues = printFilteredEvents.then(
+        // Step 11
+        function (res) {
+            console.log("\nGetting sampled values");
+            if (client.tokenExpires < nowSeconds) {
+                return checkTokenExpired(client).then(
+                    function (res) {
+                        refreshToken(res, client);
+                        return client.getSampledValues(tenantId, sampleNamespaceId, sampleStreamId, 0, 40, 4, "sin");
+                    }).catch(function (err) { logError(err); });
+            } else {
+                return client.getSamples(tenantId, sampleNamespaceId, sampleStreamId, 0, 40, 4, "sin");
+            }
+        }
+    ).catch(function (err) { logError(err); });
+
+    var printSampledValues = getSampledValues.then(
+        function(res){
+            var sampledValues = JSON.parse(res)
+            console.log("Sampled values");
+            dumpEvents(sampledValues)
+        }
+    ).catch(function (err) { logError(err); });
 
     // Property Overrides
-    var getRangeEvents = printFilteredEvents.then(
-        
-        // Step 11
+    var getRangeEvents = printSampledValues.then(
+        // Step 12
         function (res) {
             if (client.tokenExpires < nowSeconds) {
                 return checkTokenExpired(client).then(
@@ -632,7 +668,7 @@ var app = function (request1, response)
 
     // SdsStreamViews
     var streamViewMessage = printResultEvent.then(  
-        // Step 12
+        // Step 13
         function(res){ 
             console.log("\nSdsStreamViews")
             console.log("Here is some of our data as it is stored on the server:");
@@ -860,13 +896,8 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err);});   
 
-
-
-
-
-
     var getFirstValueSV = dumpMapResult.then(
-    // Step 13 
+    // Step 14 
         function (res) {
             console.log("We will now update the stream type based on the streamview")
             if (client.tokenExpires < nowSeconds) {
@@ -884,10 +915,9 @@ var app = function (request1, response)
     var printFirstValueSV = getFirstValueSV.then(
         function (res) {
             console.log("\nReminder of FirstValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });  
-
 
     var getFirstS= printFirstValueSV.then(
         function (res) {
@@ -924,7 +954,6 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });
 
-
     var getFirstValueSV2 = updateStreamType.then(
         function (res) {
             if (client.tokenExpires < nowSeconds) {
@@ -941,11 +970,10 @@ var app = function (request1, response)
 
     var printFirstValueSV2 = getFirstValueSV2.then(
         function (res) {
-            console.log("\New FirstValue:");
-            console.log(res);
+            console.log("\nNew FirstValue:");
+            dumpEventTarget(JSON.parse(res));
         }
     ).catch(function (err) { logError(err); });
-
 
     var getFirstS2 = printFirstValueSV2.then(
         function (res) {
@@ -968,56 +996,51 @@ var app = function (request1, response)
         }
     ).catch(function (err) { logError(err); });  
 
-
-
     var getTypes = printFirstS2.then(
-    // Step 14
-        function (res) {
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.getTypes(tenantId, sampleNamespaceId, "", 0,100);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.getTypes(tenantId, sampleNamespaceId, "", 0, 100);
+        // Step 14
+            function (res) {
+                if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.getTypes(tenantId, sampleNamespaceId, "", 0,100);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.getTypes(tenantId, sampleNamespaceId, "", 0, 100);
+                }
             }
-        }
-    ).catch(function (err) { logError(err); });
-
-    var printTypes = getTypes.then(
-        function (res) {
-            console.log("\nTypes:");
-            console.log(res);
-        }
-    ).catch(function (err) { logError(err); });  
-
-
-    var getTypesFiltered = printTypes.then(
-        function (res) {
-            if (client.tokenExpires < nowSeconds) {
-                return checkTokenExpired(client).then(
-                    function (res) {
-                        refreshToken(res, client);
-                        return client.getTypes(tenantId, sampleNamespaceId, "contains(Id,'Target')", 0, 100);
-                    }).catch(function (err) { logError(err); });
-            } else {
-                return client.getTypes(tenantId, sampleNamespaceId, "contains(Id,'Target')", 0, 100);
+        ).catch(function (err) { logError(err); });
+    
+        var printTypes = getTypes.then(
+            function (res) {
+                console.log("\nTypes:");
+                console.log(res);
             }
-        }
-    ).catch(function (err) { logError(err); });
-
-    var printTypesFiltered = getTypesFiltered.then(
-        function (res) {
-            console.log("\nFiltered Types:");
-            console.log(res);
-        }
-    ).catch(function (err) { logError(err); });  
-
-
-
+        ).catch(function (err) { logError(err); });  
+    
+        var getTypesQuery = printTypes.then(
+            function (res) {
+                if (client.tokenExpires < nowSeconds) {
+                    return checkTokenExpired(client).then(
+                        function (res) {
+                            refreshToken(res, client);
+                            return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
+                        }).catch(function (err) { logError(err); });
+                } else {
+                    return client.getTypes(tenantId, sampleNamespaceId, "Id:*Target*", 0, 100);
+                }
+            }
+        ).catch(function (err) { logError(err); });
+    
+        var printTypesQuery = getTypesQuery.then(
+            function (res) {
+                console.log("\nTypes after Query:");
+                console.log(res);
+            }
+        ).catch(function (err) { logError(err); });  
+    
     //tags and metadata
-    var createTags = printTypesFiltered.then( 
+    var createTags = printTypesQuery.then( 
         // Step 15
         function(res) {
            console.log("\nLet's add some Tags and Metadata to our stream:");
@@ -1296,10 +1319,9 @@ var app = function (request1, response)
     ).catch(function (err) { logError(err);});  
 
 
-            // Adding Compound Index Type
-       
-
+    // Adding Compound Index Type   
     var createCompoundType = printSecondaryStreamAfterUpdate.then( 
+        // Step 18
         function(res) {
             console.log("Creating an SdsType with a compound index");
             if (client.tokenExpires < nowSeconds) {
@@ -1387,7 +1409,7 @@ var app = function (request1, response)
     var printLastValue2 = getLastValue2.then(
         function (res) {
             console.log("\nLastValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err);});  
     
@@ -1409,7 +1431,7 @@ var app = function (request1, response)
     var printFirstValue = getFirstValue.then(
         function (res) {
             console.log("\nFirstValue:");
-            console.log(res);
+            dumpEvent(JSON.parse(res));
         }
     ).catch(function (err) { logError(err);});  
 
@@ -1433,7 +1455,7 @@ var app = function (request1, response)
     var printWindowEvents2 = getWindowEvents2.then(
         function (res) {
             console.log("\nWindow Value:");
-            console.log(res);
+            dumpEvents(JSON.parse(res));
         }
     ).catch(function (err) { logError(err);});  
 
@@ -1525,6 +1547,7 @@ var app = function (request1, response)
 
 //if you want to run a server
 var toRun =  function() {
+    //This server is hosted over HTTP.  This is not secure and should not be used beyond local testing.
     http.createServer(app).listen(8080);
 }
 

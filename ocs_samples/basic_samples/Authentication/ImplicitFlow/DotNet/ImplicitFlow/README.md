@@ -2,6 +2,11 @@
 
 This client uses the OAuth2/OIDC Implicit Flow to obtain an access token. See the root folder [README](../../../README.md) for more information about this flow.
 
+Developed against DotNet 2.2.105.
+
+1. Replace the placeholders in the [config](./wwwroot/config.js) file with your Tenant Id and Client Id.
+2. Ensure that the client contains `http://localhost:5003/callback.html` in the list of RedirectUris
+
 ## Requirements
 
 - .Net Core 2.2.1 or later
@@ -20,6 +25,20 @@ This client uses the OAuth2/OIDC Implicit Flow to obtain an access token. See th
 - Load the .csproj in this directory
 - Rebuild project
 - Click Start to run it
+- .net core 2.2.1 or later
+- Reliable internet connection
+- A web browser
+- This application by default will use Port 5003
+
+```
+Note: This application is hosted on HTTP.  This is not secure.  You should use a certificate and HTTPS.
+```
+
+### Using Visual Studio
+
+- Load the .csproj
+- Rebuild project
+- Run it
 - Pres the *login* button in the browser
 - Follow the prompts in the web browser to log in
   - Keep in mind that if you are already logged in with the same account in the browser, you will not have to log in again.
@@ -65,6 +84,10 @@ dotnet test
 &nbsp;
 
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Implicit_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+
+
+
+Tested against DotNet 2.2.105.
 
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />

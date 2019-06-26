@@ -123,7 +123,7 @@ clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
 clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
 tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
 namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
-apiVersion = v1-preview
+apiVersion = v1
 ```
 
 Obtain an Authentication Token
