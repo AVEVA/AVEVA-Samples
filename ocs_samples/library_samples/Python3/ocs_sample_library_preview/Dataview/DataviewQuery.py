@@ -2,34 +2,24 @@
 #
 
 import json
-from .DataviewQueryQuery import DataviewQueryQuery
 
 
 class DataviewQuery(object):
     """
-    Dataveiw Query
+    Dataview Query
     """
 
-    def __init__(self, id=None,  resource=None, field=None, value=None,
-                 operator=None, query=None):
+    def __init__(self, id=None, query=None):
         """
 
         :param id:  required
-        :param resource: query resource can be something like "Streams",
-                         "TypeProperties"   required
-        :param field: query field can be something like "Id", "Name", "Tag",
-                      "Description", "TypeId", "MetadataKey"   required
-        :param value: value for field to use in query   required
-        :param operator: QueryFunction can be something like "Contains",
-                         "Equals", "EndsWith", "StartsWith"    required
-        :param query: a fully defined DataviewQueryQuery, if used, the
-                      fields other than this and id are ignored
+        :param query: a query string
         """
         self.__id = id
         if query:
             self.__query = query
         else:
-            self.__query = DataviewQueryQuery(resource, field, value, operator)
+            self.__query = ""
 
     @property
     def Id(self):
@@ -51,7 +41,7 @@ class DataviewQuery(object):
     @property
     def Query(self):
         """
-        DataviewQueryQuery  required
+        Query string  required
         :return:
         """
         return self.__query
@@ -59,7 +49,7 @@ class DataviewQuery(object):
     @Query.setter
     def Query(self, query):
         """
-        DataviewQueryQuery  required
+        Query string  required
         :param query:
         :return:
         """
@@ -70,17 +60,19 @@ class DataviewQuery(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = {'Id': self.Id}
-        dictionary['Query'] = self.Query.toDictionary()
+        dictionary = {'Id': self.Id, 'Query': self.Query}
 
-        return dictionary
-
+        return [dictionary]
+    
     @staticmethod
     def fromJson(jsonObj):
         return DataviewQuery.fromDictionary(jsonObj)
 
     @staticmethod
     def fromDictionary(content):
+        if isinstance(content, list):
+            content = content[0]
+            
         dataviewQuery = DataviewQuery()
 
         if len(content) == 0:
@@ -90,7 +82,6 @@ class DataviewQuery(object):
             dataviewQuery.Id = content['Id']
 
         if 'Query' in content:
-            dataviewQuery.Query = DataviewQueryQuery.fromDictionary(
-                content['Query'])
+            dataviewQuery.Query = content['Query']
 
         return dataviewQuery

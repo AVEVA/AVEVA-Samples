@@ -9,6 +9,12 @@ class DataviewIndexConfig(object):
     DataviewIndexConfig
     """
 
+    def __init__(self, startIndex=None, endIndex=None, mode=None, interval=None):
+        self.__startIndex = startIndex
+        self.__endIndex = endIndex
+        self.__mode = mode
+        self.__interval = interval
+
     @property
     def StartIndex(self):
         """

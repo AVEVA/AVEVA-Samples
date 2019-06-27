@@ -13,15 +13,23 @@ class Dataview(object):
     Dataview definition
     """
 
-    def __init__(self, id=None, name=None, description=None, queries=[],
-                 mappings=None, indexConfig=None, indexDataType=None,
-                 groupRules=[]):
+    def __init__(
+        self,
+        id=None,
+        name=None,
+        description=None,
+        queries=None,
+        mappings=None,
+        indexConfig=None,
+        indexDataType=None,
+        groupRules=[],
+    ):
         """
 
         :param id: required
         :param name: not required
         :param description:  not required
-        :param queries: Array of dataviequery  required
+        :param queries: query string  required
         :param mappings: array of Dataviewmapping   not required
         :param indexConfig:  DataviewindexConfig   not required
         :param indexDataType: Currently limited to "DateTime"   required
@@ -30,7 +38,10 @@ class Dataview(object):
         self.__id = id
         self.__name = name
         self.__description = description
-        self.__queries = queries
+        if queries: 
+            self.__queries = queries
+        else:
+            self.__queries = DataviewQuery()
         if mappings:
             self.__mappings = mappings
         else:
@@ -93,7 +104,7 @@ class Dataview(object):
     @property
     def Queries(self):
         """
-        Array of dataviequery  required
+        Query string  required
         :return:
         """
         return self.__queries
@@ -180,32 +191,29 @@ class Dataview(object):
 
     def toDictionary(self):
         # required properties
-        dictionary = {'Id': self.Id}
-
-        dictionary['Queries'] = []
-        for value in self.Queries:
-            dictionary['Queries'].append(value.toDictionary())
+        dictionary = {"Id": self.Id}
+        dictionary["Queries"] = self.Queries.toDictionary()
 
         # optional properties
-        if hasattr(self, 'Name'):
-            dictionary['Name'] = self.Name
+        if hasattr(self, "Name"):
+            dictionary["Name"] = self.Name
 
-        if hasattr(self, 'Description'):
-            dictionary['Description'] = self.Description
+        if hasattr(self, "Description"):
+            dictionary["Description"] = self.Description
 
-        if hasattr(self, 'Mappings') and self.Mappings is not None:
-            dictionary['Mappings'] = self.Mappings.toDictionary()
+        if hasattr(self, "Mappings") and self.Mappings is not None:
+            dictionary["Mappings"] = self.Mappings.toDictionary()
 
-        if hasattr(self, 'IndexConfig') and self.IndexConfig is not None:
-            dictionary['IndexConfig'] = self.IndexConfig.toDictionary()
+        if hasattr(self, "IndexConfig") and self.IndexConfig is not None:
+            dictionary["IndexConfig"] = self.IndexConfig.toDictionary()
 
-        if hasattr(self, 'IndexDataType'):
-            dictionary['IndexDataType'] = self.IndexDataType
+        if hasattr(self, "IndexDataType"):
+            dictionary["IndexDataType"] = self.IndexDataType
 
-        if hasattr(self, 'GroupRules'):
-            dictionary['GroupRules'] = []
+        if hasattr(self, "GroupRules"):
+            dictionary["GroupRules"] = []
             for value in self.GroupRules:
-                dictionary['GroupRules'].append(value.toDictionary())
+                dictionary["GroupRules"].append(value.toDictionary())
 
         return dictionary
 
@@ -220,40 +228,34 @@ class Dataview(object):
         if len(content) == 0:
             return dataview
 
-        if 'Id' in content:
-            dataview.Id = content['Id']
+        if "Id" in content:
+            dataview.Id = content["Id"]
 
-        if 'Name' in content:
-            dataview.Name = content['Name']
+        if "Name" in content:
+            dataview.Name = content["Name"]
 
-        if 'Description' in content:
-            dataview.Description = content['Description']
+        if "Description" in content:
+            dataview.Description = content["Description"]
 
-        if 'Queries' in content:
-            queries = content['Queries']
-            if queries is not None and len(queries) > 0:
-                dataview.Queries = []
-                for value in queries:
-                    dataview.Queries.append(
-                        DataviewQuery.fromDictionary(value))
+        if "Queries" in content:
+            dataview.Queries = DataviewQuery.fromDictionary(content["Queries"])
 
-        if 'Mappings' in content:
-            dataview.Mappings = DataviewMapping.fromDictionary(
-                content['Mappings'])
+        if "Mappings" in content:
+            dataview.Mappings = DataviewMapping.fromDictionary(content["Mappings"])
 
-        if 'IndexConfig' in content:
+        if "IndexConfig" in content:
             dataview.IndexConfig = DataviewIndexConfig.fromDictionary(
-                content['IndexConfig'])
+                content["IndexConfig"]
+            )
 
-        if 'IndexDataType' in content:
-            dataview.IndexDataType = content['IndexDataType']
+        if "IndexDataType" in content:
+            dataview.IndexDataType = content["IndexDataType"]
 
-        if 'GroupRules' in content:
-            groupRules = content['GroupRules']
+        if "GroupRules" in content:
+            groupRules = content["GroupRules"]
             if groupRules is not None and len(groupRules) > 0:
                 dataview.GroupRules = []
                 for value in groupRules:
-                    dataview.GroupRules.append(
-                        DataviewGroupRule.fromDictionary(value))
+                    dataview.GroupRules.append(DataviewGroupRule.fromDictionary(value))
 
         return dataview

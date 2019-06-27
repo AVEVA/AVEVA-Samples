@@ -1,8 +1,8 @@
-# version 0.0.2
+# version 0.0.3
 
 from ocs_sample_library_preview import (
     SdsTypeCode, SdsType, SdsTypeProperty, SdsStream, OCSClient, Dataview,
-    DataviewQuery, DataviewGroupRule, DataviewMapping)
+    DataviewQuery, DataviewGroupRule, DataviewMapping, DataviewIndexConfig)
 import configparser
 import datetime
 import time
@@ -45,9 +45,9 @@ sampleTemperatureStreamName = "Tank Temperature SampleStream"
 
 needData = True
 namespaceId = ''
-firstData = {}
 config = configparser.ConfigParser()
 config.read('config.ini')
+startTime = None
 
 
 def supressError(sdsCall):
@@ -59,7 +59,7 @@ def supressError(sdsCall):
 
 def createData(ocsClient):
     import random
-    global namespaceId, firstData
+    global namespaceId, startTime
 
     doubleType = SdsType(id="doubleType", sdsTypeCode=SdsTypeCode.Double)
     dateTimeType = SdsType(id="dateTimeType", sdsTypeCode=SdsTypeCode.DateTime)
@@ -107,22 +107,18 @@ def createData(ocsClient):
 
     pressureValues = []
     temperatureValues = []
-    print('Sending Values')
-    for i in range(1, 60, 1):
+    
+    def valueWithTime(timestamp, sensor, value):
+        return f'{{"time": "{timestamp}", "{sensor}": {str(value)} }}'
+    
+    print('Generating Values')
+    for i in range(1, 20, 1):
         pv = str(random.uniform(0, 100))
         tv = str(random.uniform(50, 70))
-        pVal = ('{"time" : "' + (start + datetime.timedelta(minutes=i * 1))
-                .strftime("%Y-%m-%dT%H:%M:%SZ")+'", "pressure":' +
-                str(random.uniform(0, 100)) + '}')
-        tVAl = ('{"time" : "' + (start + datetime.timedelta(minutes=i * 1))
-                .strftime("%Y-%m-%dT%H:%M:%SZ")+'", "temperature":' +
-                str(random.uniform(50, 70)) + '}')
-        if i == 1:
-            timeHolder = (start + datetime.timedelta(minutes=i * 1)
-                          ).strftime("%Y-%m-%dT%H:%M:%SZ")
-            firstData = ('{"time" : "' + timeHolder + '", "pressure":' + pv +
-                         ', "temperature":' + tv + '}')
-
+        timestamp = (start + datetime.timedelta(minutes=i * 2)).isoformat(timespec='seconds')
+        pVal = valueWithTime(timestamp, "pressure", random.uniform(0, 100)) 
+        tVAl = valueWithTime(timestamp, "temperature", random.uniform(50, 70))
+        
         pressureValues.append(pVal)
         temperatureValues.append(tVAl)
 
@@ -136,10 +132,11 @@ def createData(ocsClient):
         namespaceId,
         sampleTemperatureStreamId,
         str(temperatureValues).replace("'", ""))
+    startTime = start
 
 
 def main(test=False):
-    global namespaceId, firstData
+    global namespaceId
     success = True
     exception = {}
 
@@ -190,34 +187,34 @@ def main(test=False):
         # We then define the IndexDataType.  Currently only
         # datetime is supported.
 
-        # Next we need to define the grouping rules.
-        # Grouping decides how each row in the result is filled in.
-
-        # In this case we are grouping by tag, which effectively squashes are
-        # results together so that way Pressure and Temperature and Time all
-        #  get results in a row.
-
-        # If we grouped by StreamName, each row would be filled is as fully
-        # as it can by each Stream name.  Giving us results with
-        #  Pressure and Time seperate from Pressure and Temperature
+        # Next we need to define IndexConfig.  It holds the default
+        #  startIndex and endIndex to define a time period, mode (interpolated),
+        #  and interpolation interval. 
 
         # Our results when looking at it like a table looks like:
-        # time,DefaultGroupRule_Tags,pressure,temperature
-        # 2019-02-18T18:50:17.1084594Z,(NoTags),13.8038967965309,57.6749982613741
-        # 2019-02-18T18:51:17.1084594Z,(NoTags),13.8038967965309,57.674998261374
-        # ....
+        # 
+        # time,pressure,temperature
+        # 2019-06-27T12:23:00Z,36.3668286389033,60.614978497887
+        # 2019-06-27T12:24:00Z,36.3668286389033,60.614978497887
+        # 2019-06-27T12:25:00Z,36.3668286389033,60.614978497887
+        # 2019-06-27T12:26:00Z,40.5653155047711,59.4181700259214
+        # 2019-06-27T12:27:00Z,54.5602717243303,55.4288084527031
+        # ...
 
-        queryObj = DataviewQuery(sampleDataviewId, 'streams', 'name',
-                                 sampleStreamId, 'Contains')
-        groupRuleObj = DataviewGroupRule("DefaultGroupRule", "StreamTag")
+        queryObj = DataviewQuery(sampleDataviewId, f"name:*{sampleStreamId}*")
         mappingObj = DataviewMapping(isDefault=True)
-
-        dataview = Dataview(id=sampleDataviewId, queries=[queryObj],
+        if startTime:
+            indexConfigObj = DataviewIndexConfig(startIndex=startTime.isoformat(timespec='minutes'),
+                                                 endIndex=(startTime + datetime.timedelta(minutes=40)).isoformat(timespec='minutes'),
+                                                 mode="Interpolated",
+                                                 interval="00:01:00")
+        else:
+            indexConfigObj = None
+        dataview = Dataview(id=sampleDataviewId, queries=queryObj,
                             indexDataType="datetime",
-                            groupRules=[groupRuleObj],
                             mappings=mappingObj, name=sampleDataviewName,
+                            indexConfig=indexConfigObj,
                             description=sampleDataviewDescription)
-
         print
         print("Creating dataview")
         print(dataview.toJson())
@@ -226,9 +223,13 @@ def main(test=False):
         print
         print("Getting dataview")
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
-
+        print(dv.toJson())
         # assert is added to make sure we get back what we are expecting
-        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Function": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
+        startIndex = indexConfigObj.StartIndex + ":00Z"
+        endIndex = indexConfigObj.EndIndex + ":00Z"
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": "name:*SampleStream*"}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexConfig": ' + \
+            '{"StartIndex": ' + f'"{startIndex}"' + ', "EndIndex": ' + f'"{endIndex}"' + \
+            ', "Mode": "Interpolated", "Interval": "00:01:00"}, "IndexDataType": "DateTime", "GroupRules": []}'
         assert dv.toJson().lower() == expectedJSON.lower(), 'Dataview is different: ' + dv.toJson()
 
         dv.Description = sampleDataviewDescription_modified
@@ -236,10 +237,8 @@ def main(test=False):
 
         print
         print("Updating dataview")
-        dv = ocsClient.Dataviews.putDataview(namespaceId, dv)
-
-        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": {"Resource": "Streams", "Field": "Name", "Value": "SampleStream", "Function": "Contains"}}], "Name": "Dataview_Sample_Name", "Description": "A longer sample description that describes that this Dataview is just used for our sample and this part shows a put.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "DefaultGroupRule_Tags", "IsKey": false, "DataType": "string", "MappingRule": {"GroupRuleId": "DefaultGroupRule", "GroupRuleToken": "Tags"}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexDataType": "datetime", "GroupRules": [{"Id": "DefaultGroupRule", "Type": "StreamTag", "TokenRules": null}]}'
-        assert dv.toJson().lower() == expectedJSON.lower(), 'Dataview is different ' + dv.toJson()
+        # No dataview returned, success is 204
+        ocsClient.Dataviews.putDataview(namespaceId, dv)
 
         # Getting the complete set of dataviews to make sure it is there
         print
@@ -270,9 +269,9 @@ def main(test=False):
         # By default the preview get interpolated values every minute over the
         # last hour, which lines up with our data that we sent in.
 
-        # Beyond the normal API optoins, this function does have the option
+        # Beyond the normal API options, this function does have the option
         # to return the data in a class if you have created a Type for the
-        # data you are retreiving.
+        # data you are retrieving.
 
         print
         print("Retrieving data preview from the Dataview")
@@ -280,51 +279,16 @@ def main(test=False):
             namespaceId, sampleDataviewId)
         print(str(dataviewDataPreview1[0]))
 
-        # Now we can get the data creating a session.
-        # The session allows us to get pages of data ensuring that the u
-        # nderlying data won't change as we collect the pages.
-
-        # There are apis to manage the sessions, but that is beyond the scope
-        # of this basic example.
-
-        # To highlight the use of the sessions this we will access the data,
-        # add a stream that would be added to result.
-
-        # It won't show up because of the session,
-        # but we will see it in the preview that doesn't use the session.
-
-        print
-        print("Retrieving data from the Dataview using session")
-        dataviewDataSession1 = ocsClient.Dataviews.getDataInterpolated(
-            namespaceId, sampleDataviewId)
-        print(str(dataviewDataSession1[0]))
-
-        print("Intentional waiting for 5 seconds to show a noticeable change"
-              " in time.")
-
-        # We wait for 5 seconds so the preview is different that before, but
-        # our session data should be the same
-        time.sleep(5)
-
-        dataviewDataPreview2 = ocsClient.Dataviews.getDataviewPreview(
-            namespaceId, sampleDataviewId)
-        print(str(dataviewDataPreview2[0]))
-
-        dataviewDataSession2 = ocsClient.Dataviews.getDataInterpolated(
-            namespaceId, sampleDataviewId)
-        print(str(dataviewDataSession2[0]))
-
-        assert (dataviewDataSession2[0] == dataviewDataSession1[0]), "Returned values from Dataview Data Sessions is different"
-
         print()
         print("Getting data as a table, seperated by commas, with headers")
         # Viewing the whole returned result as a table
-        dataviewDataSession3 = ocsClient.Dataviews.getDataInterpolated(
+        dataviewDataTable = ocsClient.Dataviews.getDataInterpolated(
             namespaceId, sampleDataviewId, form="csvh")
 
-        # I only want to print out the headers and 2 rows,
-        # otherwise it monpolizes the printed screen.
-        print(dataviewDataSession3[:193])
+        # Display the whole 40 lines to show: 
+        #   * First lines with extrapolation (first value replicated)
+        #   * Interpolated values at 1 minute interval, stream recorded at 2 minis
+        print(dataviewDataTable)
 
     except Exception as ex:
         print((f"Encountered Error: {ex}"))
@@ -338,7 +302,7 @@ def main(test=False):
         #######################################################################
         # Dataview deletion
         #######################################################################
-
+        
         print
         print
         print("Deleting dataview")
@@ -351,11 +315,12 @@ def main(test=False):
         try:
             dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
         except Exception as ex:
-            print((f"Encountered Error: {ex}"))
+            # Exception is expected here since dataview has been deleted
             dv = None
         finally:
             assert dv is None, 'Delete failed'
-
+            print("Verification OK: dataview effectively deleted")
+            
         if needData:
             print("Deleting added Streams")
             supressError(lambda: ocsClient.Streams.deleteStream(
