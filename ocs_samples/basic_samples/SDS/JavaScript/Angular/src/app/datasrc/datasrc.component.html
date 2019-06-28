@@ -9,9 +9,9 @@
     For this sample, we will be writing events of the WaveData type discussed in the README.
     Press the button below to create the WaveDatan SdsType.</p>
   <div>
-    <button class="btn btn-primary" (click)="createType()">Create Type</button>
+    <button id="createType" class="btn btn-primary" (click)="createType()">Create Type</button>
     <br>
-    <span *ngIf="button1Message">Response: {{button1Message}}</span>
+    <span id="createTypeMessage" *ngIf="button1Message">Response: {{button1Message}}</span>
   </div>
   <!-- Step 3 -->
   <h3>Creating an SdsStream</h3>

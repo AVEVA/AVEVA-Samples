@@ -20,19 +20,8 @@ export class AppPage {
             });
     }
 
-    createType(): any {        
-        element(by.xpath('/html')).getText().then((res) => {
-            console.log('!!create type');
-            console.log(res);
-        })
-        return element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/button')).click()
-        .then((res) => {
-            browser.driver.sleep(2000);
-            element(by.xpath('/html/body/app-root/div/div/div/div/app-datasrc/div/div/span')).getText()
-                .then((txt) => {
-                    expect(txt).toContain('20');
-                });
-        });
+    createType(): any {
+        return this.helper('createType', '200');
     }
 
     createStream(): any {
