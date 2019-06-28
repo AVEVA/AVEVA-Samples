@@ -8,7 +8,7 @@ namespace SDS_TS_DotNetTests
         [Fact]
         public void Test1()
         {
-            Assert.True(SdsClientLibraries.Program.MainAsync(true).Result);
+            Assert.True(SDS_TS_DotNet.Program.MainAsync(true).Result);
 
         }
     }

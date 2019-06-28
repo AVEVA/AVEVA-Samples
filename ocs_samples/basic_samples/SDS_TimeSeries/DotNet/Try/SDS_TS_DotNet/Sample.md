@@ -5,9 +5,9 @@
 
 ## Things to know
 
-This sample walkthru is written with Try .NET in mind.  See the readme.md for details on this and how to use it.
+This sample walkthru is written to be used by Try .NET.  This means that the rendering in general purpose markdown readers, including GitHub webUI, might not work properly.  See the readme.md for details on Try .NET and how to use it.
 
-The first time you press "TestSample >" on the page it will take a few minutes for it compile and do its magic.  Subsequent presses are faster (this appears true across dotnet try sessions and browswer refreshes)
+The first time you press "TestSample >" on the page it might take a few minutes for it compile and do its magic before it runs and writes something to console writing part of it.  Subsequent runs are faster (this appears true across dotnet try sessions and browswer refreshes)
 
 ## Narative
 
