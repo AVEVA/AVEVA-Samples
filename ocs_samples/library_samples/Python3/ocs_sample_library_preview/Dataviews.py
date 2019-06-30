@@ -284,7 +284,7 @@ class Dataviews(object):
         )
 
         self.__baseClient.checkResponse(
-            response, f"Failed to get dataview preview" " for dataview, {dataview_id}."
+            response, f"Failed to get dataview preview for dataview, {dataview_id}."
         )
 
         if form is not None:
@@ -339,7 +339,7 @@ class Dataviews(object):
 
         self.__baseClient.checkResponse(
             response,
-            f"Failed to get dataview data interpolated" " for dataview, {dataview_id}.",
+            f"Failed to get dataview data interpolated for dataview, {dataview_id}.",
         )
 
         if form is not None:

@@ -223,13 +223,8 @@ def main(test=False):
         print
         print("Getting dataview")
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
-        print(dv.toJson())
         # assert is added to make sure we get back what we are expecting
-        startIndex = indexConfigObj.StartIndex + ":00Z"
-        endIndex = indexConfigObj.EndIndex + ":00Z"
-        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": "name:*SampleStream*"}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexConfig": ' + \
-            '{"StartIndex": ' + f'"{startIndex}"' + ', "EndIndex": ' + f'"{endIndex}"' + \
-            ', "Mode": "Interpolated", "Interval": "00:01:00"}, "IndexDataType": "DateTime", "GroupRules": []}'
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": "name:*SampleStream*"}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexConfig": ' + indexConfigObj.toJson(withSeconds=True) + ', "IndexDataType": "DateTime", "GroupRules": []}'
         assert dv.toJson().lower() == expectedJSON.lower(), 'Dataview is different: ' + dv.toJson()
 
         dv.Description = sampleDataviewDescription_modified
