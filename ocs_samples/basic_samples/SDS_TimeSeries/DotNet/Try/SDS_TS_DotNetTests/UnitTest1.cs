@@ -9,7 +9,6 @@ namespace SDS_TS_DotNetTests
         public void Test1()
         {
             Assert.True(SDS_TS_DotNet.Program.MainAsync(true).Result);
-
         }
     }
 }

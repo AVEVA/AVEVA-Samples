@@ -35,7 +35,6 @@ namespace SDS_TS_DotNet
 
 
             #region settings
-
             var typeValueTimeName = "Value_Time";
             var typePressureTemperatureTimeName = "Pressure_Temp_Time";
 
@@ -49,18 +48,19 @@ namespace SDS_TS_DotNet
             try
             {
 
+                #region configurationSettings
                 IConfigurationBuilder builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
                     .AddJsonFile("appsettings.test.json", optional: true);
                 IConfiguration configuration = builder.Build();
 
-                // ==== Client constants ====
                 var tenantId = configuration["TenantId"];
                 var namespaceId = configuration["NamespaceId"];
                 var resource = configuration["Resource"];
                 var clientId = configuration["ClientId"];
                 var clientKey = configuration["ClientKey"];
+                #endregion
 
                 var uriResource = new Uri(resource);
 
@@ -165,6 +165,16 @@ namespace SDS_TS_DotNet
                 }
                 #endregion
 
+                if (test)
+                {
+                    //testing to make sure we get back expected stuff
+                    if (String.Compare(JsonConvert.SerializeObject(resultsPressure.First()),"{\"Time\":\"2017-01-11T22:21:23.43Z\",\"Value\":346.0}") !=0)
+                        throw new Exception("Value retreived isn't expected value for pressure of Tank1");
+
+                    if (String.Compare(JsonConvert.SerializeObject(resultsTank.First()), "{\"Time\":\"2017-01-11T22:21:23.43Z\",\"Pressure\":346.0,\"Temperature\":91.0}") != 0)
+                        throw new Exception("Value retreived isn't expected value for Temeprature from Tank1");
+                }
+
                 // Step 10
                 //  view summary data
                 #region step10
@@ -206,11 +216,13 @@ namespace SDS_TS_DotNet
 
                 #endregion
 
-                Thread.Sleep(200); //seems to need a slight rest here for consistency
+                Thread.Sleep(200); //slight rest here for consistency
 
                 #region step11b
                 var results2Tanks = await dataService.GetJoinValuesAsync<PressureTemperatureData>(new string[] { tankStream0.Id, tankStream2.Id }, SdsJoinType.Outer, firstTime2.Time.ToString("o"), lastTime2.Time.ToString("o"));
 
+                Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine($"Bulk Values:   {tankStream0.Id}  then {tankStream2.Id}: ");
                 Console.WriteLine();
                 foreach (var tankResult in results2Tanks)
@@ -246,6 +258,18 @@ namespace SDS_TS_DotNet
                     await RunInTryCatch(metadataService.DeleteTypeAsync, typeValueTimeName);
                     await RunInTryCatch(metadataService.DeleteTypeAsync, typePressureTemperatureTimeName);
                     #endregion 
+
+                    Thread.Sleep(10); //slight rest here for consistency
+
+                    // Check deletes
+                    await RunInTryCatchExpectException(metadataService.GetStreamAsync, streamPressureName);
+                    await RunInTryCatchExpectException(metadataService.GetStreamAsync, streamTempName);
+                    await RunInTryCatchExpectException(metadataService.GetStreamAsync, streamTank0);
+                    await RunInTryCatchExpectException(metadataService.GetStreamAsync, streamTank1);
+                    await RunInTryCatchExpectException(metadataService.GetStreamAsync, streamTank2);
+
+                    await RunInTryCatchExpectException(metadataService.GetTypeAsync, typeValueTimeName);
+                    await RunInTryCatchExpectException(metadataService.GetTypeAsync, typePressureTemperatureTimeName);
                 }
             }
 
@@ -257,7 +281,7 @@ namespace SDS_TS_DotNet
         }
 
         /// <summary>
-        /// Use this to run a method that you don't want to stop the program if there is an error
+        /// Use this to run a method that you don't want to stop the program if there is an exception
         /// </summary>
         /// <param name="methodToRun">The method to run.</param>
         /// <param name="value">The value to put into the method to run</param>
@@ -275,6 +299,24 @@ namespace SDS_TS_DotNet
                     success = false;
                     toThrow = ex;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Use this to run a method that you don't want to stop the program if there is an exception, and you expect an exception
+        /// </summary>
+        /// <param name="methodToRun">The method to run.</param>
+        /// <param name="value">The value to put into the method to run</param>
+        private static async Task RunInTryCatchExpectException(Func<string, Task> methodToRun, string value)
+        {
+            try
+            {
+                await methodToRun(value);
+
+                Console.WriteLine($"Got error.  Expected {methodToRun.Method.Name} with value {value} to throw an error but it did not:" );
+            }
+            catch 
+            { 
             }
         }
 
