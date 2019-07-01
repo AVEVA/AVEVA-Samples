@@ -104,7 +104,6 @@ jobs:
       displayName: 'Test with pytest'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/
 
-
 - job: SDS_TSPy
 
   pool:
@@ -158,7 +157,6 @@ jobs:
         python -m pytest ./program.py
       displayName: 'Test with pytest'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/Python/
-
 
 - job: OMF_APIPy
 
@@ -431,6 +429,42 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/DotNet/SdsRestApiCore/SdsRestApiCoreTest/
       displayName: 'Run Test' 
 
+- job: SDS_TSDotNet
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: prod_appsettings.json
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: prod_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/DotNet/Try/SDS_TS_DotNet/'
+        #cleanTargetFolder: false # Optional   ocs_samples\basic_samples\SDS_TimeSeries\DotNet\Try\SDS_TS_DotNet\appsettings.json
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        mv prod_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/DotNet/Try/SDS_TS_DotNet/
+      displayName: 'rename config file'     
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS_TimeSeries/DotNet/Try/SDS_TS_DotNet/
+      displayName: 'Run Test'
+   
 - job: Auth_CC_DotNet
 
   pool:
@@ -472,8 +506,6 @@ jobs:
         dotnet test
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ClientCredentialFlow/DotNet/ClientCredentialFlowTest/
       displayName: 'Run Test' 
-
-
 
 - job: Auth_Hybrid_DotNet
 
@@ -599,8 +631,6 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
       displayName: 'Run Test' 
 
-
-
 - job: UOM_DotNet
 
   pool:
@@ -636,9 +666,6 @@ jobs:
         dotnet test
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/advanced_samples/UomsSample/Dotnet/UomsSample/UomsSampleTest/
       displayName: 'Run Test' 
-
-
-
 
 - job: SDSnodeJS
 
@@ -685,7 +712,6 @@ jobs:
         node Sample.js
       displayName: 'Test that the app runs'
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/JavaScript/NodeJs/
-
 
 - job: SDSangJS
 
@@ -824,5 +850,3 @@ jobs:
         #buildPlatform: # Optional
         #buildConfiguration: # Optional
         #publishRunAttachments: true # Optional
-
-
