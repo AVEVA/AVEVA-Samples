@@ -204,3 +204,10 @@ Replace the placeholders in the [appsettings](./appsettings.json) file with your
 	dotnet restore
 	dotnet run
 ```
+
+- To run the tests, first make sure to change the current folder to the folder with OmfIngressClientLibrariesTests.csproj
+
+```
+	dotnet restore
+	dotnet test	
+```
