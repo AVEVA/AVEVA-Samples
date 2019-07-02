@@ -36,7 +36,7 @@ The functionality included with the samples include (recommended order of execut
 - Create an element template
 - Create an element and associate the element's attributes with PI tags where appropriate
 - Write a single value to an attribute
-- Write a 100 values to an attribute
+- Write 100 values to an attribute
 - Perform a Batch (6 steps in 1 call) operation which includes:  
   - Get the sample tag  
   - Read the sample tag's snapshot value  

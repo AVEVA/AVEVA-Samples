@@ -112,7 +112,7 @@ public class DataviewClient {
      * @return updated dataview
      * @throws SdsErrorany error that occurs
      */
-    public Dataview putDataview(String tenantId, String namespaceId, Dataview dataviewDef) throws SdsError {
+    public void putDataview(String tenantId, String namespaceId, Dataview dataviewDef) throws SdsError {
         URL url = null;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -130,7 +130,7 @@ public class DataviewClient {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED) {
+            if (httpResult == HttpURLConnection.HTTP_OK || httpResult == HttpURLConnection.HTTP_CREATED|| httpResult == HttpURLConnection.HTTP_NO_CONTENT) {
             } else {
                 throw new SdsError(urlConnection, "update dataview request failed");
             }
@@ -152,10 +152,6 @@ public class DataviewClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Dataview results = mGson.fromJson(response.toString(), new TypeToken<Dataview>(){}.getType());
-        return results;
-       // return response.toString();
     }    
 
     /**
