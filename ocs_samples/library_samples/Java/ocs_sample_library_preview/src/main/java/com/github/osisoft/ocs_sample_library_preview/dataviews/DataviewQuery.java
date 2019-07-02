@@ -10,28 +10,22 @@ package  com.github.osisoft.ocs_sample_library_preview.dataviews;
 public class DataviewQuery {
 
     private String Id = "";
-    private DataviewQueryQuery Query;
+    private String Query = "";
 
     /**
      * base constructor
      */
     public DataviewQuery( )
     {
-        this.Query = new DataviewQueryQuery();
-    }
 
+    }
     /**
-     * generate the query from passed in values
-     * @param Id 
-     * @param Resource query resource can be something like "Streams", "TypeProperties"   required
-     * @param Field query field can be something like "Id", "Name", "Tag", "Description", "TypeId", "MetadataKey"   required
-     * @param Value value for field to use in query   required
-     * @param Function  QueryFunction can be something like "Contains", "Equals", "EndsWith", "StartsWith"    required
+     * Constructor
      */
-    public DataviewQuery(String Id, String Resource, String Field, String Value, String Function )
+    public DataviewQuery(String id, String query )
     {
-        this.Id = Id;
-        this.Query = new DataviewQueryQuery(Resource, Field, Value, Function);
+        Id= id;
+        Query= query;
     }
 
     /**
@@ -54,7 +48,7 @@ public class DataviewQuery {
      * gets query
      * @return
      */
-    public DataviewQueryQuery getQuery() {
+    public String getQuery() {
         return Query;
     }
 
@@ -62,7 +56,7 @@ public class DataviewQuery {
      * sets query
      * @param query
      */
-    public void setQuery(DataviewQueryQuery query) {
+    public void setQuery(String query) {
         this.Query = query;
     }
 }
