@@ -300,10 +300,9 @@ class Dataviews(object):
         self,
         namespace_id,
         dataview_id,
-        skip=None,
         count=None,
         form=None,
-        sessionId=None,
+        continuationToken=None,
         value_class=None,
     ):
         """
@@ -326,7 +325,7 @@ class Dataviews(object):
         if dataview_id is None:
             raise TypeError
 
-        params = {"count": count, "skip": skip, "form": form, "sessionId": sessionId}
+        params = {"count": count, "form": form, "continuationToken": continuationToken}
         response = requests.get(
             self.__getDataInterpolated.format(
                 tenant_id=self.__baseClient.tenant,
@@ -342,14 +341,17 @@ class Dataviews(object):
             f"Failed to get dataview data interpolated for dataview, {dataview_id}.",
         )
 
+        next_page = response.headers.get("NextPage", None)
+        continuation_token = next_page[next_page.find("&continuationToken=")+19:] if next_page is not None else None
+        
         if form is not None:
-            return response.text
+            return response.text, continuation_token
 
         content = response.json()
 
         if value_class is None:
-            return content
-        return value_class.fromJson(content)
+            return content, continuation_token
+        return value_class.fromJson(content), continuation_token
 
     def __setPathAndQueryTemplates(self):
         """
