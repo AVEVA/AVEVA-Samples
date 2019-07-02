@@ -38,6 +38,7 @@ Version | Date |  Notes
 0.0.2 | 4-25-19 | This version was out earlier too.  
 0.0.3 | 4-25-19 | Datagroup definition failed test.  Updated to fix that. 
 0.0.4 | 5-10-19 | Updating library version for debugging that happens only in automated tests 
+0.0.5 | 7-2-19 | Updating to be compatible with .14 of lib
 
 
 OMF_APIJava
@@ -109,3 +110,4 @@ Version | Date |  Notes
 0.0.7 | 4-26-19 | 
 0.0.8 | 4-30-19 | updating documentation non-breaking
 0.0.9 | 5-10-19 | added print of failed dataviews json conversion
+0.0.14 | 7-2-19 | Updating Dataviews
