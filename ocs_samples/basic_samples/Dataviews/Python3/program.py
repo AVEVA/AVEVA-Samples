@@ -278,14 +278,20 @@ def main(test=False):
         # Step 9
         print()
         print("Getting data as a table, seperated by commas, with headers")
-        # Viewing the whole returned result as a table
-        dataviewDataTable = ocsClient.Dataviews.getDataInterpolated(
-            namespaceId, sampleDataviewId, form="csvh")
+        # Get the first 20 rows, keep token for next 20 rows
+        dataviewDataTable1, token = ocsClient.Dataviews.getDataInterpolated(
+            namespaceId, sampleDataviewId, form="csvh", count=20)
 
-        # Display the whole 40 lines to show: 
-        #   * First lines with extrapolation (first value replicated)
-        #   * Interpolated values at 1 minute interval, stream recorded at 2 minis
-        print(dataviewDataTable)
+        # Display received 20 lines showing: 
+        #   * First lines with extrapolation (first value replicated of each stream)
+        #   * Interpolated values at 1 minute interval, stream recorded at 2 minutes interval
+        print(dataviewDataTable1)
+        # Get the last 20 rows using token, then display (without row header) 
+        dataviewDataTable2, token = ocsClient.Dataviews.getDataInterpolated(
+            namespaceId, sampleDataviewId, form="csv", count=20, continuationToken=token)   
+        print(dataviewDataTable2)
+        assert token is None, "Continuation token is not None"
+        
 
     except Exception as ex:
         print((f"Encountered Error: {ex}"))
