@@ -20,16 +20,16 @@ The OMF Ingress Service is secured by obtaining tokens from the Identity Server.
 provide a client application identifier and an associated secret (or key) that are 
 authenticated against the server. The sample includes an appsettings.json configuration 
 file to hold configuration strings, including the authentication strings. You must 
-replace the placeholders with the authentication-related values you received from OSIsoft. The application requires two Client Credential Clients, one to manage OMF Ingress connetions and one to send data from a mock device. For information on how to obtain these client IDs and secrets, see the [Client Credential Client Documentation](https://ocs-docs.osisoft.com/Documentation/Identity/Identity_ClientCredentialClient.html).
+replace the placeholders with the authentication-related values you received from OSIsoft. The application requires two Client Credential Clients, one to manage OMF Ingress connections and one to send data from a mock device. For information on how to obtain these client IDs and secrets, see the [Client Credential Client Documentation](https://ocs-docs.osisoft.com/Documentation/Identity/Identity_ClientCredentialClient.html).
 
 ```
 	{
         "TenantId": "REPLACE_WITH_YOUR_TENANT_ID",
         "NamespaceId": "REPLACE_WITH_YOUR_NAMESPACE_ID",
-        "Address": "https://dat-b.osisoft.com",
-        "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",
+        "Address": "https://dat-b.osisoft.com",						//This is the base address, NOT the OMF endpoint.
+        "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",				//This is the client to connect to the OMF Ingress Services.
         "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
-        "DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",
+        "DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",			//This is the client that will be used to send OMF data. Make sure a connection hasn't been made for this client yet.
         "DeviceClientSecret": "REPLACE_WITH_DEVICE_CLIENT_SECRET",
         "ConnectionName": "REPLACE_WITH_DESIRED_CONNECTION_NAME",
         "StreamId": "REPLACE_WITH_DESIRED_STREAM_ID"
@@ -38,6 +38,13 @@ replace the placeholders with the authentication-related values you received fro
 
 The authentication values are provided to the ``OSIsoft.Identity.AuthenticationHandler``. 
 The AuthenticationHandler is a DelegatingHandler that is attached to an HttpClient pipeline.
+
+Please note that while running the samples, you might get the following error:
+
+```
+	The specified client is already mapped to a different topic in the given namespace.
+```
+If you get this error, it means that your DeviceClientId is already mapped to a topic in the same namespace. In that case, either create a new client and update the credentials for DeviceClientId and DeviceClientSecret, or specify a different namespace.
 
 Other Configuration
 -------------------
@@ -170,4 +177,30 @@ Deleting Subscriptions and Topics can be achieved using the Ingress client and p
 ```
     await omfIngressService.DeleteSubscriptionAsync(createdSubscription.Id);
     await omfIngressService.DeleteTopicAsync(createdTopic.Id);
+```
+
+Steps to run this sample
+---------------------------------------------------
+
+Replace the placeholders in the [appsettings](./appsettings.json) file with your TenantId, NamespaceId, ClientId, ClientSecret, DeviceClientId, DeviceClientSecret, ConnectionName and the StreamId.
+
+### Requirements
+
+- .net core 2.1 or later
+- Reliable internet connection
+
+### Using Visual Studio
+
+- Load the .csproj
+- Rebuild project
+- Run it
+
+### Command Line
+
+- Make sure you have the install location of dotnet added to your path
+- Run the following command from the location of this project:
+
+```
+	dotnet restore
+	dotnet run
 ```

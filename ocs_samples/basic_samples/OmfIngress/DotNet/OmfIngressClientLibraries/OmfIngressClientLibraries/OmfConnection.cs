@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OmfIngressClientLibraries
 {
-    internal class OmfConnection
+    public class OmfConnection
     {
         public string[] ClientIds { get; set; }
         public Topic Topic { get; set; }

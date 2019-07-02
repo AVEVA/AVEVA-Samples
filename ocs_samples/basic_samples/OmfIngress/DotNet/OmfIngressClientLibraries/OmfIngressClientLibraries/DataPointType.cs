@@ -1,9 +1,10 @@
-﻿using OSIsoft.Omf.DefinitionAttributes;
+﻿using OSIsoft.Omf;
+using OSIsoft.Omf.DefinitionAttributes;
 using System;
 
 namespace OmfIngressClientLibraries
 {
-    [OmfType(Id = "DataPointType")]
+    [OmfType(Id = "DataPointType", ClassificationType = ClassificationType.Dynamic)]
     public class DataPointType
     {
         [OmfProperty(IsIndex = true)]

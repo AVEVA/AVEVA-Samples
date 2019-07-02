@@ -9,7 +9,7 @@ using static OSIsoft.OmfIngress.Models.SubscriptionTypeEnum;
 
 namespace OmfIngressClientLibraries
 {
-    class OmfIngressClient
+    public class OmfIngressClient
     {
         private readonly IOmfIngressService _omfIngressService;
         private readonly string _tenantId;
@@ -41,7 +41,7 @@ namespace OmfIngressClientLibraries
             Console.WriteLine();
 
             // Create a Subscription
-            Console.WriteLine($"Creating a Subscription in Namespace {_namespaceId} for Topic with Id {createdTopic.Id}");
+            Console.WriteLine($"Creating a Subscription in Namespace {destinationNamespaceId} for Topic with Id {createdTopic.Id}");
             Console.WriteLine();
             Subscription subscription = new Subscription()
             {
@@ -52,7 +52,7 @@ namespace OmfIngressClientLibraries
                 Type = SubscriptionType.Sds,
                 TopicId = createdTopic.Id,
                 TopicTenantId = _tenantId,
-                TopicNamespaceId = destinationNamespaceId
+                TopicNamespaceId = _namespaceId
             };
             Subscription createdSubscription = await _omfIngressService.CreateSubscriptionAsync(subscription);
             Console.WriteLine($"Created a Subscription with Id {createdSubscription.Id}");
@@ -60,8 +60,8 @@ namespace OmfIngressClientLibraries
             OmfConnection omfConnection = new OmfConnection()
             {
                 ClientIds = new string[] { deviceClientId },
-                Topic = topic,
-                Subscription = subscription
+                Topic = createdTopic,
+                Subscription = createdSubscription
             };
             return omfConnection;
         }
