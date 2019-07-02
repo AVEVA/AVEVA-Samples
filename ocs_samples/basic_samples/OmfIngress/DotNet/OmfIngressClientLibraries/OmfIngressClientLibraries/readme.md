@@ -26,7 +26,7 @@ replace the placeholders with the authentication-related values you received fro
 	{
         "TenantId": "REPLACE_WITH_YOUR_TENANT_ID",
         "NamespaceId": "REPLACE_WITH_YOUR_NAMESPACE_ID",
-        "Address": "https://dat-b.osisoft.com",						//This is the base address, NOT the OMF endpoint.
+        "Address": "https://dat-b.osisoft.com",					//This is the base address, NOT the OMF endpoint.
         "ClientId": "REPLACE_WITH_CLIENT_IDENTIFIER",				//This is the client to connect to the OMF Ingress Services.
         "ClientSecret": "REPLACE_WITH_CLIENT_SECRET",
         "DeviceClientId": "REPLACE_WITH_DEVICE_CLIENT_ID",			//This is the client that will be used to send OMF data. Make sure a connection hasn't been made for this client yet.
