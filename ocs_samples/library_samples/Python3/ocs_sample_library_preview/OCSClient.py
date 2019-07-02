@@ -56,6 +56,17 @@ class OCSClient:
         self.__baseClient.AcceptVerbosity = AcceptVerbosity
 
     @property
+    def request_timeout(self):
+        """
+        :return: Request timeout in seconds (default 30 secs)
+        """
+        return self.__baseClient.RequestTimeout
+
+    @request_timeout.setter
+    def request_timeout(self, timeout):
+        self.__baseClient.RequestTimeout = timeout
+
+    @property
     def Dataviews(self):
         """
         :return: A client for interacting with Dataviews
