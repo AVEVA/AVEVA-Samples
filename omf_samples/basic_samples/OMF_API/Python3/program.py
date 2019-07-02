@@ -62,6 +62,10 @@ resourceBase = ""
 
 dataServerName = ""
 
+username = ""
+
+password = ""
+
 
 # The version of the OMFmessages
 omfVersion = "1.1"
@@ -135,7 +139,7 @@ def getToken():
 def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'create'):
     # Sends the request out to the preconfigured endpoint..
 
-    global producerToken, omfEndPoint, omfVersion, sendingToOCS
+    global producerToken, omfEndPoint, omfVersion, sendingToOCS, username, password
     # Compress json omf payload, if specified
     compression = 'none'
     if USE_COMPRESSION:
@@ -145,7 +149,7 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
         msg_body = json.dumps(message_omf_json)
 
     msg_headers = {}
-
+    response = {}
     # Assemble headers   
     if sendingToOCS:     
         msg_headers = {
@@ -157,22 +161,32 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
             'omfversion': omfVersion,
             'compression': compression
         }
+        response = requests.post(
+            omfEndPoint,
+            headers = msg_headers,
+            data = msg_body,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS
+        )
     else:   
         msg_headers = {
             'messagetype': message_type,
             'action': action,
             'messageformat': 'JSON',
-            'omfversion': omfVersion
+            'omfversion': omfVersion,
+            'X-Requested-With': 'XMLHttpRequest',
         }
+        response = requests.post(
+            omfEndPoint,
+            headers = msg_headers,
+            data = msg_body,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS,
+            auth=(username, password) 
+        )
 
     # Send the request, and collect the response
-    response = requests.post(
-        omfEndPoint,
-        headers = msg_headers,
-        data = msg_body,
-        verify = VERIFY_SSL,
-        timeout = WEB_REQUEST_TIMEOUT_SECONDS
-    )
+
     if response.status_code == 409:
         #print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
         return
@@ -747,7 +761,8 @@ def getConfig(section, field):
 # ************************************************************************
 def main(test = False):
     # Main program.  Seperated out so that we can add a test function and call this easily
-    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase, dataServerName, forceSending, sendingToOCS, VERIFY_SSL
+    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase
+    global dataServerName, forceSending, sendingToOCS, VERIFY_SSL, username, password
     success = True
     try:
         print('------------------------------------------------------------------')
@@ -762,8 +777,8 @@ def main(test = False):
         print('------------------------------------------------------------------')
 
         # Step 1
+        #OCS configuration
         namespaceId = getConfig('Configurations', 'Namespace') 
-        dataServerName = getConfig('Configurations', 'DataServerName') 
         resourceBase = getConfig('Access', 'Resource')
         tenant = getConfig('Access', 'Tenant')
         apiversion = getConfig('Access', 'ApiVersion')
@@ -771,7 +786,15 @@ def main(test = False):
         producerToken = getConfig('Credentials', 'ProducerToken')
         clientId = getConfig('Credentials', 'ClientId')
         clientSecret = getConfig('Credentials', 'ClientSecret')
+        
+        #PI Web API configuration
+        dataServerName = getConfig('Configurations', 'DataServerName') 
         verify = getConfig('Configurations', 'VERIFY_SSL') 
+        username = getConfig('Credentials', 'username') 
+        password = getConfig('Credentials', 'password') 
+
+        #shared configuration
+        resourceBase = getConfig('Access', 'Resource')
 
         if verify is not None:
             if verify == "False":
