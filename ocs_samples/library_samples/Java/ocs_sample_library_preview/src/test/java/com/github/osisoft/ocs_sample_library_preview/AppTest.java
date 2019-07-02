@@ -1,6 +1,5 @@
 package  com.github.osisoft.ocs_sample_library_preview;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 

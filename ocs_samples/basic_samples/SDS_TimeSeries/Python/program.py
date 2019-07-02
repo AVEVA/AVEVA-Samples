@@ -20,6 +20,7 @@ streamTank1 = "Tank1"
 streamTank2 = "Tank2"
 
 valueCache = []
+valueCache2 = []
 exception: Exception = None
 
 
@@ -111,9 +112,9 @@ def GetData():
 
 
 def GetData_Tank2():
-    global valueCache
-    if valueCache:
-        return valueCache
+    global valueCache2
+    if valueCache2:
+        return valueCache2
     values = []
     values.append({"pressure": 345, "temperature": 89, "time": "2017-01-11T22:20:23.430Z"})
 
@@ -125,7 +126,7 @@ def GetData_Tank2():
     values.append({"pressure": 384.2, "temperature": 92.2, "time": "2017-01-11T22:27:23.430Z"})
     values.append({"pressure": 390, "temperature": 87, "time": "2017-01-11T22:28:29.430Z"})
 
-    valueCache = values
+    valueCache2 = values
     return values
 
 

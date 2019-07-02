@@ -151,6 +151,7 @@ def main(test=False):
         print(" ######  #    #   #   #    #   ##   # ###### #    # #          #    ")
         print("--------------------------------------------------------------------")
 
+        # Step 1
         ocsClient = OCSClient(config.get('Access', 'ApiVersion'),
                               config.get('Access', 'Tenant'),
                               config.get('Access', 'Resource'),
@@ -162,6 +163,7 @@ def main(test=False):
         print(namespaceId)
         print(ocsClient.uri)
 
+        # Step 2
         if needData:
             createData(ocsClient)
 
@@ -201,6 +203,7 @@ def main(test=False):
         # 2019-06-27T12:27:00Z,54.5602717243303,55.4288084527031
         # ...
 
+        # Step 3
         queryObj = DataviewQuery(sampleDataviewId, f"name:*{sampleStreamId}*")
         mappingObj = DataviewMapping(isDefault=True)
         if startTime:
@@ -220,6 +223,7 @@ def main(test=False):
         print(dataview.toJson())
         dataviews = ocsClient.Dataviews.postDataview(namespaceId, dataview)
 
+        # Step 4
         print
         print("Getting dataview")
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
@@ -230,11 +234,13 @@ def main(test=False):
         dv.Description = sampleDataviewDescription_modified
         dv.Mappings.IsDefault = False  # for now we have to change this to post
 
+        # Step 5
         print
         print("Updating dataview")
         # No dataview returned, success is 204
         ocsClient.Dataviews.putDataview(namespaceId, dv)
 
+        # Step 6
         # Getting the complete set of dataviews to make sure it is there
         print
         print("Getting dataviews")
@@ -248,18 +254,12 @@ def main(test=False):
         print
         print("Getting Datagroups")
 
+        # Step 7
         # This works for the automated test.  You can use this or the below.
         datagroups = ocsClient.Dataviews.getDatagroups(
             namespaceId, sampleDataviewId, 0, 100, True)
         print('datagroups')
         print(datagroups)
-
-        # This works locally,  but fails during automated tests for some reason
-
-        # datagroups = ocsClient.Dataviews.getDatagroups(namespaceId, sampleDataviewId)
-        # for key, datagroup in datagroups['DataGroups'].items():
-        #    print('datagroup')
-        #    print(datagroup.toJson())
 
         # By default the preview get interpolated values every minute over the
         # last hour, which lines up with our data that we sent in.
@@ -268,12 +268,14 @@ def main(test=False):
         # to return the data in a class if you have created a Type for the
         # data you are retrieving.
 
+        # Step 8
         print
         print("Retrieving data preview from the Dataview")
         dataviewDataPreview1 = ocsClient.Dataviews.getDataviewPreview(
             namespaceId, sampleDataviewId)
         print(str(dataviewDataPreview1[0]))
 
+        # Step 9
         print()
         print("Getting data as a table, seperated by commas, with headers")
         # Viewing the whole returned result as a table
@@ -302,6 +304,7 @@ def main(test=False):
         print
         print("Deleting dataview")
 
+        # Step 10
         supressError(lambda: ocsClient.Dataviews.deleteDataview(
             namespaceId, sampleDataviewId))
 
