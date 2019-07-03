@@ -40,7 +40,7 @@ namespace OMF_API
 
 
         // The version of the OMFmessages
-        static string omfVersion = "1.1";
+        static string omfVersion = "1.1"; 
 
         // Holders for parameters set by configuration
         static string producerToken;
@@ -50,8 +50,6 @@ namespace OMF_API
         static string clientId = "";
         static string clientSecret = "";
         static string pidataserver = "";
-        static string piassetserver = "";
-        static string afomfdatabase = "";
         static string verify = "";
 
         static string username = "";
@@ -194,8 +192,7 @@ namespace OMF_API
                 //step 10
                 try
                 {
-                    if(sendingToOCS)
-                        sendTypesAndContainers("delete");
+                    deleteTypesAndContainers();
                 }
                 catch (Exception ex)
                 {
@@ -407,7 +404,7 @@ namespace OMF_API
             if (sendingToOCS)
                 sendContainers2(action);
             
-            if (!sendingToOCS)
+            if (!sendingToOCS && String.Compare(action,"delete",true)==0)
             {
                 // Step 7
                 sendStaticData(action);
@@ -417,12 +414,31 @@ namespace OMF_API
             }
         }
 
-        private static string getBasicAuth()
+
+        /// <summary>
+        /// Wrapper around the type and container calls
+        /// </summary>
+        /// <param name="action"></param>
+        private static void deleteTypesAndContainers(string action = "delete")
         {
-            String encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
-            return ("Basic " + encoded);
+            if (sendingToOCS)
+                sendContainers2(action);
+
+            sendContainers(action);
+
+            if (sendingToOCS)
+                sendNonTimeStampTypes(action);
+
+            sendFirstDynamicType(action);
+            sendSecondDynamicType(action);
+            sendThirdDynamicType(action);
+            
+            if (!sendingToOCS)
+            {
+                sendFirstStaticType(action);
+                sendSecondStaticType(action);
+            }            
         }
-        
         /// <summary>
         /// Sends the values to the preconfigured endpoint
         /// </summary>
@@ -439,7 +455,6 @@ namespace OMF_API
             request.Headers.Add("action", action);
             request.Headers.Add("messageformat", "json");
             request.Headers.Add("omfversion", omfVersion);
-
             if (sendingToOCS)
             {
                 request.Headers.Add("Authorization", "Bearer " + getToken());
@@ -447,7 +462,7 @@ namespace OMF_API
             else
             {
                 request.Headers.Add("x-requested-with", "XMLHTTPRequest");
-                request.Headers.Add("Authorization", getBasicAuth());
+                request.Credentials = new NetworkCredential(username, password);
             }
 
 
@@ -502,7 +517,7 @@ namespace OMF_API
             else
             {
                 request.Headers.Add("x-requested-with", "XMLHTTPRequest");
-                request.Headers.Add("Authorization", getBasicAuth());
+                request.Credentials = new NetworkCredential(username, password);
             }
 
             return Send(request);

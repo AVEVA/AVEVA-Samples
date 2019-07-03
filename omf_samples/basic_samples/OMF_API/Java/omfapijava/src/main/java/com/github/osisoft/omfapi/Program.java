@@ -39,6 +39,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.codec.binary.Base64;
+
+
 import java.time.*;
 
 public class Program {
@@ -68,6 +71,9 @@ public class Program {
     static String tenantId = getConfiguration("tenantId");
     static String namespaceId = getConfiguration("namespaceId");
     static String dataServerName = getConfiguration("dataServerName");
+    
+    static String username = getConfiguration("username");
+    static String password = getConfiguration("password");
     static String omfEndPoint = "";
     static String checkBase = "";
 
@@ -125,14 +131,18 @@ public class Program {
 
         // Create Sds client to communicate with server
         System.out.println("------------------------------------------------------------------");
-        System.out.println(" .d88888b.  888b     d888 8888888888        8888888b. Y88b   d88P ");
-        System.out.println("d88P\" \"Y88b 8888b   d8888 888               888   Y88b Y88b d88P  ");
-        System.out.println("888     888 88888b.d88888 888               888    888  Y88o88P   ");
-        System.out.println("888     888 888Y88888P888 8888888           888   d88P   Y888P    ");
-        System.out.println("888     888 888 Y888P 888 888               8888888P\"     888     ");
-        System.out.println("888     888 888  Y8P  888 888               888           888     ");
-        System.out.println("Y88b. .d88P 888   \"   888 888               888           888     ");
-        System.out.println(" \"Y88888P\"  888       888 888      88888888 888           888     ");
+        System.out.println("  .d88888b.  888b     d888 8888888888       888888        d8888 888     888     d8888");
+        System.out.println("d88P\" \"Y88b 8888b   d8888 888                \"88b       d88888 888     888    d88888");
+        System.out.println("888     888 88888b.d88888 888                 888      d88P888 888     888   d88P888");
+        System.out.println("888     888 888Y88888P888 8888888             888     d88P 888 Y88b   d88P  d88P 888");
+        System.out.println("888     888 888 Y888P 888 888                 888    d88P  888  Y88b d88P  d88P  888");
+        System.out.println("888     888 888  Y8P  888 888                 888   d88P   888   Y88o88P  d88P   888");
+        System.out.println("Y88b. .d88P 888   \"   888 888                 88P  d8888888888    Y888P  d8888888888");
+        System.out.println(" \"Y88888P\"  888       888 888      88888888   888 d88P     888     Y8P  d88P     888");
+        System.out.println("                                            .d88P                                    ");
+        System.out.println("                                          .d88P\"                                     ");
+        System.out.println("                                         888P\"                                       ");
+        
         System.out.println("------------------------------------------------------------------");
 
         try {
@@ -327,10 +337,6 @@ public class Program {
     }
 
     private static void oneTimeSendMessages(String action) throws Exception {
-        if (!sendToOCS) {
-            return;
-        }
-
         // Step 3
         sendOMF(getFirstandSecondStaticTypeString(), "type", action);
         // Step 4
@@ -609,6 +615,7 @@ public class Program {
             writer.close();
 
             int httpResult = urlConnection.getResponseCode();
+            String httpMessage = urlConnection.getResponseMessage();
             if (isSuccessResponseCode(httpResult) || httpResult == 409) {
             } else {
 
@@ -629,7 +636,7 @@ public class Program {
                     e.printStackTrace();
                 }
 
-                throw new Exception("Post OMF failed." + httpResult + "  " + httpErrorMessage.toString());
+                throw new Exception("Post OMF failed." + httpResult + "  " + httpMessage + " " + httpErrorMessage.toString());
             }        
         } catch (MalformedURLException mal) {
             System.out.println("MalformedURLException");
@@ -708,6 +715,12 @@ public class Program {
         return responseCode >= 200 && responseCode < 300;
     }
     
+    private String getBasicAuthenticationEncoding() {
+
+        String userPassword = username + ":" + password;
+        return new String(java.util.Base64.getEncoder().encodeToString(userPassword.getBytes()));
+    }
+    
    
     public static HttpURLConnection getConnection(URL url, String method, String message_type, String action) {
         HttpURLConnection urlConnection = null;
@@ -722,6 +735,12 @@ public class Program {
                 urlConnection.setRequestProperty("Authorization", "Bearer " + token);
                 urlConnection.setRequestProperty("producertoken", token);
             }
+            else
+            {
+                urlConnection.setRequestProperty("x-requested-with", "xmlhttprequest");
+                urlConnection.setRequestProperty("Authorization", "Basic " + getBasicAuthenticationEncoding());
+            }
+
             urlConnection.setRequestProperty("messagetype", message_type);
             urlConnection.setRequestProperty("action", action);
             urlConnection.setRequestProperty("omfversion", omfVersion);
