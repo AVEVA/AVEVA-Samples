@@ -53,7 +53,10 @@ namespace OMF_API
         static string piassetserver = "";
         static string afomfdatabase = "";
         static string verify = "";
-        
+
+        static string username = "";
+        static string password = "";
+
 
         // Holds the token that is used for Auth for OCS.
         static string token = null;
@@ -114,12 +117,15 @@ namespace OMF_API
                 clientSecret = configuration["ClientKey"];
                 pidataserver = configuration["dataservername"];
                 verify = configuration["VERIFY_SSL"];
+
+                username = configuration["username"];
+                password = configuration["password"];
                 /* not currently used, but would be needed to check AF creation
                 piassetserver = configuration["assetservername"];
                 afomfdatabase = configuration["afomfdatabase"];
                 */
 
-                if(!sendingToOCSBoolforced)
+                if (!sendingToOCSBoolforced)
                 {
                     sendingToOCS = tenantId != null;
                 }
@@ -411,6 +417,12 @@ namespace OMF_API
             }
         }
 
+        private static string getBasicAuth()
+        {
+            String encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + password));
+            return ("Basic " + encoded);
+        }
+        
         /// <summary>
         /// Sends the values to the preconfigured endpoint
         /// </summary>
@@ -429,7 +441,15 @@ namespace OMF_API
             request.Headers.Add("omfversion", omfVersion);
 
             if (sendingToOCS)
+            {
                 request.Headers.Add("Authorization", "Bearer " + getToken());
+            }
+            else
+            {
+                request.Headers.Add("x-requested-with", "XMLHTTPRequest");
+                request.Headers.Add("Authorization", getBasicAuth());
+            }
+
 
             byte[] byteArray;
 
@@ -472,13 +492,20 @@ namespace OMF_API
         private static string checkValue(string URL)
         {
             WebRequest request = WebRequest.Create(new Uri(URL));
-            request.Method = "get";            
+            request.Method = "get";
 
             if (sendingToOCS)
+            {
                 request.Headers.Add("Authorization", "Bearer " + getToken());
-            
+            }
 
-           return Send(request);
+            else
+            {
+                request.Headers.Add("x-requested-with", "XMLHTTPRequest");
+                request.Headers.Add("Authorization", getBasicAuth());
+            }
+
+            return Send(request);
         }
 
 
