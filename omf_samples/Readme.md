@@ -55,14 +55,16 @@ A credential config.ini or app.config file is used in the examples unless otherw
    
    
    You will need to modify these files locally when you run the samples.
+ 
+## Feedback
 
-## Request for example 
+If you have a need for a new sample; if there is a feature or capability that should be demonstrated; if there is an existing sample that should be in your favorite language; please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel.  [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).   
+ 
+## Support
 
-Please raise an issue if you would like to see a new task, a new example inside of a task, or an existing example in a particular langauge.    
+If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal  (https://my.osisoft.com).
 
-## Contributions
-
-If you wish to contribute please take a look at the [contribution guide](../CONTRIBUTING.md).
+If your support question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
 
 ## License
 
