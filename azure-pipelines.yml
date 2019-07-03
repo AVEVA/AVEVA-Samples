@@ -70,7 +70,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: config.ini
+        secureFile: prod_config_dataview.ini
 
 
     # Copy Files
@@ -78,12 +78,17 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.ini
+        contents: prod_config_dataview.ini
         targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/'
         #cleanTargetFolder: false # Optionalocs_samples/basic_samples\Dataviews\Python3
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+
+    - script: |
+        mv prod_config_dataview.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'rename config file'
 
       
     - script: |
