@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HybridFlow", "HybridFlow\HybridFlow.csproj", "{6E4751C1-1B92-41A0-98D3-496BE4A6938B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HybridFlowTest", "HybridFlowTest\HybridFlowTest.csproj", "{56AEC921-173B-43DD-8950-925526B0E982}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E4751C1-1B92-41A0-98D3-496BE4A6938B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E4751C1-1B92-41A0-98D3-496BE4A6938B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E4751C1-1B92-41A0-98D3-496BE4A6938B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E4751C1-1B92-41A0-98D3-496BE4A6938B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56AEC921-173B-43DD-8950-925526B0E982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56AEC921-173B-43DD-8950-925526B0E982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56AEC921-173B-43DD-8950-925526B0E982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56AEC921-173B-43DD-8950-925526B0E982}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0767459B-E1BF-4D55-A532-30402D40D36A}
+	EndGlobalSection
+EndGlobal

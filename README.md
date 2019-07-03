@@ -18,7 +18,7 @@ There is a [style guide](StyleGuide.md) that helps explain the organization of t
  
 ## Feedback
 
-If you have a need for a new sample.  If there is a feature or capability that should be demonstrated.  If there is an existing sample that should be in your favorite language.  Please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel.  It should be marked with the 'OSIsoft Samples' Category.  [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).   
+If you have a need for a new sample; if there is a feature or capability that should be demonstrated; if there is an existing sample that should be in your favorite language; please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel.  [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).   
  
 ## Support
 

@@ -24,28 +24,34 @@ namespace ClientCredentialFlow
             // authenticate and acquire an Access Token and cache it.
             try
             {
-                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/Tenants/{tenantId}/Users").Result;
+                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/{version}/Tenants/{tenantId}/Users").Result;
                 response.EnsureSuccessStatusCode();
-                Console.WriteLine(response.Content.ReadAsStringAsync());
+                Console.WriteLine(response.Content.ReadAsStringAsync().Result);
                 Console.WriteLine($"HTTP GET api/{version}/Tenants/{tenantId}/Users successful");
             }
             catch (AggregateException ex)
             {
-                Console.WriteLine($"Authentication failed with the following error: {ex.InnerException.Message}");
-                throw (ex.InnerException);
+                foreach (var inEx in ex.Flatten().InnerExceptions)
+                {
+                    Console.WriteLine($"Authentication failed with the following error: {inEx.Message}");
+                }
+                throw (ex);
             }
 
             // Make another request to OCS - this call should use the cached Access Token.
             try
             {
-                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/Tenants/{tenantId}/Users").Result;
+                var response = ClientFlow.AuthenticatedHttpClient.GetAsync($"api/{version}/Tenants/{tenantId}/Users").Result;
                 response.EnsureSuccessStatusCode();
                 Console.WriteLine($"HTTP GET api/{version}/Tenants/{tenantId}/Users successful");
             }
             catch (AggregateException ex)
             {
-                Console.WriteLine($"Authentication failed with the following error: {ex.InnerException.Message}");
-                throw (ex.InnerException);
+                foreach(var inEx in ex.Flatten().InnerExceptions)
+                {
+                    Console.WriteLine($"Authentication failed with the following error: {inEx.Message}");
+                }
+                throw (ex);
             }
         }
 

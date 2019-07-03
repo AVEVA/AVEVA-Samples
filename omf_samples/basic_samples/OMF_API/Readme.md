@@ -28,7 +28,9 @@ The samples are written in a way that the same sample can send to both PI and OC
 
 NOTE: Automated tests are currently OCS only.
 
-NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoint.  The Connector Relay OMF endpoint is the only current endpoint.  These samples should generally work if you change the OMF Version Header to 1.0, but they are untested and there might be more changes required.   
+NOTE: The examples for PI are tested against the PI Web API OMF accepting endpoint.  The Connector Relay OMF endpoint is the only current endpoint.  These samples should generally work if you change the OMF Version Header to 1.0, but they are untested and there might be more changes required.
+
+
 
 
 
@@ -44,6 +46,7 @@ This list is not exhuastive, but rather a few key details to know.
 PI System Client Configuration
 -----------------
 If this sample is used against the PI Web API endpoint the client computer must trust the certificate of PI Web API.
+The samples assume Basic Authentication
 
 ---------
 
