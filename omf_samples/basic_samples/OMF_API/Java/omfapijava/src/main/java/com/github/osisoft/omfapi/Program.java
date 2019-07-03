@@ -39,15 +39,13 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.codec.binary.Base64;
-
 
 import java.time.*;
 
 public class Program {
     // holder used for test result
     static Boolean success = true;
-    static Exception exc;
+    static Exception exc = null;
 
     // settings that aren't set by configuration
     static String compression = "none";
@@ -212,12 +210,12 @@ public class Program {
 
             try {
                 // Step 10
-                oneTimeSendMessages("Delete");
+                deleteOneTimeSendMessages();
             } catch (Exception e) {
-                if (!success && sendToOCS) {
-                    success = false;
+                if (exc == null) {
                     exc = e;
                 }
+                success = false;
                 e.printStackTrace();
             }
 
@@ -335,6 +333,25 @@ public class Program {
                 + integer_index2_1 + "," + "                    \"IntKey2\": " + integer_index2_2 + ""
                 + "                }" + "            ]" + "        }" + "    ]";
     }
+
+    private static void deleteOneTimeSendMessages() throws Exception {
+        String action = "delete";
+        sendOMF(getStatic1(), "data", action);
+
+        sendOMF(getContainers(), "container", action);
+        if (sendToOCS) {
+            sendOMF(getMultiIndexContainers(), "type", action);
+        }
+        
+        if (sendToOCS) {
+            sendOMF(getDynamicTypeMultiIndexString(), "type", action);
+        }
+        
+        sendOMF(getDynamicTypeString(), "type", action);
+        
+        sendOMF(getFirstandSecondStaticTypeString(), "type", action);
+    }
+
 
     private static void oneTimeSendMessages(String action) throws Exception {
         // Step 3
@@ -715,7 +732,7 @@ public class Program {
         return responseCode >= 200 && responseCode < 300;
     }
     
-    private String getBasicAuthenticationEncoding() {
+    private static String getBasicAuthenticationEncoding() {
 
         String userPassword = username + ":" + password;
         return new String(java.util.Base64.getEncoder().encodeToString(userPassword.getBytes()));
