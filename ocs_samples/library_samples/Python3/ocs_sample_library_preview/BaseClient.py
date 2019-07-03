@@ -24,6 +24,7 @@ class BaseClient(object):
         self.__expiration = 0
         self.__getToken()
         self.__acceptVerbosity = acceptVerbosity
+        self.__requestTimeout = None
 
         self.__uri_API = url + '/api/' + apiversion
 
@@ -66,6 +67,14 @@ class BaseClient(object):
     @AcceptVerbosity.setter
     def AcceptVerbosity(self, accept_verbosity):
         self.__acceptVerbosity = accept_verbosity
+
+    @property
+    def RequestTimeout(self):
+        return self.__requestTimeout
+
+    @RequestTimeout.setter
+    def RequestTimeout(self, timeout):
+        self.__requestTimeout = timeout
 
     def __getToken(self):
         """
@@ -113,6 +122,9 @@ class BaseClient(object):
                    "Accept": "application/json"}
         if (self.__acceptVerbosity):
             headers['Accept-Verbosity'] = "verbose"
+        if self.__requestTimeout is not None:
+            headers['Request-Timeout'] = str(self.__requestTimeout)
+
         return headers
 
     def checkResponse(self, response, main_message):
