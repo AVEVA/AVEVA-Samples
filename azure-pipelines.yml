@@ -269,7 +269,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: config.properties
+        secureFile: prod_config_dataview.properties
 
       #
     - script: mvn install -f pom.xml 
@@ -281,12 +281,17 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.properties
+        contents: prod_config_dataview.properties
         targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Java/dataviewjava/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+
+    - script: |
+        mv prod_config_dataview.properties config.properties
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/
+      displayName: 'Install requirements'
       
     - task: Maven@3
       inputs:
