@@ -70,7 +70,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: config.ini
+        secureFile: prod_config_dataview.ini
 
 
     # Copy Files
@@ -78,12 +78,17 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.ini
+        contents: prod_config_dataview.ini
         targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/'
         #cleanTargetFolder: false # Optionalocs_samples/basic_samples\Dataviews\Python3
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+
+    - script: |
+        mv prod_config_dataview.ini config.ini
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      displayName: 'rename config file'
 
       
     - script: |
@@ -264,7 +269,7 @@ jobs:
     # Download a secure file to a temporary location on the build or release agent
     - task: DownloadSecureFile@1
       inputs:
-        secureFile: config.properties
+        secureFile: prod_config_dataview.properties
 
       #
     - script: mvn install -f pom.xml 
@@ -276,12 +281,17 @@ jobs:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.TempDirectory)
-        contents: config.properties
+        contents: prod_config_dataview.properties
         targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Java/dataviewjava/'
         #cleanTargetFolder: false # Optional
         overWrite: true # Optional
         #flattenFolders: false # Optional
       displayName: copy file
+
+    - script: |
+        mv prod_config_dataview.properties config.properties
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/
+      displayName: 'Install requirements'
       
     - task: Maven@3
       inputs:
@@ -665,6 +675,83 @@ jobs:
         dotnet restore
         dotnet test
       workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/ImplicitFlow/DotNet/ImplicitFlowTest/
+      displayName: 'Run Test' 
+
+- job: Auth_PKCE_DotNet
+
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps :
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: PKCE_test_appsettings.json
+
+    # Download Secure File
+    # Download a secure file to a temporary location on the build or release agent
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: PKCE_config.js
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: PKCE_test_appsettings.json
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlowTest/'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+
+    # Copy Files
+    # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        contents: PKCE_config.js
+        targetFolder: '$(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow/wwwroot'
+        #cleanTargetFolder: false # Optional  
+        overWrite: true # Optional
+        #flattenFolders: false # Optional 
+      displayName: copy file
+
+    - script: |
+        del appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlowTest/
+      displayName: 'rename config file'        
+
+    - script: |
+        del config.js
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow/wwwroot
+      displayName: 'rename config file'     
+
+    - script: |
+        rename PKCE_test_appsettings.json appsettings.json
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlowTest/
+      displayName: 'rename config file'        
+
+    - script: |
+        rename PKCE_config.js config.js
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow/wwwroot
+      displayName: 'rename config file'       
+      
+    - script: |
+        dotnet restore
+        dotnet build
+        start /B dotnet run
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow/
+      displayName: 'Run Test'  
+      
+    - script: |
+        dotnet restore
+        dotnet test
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Authentication/AuthorizationCodeFlow/DotNet/AuthorizationCodeFlowTest/
       displayName: 'Run Test' 
 
 - job: UOM_DotNet

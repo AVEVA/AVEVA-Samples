@@ -169,7 +169,7 @@ namespace HybridFlow
             // Get provider information manually
             var provider = await GetProviderInformation();
 
-            // Make a refreshtoken request. THis will issue new access and refresh tokens.
+            // Make a refresh token request. This will issue new access and refresh tokens.
             var tokenClient = new HttpClient();
             var response = await tokenClient.RequestRefreshTokenAsync(new RefreshTokenRequest
             {
