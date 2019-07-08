@@ -247,6 +247,8 @@ class Dataviews(object):
         value_class=None,
     ):
         """
+        --- Deprecated ---
+
         Retrieves the dataviewpreview of the 'dataview_id' from Sds Service
         :param namespace_id: namespace to work against
         :param dataview_id: dataview to work against
@@ -303,6 +305,9 @@ class Dataviews(object):
         count=None,
         form=None,
         continuationToken=None,
+        startIndex=None,
+        endIndex=None,
+        interval=None,
         value_class=None,
     ):
         """
@@ -312,8 +317,9 @@ class Dataviews(object):
         :param skip: number of values to skip
         :param count: number of values to return
         :param form: form definition
-        :param sessionId: used so you can return to a call to get more data if
-             you need to page
+        :param startIndex: start index
+        :param endIndex: end index
+        :param interval: space between values
         :param value_class: Use this to auto format the data into the defined
             type.  The tpye is expected to have a fromJson method that takes a
             dynamicObject and converts it into the defined type.
@@ -325,7 +331,14 @@ class Dataviews(object):
         if dataview_id is None:
             raise TypeError
 
-        params = {"count": count, "form": form, "continuationToken": continuationToken}
+        params = {
+            "count": count,
+            "form": form,
+            "continuationToken": continuationToken,
+            "startIndex": startIndex,
+            "endIndex": endIndex,
+            "interval": interval,
+        }
         response = requests.get(
             self.__getDataInterpolated.format(
                 tenant_id=self.__baseClient.tenant,
@@ -342,8 +355,12 @@ class Dataviews(object):
         )
 
         next_page = response.headers.get("NextPage", None)
-        continuation_token = next_page[next_page.find("&continuationToken=")+19:] if next_page is not None else None
-        
+        continuation_token = (
+            next_page[next_page.find("&continuationToken=") + 19 :]
+            if next_page is not None
+            else None
+        )
+
         if form is not None:
             return response.text, continuation_token
 
@@ -366,5 +383,5 @@ class Dataviews(object):
         self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
         self.__datagroupPath = self.__dataviewPath + "/datagroups"
         self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
-        self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"
         self.__getDataInterpolated = self.__dataviewPath + "/data/interpolated"
+        self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"  # deprecated

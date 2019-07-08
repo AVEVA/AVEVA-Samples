@@ -112,7 +112,7 @@ def createData(ocsClient):
         return f'{{"time": "{timestamp}", "{sensor}": {str(value)} }}'
     
     print('Generating Values')
-    for i in range(1, 20, 1):
+    for i in range(1, 30, 1):
         pv = str(random.uniform(0, 100))
         tv = str(random.uniform(50, 70))
         timestamp = (start + datetime.timedelta(minutes=i * 2)).isoformat(timespec='seconds')
@@ -289,9 +289,18 @@ def main(test=False):
         # Get the last 20 rows using token, then display (without row header) 
         dataviewDataTable2, token = ocsClient.Dataviews.getDataInterpolated(
             namespaceId, sampleDataviewId, form="csv", count=20, continuationToken=token)   
-        print(dataviewDataTable2)
+        print(dataviewDataTable2, "\n\n")
         assert token is None, "Continuation token is not None"
         
+        # Now override startIndex/endIndex/interval of previous Data View
+        # Ask for last 5 minutes of data, aligned on the seconds, interpolated at 30 seconds
+        startIndex = (startTime + datetime.timedelta(minutes=55)).isoformat(timespec='seconds')
+        endIndex = (startTime + datetime.timedelta(minutes=60)).isoformat(timespec='seconds')
+        dataviewDataTable3, token = ocsClient.Dataviews.getDataInterpolated(
+            namespaceId, sampleDataviewId, form="csvh", count=10, continuationToken=None,
+            startIndex=startIndex, endIndex=endIndex, interval="00:00:30")
+        print(dataviewDataTable3)
+        assert token2 is None, "Continuation token is not None"
 
     except Exception as ex:
         print((f"Encountered Error: {ex}"))
