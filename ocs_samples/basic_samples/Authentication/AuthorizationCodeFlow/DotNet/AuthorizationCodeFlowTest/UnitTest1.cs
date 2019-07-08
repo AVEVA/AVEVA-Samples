@@ -33,6 +33,7 @@ namespace Tests
             // Automatic login works against Microsoft personal account option only
             // Must use Live account email that isn't also an AAD account
             // Account must have no 2FA enabled and the login flow must not have any other additional prompts after password entry
+
             using (IWebDriver driver = new ChromeDriver(Environment.ExpandEnvironmentVariables("%ChromeWebDriver%")))
             {
                 driver.Url = url;
@@ -42,7 +43,7 @@ namespace Tests
 
                 Thread.Sleep(4000);
 
-
+                
 
                 driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[@title=\"Personal Account\"]")).Click();
 
@@ -60,7 +61,7 @@ namespace Tests
 
                 Thread.Sleep(4000);
 
-                driver.FindElement(By.XPath("//*[@id=\"users\"]")).Click();
+                driver.FindElement(By.XPath("//*[@id=\"tenant\"]")).Click();
                 Thread.Sleep(4000);
 
                 var results = driver.FindElement(By.XPath("//*[@id=\"results\"]")).Text;

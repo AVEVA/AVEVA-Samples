@@ -20,8 +20,8 @@ namespace HybridFlow
                 if (args.Length > 0)
                 {
                     SystemBrowser.test = true;
-                    SystemBrowser.password = GetConfigValue("password");
-                    SystemBrowser.userName = GetConfigValue("userName");
+                    SystemBrowser.password = GetConfigValue("Password");
+                    SystemBrowser.userName = GetConfigValue("UserName");
                     SystemBrowser.tenant = GetConfigValue("TenantId");
                 }
 

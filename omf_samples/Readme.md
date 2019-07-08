@@ -14,9 +14,9 @@ Some tasks and individual language examples have labels as follows:
 
 The official OMF samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table:
 
-Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-----|-----------|---------|-----------
-<img src="../miscellaneous/images/ctp.png" alt="ctp icon">  **<a href="basic_samples/OMF_API/">Basic API</a>** | These samples demonstrate sending some typical OMF messages.  The applications are configurable to both PI and OCS.  <a href="basic_samples/OMF_API">Details</a>   |  <a href="basic_samples/OMF_API/CSharp/OMF_API/">.NET*</a><br /><a href="basic_samples/OMF_API/Python3/">Python3*</a><br /><a href="basic_samples/OMF_API/Java/omfapijava">Java*</a>  | [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+Task|Description|Languages|&nbsp;&nbsp;&nbsp;OCS&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;PI&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+--------|-----------|---------|-----------|----------
+<img src="../miscellaneous/images/ctp.png" alt="ctp icon">  **<a href="basic_samples/OMF_API/">Basic API</a>** | These samples demonstrate sending some typical OMF messages.  The applications are configurable to both PI and OCS.  <a href="basic_samples/OMF_API">Details</a>   |  <a href="basic_samples/OMF_API/CSharp/OMF_API/">.NET*</a><br /><a href="basic_samples/OMF_API/Python3/">Python3*</a><br /><a href="basic_samples/OMF_API/Java/omfapijava">Java*</a>  | [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master) <br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)|[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_%20on-prem?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4782&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_%20on-prem?branchName=master&jobName=OMF_APIPy)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4782&branchName=master)<br />[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_%20on-prem?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4782&branchName=master)
 
 
 
@@ -55,14 +55,16 @@ A credential config.ini or app.config file is used in the examples unless otherw
    
    
    You will need to modify these files locally when you run the samples.
+ 
+## Feedback
 
-## Request for example 
+If you have a need for a new sample; if there is a feature or capability that should be demonstrated; if there is an existing sample that should be in your favorite language; please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel.  [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).   
+ 
+## Support
 
-Please raise an issue if you would like to see a new task, a new example inside of a task, or an existing example in a particular langauge.    
+If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal  (https://my.osisoft.com).
 
-## Contributions
-
-If you wish to contribute please take a look at the [contribution guide](../CONTRIBUTING.md).
+If your support question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
 
 ## License
 

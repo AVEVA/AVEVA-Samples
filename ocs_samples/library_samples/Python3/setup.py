@@ -15,7 +15,8 @@ setuptools.setup(
     url="https://github.com/osisoft/OSI-Samples",
     packages=setuptools.find_packages(),    
     install_requires=[
-        'requests==2.21.0'
+        'requests==2.21.0',
+        'python-dateutil==2.8.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

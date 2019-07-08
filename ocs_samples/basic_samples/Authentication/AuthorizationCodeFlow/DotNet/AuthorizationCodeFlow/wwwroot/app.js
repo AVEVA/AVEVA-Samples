@@ -16,7 +16,7 @@ function log() {
 
 document.getElementById("login").addEventListener("click", login, false);
 document.getElementById("logout").addEventListener("click", logout, false);
-document.getElementById("users").addEventListener("click", getUsers, false);
+document.getElementById("tenant").addEventListener("click", getTenant, false);
 
 var mgr = new Oidc.UserManager(config);
 
@@ -33,7 +33,7 @@ function login() {
     mgr.signinRedirect();
 }
 
-function getUsers() {
+function getTenant() {
     mgr.getUser().then(function(user) {
         if (user) {
             var accessToken = user.access_token;
@@ -43,7 +43,7 @@ function getUsers() {
             // form url
             var host = window.config.authority.replace('identity', '');
             var ApiVersion = window.config.ApiVersion.replace('ApiVersion:', '');
-            const url = host + 'api/' + ApiVersion + '/tenants/' + user.profile.tid + "/Users";
+            const url = host + 'api/' + ApiVersion + '/tenants/' + user.profile.tid;
 
             // Set header
             $.ajaxSetup({
@@ -58,7 +58,7 @@ function getUsers() {
                     log(result);
                 });
         } else {
-            log("Users Info" ,"User not logged in");
+            log("Tenant Information" ,"User not logged in");
         }
     });
 }
