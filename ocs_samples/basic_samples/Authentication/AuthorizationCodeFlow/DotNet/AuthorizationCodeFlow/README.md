@@ -12,7 +12,7 @@ This client uses the OAuth2/OIDC Authorization Code Flow + PKCE to obtain an acc
 
 ### Prerequisites
 
-- Register an AuthorizationCode client in OCS and ensure that the registered client in OCS contains `http://localhost:5004/callback.html` in the list of RedirectUris.
+- Register an AuthorizationCode client in OCS and ensure that the registered client in OCS contains `http://localhost:5004/callback.html`, and `http://localhost:5004/silent-refresh.html` in the list of RedirectUris.
 - Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID obtained from registration.
 
 ### Using Visual Studio

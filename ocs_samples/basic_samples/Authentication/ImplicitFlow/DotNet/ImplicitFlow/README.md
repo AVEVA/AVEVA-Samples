@@ -17,7 +17,7 @@ Developed against DotNet 2.2.300.
 
 ### Prerequisites
 
-- Register an Implicit client in OCS and ensure that the registered client in OCS contains `http://localhost:5003/callback.html` in the list of RedirectUris.
+- Register an Implicit client in OCS and ensure that the registered client in OCS contains `http://localhost:5003/callback.html`, and `http://localhost:5003/silent-refresh.html` in the list of RedirectUris.
 - Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID obtained from registration.
 
 ### Using Visual Studio
