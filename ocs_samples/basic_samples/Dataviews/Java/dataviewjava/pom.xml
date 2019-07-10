@@ -6,7 +6,7 @@
 
   <groupId>com.github.osisoft.dataviewsample</groupId>
   <artifactId>dataviewjava</artifactId>
-  <version>0.0.4-PREVIEW</version>
+  <version>0.0.5-PREVIEW</version>
 
   <name>dataviewjava</name>
   <!-- FIXME change it to the project's website -->
@@ -22,7 +22,7 @@
       <dependency> 
         <groupId> com.github.osisoft.ocs_sample_library_preview</groupId>
         <artifactId>ocs_sample_library_preview</artifactId>
-        <version>[0.0.9,)</version>
+        <version>[0.0.14,)</version>
     </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -79,6 +79,21 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <mainClass>com.github.osisoft.dataviewsample.App</mainClass>
+            </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -1,12 +1,9 @@
 # BaseClient.py
 #
 
-from urllib.parse import urlparse
-import urllib.request, urllib.parse, urllib.error
-import http.client as http
 import json
 
-from .SdsError import SdsError 
+from .SdsError import SdsError
 
 import requests
 import time
@@ -15,21 +12,22 @@ import time
 class BaseClient(object):
     """Handles communication with Sds Service.  Internal Use"""
 
-    def __init__(self, apiversion, tenant, url, clientId, clientSecret, acceptVerbosity=False):
+    def __init__(self, apiversion, tenant, url, clientId, clientSecret,
+                 acceptVerbosity=False):
         self.__apiversion = apiversion
         self.__tenant = tenant
         self.__clientId = clientId
         self.__clientSecret = clientSecret
-        self.__url = url # if resource.endswith("/")  else resource + "/" 
+        self.__url = url  # if resource.endswith("/")  else resource + "/"
 
         self.__token = ""
         self.__expiration = 0
         self.__getToken()
         self.__acceptVerbosity = acceptVerbosity
+        self.__requestTimeout = None
 
-        self.__uri_API =  url + '/api/' + apiversion
+        self.__uri_API = url + '/api/' + apiversion
 
-    
     @property
     def uri(self):
         """
@@ -38,7 +36,6 @@ class BaseClient(object):
         """
         return self.__url
 
-        
     @property
     def uri_API(self):
         """
@@ -46,7 +43,7 @@ class BaseClient(object):
         :return:
         """
         return self.__uri_API
-    
+
     @property
     def api_version(self):
         """
@@ -54,7 +51,7 @@ class BaseClient(object):
         :return:
         """
         return self.__apiversion
-        
+
     @property
     def tenant(self):
         """
@@ -66,9 +63,18 @@ class BaseClient(object):
     @property
     def AcceptVerbosity(self):
         return self.__acceptVerbosity
+
     @AcceptVerbosity.setter
     def AcceptVerbosity(self, accept_verbosity):
         self.__acceptVerbosity = accept_verbosity
+
+    @property
+    def RequestTimeout(self):
+        return self.__requestTimeout
+
+    @RequestTimeout.setter
+    def RequestTimeout(self, timeout):
+        self.__requestTimeout = timeout
 
     def __getToken(self):
         """
@@ -80,20 +86,22 @@ class BaseClient(object):
 
         discoveryUrl = requests.get(
             self.__url + "/identity/.well-known/openid-configuration",
-            headers= {"Accept" : "application/json"})
+            headers={"Accept": "application/json"})
 
         if discoveryUrl.status_code < 200 or discoveryUrl.status_code >= 300:
             discoveryUrl.close()
-            raise SdsError("Failed to get access token endpoint from discovery URL: {status}:{reason}".
-                            format(status=discoveryUrl.status_code, reason=discoveryUrl.text))
+            status = discoveryUrl.status_code
+            reason = discoveryUrl.text
+            raise SdsError(f"Failed to get access token endpoint "
+                           f"from discovery URL: {status}:{reason}")
 
         tokenEndpoint = json.loads(discoveryUrl.content)["token_endpoint"]
 
         tokenInformation = requests.post(
             tokenEndpoint,
-            data = {"client_id" : self.__clientId,
-                    "client_secret" : self.__clientSecret,
-                    "grant_type" : "client_credentials"})
+            data={"client_id": self.__clientId,
+                  "client_secret": self.__clientSecret,
+                  "grant_type": "client_credentials"})
 
         token = json.loads(tokenInformation.content)
 
@@ -111,7 +119,22 @@ class BaseClient(object):
         """
         headers = {"Authorization": "Bearer %s" % self.__getToken(),
                    "Content-type": "application/json",
-                   "Accept": "application/json" }
+                   "Accept": "application/json"}
         if (self.__acceptVerbosity):
             headers['Accept-Verbosity'] = "verbose"
+        if self.__requestTimeout is not None:
+            headers['Request-Timeout'] = str(self.__requestTimeout)
+
         return headers
+
+    def checkResponse(self, response, main_message):
+        if response.status_code < 200 or response.status_code >= 300:
+            status = response.status_code
+            reason = response.text
+            url = response.url
+            opId = response.headers["Operation-Id"]
+            error = f"  {status}:{reason}.  URL {url}  OperationId {opId}"
+            response.close()
+
+            message = main_message + error
+            raise SdsError(message)

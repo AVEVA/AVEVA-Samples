@@ -6,8 +6,8 @@
 #*************************************************************************************
 
 # OMF_API_Python3
-# version 0.0.2s
-# 3-20-19
+# version 0.0.3
+# 6-12-19
 
 # ************************************************************************
 # Import necessary packages
@@ -23,6 +23,7 @@ import gzip
 import random 
 import requests
 import traceback
+import base64 
 
 
 # ************************************************************************
@@ -39,8 +40,10 @@ sendingToOCS = True
 # sending it to ingress endpoint
 USE_COMPRESSION = False
 
-# Set this to true if going against self signed certs and you don't want to see the error
-VERIFY_SSL = False
+# Set this to the path of the certificate pem file if you using a self signed cert.  
+# Set this to True if your cert is trusted by the Python certify.  
+# Set to False if you do not want to check the certificate (NOT RECOMMENDED)
+VERIFY_SSL = True
 
 # Specify the timeout, in seconds, for sending web requests
 # (if it takes longer than this to send a message, an error will be thrown)
@@ -59,6 +62,10 @@ checkBase = ""
 resourceBase = ""
 
 dataServerName = ""
+
+username = ""
+
+password = ""
 
 
 # The version of the OMFmessages
@@ -133,7 +140,7 @@ def getToken():
 def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'create'):
     # Sends the request out to the preconfigured endpoint..
 
-    global producerToken, omfEndPoint, omfVersion, sendingToOCS
+    global producerToken, omfEndPoint, omfVersion, sendingToOCS, username, password
     # Compress json omf payload, if specified
     compression = 'none'
     if USE_COMPRESSION:
@@ -142,7 +149,45 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
     else:
         msg_body = json.dumps(message_omf_json)
 
-    msg_headers = {}
+    msg_headers = getHeaders(compression,message_type,action)
+    response = {}
+    # Assemble headers   
+    if sendingToOCS:     
+        response = requests.post(
+            omfEndPoint,
+            headers = msg_headers,
+            data = msg_body,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS
+        )
+    else:   
+        response = requests.post(
+            omfEndPoint,
+            headers = msg_headers,
+            data = msg_body,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS,
+            auth=(username,password)
+        )
+
+    # Send the request, and collect the response
+
+    if response.status_code == 409:
+        return
+
+    
+    # response code in 200s if the request was successful!
+    if response.status_code < 200 or response.status_code >= 300:
+        print(msg_headers)
+        response.close()
+        print('Response from relay was bad.  "{0}" message: {1} {2}.  Message holdings: {3}'.format(message_type, response.status_code, response.text, message_omf_json))
+        print()
+        raise Exception("OMF message was unsuccessful, {message_type}. {status}:{reason}".format(message_type=message_type, status=response.status_code, reason=response.text))
+ 
+
+
+def getHeaders(compression = "", message_type = "" , action = ""):
+    global sendingToOCS
 
     # Assemble headers   
     if sendingToOCS:     
@@ -157,53 +202,42 @@ def send_omf_message_to_endpoint(message_type, message_omf_json, action = 'creat
         }
     else:   
         msg_headers = {
+            "x-requested-with": "xmlhttprequest",
             'messagetype': message_type,
             'action': action,
             'messageformat': 'JSON',
             'omfversion': omfVersion
         }
+        if(compression == "gzip"):
+            msg_headers["compression"] = "gzip"
+    return msg_headers
 
-    # Send the request, and collect the response
-    response = requests.post(
-        omfEndPoint,
-        headers = msg_headers,
-        data = msg_body,
-        verify = VERIFY_SSL,
-        timeout = WEB_REQUEST_TIMEOUT_SECONDS
-    )
-    if response.status_code == 409:
-        #print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
-        return
 
-    
-    # response code in 200s if the request was successful!
-    if response.status_code < 200 or response.status_code >= 300:
-        print(msg_headers)
-        response.close()
-        print('Response from relay was bad.  "{0}" message: {1} {2}.  Message holdings: {3}'.format(message_type, response.status_code, response.text, message_omf_json))
-        print()
-        raise Exception("OMF message was unsuccessful, {message_type}. {status}:{reason}".format(message_type=message_type, status=response.status_code, reason=response.text))
-    #else:
-        #print('Response from relay from the initial "{0}" message: {1} {2}'.format(message_type, response.status_code, response.text))
-    
+
 def checkValue(url):
     # Sends the request out to the preconfigured endpoint..
 
-    global producerToken
+    global producerToken, sendingToOCS, username, password
 
     # Assemble headers        
-    msg_headers = {
-        "Authorization": "Bearer %s" % getToken()
-    }
-    print(getToken())
+    msg_headers = getHeaders()
 
     # Send the request, and collect the response
-    response = requests.get(
-        url,
-        headers = msg_headers,
-        verify = VERIFY_SSL,
-        timeout = WEB_REQUEST_TIMEOUT_SECONDS
-    )
+    if sendingToOCS:     
+        response = requests.get(
+            url,
+            headers = msg_headers,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS
+        )
+    else:
+        response = requests.get(
+            url,
+            headers = msg_headers,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS,
+            auth=(username,password)
+        )
     
     # response code in 200s if the request was successful!
     if response.status_code < 200 or response.status_code >= 300:
@@ -738,7 +772,7 @@ def getConfig(section, field):
     #Reads the config file for the field specified
     config = configparser.ConfigParser()
     config.read('config.ini')
-    return config.has_option(section,field) and config.get(section,field) or None
+    return config.has_option(section,field) and config.get(section,field) or ""
 
 # ************************************************************************
 # Note: PI points will be created on the first data value message
@@ -746,7 +780,8 @@ def getConfig(section, field):
 # ************************************************************************
 def main(test = False):
     # Main program.  Seperated out so that we can add a test function and call this easily
-    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase, dataServerName, forceSending, sendingToOCS
+    global omfVersion, resourceBase, producerToken, omfEndPoint, clientId, clientSecret, checkBase
+    global dataServerName, forceSending, sendingToOCS, VERIFY_SSL, username, password
     success = True
     try:
         print('------------------------------------------------------------------')
@@ -761,8 +796,8 @@ def main(test = False):
         print('------------------------------------------------------------------')
 
         # Step 1
+        #OCS configuration
         namespaceId = getConfig('Configurations', 'Namespace') 
-        dataServerName = getConfig('Configurations', 'DataServerName') 
         resourceBase = getConfig('Access', 'Resource')
         tenant = getConfig('Access', 'Tenant')
         apiversion = getConfig('Access', 'ApiVersion')
@@ -770,9 +805,22 @@ def main(test = False):
         producerToken = getConfig('Credentials', 'ProducerToken')
         clientId = getConfig('Credentials', 'ClientId')
         clientSecret = getConfig('Credentials', 'ClientSecret')
+        
+        #PI Web API configuration
+        dataServerName = getConfig('Configurations', 'DataServerName') 
+        verify = getConfig('Configurations', 'VERIFY_SSL') 
+        username = getConfig('Credentials', 'username') 
+        password = getConfig('Credentials', 'password') 
+
+        #shared configuration
+        resourceBase = getConfig('Access', 'Resource')
+
+        if verify is not None:
+            if verify == "False":
+                VERIFY_SSL =  False
 
         if not forceSending:
-            if tenant is None:
+            if tenant is "":
                 sendingToOCS = False
             else:
                 sendingToOCS = True
@@ -784,16 +832,14 @@ def main(test = False):
             checkBase = resourceBase 
             omfEndPoint = checkBase + '/omf'
         
+        if not VERIFY_SSL:
+            print("You are not verifying the certificate of the end point.  This is not advised for any system as there are security issues with doing this.")
 
         # Step 2
         getToken()
 
-    # ************************************************************************
-    # Turn off HTTPS warnings, if desired
-    # ************************************************************************
 
-    #    if not VERIFY_SSL:
-    #        requests.packages.urllib3.disable_warnings()
+
 
         # Steps 3-8 contained in here
         oneTimeSendMessages()
@@ -801,6 +847,7 @@ def main(test = False):
         # Step 9
         count = 0
         lastVal = ''
+        time.sleep(1)
         while count == 0 or ((not test) and count < 2):
             val = create_data_values_for_first_dynamic_type("Container1")
             lastVal = val

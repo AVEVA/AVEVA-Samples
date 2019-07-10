@@ -10,6 +10,8 @@ At the end everything that was created is deleted.
 This example uses the ocs_sample_library_preview library which is also included in this github repo.  It is downloadable via pip.
 
 	
+Developed against Python 3.7.2.
+
 To Run this Sample:
 -------------------
 1. Clone the GitHub repository
@@ -35,6 +37,8 @@ or
 -----------
 
 
+
+ Automated test uses Python 3.6.8 x64
 
 
 For the general steps or switch languages see the Task  [ReadMe](../)<br />

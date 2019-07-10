@@ -5,19 +5,10 @@
 package  com.github.osisoft.ocs_sample_library_preview;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import  com.github.osisoft.ocs_sample_library_preview.*;
 import  com.github.osisoft.ocs_sample_library_preview.sds.*;
 import  com.github.osisoft.ocs_sample_library_preview.dataviews.*;
 

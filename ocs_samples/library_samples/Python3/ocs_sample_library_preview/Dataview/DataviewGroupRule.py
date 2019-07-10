@@ -3,16 +3,16 @@
 
 import json
 
+
 class DataviewGroupRule(object):
     """
     DataviewGroupRule
     """
-    
-    def __init__(self, id = None, type_= None, tokenRules = None):
-        self.__id = id
-        self.__type= type_
-        self.__tokenRules = tokenRules
 
+    def __init__(self, id=None, type_=None, tokenRules=None):
+        self.__id = id
+        self.__type = type_
+        self.__tokenRules = tokenRules
 
     @property
     def Id(self):
@@ -21,6 +21,7 @@ class DataviewGroupRule(object):
         :return:
         """
         return self.__id
+
     @Id.setter
     def Id(self, id):
         """
@@ -29,7 +30,7 @@ class DataviewGroupRule(object):
         :return:
         """
         self.__id = id
-    
+
     @property
     def Type(self):
         """
@@ -37,6 +38,7 @@ class DataviewGroupRule(object):
         :return:
         """
         return self.__type
+
     @Type.setter
     def Type(self, type_):
         """
@@ -44,9 +46,8 @@ class DataviewGroupRule(object):
         :param type_:
         :return:
         """
-        self.__type = type_    
+        self.__type = type_
 
-    
     @property
     def TokenRules(self):
         """
@@ -54,6 +55,7 @@ class DataviewGroupRule(object):
         :return:
         """
         return self.__tokenRules
+
     @TokenRules.setter
     def TokenRules(self, tokenRules):
         """
@@ -61,21 +63,21 @@ class DataviewGroupRule(object):
         :param tokenRules:
         :return:
         """
-        self.__tokenRules = tokenRules    
+        self.__tokenRules = tokenRules
 
     def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Id' : self.Id}
-        
+        dictionary = {'Id': self.Id}
+
         if hasattr(self, 'Type'):
             dictionary['Type'] = self.Type
 
         if hasattr(self, 'TokenRules'):
             dictionary['TokenRules'] = self.TokenRules
-	
+
         return dictionary
 
     @staticmethod
@@ -91,15 +93,11 @@ class DataviewGroupRule(object):
 
         if 'Id' in content:
             dataviewGroupRule.Id = content['Id']
-			
 
         if 'Type' in content:
             dataviewGroupRule.Type = content['Type']
-            
 
         if 'TokenRules' in content:
             dataviewGroupRule.TokenRules = content['TokenRules']
 
-
         return dataviewGroupRule
-

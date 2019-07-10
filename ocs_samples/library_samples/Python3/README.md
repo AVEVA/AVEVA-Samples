@@ -18,5 +18,6 @@ Other language libraries and samples are available on [Github](https://github.co
 
 Tests are done by testing the sample apps that use this.
 
+Developed against Python 3.7.2.
 
 [OSI Samples](https://github.com/osisoft/OSI-samples) are licensed under the Apache 2 license.

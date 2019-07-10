@@ -34,8 +34,13 @@ namespace OMF_API
         // set this to try to force the above bool, otherwise it is determined by what is found in appsettins.json file
         static bool sendingToOCSBoolforced = false;
 
+        static bool VERIFY_SSL = true;
+
+
+
+
         // The version of the OMFmessages
-        static string omfVersion = "1.1";
+        static string omfVersion = "1.1"; 
 
         // Holders for parameters set by configuration
         static string producerToken;
@@ -45,9 +50,11 @@ namespace OMF_API
         static string clientId = "";
         static string clientSecret = "";
         static string pidataserver = "";
-        static string piassetserver = "";
-        static string afomfdatabase = "";
-        
+        static string verify = "";
+
+        static string username = "";
+        static string password = "";
+
 
         // Holds the token that is used for Auth for OCS.
         static string token = null;
@@ -75,9 +82,6 @@ namespace OMF_API
         /// <returns></returns>
         public static bool runMain(bool test= false)
         {
-            // this turns off SSL verification
-            //This should not be done in production.  please properly handle your certificates
-            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             //hold on to these in case there is a failure in deleting
             var success = true;
@@ -110,12 +114,16 @@ namespace OMF_API
                 clientId = configuration["clientId"];
                 clientSecret = configuration["ClientKey"];
                 pidataserver = configuration["dataservername"];
+                verify = configuration["VERIFY_SSL"];
+
+                username = configuration["username"];
+                password = configuration["password"];
                 /* not currently used, but would be needed to check AF creation
                 piassetserver = configuration["assetservername"];
                 afomfdatabase = configuration["afomfdatabase"];
                 */
 
-                if(!sendingToOCSBoolforced)
+                if (!sendingToOCSBoolforced)
                 {
                     sendingToOCS = tenantId != null;
                 }
@@ -130,7 +138,20 @@ namespace OMF_API
                 {   
                     checkBase = resource;
                     omfendpoint = checkBase + $"/omf";
-                }                
+                }           
+
+                if(!String.IsNullOrEmpty(verify) && verify == "false")    
+                {
+                    VERIFY_SSL = false;
+                }
+
+                if(!VERIFY_SSL)
+                {
+                    Console.WriteLine("You are not verifying the certificate of the end point.  This is not advised for any system as there are security issues with doing this.");
+                    // this turns off SSL verification
+                    //This should not be done in production.  please properly handle your certificates
+                    ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                }
 
                 // Step 2
                 getToken();
@@ -171,8 +192,7 @@ namespace OMF_API
                 //step 10
                 try
                 {
-                    if(sendingToOCS)
-                        sendTypesAndContainers("delete");
+                    deleteTypesAndContainers();
                 }
                 catch (Exception ex)
                 {
@@ -213,7 +233,7 @@ namespace OMF_API
                 json1 = checkValue(checkBase + $"/Streams" + $"/Container1" + $"/Data/last");
                 var valueJ = JsonConvert.DeserializeObject<List<JObject>>(value);
                 var jsonJ = JsonConvert.DeserializeObject<JObject>(json1);
-                if (valueJ[0]["values"][0]["IntegerProperty"].ToString() != jsonJ["IntegerProperty"].ToString())
+                if (valueJ[0]["values"][0]["IntegerProperty"]?.ToString() != jsonJ["IntegerProperty"]?.ToString())
                     throw new Exception("Returned value is not expected.");
             }
             else
@@ -384,7 +404,7 @@ namespace OMF_API
             if (sendingToOCS)
                 sendContainers2(action);
             
-            if (!sendingToOCS)
+            if (!sendingToOCS && String.Compare(action,"delete",true)==0)
             {
                 // Step 7
                 sendStaticData(action);
@@ -394,6 +414,31 @@ namespace OMF_API
             }
         }
 
+
+        /// <summary>
+        /// Wrapper around the type and container calls
+        /// </summary>
+        /// <param name="action"></param>
+        private static void deleteTypesAndContainers(string action = "delete")
+        {
+            if (sendingToOCS)
+                sendContainers2(action);
+
+            sendContainers(action);
+
+            if (sendingToOCS)
+                sendNonTimeStampTypes(action);
+
+            sendFirstDynamicType(action);
+            sendSecondDynamicType(action);
+            sendThirdDynamicType(action);
+            
+            if (!sendingToOCS)
+            {
+                sendFirstStaticType(action);
+                sendSecondStaticType(action);
+            }            
+        }
         /// <summary>
         /// Sends the values to the preconfigured endpoint
         /// </summary>
@@ -410,9 +455,16 @@ namespace OMF_API
             request.Headers.Add("action", action);
             request.Headers.Add("messageformat", "json");
             request.Headers.Add("omfversion", omfVersion);
-
             if (sendingToOCS)
+            {
                 request.Headers.Add("Authorization", "Bearer " + getToken());
+            }
+            else
+            {
+                request.Headers.Add("x-requested-with", "XMLHTTPRequest");
+                request.Credentials = new NetworkCredential(username, password);
+            }
+
 
             byte[] byteArray;
 
@@ -455,13 +507,20 @@ namespace OMF_API
         private static string checkValue(string URL)
         {
             WebRequest request = WebRequest.Create(new Uri(URL));
-            request.Method = "get";            
+            request.Method = "get";
 
             if (sendingToOCS)
+            {
                 request.Headers.Add("Authorization", "Bearer " + getToken());
-            
+            }
 
-           return Send(request);
+            else
+            {
+                request.Headers.Add("x-requested-with", "XMLHTTPRequest");
+                request.Credentials = new NetworkCredential(username, password);
+            }
+
+            return Send(request);
         }
 
 
@@ -490,18 +549,24 @@ namespace OMF_API
         private static string Send(WebRequest request)
         {
             // ServicePointManager.SecurityProtocol = SecurityProtocolType.;s
-            var resp = request.GetResponse();
-            HttpWebResponse response = (HttpWebResponse)resp;
-            
-            var stream  = resp.GetResponseStream();
-            var code = (int)response.StatusCode;
+            using (var resp = request.GetResponse())
+            {
+                using (HttpWebResponse response = (HttpWebResponse)resp)
+                {
 
-            StreamReader reader = new StreamReader(stream);
-            // Read the content.  
-            string responseString = reader.ReadToEnd();
-            // Display the content.  
+                    var stream = resp.GetResponseStream();
+                    var code = (int)response.StatusCode;
 
-            return responseString;
+                    using (StreamReader reader = new StreamReader(stream))
+                    { 
+                        // Read the content.  
+                        string responseString = reader.ReadToEnd();
+                        // Display the content.  
+
+                        return responseString;
+                    }
+                }
+            }
         }
 
 

@@ -25,6 +25,8 @@ In order to run these samples, you must configure PI Web API with the proper sec
 - Write and read element attributes
 - Delete all the above AF/PI Data Archive objects  
 
+On your client machine running this code, it is assumed that you have configured the system to trust the certficate used by PI Web API.
+
 Common Actions
 --------------
 
@@ -34,7 +36,7 @@ The functionality included with the samples include (recommended order of execut
 - Create an element template
 - Create an element and associate the element's attributes with PI tags where appropriate
 - Write a single value to an attribute
-- Write a 100 values to an attribute
+- Write 100 values to an attribute
 - Perform a Batch (6 steps in 1 call) operation which includes:  
   - Get the sample tag  
   - Read the sample tag's snapshot value  
@@ -57,6 +59,17 @@ Automated tests are also available to test the above mentioned functionality. No
 - PI Web API host  
 - AF Server  
 - PI Data Archive 
+
+ 
+## Feedback
+
+If you have a need for a new sample; if there is a feature or capability that should be demonstrated; if there is an existing sample that should be in your favorite language; please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel.  [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).   
+ 
+## Support
+
+If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal  (https://my.osisoft.com).
+
+If your support question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
 
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
 

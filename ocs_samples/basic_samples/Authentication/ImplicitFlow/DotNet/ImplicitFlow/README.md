@@ -2,7 +2,7 @@
 
 This client uses the OAuth2/OIDC Implicit Flow to obtain an access token. See the root folder [README](../../../README.md) for more information about this flow.
 
-Developed against DotNet 2.2.105.
+Developed against DotNet 2.2.300.
 
 1. Replace the placeholders in the [config](./wwwroot/config.js) file with your Tenant Id and Client Id.
 2. Ensure that the client contains `http://localhost:5003/callback.html` in the list of RedirectUris

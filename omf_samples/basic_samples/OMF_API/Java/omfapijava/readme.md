@@ -5,6 +5,7 @@ The sample code in this topic demonstrates how to send OMF messages
 using Java.
 
 
+Developed against Maven 3.6.1 and Java 1.8.0_181.
 
 
 Summary of steps to run the Java demo
@@ -69,7 +70,7 @@ Namespace = Samples
 [Access]
 Resource = https://dat-b.osisoft.com
 Tenant = REPLACE_WITH_TENANT_ID
-ApiVersion = v1-preview
+ApiVersion = v1
 
 [Credentials]
 ProducerToken = REPLACE_WITH_TOKEN_STRING
@@ -96,13 +97,22 @@ Resource = REPLACE_WITH_PI_WEB_API_URL
 See the general readme for information on setting up your endpoint.
 
 
+If your client computer Java does not trust the PI Web API certificate you will see an error like:
+
+```
+javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+```
+
 
 ----------
-
+OCS
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
+PI Web API
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_%20on-prem?branchName=master&jobName=OMF_APIJava)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4782&branchName=master)
 ---------
 
+Tested against Maven 3.6.1 and Java 1.8.0_212.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OMF page [ReadMe](../../../../)<br />

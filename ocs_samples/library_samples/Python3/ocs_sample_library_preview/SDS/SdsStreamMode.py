@@ -3,6 +3,7 @@
 
 from enum import Enum
 
+
 class SdsStreamMode(Enum):
     """
     Enum 0-3

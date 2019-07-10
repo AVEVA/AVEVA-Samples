@@ -2,22 +2,15 @@
  * 
  */
 
-package  com.github.osisoft.ocs_sample_library_preview.sds;
+package com.github.osisoft.ocs_sample_library_preview.sds;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import  com.github.osisoft.ocs_sample_library_preview.BaseClient;
-import  com.github.osisoft.ocs_sample_library_preview.SdsError;
+import com.github.osisoft.ocs_sample_library_preview.BaseClient;
+import com.github.osisoft.ocs_sample_library_preview.SdsError;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TypesClient
@@ -33,7 +26,7 @@ public class TypesClient {
     // type paths
     private String typesBase = requestBase + "/Types";
     private String typePath = typesBase + "/{typeId}";
-    private String getTypesPath = typesBase + "?skip={skip}&count={count}&filter={filter}";
+    private String getTypesPath = typesBase + "?skip={skip}&count={count}&query={query}";
 
     /**
      * base constructor
@@ -64,18 +57,10 @@ public class TypesClient {
         try {
             url = new URL(baseUrl + typePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
             urlConnection = baseClient.getConnection(url, "POST");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             String body = mGson.toJson(typeDef);
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); 
             writer.write(body);
             writer.close();
 
@@ -86,7 +71,7 @@ public class TypesClient {
             }
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
+                    new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -95,6 +80,10 @@ public class TypesClient {
         } catch (SdsError sdsError) {
             sdsError.print();
             throw sdsError;
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,22 +108,14 @@ public class TypesClient {
         try {
             url = new URL(baseUrl + typePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get single type request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
 
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
@@ -143,6 +124,10 @@ public class TypesClient {
         } catch (SdsError sdsError) {
             sdsError.print();
             throw sdsError;
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -169,11 +154,11 @@ public class TypesClient {
      * @param namespaceId namespace to work against
      * @param skip number of types to skip, useful in paging
      * @param count number of types to return
-     * @param filter filter query to reduce the number of types returned
+     * @param query query to reduce the number of types returned
      * @return string of the types
      * @throws SdsError any error that occurs
      */
-    public String getTypes(String tenantId, String namespaceId, int skip, int count, String filter) throws SdsError {
+    public String getTypes(String tenantId, String namespaceId, int skip, int count, String query) throws SdsError {
         URL url;
         HttpURLConnection urlConnection = null;
         String inputLine;
@@ -181,24 +166,16 @@ public class TypesClient {
 
         try {
             //string 
-            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{filter}", filter).replace("{skip}", String.valueOf(skip)).replace("{count}", String.valueOf(count)));
+            url = new URL(baseUrl + getTypesPath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{query}", query).replace("{skip}", String.valueOf(skip)).replace("{count}", String.valueOf(count)));
             urlConnection = baseClient.getConnection(url, "GET");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
             } else {
                 throw new SdsError(urlConnection, "get multiple types request failed");
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),StandardCharsets.UTF_8));
             while ((inputLine = in.readLine()) != null) {
                 jsonResults.append(inputLine);
             }
@@ -206,6 +183,10 @@ public class TypesClient {
         } catch (SdsError sdsError) {
             sdsError.print();
             throw sdsError;
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,15 +208,7 @@ public class TypesClient {
         try {
             url = new URL(baseUrl + typePath.replace("{apiVersion}", apiVersion).replace("{tenantId}", tenantId).replace("{namespaceId}", namespaceId).replace("{typeId}", typeId));
             urlConnection = baseClient.getConnection(url, "DELETE");
-        } catch (MalformedURLException mal) {
-            System.out.println("MalformedURLException");
-        } catch (IllegalStateException e) {
-            e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        try {
             int httpResult = urlConnection.getResponseCode();
             if (baseClient.isSuccessResponseCode(httpResult)) {
             } else {
@@ -244,6 +217,10 @@ public class TypesClient {
         } catch (SdsError sdsError) {
             sdsError.print();
             throw sdsError;
+        } catch (MalformedURLException mal) {
+            System.out.println("MalformedURLException");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

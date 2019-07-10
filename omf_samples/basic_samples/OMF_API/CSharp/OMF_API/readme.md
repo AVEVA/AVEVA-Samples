@@ -1,6 +1,7 @@
 Building a .NET sample to send OMF to PI or OCS
 ==================================================================
 
+Developed against DotNet 2.2.300.
 
 Building a sample with the rest calls directly
 ----------------------------------------------
@@ -55,7 +56,7 @@ replace the placeholders with the authentication-related values you received fro
 ```
 
 
-The PIServer uses the PI Web API as its OMF accepting endpoint.  It is currently in Beta.  To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used. 
+The PIServer uses the PI Web API as its OMF accepting endpoint.  It is currently in Beta.   To configure the sample to work against PI update the appsettings.json to have only these parameters and update that parameter values to what is being used.
 
 Note: In this sample the tenantId is used to autodetect if you are going against OCS or PI, so make sure that is removed if going against PI.
 
@@ -63,16 +64,32 @@ Note: In this sample the tenantId is used to autodetect if you are going against
 {
   "Resource": "REPLACE_WITH_PI_WEB_API_URL",
   "dataservername": "REPLACE_WITH_PI_DATA_ARCHIVE_NAME"
+  
+  "username": "REPLACE_WITH_USERNAME",
+  "password": "REPLACE_WITH_PASSWORD"
 }
 ```
 
+Note: If your username includes a \ you must escape it properly.
+
 See the general readme for information on setting up your endpoint.
 
+
+If your client computer does not trust the PI Web API certificate you will see an error like:
+
+```
+System.Net.WebException: The SSL connection could not be established, see inner exception. The remote certificate is invalid according to the validation procedure. ---> System.Net.Http.HttpRequestException: The SSL connection could not be established, see inner exception. ---> System.Security.Authentication.AuthenticationException: The remote certificate is invalid according to the validation procedure.
+```
+
 -----------
+OCS
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
+PI Web API
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_%20on-prem?branchName=master&jobName=OMF_APIDotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4782&branchName=master)
 -----------
 
+Tested against DotNet 2.2.105.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OMF page [ReadMe](../../../../)<br />

@@ -7,6 +7,24 @@
 var sdsObjs = require("./SdsObjects.js");
 var restCall = require("request-promise");
 
+
+var logError = function (err) {    
+    success = false;
+    errorCap = err;
+    if  (typeof (err.statusCode) !== "undefined" && err.statusCode === 302) {
+        console.log("Sds Object already present in the Service\n");
+        console.trace();
+    }
+    else {
+        console.trace();
+        console.log(err.message)
+        console.log(err.stack)
+        console.log(err.options.headers['Operation-Id'])
+        throw err;
+    }
+    
+    console.log('Operation Id:' + err);
+};
 String.prototype.format = function (args) {
     var str = this;
     return str.replace(String.prototype.format.regex, function (item) {
@@ -40,6 +58,7 @@ module.exports = {
         this.getWindowValuesBase = "/{0}/Data?startIndex={1}&endIndex={2}&filter={3}";
         this.getRangeValuesBase = "/{0}/Data/Transform?startIndex={1}&skip={2}&count={3}&reversed={4}&boundaryType={5}&streamViewId={6}";
         this.getRangeValuesInterpolatedBase = "/{0}/Data/Transform/Interpolated?startIndex={1}&endindex={2}&count={3}";
+        this.getSamplesBase = "/{0}/Data/Transform/Sampled?startIndex={1}&endindex={2}&intervals={3}&sampleBy={4}&filter={5}";
         this.updateValuesBase = "/Data";
         this.replaceValuesBase = "/Data?allowCreate=false";
         this.removeSingleValueBase = "/{0}/Data?index={1}";
@@ -108,19 +127,19 @@ module.exports = {
             });
         };
 
-        // get streams from the Sds Service
-        this.getTypes = function (tenantId, namespaceId, queryString, skip, count) {
+        // get stream from the Sds Service
+        this.getStream = function (tenantId, namespaceId, streamId) {
             return restCall({
-                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString + "&skip=" + skip + "&count=" + count  ,
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
                 method: 'GET',
                 headers: this.getHeaders()
             });
         };
 
-        // get stream from the Sds Service
-        this.getStream = function (tenantId, namespaceId, streamId) {
+        // get streams from the Sds Service
+        this.getTypes = function (tenantId, namespaceId, queryString, skip, count) {
             return restCall({
-                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + "/" + streamId,
+                url: this.url + this.typesBase.format([tenantId, namespaceId]) + "?" + "query=" + queryString + "&skip=" + skip + "&count=" + count  ,
                 method: 'GET',
                 headers: this.getHeaders()
             });
@@ -257,6 +276,15 @@ module.exports = {
                 headers: this.getHeaders()
             });
         };
+
+        // retrieve a sample from a stream
+        this.getSamples = function (tenantId, namespaceId, streamId, start, end, intervals, sampleBy, filter="", streamViewId=""){
+            return restCall({
+                url: this.url + this.streamsBase.format([tenantId, namespaceId]) + this.getSamplesBase.format([streamId, start, end, intervals, sampleBy, filter, streamViewId]),
+                method: 'GET',
+                headers: this.getHeaders()
+            });
+        }
 
         // update a stream
         this.updateStream = function (tenantId, namespaceId, stream) {

@@ -5,4 +5,3 @@ from .DataviewIndexConfig import DataviewIndexConfig
 from .DataviewMapping import DataviewMapping
 from .DataviewMappingColumn import DataviewMappingColumn
 from .DataviewQuery import DataviewQuery
-from .DataviewQueryQuery  import DataviewQueryQuery
