@@ -9,7 +9,7 @@ var config = {
     filterProtocolClaims: true,
     loadUserInfo: true,
     revokeAccessTokenOnSignout: true,
-    accessTokenExpiringNotificationTime: 60,
+    accessTokenExpiringNotificationTime: 3600,
     automaticSilentRenew: true,
     silent_redirect_uri: 'http://localhost:5004/silent-refresh.html',
     acr_values: "tenant:" + "REPLACE_WITH_TENANT_ID"

@@ -20,6 +20,8 @@ Developed against DotNet 2.2.105.
 - Register an Implicit client in OCS and ensure that the registered client in OCS contains `http://localhost:5003/callback.html`, and `http://localhost:5003/silent-refresh.html` in the list of RedirectUris.
 - Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID obtained from registration.
 
+You can learn more about the config options [here](https://github.com/IdentityModel/oidc-client-js/wiki#other-optional-settings).
+
 ### Using Visual Studio
 
 - Load the .csproj in this directory
@@ -65,7 +67,7 @@ dotnet run
 - Update the [appsettings.json](../ImplicitFlowTest/appsettings.json) with the username and password for the Microsoft account that will be used to log in. The test is only written to work with a personal Microsoft account and must only prompt for only username followed by password (no Two-Factor authentication or other consent or informational prompts). Also if the location of the sample application has been modified then change the url location.
 
 ### Using Visual Studio 
- 
+
 - Load the .csproj from the ImplicitFlowTest directory above this in Visual Studio
 - Update the appsettings.json to the appropriate url for the location the ImplicitFlow app will run, as well as username and password for the Microsoft account that will be used to log in.
 - Rebuild project
@@ -85,10 +87,7 @@ dotnet test
 
 [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Implicit_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 
-
-
 Tested against DotNet 2.2.105.
-
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />
