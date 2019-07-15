@@ -24,7 +24,8 @@ Getting Started with Tests
 ------------
 
 To run the sample tests:
-- You must have already [installed Karma](https://karma-runner.github.io/latest/index.html) in order to run automated tests.
+- You must have [Karma](https://karma-runner.github.io/latest/index.html) installed in order to run automated tests.
+    - You can install this in \JQuery\KarmaUnitTests with ```npm install karma –-save-dev```
 - Open the file: ```samplePIWebAPI.js```
 - Search for the text "__var configDefaults__"
 - Change the text for __PIWebAPIUrl__, add your PI Web API Url.  For example:
@@ -70,7 +71,7 @@ To run the sample tests:
 "url": "file:///C:/PI Web API/JQuery/JasmineUnitTests/SpecRunner.html",
 ```
 
-- Click "Start Debugging" on the Debug menu
+- From \Query\KarmaUnitTests run tests with ```karma start```
 
 System Configuration
 ----------------------------
@@ -86,14 +87,24 @@ In order to run this sample, you must configure PI Web API with the proper secur
 
 In addition, PI Web API must be configured to allow CORS as follows:  
 
-|Attribute|Value 
-------|------------
-CorsExposedHeaders|Allow,Content-Encoding,Content-Length,Date,Location  
-CorsHeaders|*  
-CorsMethods|*  
-CorsOrigins|*  
-CorsSupportsCredentials|True  
-DisableWrites|False  
+Attribute|Value|Type
+------|------------|---
+CorsExposedHeaders|Allow,Content-Encoding,Content-Length,Date,Location|String
+CorsHeaders|*|String
+CorsMethods|*|String
+CorsOrigins|*|String
+CorsSupportsCredentials|True|Boolean
+DisableWrites|False|Boolean 
+
+
+On your client machine running this code, it is assumed that you have configured the system to trust the certficate used by PI Web API.
+
+If you don't you will see an error similar to this in the Result box on the webpage:
+
+```
+Error finding server: undefined
+```
+
 
 Functionality
 ------------
@@ -106,7 +117,7 @@ The functionality included with this sample includes(recommended order of execut
 - Create an element template
 - Create an element and associate the element's attributes with PI tags where appropriate
 - Write a single value to the attribute
-- Write a 100 values to an attribute
+- Write 100 values to an attribute
 - Perform a Batch (6 steps in 1 call) operation which includes:  
   - Get the sample tag  
   - Read the sample tag's snapshot value  

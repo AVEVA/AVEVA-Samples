@@ -193,6 +193,13 @@ export class SdsRestService {
     return this.authHttp.get(url, this.options);
   }
 
+  getSampledValues (streamId: string, start, end, intervals, sampleBy, filter: string = '', streamViewId=''): Observable<any> {
+    const url = this.sdsUrl +
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
+      `/Data/Sampled?startIndex=${start}&endIndex=${end}&intervals=${intervals}&sampleBy=${sampleBy}&filter=${filter}&streamViewId=${streamViewId}`;
+    return this.authHttp.get(url, this.options);
+  }
+
   getWindowValuesInterpolated (streamId: string, start, end, count: number): Observable<any> {
     const url = this.sdsUrl +
       `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Streams/${streamId}` +
@@ -214,9 +221,9 @@ export class SdsRestService {
     return this.authHttp.get(url, this.options);
   }
 
-  getTypes(skip: number, count: number, filter: string = ''): Observable<any> {
+  getTypes(skip: number, count: number, query: string = ''): Observable<any> {
     const url = this.sdsUrl +
-      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types?skip=${skip}&count=${count}&filter=${filter}`;
+      `/api/${this.apiVersion}/Tenants/${this.tenantId}/Namespaces/${this.namespaceId}/Types?skip=${skip}&count=${count}&query=${query}`;
     return this.authHttp.get(url, this.options);
   }
 

@@ -3,6 +3,7 @@
 
 from enum import Enum
 
+
 class SdsStreamExtrapolation(Enum):
     """
     SdsStreamExtrapolation 0 -3
@@ -11,5 +12,3 @@ class SdsStreamExtrapolation(Enum):
     Nonex = 1
     Forward = 2
     Backward = 3
-
-

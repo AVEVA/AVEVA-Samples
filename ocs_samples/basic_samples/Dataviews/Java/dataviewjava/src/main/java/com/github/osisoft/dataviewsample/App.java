@@ -55,12 +55,14 @@ public class App {
         System.out.println(" #     # #    #   #   #    #  #  #  # #      ##  ## #     # #     #   # #   #     # ");
         System.out.println(" ######  #    #   #   #    #   ##   # ###### #    #  #####  #     #    #    #     # ");
         System.out.println("------------------------------------------------------------------------------------");
-
+        
+        // Step 1
         OCSClient ocsClient = new OCSClient();
         
         try {
 
             if (needData) {
+                // Step 2
                 createData(ocsClient);
             }
             String sampleStreamId = "SampleStream";
@@ -84,7 +86,8 @@ public class App {
             #....
             */
 
-            DataviewQuery dataviewQuery = new DataviewQuery(sampleDataviewId, "streams", "name", sampleStreamId, "contains");
+            // Step 3
+            DataviewQuery dataviewQuery = new DataviewQuery(sampleDataviewId, "name:" + sampleStreamId);
             DataviewGroupRule dataviewGroupRule = new DataviewGroupRule("DefaultGroupRule", "StreamTag");
             DataviewMapping dataviewMapping = new DataviewMapping();
             Dataview dataview = new Dataview(sampleDataviewId, sampleDataviewName, sampleDataviewDescription, 
@@ -94,26 +97,31 @@ public class App {
             System.out.println("Creating dataview");
             System.out.println(ocsClient.mGson.toJson(dataview));
 
-            Dataview dataviewOut = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
-            dataview.setDescription(sampleDataviewDescription_modified);
+            Dataview dataviewOutFromPost = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
+
+            // Step 4
+            Dataview dataviewOut = ocsClient.Dataviews.getDataview(tenantId, namespaceId, dataview.getId());
 
             if(!(Objects.equals(dataviewOut.getId(),sampleDataviewId) && Objects.equals(dataviewOut.getDescription(),sampleDataviewDescription)))
             {
                 throw new SdsError("Dataview doesn't match expected one");
             }
             
-            dataviewOut = ocsClient.Dataviews.putDataview(tenantId, namespaceId, dataview);
+            dataview.setDescription(sampleDataviewDescription_modified);
+
+            // Step 5
+            ocsClient.Dataviews.putDataview(tenantId, namespaceId, dataview);
             
 
-            if(!(Objects.equals(dataviewOut.getId(),sampleDataviewId) && Objects.equals(dataviewOut.getDescription(),sampleDataviewDescription_modified)))
-            {
-                throw new SdsError("Dataview modified doesn't match expected one");
-            }
-
+            // Step 6
             // Getting the complete set of dataviews to make sure it is there
             System.out.println();
             System.out.println("Getting dataviews");
             ArrayList<Dataview> dataviews = ocsClient.Dataviews.getDataviews(tenantId, namespaceId);
+            if(dataviews ==null)
+            {
+                throw new SdsError("Dataviews return failed");
+            }
             for (Dataview dv : dataviews) {
                 System.out.println(ocsClient.mGson.toJson(dv));
             }
@@ -121,73 +129,27 @@ public class App {
             System.out.println();
             System.out.println("Getting datagroups");
 
-            //This works in automated envrionment, but the below code works locally and gives you the datagroup back as an object
+            // Step 7
             String dataGroups = ocsClient.Dataviews.getDatagroupsString(tenantId, namespaceId, sampleDataviewId, 0, 100);
             System.out.println("Datagroups");
             System.out.println(dataGroups);
-
-            //This should work to get datagroups and does locally
-            /*
-            Datagroups dataGroups = ocsClient.Dataviews.getDatagroups(tenantId, namespaceId, sampleDataviewId, 0, 100);
-            for (Datagroup dg : dataGroups.getDataGroups().values()) {
-                System.out.println("Datagroup");
-                System.out.println(ocsClient.mGson.toJson(dg));
-            }
-            */
  
             ///By default the preview get interpolated values every minute over the last hour, which lines up with our data that we sent in.  
             ///Beyond the normal API optoins, this function does have the option to return the data in a class if you have created a Type for the data you are retreiving.
 
+            // Step 8
             System.out.println();
             System.out.println("Retrieving preview data from the Dataview");
             Map<String, Object>[] dataviewPreviewData =  ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId,
                     sampleDataviewId));
-           System.out.println(ocsClient.mGson.toJson(dataviewPreviewData[0]));
-
-
-           //#Now we get the data creating a session.  The session allows us to get pages of data ensuring that the underlying data won't change as we collect the pages.
-           //#There are apis to manage the sessions, but that is beyond the scope of this basic example.
-           //#To highlight the use of the sessions this we will access the data, and wait 5 seconds to see the difference in the returned time.
-
-           System.out.println();
-           System.out.println("Retrieving session data from the Dataview");
-           Map<String, Object>[] dataviewSessionData = ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
-                   sampleDataviewId, "","","","",0));
-          System.out.println(ocsClient.mGson.toJson(dataviewSessionData[0]));
-
-          
+            System.out.println(ocsClient.mGson.toJson(dataviewPreviewData[0]));
         
-        
-          System.out.println(("Intentional waiting for 5 seconds to show a noticeable change in time."));
-          //# We wait for 5 seconds so the preview is different that before, but our session data should be the same
-          TimeUnit.SECONDS.sleep(5);
-
-          
-          Map<String, Object>[] dataviewPreviewData2 = ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewPreview(tenantId, namespaceId,
-          sampleDataviewId));
-          System.out.println(ocsClient.mGson.toJson(dataviewPreviewData2[0]));
-          
-          Map<String, Object>[] dataviewSessionData2 = ocsClient.jsonStringToMapArray(ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
-          sampleDataviewId, "","","","",0));
-          System.out.println(ocsClient.mGson.toJson(dataviewSessionData2[0]));
-
-          
-          if(!(Objects.equals(dataviewSessionData2[0],dataviewSessionData[0])))
-          {
-              throw new SdsError("Dataview session data doesn't match expected one");
-          } 
-          
-          if(Objects.equals(dataviewPreviewData[0],dataviewPreviewData2[0]))
-          {
-              throw new SdsError("Dataview preview data matches");
-          }
-          
-          
-          System.out.println();
-          System.out.println("Retrieving preview data from the Dataview in table format with headers");
-          String dataviewSessionDataTable = ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
-                  sampleDataviewId, "","","","csvh",0);
-         System.out.println(dataviewSessionDataTable.substring(0,193));
+            // Step 9
+            System.out.println();
+            System.out.println("Retrieving preview data from the Dataview in table format with headers");
+            String dataviewSessionDataTable = ocsClient.Dataviews.getDataviewInterpolated(tenantId, namespaceId,
+                    sampleDataviewId, "","","","csvh",0);
+            System.out.println(dataviewSessionDataTable.substring(0,193));
 
 
 
@@ -195,6 +157,7 @@ public class App {
             e.printStackTrace();
             success = false;
         } finally {
+            // Step 10
             System.out.println("Cleaning up");
             if (needData) {
                 cleanUp(ocsClient);
@@ -235,8 +198,8 @@ public class App {
             SdsStream temperatureStream = new SdsStream(sampleTemperatureStreamId, sampleTemperatureTypeId, "", sampleTemperatureStreamName);
             
             System.out.println("Creating SDS Streams");
-            String jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, pressureStream);
-            jsonStream = ocsClient.Streams.createStream(tenantId, namespaceId, temperatureStream);
+            ocsClient.Streams.createStream(tenantId, namespaceId, pressureStream);
+            ocsClient.Streams.createStream(tenantId, namespaceId, temperatureStream);
 
             Instant start = Instant.now().minus(Duration.ofHours(1));
 
@@ -284,10 +247,9 @@ public class App {
         
         String property = "";
         Properties props = new Properties();
-        InputStream inputStream;
+        
 
-        try {
-            inputStream = new FileInputStream("config.properties"); 
+        try(InputStream inputStream = new FileInputStream("config.properties")) {
             //if launching from git folder use this:
             // "\\basic_samples\\Dataviews\\JAVA\\config.properties");
             props.load(inputStream);

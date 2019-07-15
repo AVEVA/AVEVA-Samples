@@ -3,7 +3,9 @@
 
 import json
 
+
 class DataviewMappingColumn(object):
+
     """Sds dataview definition"""
     @property
     def Name(self):
@@ -12,6 +14,7 @@ class DataviewMappingColumn(object):
         :return:
         """
         return self.__name
+
     @Name.setter
     def Name(self, name):
         """
@@ -20,7 +23,7 @@ class DataviewMappingColumn(object):
         :return:
         """
         self.__name = name
-    
+
     @property
     def IsKey(self):
         """
@@ -28,6 +31,7 @@ class DataviewMappingColumn(object):
         :return:
         """
         return self.__isKey
+
     @IsKey.setter
     def IsKey(self, isKey):
         """
@@ -35,7 +39,7 @@ class DataviewMappingColumn(object):
         :param isKey:
         :return:
         """
-        self.__isKey= isKey
+        self.__isKey = isKey
 
     @property
     def DataType(self):
@@ -44,6 +48,7 @@ class DataviewMappingColumn(object):
         :return:
         """
         return self.__dataType
+
     @DataType.setter
     def DataType(self, dataType):
         """
@@ -52,7 +57,7 @@ class DataviewMappingColumn(object):
         :return:
         """
         self.__dataType = dataType
-		   
+
     @property
     def MappingRule(self):
         """
@@ -60,6 +65,7 @@ class DataviewMappingColumn(object):
         :return:
         """
         return self.__MappingRule
+
     @MappingRule.setter
     def MappingRule(self, MappingRule):
         """
@@ -67,23 +73,21 @@ class DataviewMappingColumn(object):
         :param MappingRule:
         :return:
         """
-        self.__MappingRule= MappingRule
-    
-
+        self.__MappingRule = MappingRule
 
     def toJson(self):
         return json.dumps(self.toDictionary())
 
     def toDictionary(self):
         # required properties
-        dictionary = { 'Name' : self.Name}
+        dictionary = {'Name': self.Name}
         dictionary['IsKey'] = self.IsKey
-        
+
         if hasattr(self, 'DataType'):
             dictionary['DataType'] = self.DataType
-        
+
         if hasattr(self, 'MappingRule'):
-            dictionary['MappingRule'] = self.MappingRule      
+            dictionary['MappingRule'] = self.MappingRule
 
         return dictionary
 
@@ -110,8 +114,6 @@ class DataviewMappingColumn(object):
             dataviewMappingColumn.DataType = content['DataType']
 
         if 'MappingRule' in content:
-            dataviewMappingColumn.MappingRule = content['MappingRule']       
-            
+            dataviewMappingColumn.MappingRule = content['MappingRule']
 
         return dataviewMappingColumn
-

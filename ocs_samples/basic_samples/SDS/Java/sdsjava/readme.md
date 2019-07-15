@@ -15,6 +15,8 @@ must first download and install the Apache Maven software. See
 for more information. All of the necessary dependencies are specified within 
 the pom.xml file.
 
+Developed against Maven 3.6.1 and Java 1.8.0_181.
+
 Summary of steps to run the Java demo
 --------------------------------------
 Using VSCode, Eclipse or any IDE:
@@ -147,11 +149,11 @@ The values to be replaced are in ``config.properties``:
 
 '''
 resource = https://dat-b.osisoft.com
-clientId = PLACEHOLDER_REPLACE_WITH_CLIENT_ID
-clientSecret = PLACEHOLDER_REPLACE_WITH_CLIENT_SECRET
-tenantId = PLACEHOLDER_REPLACE_WITH_TENANT_ID
-namespaceId = PLACEHOLDER_REPLACE_WITH_NAMESPACE_ID
-apiVersion = v1-preview
+clientId = REPLACE_WITH_APPLICATION_IDENTIFIER
+clientSecret = REPLACE_WITH_APPLICATION_SECRET
+tenantId = REPLACE_WITH_TENANT_ID
+namespaceId = REPLACE_WITH_NAMESPACE_ID
+apiVersion = v1
 '''
 
 Obtain an Authentication Token
@@ -162,7 +164,7 @@ Near the end of the ``BaseClient.Java`` file is a method called
 is to connect to the Open ID discovery endpoint and get a URI for obtaining the token.
 Thereafter, the token based on ``clientId`` and ``clientSecret`` is retrieved.
 
-The token is cached, but as tokens have a fixed lifetime, typically one hour, but can be refreshed
+The token is cached, but as tokens have a fixed lifetime, typically one hour. It can be refreshed
 by the authenticating authority for a longer period. If the refresh
 period has expired, the credentials must be presented to the authority
 again. To streamline development, the ``AcquireToken`` method hides
@@ -176,7 +178,7 @@ To use SDS, you define SdsTypes that describe the kinds of data you want
 to store in SdsStreams. SdsTypes are the model that define SdsStreams.
 SdsTypes can define simple atomic types, such as integers, floats, or
 strings, or they can define complex types by grouping other SdsTypes. For
-more information about SdsTypes, refer to the `Sds
+more information about SdsTypes, refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 In the sample code, the SdsType representing WaveData is defined in the
@@ -298,11 +300,15 @@ events from a stream. Many of the retrieval methods accept indexes,
 which are passed using the URL. The index values must be capable of
 conversion to the type of the index assigned in the SdsType.
 
-In this sample, four of the available methods are implemented in
-StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, and ``getRangeValues``.
+In this sample, five of the available methods are implemented in
+StreamsClient: ``getLastValue``, ``getValue``, ``getWindowValues``, ``getRangeValues``, and ``getSampledValues``.
 ``getWindowValues`` can be used to retrieve events over a specific index
 range. ``getRangeValues`` can be used to retrieve a specified number of
-events from a starting index.
+events from a starting index. ``getSampledValues`` can retrieve a sample of your data to show the overall 
+trend. In addition to the start and end index, we also 
+provide the number of intervals and a sampleBy parameter. Intervals parameter 
+determines the depth of sampling performed and will affect how many values
+are returned. SampleBy allows you to select which property within your data you want the samples to be based on.
 
 Get single value:
 
@@ -331,6 +337,13 @@ Get range of values:
 ```java
 jsonMultipleValues = ocsClient.Streams.getRangeValues(tenantId, namespaceId, sampleStreamId, "1", 0, 3, false, SdsBoundaryType.ExactOrCalculated);
 foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);   
+```
+
+Get sampled values:
+
+```java
+jsonMultipleValues = ocsClient.Streams.getSampledValues(tenantId, namespaceId, sampleStreamId, "0", "40", 4, "Sin");
+foundEvents = ocsClient.mGson.fromJson(jsonMultipleValues, listType);
 ```
 
 Updating and Replacing Values
@@ -368,7 +381,7 @@ Meaning we apply a change to a specific SDS Stream without changing the SDS Type
 read behavior of any other SDS Streams based on that type.  
 
 In the sample, the InterpolationMode is overridden to a value of Discrete for the property Radians. 
-Now if a requested index does not correspond to a real value in the stream then ``null``, 
+Now if a requested index does not correspond to a real value in the stream, null, 
 or the default value for the data type, is returned by the SDS Service. 
 The following shows how this is done in the code:
 
@@ -474,7 +487,7 @@ Type streamListType = new TypeToken<ArrayList<SdsStream>>(){}.getType();
 ArrayList<SdsStream> streams = ocsClient.mGson.fromJson(returnedStreams, streamListType);
 ```
 
-For a complete list of HTTP request URLs refer to the `Sds
+For a complete list of HTTP request URLs refer to the `SDS
 documentation <https://ocs-docs.osisoft.com/Documentation/SequentialDataStore/Data_Store_and_SDS.html>`__.
 
 Cleanup: Deleting Types, Stream Views and Streams
@@ -502,6 +515,7 @@ ocsClient.Types.deleteType(tenantId, namespaceId, sampleTypeId);
 
 --------------
 
+Tested against Maven 3.6.1 and Java 1.8.0_212.
 
 For the general steps or switch languages see the Task  [ReadMe](../../)<br />
 For the main OCS page [ReadMe](../../../../)<br />

@@ -2,19 +2,16 @@
  * 
  */
 
-package  com.github.osisoft.ocs_sample_library_preview;
+package com.github.osisoft.ocs_sample_library_preview;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -38,7 +35,6 @@ public class BaseClient {
     private Date accessTokenExpiration = new Date(Long.MIN_VALUE);
     private long FIVE_SECONDS_IN_MILLISECONDS = 5000;
 
-    private String requestBase = "api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}";
 
     //config parameters
     private String gclientId = "";
@@ -103,11 +99,11 @@ public class BaseClient {
                 //Do nothing
             }
         } catch (SocketTimeoutException e) {
-            e.getMessage();
+            e.printStackTrace();
         } catch (ProtocolException e) {
-            e.getMessage();
+            e.printStackTrace();
         } catch (IllegalStateException e) {
-            e.getMessage();
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,7 +132,7 @@ public class BaseClient {
             URLConnection request = discoveryUrl.openConnection();
             request.connect();
             JsonParser jp = new JsonParser(); 
-            JsonObject rootObj = jp.parse(new InputStreamReader((InputStream) request.getContent())).getAsJsonObject(); 
+            JsonObject rootObj = jp.parse(new InputStreamReader((InputStream) request.getContent(), StandardCharsets.UTF_8)).getAsJsonObject(); 
             String tokenUrl = rootObj.get("token_endpoint").getAsString(); 
 
             URL token = new URL(tokenUrl);
@@ -163,10 +159,11 @@ public class BaseClient {
             cachedAccessToken = response.get("access_token").getAsString();
             Integer timeOut = response.get("expires_in").getAsInt();
             accessTokenExpiration = new Date(System.currentTimeMillis() + timeOut * 1000);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            // Do nothing
-        } 
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return cachedAccessToken;
     }
@@ -177,10 +174,7 @@ public class BaseClient {
      * @return the value retreived
      */
     private String getConfiguration(String propertyId) {
-        String property = "";
-        Properties props = new Properties();
-        InputStream inputStream;
-
+        
          if(propertyId.equals("clientId") && !gclientId.isEmpty()){
             return gclientId;
         }
@@ -193,10 +187,13 @@ public class BaseClient {
             return gresource;
         }
 
-        try {
-            inputStream = new FileInputStream("config.properties");
+        String property = "";
+        try(InputStream inputStream = new FileInputStream("config.properties")) {
+            Properties props = new Properties();
+
             props.load(inputStream);
             property = props.getProperty(propertyId);
+            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

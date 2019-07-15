@@ -2,12 +2,20 @@
 #
 
 import json
+from dateutil import parser
+
 
 class DataviewIndexConfig(object):
     """
     DataviewIndexConfig
     """
-    
+
+    def __init__(self, startIndex=None, endIndex=None, mode=None, interval=None):
+        self.__startIndex = startIndex
+        self.__endIndex = endIndex
+        self.__mode = mode
+        self.__interval = interval
+
     @property
     def StartIndex(self):
         """
@@ -15,15 +23,16 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__startIndex
+
     @StartIndex.setter
-    def StartIndex(self, startIndex ):
+    def StartIndex(self, startIndex):
         """
         start index in ISO 8601 format   required
         :param startIndex:
         :return:
         """
-        self.__startIndex = startIndex    
-    
+        self.__startIndex = startIndex
+
     @property
     def EndIndex(self):
         """
@@ -31,15 +40,16 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__endIndex
+
     @EndIndex.setter
-    def EndIndex(self, endIndex ):
+    def EndIndex(self, endIndex):
         """
         end index in  ISO 8601 format   required
         :param endIndex:
         :return:
         """
-        self.__endIndex = endIndex    
-		
+        self.__endIndex = endIndex
+
     @property
     def Mode(self):
         """
@@ -47,15 +57,16 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__mode
+
     @Mode.setter
-    def Mode(self, mode ):
+    def Mode(self, mode):
         """
         data retrieval mode, for example: Interpolated  required
         :param mode:
         :return:
         """
-        self.__mode = mode 
-		
+        self.__mode = mode
+
     @property
     def Interval(self):
         """
@@ -63,39 +74,45 @@ class DataviewIndexConfig(object):
         :return:
         """
         return self.__interval
+
     @Interval.setter
-    def Interval(self, interval ):
+    def Interval(self, interval):
         """
         data retrieval interval   required
         :param interval:
         :return:
         """
-        self.__interval = interval 
+        self.__interval = interval
 
+    def toJson(self, withSeconds=False): 
+        return json.dumps(self.toDictionary(withSeconds))
 
-    def toJson(self):
-        return json.dumps(self.toDictionary())
-
-    def toDictionary(self):
+    def toDictionary(self, withSeconds=False):
         # required properties
         dictionary = {}
         if hasattr(self, 'IsDefault'):
-           dictionary = { 'IsDefault' : self.IsDefault}
-	
+            dictionary = {'IsDefault': self.IsDefault}
+
         if hasattr(self, 'StartIndex'):
-            dictionary['StartIndex'] = self.StartIndex
+            dictionary['StartIndex'] = self.__toTimeSecondsFormat(self.StartIndex, withSeconds)
 
         if hasattr(self, 'EndIndex'):
-            dictionary['EndIndex'] = self.EndIndex
+            dictionary['EndIndex'] = self.__toTimeSecondsFormat(self.EndIndex, withSeconds)
 
         if hasattr(self, 'Mode'):
             dictionary['Mode'] = self.Mode
 
         if hasattr(self, 'Interval'):
-            dictionary['Interval'] = self.Interval			
+            dictionary['Interval'] = self.Interval
 
         return dictionary
 
+    def __toTimeSecondsFormat(self, t, withSeconds=False):
+        if not withSeconds:
+            return t
+        else:
+            return (parser.parse(t)).isoformat(timespec='seconds') + "Z"
+    
     @staticmethod
     def fromJson(jsonObj):
         return DataviewIndexConfig.fromDictionary(jsonObj)
@@ -121,8 +138,5 @@ class DataviewIndexConfig(object):
 
         if 'Interval' in content:
             dataviewIndexConfig.Interval = content['Interval']
-        
-            
 
         return dataviewIndexConfig
-

@@ -3,21 +3,26 @@
 
 from enum import Enum
 
+
 class SdsTypeProperty(object):
     """
     Sds type property definition
     """
 
-    def __init__(self, id=None, name =None, description = None, isKey = False, sdsType = None, value = None, order = None):
+    def __init__(self, id=None, name=None, description=None, isKey=False,
+                 sdsType=None, value=None, order=None):
         """
-        
+
         :param id: required
         :param name: not required
         :param description: not required
-        :param isKey: bool   Set whether this property is part of the type's index    required
+        :param isKey: bool   Set whether this property is part of the type's
+                     index    required
         :param sdsType: SdsType required
         :param value:  object   not required
-        :param order: Integer   Determines the order of a complex index type.  If isKey is set and this is part of a complex index  this is required.   Not required
+        :param order: Integer   Determines the order of a complex index type.
+                    If isKey is set and this is part of a complex index
+                    this is required.   Not required
         """
         self.Id = id
         self.Description = description
@@ -25,7 +30,7 @@ class SdsTypeProperty(object):
         self.SdsType = sdsType
         self.Value = value
         self.Order = order
-            
+
     @property
     def Id(self):
         """
@@ -34,6 +39,7 @@ class SdsTypeProperty(object):
         :return:
         """
         return self.__id
+
     @Id.setter
     def Id(self, id):
         """
@@ -52,6 +58,7 @@ class SdsTypeProperty(object):
         :return:
         """
         return self.__name
+
     @Name.setter
     def Name(self, name):
         """
@@ -70,6 +77,7 @@ class SdsTypeProperty(object):
         :return:
         """
         return self.__description
+
     @Description.setter
     def Description(self, Description):
         """
@@ -88,10 +96,11 @@ class SdsTypeProperty(object):
         :return:
         """
         return self.__isKey
+
     @IsKey.setter
     def IsKey(self, iskey):
         """
-        bool  Set whether this property is part of the type's index     required
+        bool  Set whether this property is part of the type's index   required
         :param self:
         :param iskey:
         :return:
@@ -106,6 +115,7 @@ class SdsTypeProperty(object):
         :return:
         """
         return self.__sdsType
+
     @SdsType.setter
     def SdsType(self, sdsType):
         """
@@ -124,6 +134,7 @@ class SdsTypeProperty(object):
         :return:
         """
         return self.__value
+
     @Value.setter
     def Value(self, value):
         """
@@ -137,23 +148,28 @@ class SdsTypeProperty(object):
     @property
     def Order(self):
         """
-        Integer   Determines the order of a complex index type.  If isKey is set and this is part of a complex index  this is required.   Not required
+        Integer   Determines the order of a complex index type.
+                  If isKey is set and this is part of a complex index
+                  this is required.   Not required
         :param self:
         :return:
         """
         return self.__order
+
     @Order.setter
     def Order(self, order):
         """
-        Integer   Determines the order of a complex index type.  If isKey is set and this is part of a complex index  this is required.   Not required
+        Integer   Determines the order of a complex index type.  If isKey is
+                    set and this is part of a complex index  this is required.
+                     Not required
         :param self:
         :param order:
         :return:
         """
         self.__order = order
-    
+
     def toDictionary(self):
-        dictionary = { 'IsKey' : self.IsKey }
+        dictionary = {'IsKey': self.IsKey}
 
         if hasattr(self, 'Id'):
             dictionary['Id'] = self.Id
@@ -164,9 +180,10 @@ class SdsTypeProperty(object):
         if hasattr(self, 'Description'):
             dictionary['Description'] = self.Description
 
-        if hasattr(self, 'SdsType'):            
-            from .SdsType import SdsType
-            dictionary['SdsType'] = self.SdsType.toDictionary()
+        if hasattr(self, 'SdsType'):
+            if(self.SdsType):
+                from .SdsType import SdsType
+                dictionary['SdsType'] = self.SdsType.toDictionary()
 
         if hasattr(self, 'Value'):
             if (isinstance(self.Value, Enum)):
@@ -188,7 +205,7 @@ class SdsTypeProperty(object):
 
         if 'Id' in content:
             typeProperty.Id = content['Id']
-            
+
         if 'IsKey' in content:
             typeProperty.IsKey = content['IsKey']
 

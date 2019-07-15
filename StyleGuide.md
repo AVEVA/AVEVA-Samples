@@ -29,7 +29,8 @@ Note: Samples (including the sample libraries) do not necessarily go over every 
 
 * This means either a PI Server installed and running or, in the case of OCS, a tenant is provisioned.  
 * For OCS samples it is typically assumed you have client credentials configured and a namespace created.  Some samples may use different types of authentication and this is noted in the sample readme, but even in those it is assumed that this already created.  
-* For the OMF examples it is assumed you have the OMF endpoint configured and running.  
+* For the OMF examples it is assumed you have the OMF endpoint configured and running.
+* For PI Web API samples it assumed that your PI System, including PI Web API, is running and configured.  It is also assumed that your client machine trusts the certificate used by PI Web API.   
 
 
 

@@ -22,7 +22,7 @@
       <dependency> 
         <groupId> com.github.osisoft.ocs_sample_library_preview</groupId>
         <artifactId>ocs_sample_library_preview</artifactId>
-        <version>[0.0.4,)</version>
+        <version>[0.0.11,)</version>
     </dependency>
     
         <dependency>
@@ -80,6 +80,21 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>   
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <mainClass>com.github.osisoft.omfapi.Program</mainClass>
+            </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
