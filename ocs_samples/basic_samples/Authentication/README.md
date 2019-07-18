@@ -111,12 +111,17 @@ The sample for this authentication flow can be found
 ### Implicit Flow (Deprecated)
 
 If you are developing any Javascript/Browser (SPA) based applications, with the
-user (resource owner) trying to access resources, this flow can be used but is 
+user (resource owner) trying to access resources, this flow can be used but is
 deprecated. It is highly recommended to use Authorization Code Flow with PKCE.
 
 In this case the user will have to authenticate against the identity provider
-and an Access Token will be provided to the client in the redirect URI. A certain 
+and an Access Token will be provided to the client in the redirect URI. A certain
 level of trust on the client/browser is expected. No Refresh Token is provided.
+
+Implicit Flow supports silent refresh, which makes it possible to receive a
+new access token while the user is both using the application and logged in with
+the Identity Provider in the same browser session. This is done behind the scenes
+without interrupting the user experience.
 
 The sample for this authentication flow can be found [here](./ImplicitFlow/).
 
@@ -125,10 +130,16 @@ The sample for this authentication flow can be found [here](./ImplicitFlow/).
 If you are developing any Javascript/Browser (SPA) based applications or native mobile
 applications, with the user (resource owner) trying to access resources, use this
 flow. This flow adds an extra layer of security over implicit flow by:
+
 1. Requiring a client-verified code exchange for access token
 2. By not returning the access token in a redirect URI.
 
 As with Implicit Flow, no refresh token is provided.
+
+Authorization Code Flow supports silent refresh, which makes it possible to receive a
+new access token while the user is both using the application and logged in with
+the Identity Provider in the same browser session. This is done behind the scenes
+without interrupting the user experience.
 
 The sample for this authentication flow can be found [here](./AuthorizationCodeFlow/).
 
