@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="ocs_sample_library_hub",
+    name="ocs_sample_library_preview",
     version="0.0.30_preview",
     author="OSIsoft",
     license="Apache 2.0",
