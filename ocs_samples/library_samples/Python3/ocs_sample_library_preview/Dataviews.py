@@ -235,69 +235,6 @@ class Dataviews(object):
 
         # needs other parameters with smart
 
-    def getDataviewPreview(
-        self,
-        namespace_id,
-        dataview_id,
-        startIndex=None,
-        endIndex=None,
-        interval=None,
-        form=None,
-        count=None,
-        value_class=None,
-    ):
-        """
-        --- Deprecated ---
-
-        Retrieves the dataviewpreview of the 'dataview_id' from Sds Service
-        :param namespace_id: namespace to work against
-        :param dataview_id: dataview to work against
-        :param startIndex: start index
-        :param endIndex:  end index
-        :param interval: space between values
-        :param form: form definition
-        :param count: number of values to return
-        :param value_class: Use this to auto format the data into the defined
-            type.  The tpye is expected to have a fromJson method that takes
-            a dynamicObject and converts it into the defined type.
-          Otherwise you get a dynamic object
-        :return:
-        """
-        if namespace_id is None:
-            raise TypeError
-        if dataview_id is None:
-            raise TypeError
-
-        params = {
-            "startIndex": startIndex,
-            "endIndex": endIndex,
-            "interval": interval,
-            "form": form,
-            "count": count,
-        }
-        response = requests.get(
-            self.__getDataviewPreview.format(
-                tenant_id=self.__baseClient.tenant,
-                namespace_id=namespace_id,
-                dataview_id=dataview_id,
-            ),
-            headers=self.__baseClient.sdsHeaders(),
-            params=params,
-        )
-
-        self.__baseClient.checkResponse(
-            response, f"Failed to get dataview preview for dataview, {dataview_id}."
-        )
-
-        if form is not None:
-            content = response.text
-        else:
-            content = response.json()
-
-        if value_class is None:
-            return content
-        return value_class.fromJson(content)
-
     def getDataInterpolated(
         self,
         namespace_id,
@@ -311,7 +248,7 @@ class Dataviews(object):
         value_class=None,
     ):
         """
-        Retrieves the dataviewpreview of the 'dataview_id' from Sds Service
+        Retrieves the interpolated data of the 'dataview_id' from Sds Service
         :param namespace_id: namespace to work against
         :param dataview_id: dataview to work against
         :param skip: number of values to skip
@@ -354,12 +291,15 @@ class Dataviews(object):
             f"Failed to get dataview data interpolated for dataview, {dataview_id}.",
         )
 
+        continuation_token = None
         next_page = response.headers.get("NextPage", None)
-        continuation_token = (
-            next_page[next_page.find("&continuationToken=") + 19 :]
-            if next_page is not None
-            else None
-        )
+        if next_page: 
+            token_param = "&continuationToken="
+            token_position = next_page.find(token_param)
+            assert token_position > 0, "Could not find continuationToken in NextPage"
+            end_position = next_page.find("&", token_position+1)
+            end_position = None if end_position == -1 else end_position
+            continuation_token = next_page[token_position + len(token_param):end_position]
 
         if form is not None:
             return response.text, continuation_token
@@ -384,4 +324,3 @@ class Dataviews(object):
         self.__datagroupPath = self.__dataviewPath + "/datagroups"
         self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
         self.__getDataInterpolated = self.__dataviewPath + "/data/interpolated"
-        self.__getDataviewPreview = self.__dataviewPath + "/preview/interpolated"  # deprecated
