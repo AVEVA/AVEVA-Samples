@@ -219,6 +219,8 @@ public class Program {
                 e.printStackTrace();
             }
 
+            checkDeletes();
+
             System.out.println("Done");
         }
         if (!success) {
@@ -227,6 +229,50 @@ public class Program {
         }
         return success;
     }
+
+    private static void checkDeletes() throws Exception {
+        System.out.println("Check deletes");
+        Thread.sleep(10000);
+        Gson gson = new Gson();
+        Boolean success = false;
+        if (sendToOCS) {
+            try
+            {
+                getValue(checkBase + "/Streams" + "/Container1");
+            }
+            catch(Exception ex)
+            {
+                success = true;
+            }
+
+            if (!success)
+                throw new Exception("Container stream found");
+
+        } else {
+
+            String json1;
+            json1 = getValue(checkBase + "/dataservers?name=" + dataServerName);
+            Map<String, Object> mappy = gson.fromJson(json1, Map.class);
+            Map<String, Object> mappy2 = (Map<String, Object>) mappy.get("Links");
+
+            String pointsURL = mappy2.get("Points").toString();
+            try
+            {
+                json1 = getValue(pointsURL + "?nameFilter=container1*");
+                Map<String, Object> mappy3 = gson.fromJson(json1, Map.class);
+                ((ArrayList<Map<String, Object>>) mappy3.get("Items")).get(0);
+            }
+            catch(Exception ex)
+            {
+                success = true;
+            }
+            if (!success)
+                throw new Exception("Container tag found");
+        }
+
+    }
+
+    
 
     private static void checkSends(String lastVal) throws Exception {
         System.out.println("Checks");

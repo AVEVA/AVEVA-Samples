@@ -38,10 +38,10 @@ namespace Tests
             {
                 driver.Url = url;
 
-                Thread.Sleep(4000);
+                Thread.Sleep(8000);
                 driver.FindElement(By.XPath("//*[@id=\"login\"]")).Click();
 
-                Thread.Sleep(4000);
+                Thread.Sleep(6000);
 
                 
 

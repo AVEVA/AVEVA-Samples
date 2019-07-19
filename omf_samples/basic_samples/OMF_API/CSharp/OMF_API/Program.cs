@@ -202,6 +202,8 @@ namespace OMF_API
                     success = false;
                 }
 
+                CheckDeletes();
+
                 Console.WriteLine("Done");
                 if (!test)
                     Console.ReadLine();
@@ -211,6 +213,52 @@ namespace OMF_API
             
             return success;
         }
+        
+        /// <summary>
+        /// Cehcks to mkae sure things were deleted
+        /// </summary>
+        private static void CheckDeletes()
+        {
+            Console.WriteLine("Check Deletes");
+            Console.WriteLine("Letting OMF get to data store");
+            Thread.Sleep(10000);
+            bool success = false;
+            if (sendingToOCS)
+            {
+                try
+                {
+                    checkValue(checkBase + $"/Streams" + $"/Container1");
+                }
+                catch
+                {
+                    success = true;
+                }
+                if(!success)
+                    throw new Exception("Container was found.");
+            }
+            else
+            {
+                string json1 = checkValue(checkBase + $"/dataservers?name=" + pidataserver);
+                JObject result = JsonConvert.DeserializeObject<JObject>(json1);
+                string pointsURL  = result.Value<JObject>("Links").Value<String>("Points");
+
+                try
+                {
+                    string json2 = checkValue(pointsURL+ "?nameFilter=container1*");
+                    JObject result2 = JsonConvert.DeserializeObject<JObject>(json2);
+                    var item = result2.Value<JArray>("Items")[0];
+                }
+                catch
+                {
+                    success = true;
+                }
+
+                if(!success)
+                    throw new Exception("Container was found.");
+                
+            }
+        }
+
 
         /// <summary>
         /// Cehcks the last value of Container1 to see if it matches the incoming value

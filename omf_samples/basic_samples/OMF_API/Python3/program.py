@@ -213,6 +213,39 @@ def getHeaders(compression = "", message_type = "" , action = ""):
     return msg_headers
 
 
+def checkValueGone(url):
+    # Sends the request out to the preconfigured endpoint..
+
+    global producerToken, sendingToOCS, username, password
+
+    # Assemble headers        
+    msg_headers = getHeaders()
+
+    # Send the request, and collect the response
+    if sendingToOCS:     
+        response = requests.get(
+            url,
+            headers = msg_headers,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS
+        )
+    else:
+        response = requests.get(
+            url,
+            headers = msg_headers,
+            verify = VERIFY_SSL,
+            timeout = WEB_REQUEST_TIMEOUT_SECONDS,
+            auth=(username,password)
+        )
+    
+    # response code in 200s if the request was successful!
+    if response.status_code >= 200 and response.status_code < 300:
+        response.close()
+        print('Value found.  This is unexpected.  "{0}"'.format(response.status_code))
+        print()
+        raise Exception("Check message was failed. {status}:{reason}".format( status=response.status_code, reason=response.text))
+    return response.text
+   
 
 def checkValue(url):
     # Sends the request out to the preconfigured endpoint..
@@ -718,6 +751,25 @@ def oneTimeSendMessages(action = 'create'):
         }
     ],action)
     '''
+    
+def checkDeletes():    
+    global checkBase, dataServerName
+
+    print("Check Deletes")
+    time.sleep(2)
+
+    if(sendingToOCS):
+        checkValueGone(checkBase + '/Streams' + '/Container1')
+    else:
+        json1 = checkValue(checkBase + "/dataservers?name=" + dataServerName)
+        pointsURL = json.loads(json1)['Links']['Points']
+        json1 = checkValue(pointsURL + "?nameFilter=container1*")
+        links = json.loads(json1)['Links']
+        assert len(links) == 0
+
+
+
+
 
 def checkSends(lastVal):    
     global checkBase, dataServerName
@@ -874,6 +926,7 @@ def main(test = False):
 
         # Step 10
         oneTimeSendMessages('delete')
+        checkDeletes()
         print 
         return success       
 
