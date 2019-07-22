@@ -108,7 +108,11 @@ class BaseClient(object):
         if token is None:
             raise Exception("Failed to retrieve Token")
 
-        self.__expiration = float(token['expires_in']) + time.time()
+        expiration = token.get("expires_in", None)
+        if expiration is None:
+            raise SdsError(f"Failed to get token, check client id/secret for typos and/status")
+
+        self.__expiration = float(expiration) + time.time()
         self.__token = token['access_token']
         return self.__token
 
