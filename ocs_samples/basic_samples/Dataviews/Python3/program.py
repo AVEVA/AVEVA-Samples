@@ -271,7 +271,7 @@ def main(test=False):
         # Step 8
         print
         print("Retrieving data preview from the Dataview")
-        dataviewDataPreview1 = ocsClient.Dataviews.getDataviewPreview(
+        dataviewDataPreview1 = ocsClient.Dataviews.getDataInterpolated(
             namespaceId, sampleDataviewId)
         print(str(dataviewDataPreview1[0]))
 
@@ -296,7 +296,7 @@ def main(test=False):
         # Ask for last 5 minutes of data, aligned on the seconds, interpolated at 30 seconds
         startIndex = (startTime + datetime.timedelta(minutes=55)).isoformat(timespec='seconds')
         endIndex = (startTime + datetime.timedelta(minutes=60)).isoformat(timespec='seconds')
-        dataviewDataTable3, token = ocsClient.Dataviews.getDataInterpolated(
+        dataviewDataTable3, token2 = ocsClient.Dataviews.getDataInterpolated(
             namespaceId, sampleDataviewId, form="csvh", count=10, continuationToken=None,
             startIndex=startIndex, endIndex=endIndex, interval="00:00:30")
         print(dataviewDataTable3)
