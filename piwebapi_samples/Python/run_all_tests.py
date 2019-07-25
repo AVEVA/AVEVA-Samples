@@ -4,31 +4,72 @@
 """
 
 import unittest
+import xmlrunner
 
-from test_batch_call import TestStringMethods as BatchMethods
-from test_create_sandbox import TestStringMethods as SandboxMethods
-from test_read_attributes import TestStringMethods as ReadMethods
-from test_write_attributes import TestStringMethods as WriteMethods
+class TestSequenceFunctions(unittest.TestCase):
 
-suite = unittest.TestSuite()
-suite.addTest(SandboxMethods('test_createdatabase'))
-suite.addTest(SandboxMethods('test_createcategory'))
-suite.addTest(SandboxMethods('test_createtemplate'))
-suite.addTest(SandboxMethods('test_createelement'))
+    def test_a_createdatabase(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_createdatabase(self)
 
-suite.addTest(WriteMethods('test_writesinglevalue'))
-suite.addTest(WriteMethods('test_writedataset'))
-suite.addTest(WriteMethods('test_updateattributevalue'))
+    def test_b_createcategory(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_createcategory(self)
 
-suite.addTest(ReadMethods('test_readattributesnapshot'))
-suite.addTest(ReadMethods('test_readattributestream'))
-suite.addTest(ReadMethods('test_readattributeselectedfields'))
+    def test_c_createtemplate(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_createtemplate(self)
 
-suite.addTest(BatchMethods('test_dobatchcall'))
+    def test_d_createelement(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_createelement(self)
 
-suite.addTest(SandboxMethods('test_deleteelement'))
-suite.addTest(SandboxMethods('test_deletetemplate'))
-suite.addTest(SandboxMethods('test_deletecategory'))
-suite.addTest(SandboxMethods('test_deletedatabase'))
+    def test_e_writesinglevalue(self):
+        from test_write_attributes import TestStringMethods as WriteMethods
+        WriteMethods.test_writesinglevalue(self)
 
-unittest.TextTestRunner(verbosity=2).run(suite)
+    def test_f_writedataset(self):
+        from test_write_attributes import TestStringMethods as WriteMethods
+        WriteMethods.test_writedataset(self)
+
+    def test_g_updateattributevalue(self):
+        from test_write_attributes import TestStringMethods as WriteMethods
+        WriteMethods.test_updateattributevalue(self)
+
+    def test_h_readattributesnapshot(self):
+        from test_read_attributes import TestStringMethods as ReadMethods
+        ReadMethods.test_readattributesnapshot(self)
+
+    def test_i_readattributestream(self):
+        from test_read_attributes import TestStringMethods as ReadMethods
+        ReadMethods.test_readattributestream(self)
+
+    def test_j_readattributeselectedfields(self):
+        from test_read_attributes import TestStringMethods as ReadMethods
+        ReadMethods.test_readattributeselectedfields(self)
+
+    def test_k_dobatchcall(self):
+        from test_batch_call import TestStringMethods as BatchMethods
+        BatchMethods.test_dobatchcall(self)
+
+    def test_l_deleteelement(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_deleteelement(self)
+
+    def test_m_deletetemplate(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_deletetemplate(self)
+
+    def test_n_deletecategory(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_deletecategory(self)
+
+    def test_o_delete_database(self):
+        from test_create_sandbox import TestStringMethods as SandboxMethods
+        SandboxMethods.test_deletedatabase(self)
+
+if __name__ == '__main__':
+    with open('output.xml', 'wb') as output:
+        unittest.main(
+            testRunner=xmlrunner.XMLTestRunner(output=output),
+            failfast=False, buffer=False, catchbreak=False)

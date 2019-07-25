@@ -10,12 +10,16 @@ pool:
   name: MPIBLDQ
 
 steps:
-- script: Rscript.exe run_tests.R > $(Build.ArtifactStagingDirectory)\test_results.txt
+- script: Rscript.exe run_tests.R
   workingDirectory: $(Build.SourcesDirectory)\R
+  continueOnError: 'true'
   displayName: 'Run R tests'
 
-- task: PublishBuildArtifacts@1
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'tests'
-    publishLocation: 'Container'
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**\output.xml'
+    searchFolder: $(Build.SourcesDirectory)\R
+    testRunTitle: 'Publish R test results'
+
