@@ -11,19 +11,23 @@ pool:
 
 steps:
 - script: |
-    python -m pip install --upgrade pip
-    pip install requests
-    pip install requests_kerberos
+  python -m pip install --upgrade pip
+  pip install requests
+  pip install requests_kerberos
+  pip install unittest
+  pip install unittest-xml-reporting
   displayName: 'Install dependencies'
 
 - script: |
-    python run_all_tests.py > output.txt 2>&1
-  displayName: 'run all tests'
-  workingDirectory: Python\
+  python run_all_tests.py 2>&1
+  workingDirectory: $(Build.SourcesDirectory)\Python
   continueOnError: 'true'
-
-- task: PublishBuildArtifacts@1
+  displayName: 'Run Python tests'
+  
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
   inputs:
-    PathtoPublish: 'Python\\output.txt'
-    ArtifactName: 'results'
-    publishLocation: 'Container'
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**\output.xml'
+    searchFolder: $(Build.SourcesDirectory)\Python
+    testRunTitle: 'Publish Python test results'

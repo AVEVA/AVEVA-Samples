@@ -1,6 +1,8 @@
-require("httr")
-require("jsonlite")
-require("tcltk")
+context("TestRSample")
+
+if (!require("pacman")) install.packages("pacman", repos = "https://cran.r-project.org", quiet = TRUE)
+require("pacman", quietly = TRUE)
+p_load("httr", "jsonlite", "tcltk")
 
 defaultName <- ""
 defaultPassword <- ""
