@@ -20,9 +20,6 @@ Some tasks and individual language examples may have some additional labels as f
 
 The official OCS samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table:
 
-# Note
-
-There is an issue currently with badges.  If one job (test) fails in a pipeline all are showing as failed.  Until this gets fixed the badges all saying failed is inaccurate.
 
 Task|Description|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ----|-----------|---------|-----------
