@@ -154,6 +154,9 @@ class Dataviews(object):
         self.__baseClient.checkResponse(response, "Failed to get dataviews.")
 
         dataviews = json.loads(response.content)
+        # Need to update this to handle the array better and handle 207s from endpoint
+        if hasattr(dataviews, "DataViews"):
+            dataviews = dataviews["DataViews"]
 
         results = []
         for t in dataviews:
