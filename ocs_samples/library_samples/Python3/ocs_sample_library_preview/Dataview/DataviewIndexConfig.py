@@ -111,7 +111,7 @@ class DataviewIndexConfig(object):
         if not withSeconds:
             return t
         else:
-            return (parser.parse(t)).isoformat(timespec='seconds') + "Z"
+            return (parser.parse(t)).isoformat(timespec='seconds') + ".0000000Z"
     
     @staticmethod
     def fromJson(jsonObj):
