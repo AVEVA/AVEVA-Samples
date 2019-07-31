@@ -12,7 +12,7 @@ export class AppPage {
     helper(path: string, expectation: string): any {
         return element(by.id(path)).click()
             .then((res) => {
-                browser.driver.sleep(2000);
+                browser.driver.sleep(2500);
                 element(by.id(path + 'Message')).getText()
                     .then((txt) => {
                         expect(txt).toContain(expectation);
@@ -21,7 +21,7 @@ export class AppPage {
     }
 
     createType(): any {
-        return this.helper('createType', '200');
+        return this.helper('createType', '20');
     }
 
     createStream(): any {

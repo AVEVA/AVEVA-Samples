@@ -38,14 +38,23 @@ namespace Tests
             {
                 driver.Url = url;
 
-                Thread.Sleep(4000);
+                Thread.Sleep(8000);
                 driver.FindElement(By.XPath("//*[@id=\"login\"]")).Click();
 
-                Thread.Sleep(4000);
+                Thread.Sleep(6000);
 
-                
+                ///sometimes the test doesn't find the personal account so trying clicking login again
+                try
+                {
+                    driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[@title=\"Personal Account\"]")).Click();                    
+                }
+                catch (System.Exception)
+                {                    
+                    driver.FindElement(By.XPath("//*[@id=\"login\"]")).Click();
 
-                driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[@title=\"Personal Account\"]")).Click();
+                    Thread.Sleep(6000);
+                    driver.FindElement(By.XPath("/html/body/div[3]/div/div/a[@title=\"Personal Account\"]")).Click();         
+                }
 
 
                 Thread.Sleep(4000);

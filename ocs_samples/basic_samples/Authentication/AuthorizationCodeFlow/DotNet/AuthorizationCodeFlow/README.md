@@ -12,8 +12,10 @@ This client uses the OAuth2/OIDC Authorization Code Flow + PKCE to obtain an acc
 
 ### Prerequisites
 
-- Register an AuthorizationCode client in OCS and ensure that the registered client in OCS contains `http://localhost:5004/callback.html` in the list of RedirectUris.
+- Register an AuthorizationCode client in OCS and ensure that the registered client in OCS contains `http://localhost:5004/callback.html`, and `http://localhost:5004/silent-refresh.html` in the list of RedirectUris.
 - Replace the placeholders in the [config](./wwwroot/config.js) file with your TenantID and ClientID obtained from registration.
+
+You can learn more about the config options [here](https://github.com/IdentityModel/oidc-client-js/wiki#other-optional-settings).
 
 ### Using Visual Studio
 
@@ -46,7 +48,7 @@ dotnet run
 - Update the [appsettings.json](../AuthorizationCodeFlowTest/appsettings.json) with the username and password for the Microsoft account that will be used to log in. The test is only written to work with a personal Microsoft account and must only prompt for only username followed by password (no Two-Factor authentication or other consent or informational prompts). Also if the location of the sample application has been modified then change the url location.
 
 ### Using Visual Studio 
- 
+
 - Load the .csproj from the AuthorizationCodeFlowTest directory above this in Visual Studio
 - Update the appsettings.json to the appropriate url for the location the AuthorizationCodeFlow app will run, as well as username and password for the Microsoft account that will be used to log in.
 - Rebuild project
@@ -64,8 +66,7 @@ dotnet test
 
 &nbsp;
 
-[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_AuthorizationCode_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
-
+[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_PKCE_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4561&branchName=master)
 
 For the general steps or switch languages see the Task  [ReadMe](../../../)<br />
 For the main OCS page [ReadMe](../../../../../)<br />

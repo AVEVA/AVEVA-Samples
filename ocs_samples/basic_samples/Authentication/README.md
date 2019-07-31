@@ -106,31 +106,42 @@ with OCS. OCS only support communication over https. No Refresh Token is
 awarded.
 
 The sample for this authentication flow can be found
-[here](./ClientCredentialFlow/ ).
+[here](./ClientCredentialFlow/DotNet/ClientCredentialFlow ).
 
 ### Implicit Flow (Deprecated)
 
 If you are developing any Javascript/Browser (SPA) based applications, with the
-user (resource owner) trying to access resources, this flow can be used but is 
+user (resource owner) trying to access resources, this flow can be used but is
 deprecated. It is highly recommended to use Authorization Code Flow with PKCE.
 
 In this case the user will have to authenticate against the identity provider
-and an Access Token will be provided to the client in the redirect URI. A certain 
+and an Access Token will be provided to the client in the redirect URI. A certain
 level of trust on the client/browser is expected. No Refresh Token is provided.
 
-The sample for this authentication flow can be found [here](./ImplicitFlow/).
+Implicit Flow supports silent refresh, which makes it possible to receive a
+new access token while the user is both using the application and logged in with
+the Identity Provider in the same browser session. This is done behind the scenes
+without interrupting the user experience.
+
+The sample for this authentication flow can be found [here](./ImplicitFlow/DotNet/ImplicitFlow).
 
 ### Authorization Code Flow with PKCE
 
 If you are developing any Javascript/Browser (SPA) based applications or native mobile
 applications, with the user (resource owner) trying to access resources, use this
 flow. This flow adds an extra layer of security over implicit flow by:
+
 1. Requiring a client-verified code exchange for access token
 2. By not returning the access token in a redirect URI.
 
 As with Implicit Flow, no refresh token is provided.
 
-The sample for this authentication flow can be found [here](./AuthorizationCodeFlow/).
+Authorization Code Flow supports silent refresh, which makes it possible to receive a
+new access token while the user is both using the application and logged in with
+the Identity Provider in the same browser session. This is done behind the scenes
+without interrupting the user experience.
+
+The sample for this authentication flow can be found [here](./AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow).
 
 ### Hybrid Flow
 
@@ -143,14 +154,14 @@ Once this is completed the server-side client will authenticate against the
 authorization server and be awarded an Access Token and a Refresh Token, which
 should never be displayed to the user or the browser.
 
-The sample for this authentication flow can be found [here](./HybridFlow/).
+The sample for this authentication flow can be found [here](./HybridFlow/DotNet/HybridFlow).
 
 Tasks|Languages|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ------|------|------------
 **Client Credential Flow** | <a href="ClientCredentialFlow/DotNet/ClientCredentialFlow">.NET</a>|[![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_CC_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 **Hybrid Flow** | <a href="HybridFlow/DotNet/HybridFlow">.NET</a>| [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Hybrid_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
 **Implicit Flow** | <a href="ImplicitFlow/DotNet/ImplicitFlow">.NET</a>| [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_Implicit_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
-**Authorization Code Flow** | <a href="AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow">.NET</a>| [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_AuthorizationCode_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4334&branchName=master)
+**Authorization Code Flow** | <a href="AuthorizationCodeFlow/DotNet/AuthorizationCodeFlow">.NET</a>| [![Build Status](https://osisoft.visualstudio.com/Engineering%20Incubation/_apis/build/status/OSIsoft_OCS_Samples-CI?branchName=master&jobName=Auth_PKCE_DotNet)](https://osisoft.visualstudio.com/Engineering%20Incubation/_build/latest?definitionId=4561&branchName=master)
 
 For the main OCS page [ReadMe](../../)<br />
 For the main landing page on master [ReadMe](https://github.com/osisoft/OSI-Samples)

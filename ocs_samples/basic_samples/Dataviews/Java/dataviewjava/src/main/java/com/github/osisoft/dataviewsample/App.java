@@ -97,7 +97,7 @@ public class App {
             System.out.println("Creating dataview");
             System.out.println(ocsClient.mGson.toJson(dataview));
 
-            Dataview dataviewOutFromPost = ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
+            ocsClient.Dataviews.postDataview(tenantId, namespaceId, dataview);
 
             // Step 4
             Dataview dataviewOut = ocsClient.Dataviews.getDataview(tenantId, namespaceId, dataview.getId());

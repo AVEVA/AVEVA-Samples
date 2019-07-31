@@ -87,7 +87,7 @@ jobs:
 
     - script: |
         mv prod_config_dataview.ini config.ini
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Python/SDSPy/Python3/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Python3/
       displayName: 'rename config file'
 
       
@@ -290,7 +290,7 @@ jobs:
 
     - script: |
         mv prod_config_dataview.properties config.properties
-      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/SDS/Java/sdsjava/
+      workingDirectory: $(Build.SourcesDirectory)/ocs_samples/basic_samples/Dataviews/Java/dataviewjava/
       displayName: 'Install requirements'
       
     - task: Maven@3
