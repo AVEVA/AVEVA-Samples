@@ -153,7 +153,7 @@ class Dataviews(object):
 
         self.__baseClient.checkResponse(response, "Failed to get dataviews.")
 
-        dataviews = json.loads(response.content)["DataViews"]
+        dataviews = json.loads(response.content)
 
         results = []
         for t in dataviews:
