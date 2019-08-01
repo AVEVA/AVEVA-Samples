@@ -239,6 +239,32 @@ class Dataviews(object):
         datagroup = Datagroup.fromJson(response.json())
         return datagroup
 
+    def getStatistics(self, namespace_id, dataview_id):
+        """
+        Retrieves a datagroupby 'datagroup_id' from the specified
+            dataview from Sds Service
+        :param namespace_id: namespace to work against
+        :param dataview_id: dataview to work against
+        :return: collected statistics for dataview 
+        """
+        if namespace_id is None or dataview_id is None:
+            raise TypeError
+
+        response = requests.get(
+            self.__getStatistics.format(
+                tenant_id=self.__baseClient.tenant,
+                namespace_id=namespace_id,
+                dataview_id=dataview_id,
+            ),
+            headers=self.__baseClient.sdsHeaders(),
+        )
+
+        self.__baseClient.checkResponse(
+            response, f"Failed to get statistics for dataview {dataview_id}."
+        )
+
+        return response.json()
+
         # needs other parameters with smart
 
     def getDataInterpolated(
@@ -299,13 +325,15 @@ class Dataviews(object):
 
         continuation_token = None
         next_page = response.headers.get("NextPage", None)
-        if next_page: 
+        if next_page:
             token_param = "&continuationToken="
             token_position = next_page.find(token_param)
             assert token_position > 0, "Could not find continuationToken in NextPage"
-            end_position = next_page.find("&", token_position+1)
+            end_position = next_page.find("&", token_position + 1)
             end_position = None if end_position == -1 else end_position
-            continuation_token = next_page[token_position + len(token_param):end_position]
+            continuation_token = next_page[
+                token_position + len(token_param) : end_position
+            ]
 
         if form is not None:
             return response.text, continuation_token
@@ -329,4 +357,5 @@ class Dataviews(object):
         self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
         self.__datagroupPath = self.__dataviewPath + "/datagroups"
         self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
+        self.__getStatistics = self.__dataviewPath + "/statistics"
         self.__getDataInterpolated = self.__dataviewPath + "/data/interpolated"
