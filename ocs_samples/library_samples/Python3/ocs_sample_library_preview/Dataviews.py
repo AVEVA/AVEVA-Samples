@@ -239,34 +239,6 @@ class Dataviews(object):
         datagroup = Datagroup.fromJson(response.json())
         return datagroup
 
-    def getStatistics(self, namespace_id, dataview_id):
-        """
-        Retrieves a datagroupby 'datagroup_id' from the specified
-            dataview from Sds Service
-        :param namespace_id: namespace to work against
-        :param dataview_id: dataview to work against
-        :return: collected statistics for dataview 
-        """
-        if namespace_id is None or dataview_id is None:
-            raise TypeError
-
-        response = requests.get(
-            self.__getStatistics.format(
-                tenant_id=self.__baseClient.tenant,
-                namespace_id=namespace_id,
-                dataview_id=dataview_id,
-            ),
-            headers=self.__baseClient.sdsHeaders(),
-        )
-
-        self.__baseClient.checkResponse(
-            response, f"Failed to get statistics for dataview {dataview_id}."
-        )
-
-        return response.json()
-
-        # needs other parameters with smart
-
     def getDataInterpolated(
         self,
         namespace_id,
@@ -357,5 +329,4 @@ class Dataviews(object):
         self.__dataviewPath = self.__dataviewsPath + "/{dataview_id}"
         self.__datagroupPath = self.__dataviewPath + "/datagroups"
         self.__getDatagroup = self.__datagroupPath + "/{datagroup_id}"
-        self.__getStatistics = self.__dataviewPath + "/statistics"
         self.__getDataInterpolated = self.__dataviewPath + "/data/interpolated"
