@@ -202,7 +202,9 @@ class Dataview(object):
             dictionary["Description"] = self.Description
 
         if hasattr(self, "Mappings") and self.Mappings is not None:
-            dictionary["Mappings"] = self.Mappings.toDictionary()
+            mappings = self.Mappings.toDictionary()
+            if mappings != {}:
+                dictionary["Mappings"] = mappings
 
         if hasattr(self, "IndexConfig") and self.IndexConfig is not None:
             dictionary["IndexConfig"] = self.IndexConfig.toDictionary()

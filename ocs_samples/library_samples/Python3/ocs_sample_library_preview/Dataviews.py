@@ -22,7 +22,7 @@ class Dataviews(object):
         self.__baseClient = client
         self.__setPathAndQueryTemplates()
 
-    def postDataview(self, namespace_id, dataview):
+    def postDataview(self, namespace_id, dataview, defaultMappings=False):
         """Tells Sds Service to create a dataview based on local 'dataview'
             or get if existing dataview matches
         :param namespace_id: namespace to work against
@@ -34,6 +34,8 @@ class Dataviews(object):
         if dataview is None or not isinstance(dataview, Dataview):
             raise TypeError
 
+        params = {"defaultMappings": defaultMappings}
+
         response = requests.post(
             self.__dataviewPath.format(
                 tenant_id=self.__baseClient.tenant,
@@ -41,6 +43,7 @@ class Dataviews(object):
                 dataview_id=dataview.Id,
             ),
             data=dataview.toJson(),
+            params=params,
             headers=self.__baseClient.sdsHeaders(),
         )
 
@@ -155,7 +158,7 @@ class Dataviews(object):
 
         dataviews = json.loads(response.content)
         # Need to update this to handle the array better and handle 207s from endpoint
-        if hasattr(dataviews, "DataViews"):
+        if "DataViews" in dataviews:
             dataviews = dataviews["DataViews"]
 
         results = []
@@ -236,8 +239,6 @@ class Dataviews(object):
         datagroup = Datagroup.fromJson(response.json())
         return datagroup
 
-        # needs other parameters with smart
-
     def getDataInterpolated(
         self,
         namespace_id,
@@ -296,13 +297,15 @@ class Dataviews(object):
 
         continuation_token = None
         next_page = response.headers.get("NextPage", None)
-        if next_page: 
+        if next_page:
             token_param = "&continuationToken="
             token_position = next_page.find(token_param)
             assert token_position > 0, "Could not find continuationToken in NextPage"
-            end_position = next_page.find("&", token_position+1)
+            end_position = next_page.find("&", token_position + 1)
             end_position = None if end_position == -1 else end_position
-            continuation_token = next_page[token_position + len(token_param):end_position]
+            continuation_token = next_page[
+                token_position + len(token_param) : end_position
+            ]
 
         if form is not None:
             return response.text, continuation_token

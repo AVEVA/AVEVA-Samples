@@ -205,7 +205,7 @@ def main(test=False):
 
         # Step 3
         queryObj = DataviewQuery(sampleDataviewId, f"name:*{sampleStreamId}*")
-        mappingObj = DataviewMapping(isDefault=True)
+        mappingObj = DataviewMapping()
         if startTime:
             indexConfigObj = DataviewIndexConfig(startIndex=startTime.isoformat(timespec='minutes'),
                                                  endIndex=(startTime + datetime.timedelta(minutes=40)).isoformat(timespec='minutes'),
@@ -221,15 +221,19 @@ def main(test=False):
         print
         print("Creating dataview")
         print(dataview.toJson())
-        dataviews = ocsClient.Dataviews.postDataview(namespaceId, dataview)
+        dataviews = ocsClient.Dataviews.postDataview(namespaceId, dataview, defaultMappings=True)
 
         # Step 4
         print
         print("Getting dataview")
         dv = ocsClient.Dataviews.getDataview(namespaceId, sampleDataviewId)
         # assert is added to make sure we get back what we are expecting
-        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": "name:*SampleStream*"}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"IsDefault": true, "Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexConfig": ' + indexConfigObj.toJson(withSeconds=True) + ', "IndexDataType": "DateTime", "GroupRules": []}'
+        expectedJSON = '{"Id": "Dataview_Sample", "Queries": [{"Id": "Dataview_Sample", "Query": "name:*SampleStream*"}], "Name": "Dataview_Sample_Name", "Description": "A Sample Description that describes that this Dataview is just used for our sample.", "Mappings": {"Columns": [{"Name": "time", "IsKey": true, "DataType": "DateTime", "MappingRule": {"PropertyPaths": ["time"]}}, {"Name": "pressure", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["pressure"]}}, {"Name": "temperature", "IsKey": false, "DataType": "Double", "MappingRule": {"PropertyPaths": ["temperature"]}}]}, "IndexConfig": ' + indexConfigObj.toJson(withSeconds=True) + ', "IndexDataType": "DateTime", "GroupRules": []}'
         assert dv.toJson().lower() == expectedJSON.lower(), 'Dataview is different: ' + dv.toJson()
+        # Also check that the new dataview shows up in the list of all dataviews
+        dv_all = ocsClient.Dataviews.getDataviews(namespaceId)
+        match_dv = [dv.Id for dv in dv_all if dv.Id == sampleDataviewId]
+        assert len(match_dv) == 1, "Did not find created Dataview in list of all of them"
 
         dv.Description = sampleDataviewDescription_modified
         dv.Mappings.IsDefault = False  # for now we have to change this to post
@@ -288,19 +292,19 @@ def main(test=False):
         print(dataviewDataTable1)
         # Get the last 20 rows using token, then display (without row header) 
         dataviewDataTable2, token = ocsClient.Dataviews.getDataInterpolated(
-            namespaceId, sampleDataviewId, form="csv", count=20, continuationToken=token)   
+            namespaceId, sampleDataviewId, form="csv", count=21, continuationToken=token)
         print(dataviewDataTable2, "\n\n")
-        assert token is None, "Continuation token is not None"
+        assert token is None, f"Continuation token is not None: got {token}"
         
         # Now override startIndex/endIndex/interval of previous Data View
         # Ask for last 5 minutes of data, aligned on the seconds, interpolated at 30 seconds
         startIndex = (startTime + datetime.timedelta(minutes=55)).isoformat(timespec='seconds')
         endIndex = (startTime + datetime.timedelta(minutes=60)).isoformat(timespec='seconds')
         dataviewDataTable3, token2 = ocsClient.Dataviews.getDataInterpolated(
-            namespaceId, sampleDataviewId, form="csvh", count=10, continuationToken=None,
+            namespaceId, sampleDataviewId, form="csvh", count=11, continuationToken=None,
             startIndex=startIndex, endIndex=endIndex, interval="00:00:30")
         print(dataviewDataTable3)
-        assert token2 is None, "Continuation token is not None"
+        assert token2 is None, f"Continuation token is not None: got {token2}"
 
     except Exception as ex:
         print((f"Encountered Error: {ex}"))

@@ -7,3 +7,5 @@ from .Dataviews import Dataviews
 from .SdsError import SdsError
 from .SDS import *
 from .Dataview import Dataview, DataviewQuery, DataviewGroupRule, DataviewMapping, DataviewIndexConfig
+
+__version__ = "0.0.32_preview"
