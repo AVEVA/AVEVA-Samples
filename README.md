@@ -1,5 +1,5 @@
 # OSIsoft Samples
-([OSIsoft](https://www.osisoft.com/)) is a proven leader in enabling operation intelligence.  In this GitHub repo, we provide samples which will help you get started with using OSIsoft technology. The repo includes samples against the [PI Server](https://www.osisoft.com/pi-system/) via PI Web API (COMING SOON), samples using OSIsoft Cloud Services ([OCS](https://cloud.osisoft.com/welcome)) via the OCS API directly and using libraries, and samples creating OSIsoft Message Format ([OMF](https://pisquare.osisoft.com/community/developers-club/omf)) messages and sending them.  The samples are intended to help you get started and are not production applications and libraries.
+([OSIsoft](https://www.osisoft.com/)) is a proven leader in enabling operation intelligence.  In this GitHub repo, we provide samples which will help you get started with using OSIsoft technology. The repo includes samples against the [PI Server](https://www.osisoft.com/pi-system/) via PI Web API, samples using OSIsoft Cloud Services ([OCS](https://cloud.osisoft.com/welcome)) via the OCS API directly and using libraries, and samples creating OSIsoft Message Format ([OMF](https://pisquare.osisoft.com/community/developers-club/omf)) messages and sending them.  The samples are intended to help you get started and are not production applications and libraries.
 
 
 The official OSIsoft samples are organized by technology and accessible through the following table:
@@ -13,6 +13,8 @@ Technology|Description
 Note: The OMF samples work against both the on-prem PI System and OCS.
 
 ## About this repo
+
+Note these samples are transitioning to be hosted in seperate repositories based on their technology.  
 
 There is a [style guide](StyleGuide.md) that helps explain the organization of the repo and helps explain the code samples provided.  There is also a [test guide](test_guide.md) that goes into more details about the included automated tests.
  
