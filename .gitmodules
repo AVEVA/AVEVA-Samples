@@ -1,0 +1,4 @@
+[submodule "ocs_samples/OSI-Samples-OCS"]
+	path = ocs_samples/OSI-Samples-OCS
+	url = https://github.com/osisoft/OSI-Samples-OCS
+	branch = master
