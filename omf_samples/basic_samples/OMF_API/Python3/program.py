@@ -1,13 +1,11 @@
-# NOTE: this script was designed using the v1.0
+# NOTE: this script was designed using the v1.1
 # version of the OMF specification, as outlined here:
-# http://omf-docs.osisoft.com/en/v1.0
-# For more info, see OMF Developer Companion Guide:
-# http://omf-companion-docs.osisoft.com
+# http://omf-docs.osisoft.com/en/v1.1
 #*************************************************************************************
 
 # OMF_API_Python3
-# version 0.0.3
-# 6-12-19
+# version 0.0.4
+# 8-16-19
 
 # ************************************************************************
 # Import necessary packages
