@@ -4,13 +4,13 @@
 
 The official OSIsoft samples are organized by technology and accessible through the following table:
 
-__Note:__ these samples are transitioning to be hosted in seperate repositories based on their technology.  
+__Note:__ these samples have transitioned to be hosted in seperate repositories based on their technology.   
 
 Technology|Description
 ----|-----------
 **[OCS](https://github.com/osisoft/OSI-Samples-OCS)** | These samples cover programming against OCS.  Samples include basic samples to more advanced.  [Details](https://github.com/osisoft/OSI-Samples-OCS)
-**<a href="omf_samples/">OMF</a>** | These samples highlight forming and sending OMF messages for PI and OCS.  <a href="omf_samples/">Details</a>  
-**<a href="piwebapi_samples/">PI Web API</a>**  | These samples cover programming against the PI Server via the PI Web API. <a href="piwebapi_samples/">Details</a>  
+**[OMF](https://github.com/osisoft/OSI-Samples-OMF)** | These samples highlight forming and sending OMF messages for PI and OCS.  [Details](https://github.com/osisoft/OSI-Samples-OMF)
+**[PI System](https://github.com/osisoft/OSI-Samples-PI-System)**  | These samples cover topics related to the PI System. [Details](https://github.com/osisoft/OSI-Samples-PI-System) 
 
 Note: The OMF samples work against both the on-prem PI System and OCS.
 
