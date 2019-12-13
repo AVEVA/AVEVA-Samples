@@ -1,6 +1,6 @@
-A custom managed agent hosted on our domain is used for on-prem testing. A PI-WebAPI endpoint exposed to the general internet using properly configured security (both PI and computer) and a microsoft hosted agent would also work.
+A custom managed agent hosted on our domain is used for on-prem testing. A PI Web API endpoint exposed to the general internet using properly configured security (both PI and computer) and a Microsoft-hosted agent would also work.
 
-This document serves as notice for what is currently installed on the test agent for on-prem testing. Typically the only things that need to be installed are what is mentioned in the respective readme files, so this list shouldn't matter. However, in the case you have that installed and it is not working, here is what is installed on the test agents.
+This document serves as notice for what is currently installed on the test agent for on-prem testing. Typically the only software that needs to be installed is what is described in the respective readme files. However, in the case you have that installed and the samples are not working, this list enumerates the software installed on the internal test agent.
 
 - VS 2017 Enterprise edition
   - .NET desktop development

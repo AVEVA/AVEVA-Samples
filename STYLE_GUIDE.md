@@ -7,7 +7,7 @@ This readme serves as a guide to help explain organization in this repo and ques
 - For each different technology (for instance OCS, OMF) there is a main landing page.
 - Each sample is represented on the main landing page for the technology with an appropriate short task name, description including a link to a greater description, links to the individual samples marked by languages, and test status.
 - A task level description should include information that is common to all language specific examples below it, including common steps. This should also include links back to the main page, to all languages and highlight test status of these languages.
-- A language specific readme should include information that is unique to this language. This can include stepping over line examples from the sample with reference back to the general steps. This readme should also include links back to the main technology page, to the general task readme, and the specific test status.
+- A language-specific readme should include information that is unique to this language. This can include stepping over line examples from the sample with reference back to the general steps. This readme should also include links back to the main technology page, to the general task readme, and the specific test status.
 
 ## Code Expectations
 
@@ -20,14 +20,14 @@ This readme serves as a guide to help explain organization in this repo and ques
     - VS Code Extension: [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
   - [Java Language Support for Visual Code](https://github.com/redhat-developer/vscode-java): Java
     - VS Code Extension: [Java Extension Pack](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
-- Automated tests are included that check to ensure the sample runs as expected on a clean system, including making sure intermediate results in the sample are as expected. Any expectations of the test or sample itself is included in the sample readme. There are more details about testing in the [testing guide](TEST_GUIDE.md).
+- Automated tests are included that check to ensure the sample runs as expected on a clean system, including making sure intermediate results in the sample are as expected. Any expectations of the test or sample itself are included in the sample readme. There are more details about testing in the [testing guide](TEST_GUIDE.md).
 - Comments are included in the code to help developers understand any interaction that isn't otherwise documented in the code or intellisense help of functions.
 - Samples are repeated in various programming languages as appropriate.
 - The library samples include functions that are reused across samples.
 - If the task level description includes common steps for the various language samples, each language sample explicitly marks where the steps are in the code.
 - Samples are versioned and a [history](miscellaneous/VERSION_HISTORY.md) of the code samples is viewable.
 
-Note: Samples (including the sample libraries) do not necessarily go over every possible setting and every endpoint of a service (documentation is there to show all of the details). Samples are created to highlight specifc tasks and show how things could be made and organized.
+Note: Samples (including the sample libraries) do not necessarily go over every possible setting and every endpoint of a service (documentation is there to show all of the details). Samples are created to highlight specific tasks and show how things could be made and organized.
 
 ## Assumptions
 
