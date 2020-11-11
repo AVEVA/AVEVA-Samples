@@ -17,11 +17,11 @@
   {
     "Title": "NodeJs",
     "Description": "Sample Sds client written in NodeJs",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/JavaScript/NodeJS"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/NodeJS"
   },
   {
     "Title": "Angular",
     "Description": "Sample Sds client written in Angular",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/JavaScript/Angular"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/Angular"
   }
 ]
