@@ -1,0 +1,191 @@
+parameters:
+  language: ''
+  lib: false
+  skipBinSkim: false
+  deleteBinSkim: ''
+  skipPolaris: false
+  useRequirementsTxt: false
+  npmBuild: false
+
+jobs:
+  - job: Analysis
+    pool:
+      name: 00-OSIManaged-Test
+      demands: COMPUTERNAME -equals $(buildAgent)
+    steps:
+      # Build Sample
+      # - DotNet
+      # - Note: --ignore-failed-sources is sometimes necessary for build agent to overcome old
+      #         cached NuGet sources that no longer exist on the machine
+      - script: |
+          echo Clean
+          call dotnet clean
+          echo Build
+          call dotnet build
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (DotNet)'
+        condition: eq('${{ parameters.language }}', 'dotnet')
+
+      # - Java
+      - script: |
+          echo Install
+          call mvn install -f pom.xml -DskipTests
+          echo Compile
+          call mvn compile
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(libPath)/
+        displayName: 'Build (Java): Library'
+        condition: and(eq('${{ parameters.language }}', 'java'), eq(${{ parameters.lib }}, false))
+      - script: |
+          echo Install
+          call mvn install -f pom.xml -DskipTests
+          echo Compile
+          call mvn compile
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (Java)'
+        condition: eq('${{ parameters.language }}', 'java')
+
+      # - Python
+      - script: |
+          echo Install tools
+          call pip install setuptools wheel
+          call pip install unittest-xml-reporting
+          call pip install pytest
+          call pip install pytest-cov
+          echo Requirements
+          call pip install -r requirements.txt
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (Python): Install dependencies'
+        condition: and(eq('${{ parameters.language }}', 'python'), eq(${{ parameters.lib }}, false))
+      - script: |
+          echo Install tools
+          call pip install wheel
+          call pip install twine
+          echo Build library
+          call python setup.py sdist bdist_wheel
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (Python Library)'
+        condition: and(eq('${{ parameters.language }}', 'python'), eq(${{ parameters.lib }}, true))
+      
+      # - Jupyter
+      - script: |
+          echo Requirements
+          call pip install -r requirements.txt
+          echo TestRequirements
+          call pip install -r test-requirements.txt
+          echo ConvertToPython
+          jupyter nbconvert --to script *.ipynb
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (Jupyter): Install dependencies'
+        condition:
+          eq('${{ parameters.language }}', 'jupyter')
+      
+      # - Angular
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '10.x'
+        displayName: 'Build (Angular): Specify Node version'
+        condition: eq('${{ parameters.language }}', 'angular')
+      - script: |
+          echo Angular CLI
+          call npm install -g @angular/cli
+          echo NPM CI
+          call npm ci
+          echo Build
+          call npm run build
+          echo Complete
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (Angular)'
+        condition: eq('${{ parameters.language }}', 'angular')
+
+      # - NodeJS
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '10.x'
+        displayName: 'Build (NodeJS): Specify Node version'
+        condition: eq('${{ parameters.language }}', 'nodejs')
+      - script: npm ci
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (NodeJS): Install dependencies'
+        condition: eq('${{ parameters.language }}', 'nodejs')
+      - script: npm run build
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (NodeJS): Run build'
+        condition: and(eq('${{ parameters.language }}', 'nodejs'), eq('${{ parameters.npmBuild }}', true))
+
+      # - PowerBI
+      - script: |
+          call vsdevcmd
+          call msbuild
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Build (PowerBI)'
+        condition: eq('${{ parameters.language }}', 'powerbi')
+
+      # BinSkim
+      # BinSkim errors if it encounters chromedriver.exe, which is used by many tests
+      # To avoid this issue, delete the file before running BinSkim
+      - task: DeleteFiles@1
+        displayName: 'BinSkim (DotNet): Delete Chromedriver'
+        inputs:
+          SourceFolder: $(Build.SourcesDirectory)$(projPath)
+          Contents: '**/chromedriver.exe'
+        condition: and(eq('${{ parameters.language }}', 'dotnet'), eq(${{ parameters.skipBinSkim }}, false), ne('${{ parameters.deleteBinSkim }}', ''))
+
+      - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-binskim.BinSkim@3
+        displayName: 'BinSkim (DotNet): Analyze'
+        inputs:
+          AnalyzeTarget: '$(Build.SourcesDirectory)\*.dll;$(Build.SourcesDirectory)\*.exe'
+          toolVersion: LatestPreRelease
+        condition: and(eq('${{ parameters.language }}', 'dotnet'), eq(${{ parameters.skipBinSkim }}, false))
+
+      - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
+        displayName: 'BinSkim (DotNet): Post-Analysis'
+        inputs:
+          BinSkim: true
+          BinSkimBreakOn: WarningAbove
+        condition: and(eq('${{ parameters.language }}', 'dotnet'), eq(${{ parameters.skipBinSkim }}, false))
+
+      # Synopsys Polaris
+      - powershell: |
+          # Set up Polaris Project Name, Access Token
+          New-Item -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
+          New-Item -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
+
+          # Call Polaris, set the configuration file path and run analyze with wait option
+          & 'polaris.exe' -c polaris.yml analyze -w
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        condition: and(eq(${{ parameters.skipPolaris }}, false), or(eq('${{ parameters.language }}', 'dotnet'), eq('${{ parameters.language }}', 'java'), eq('${{ parameters.language }}', 'python'), eq('${{ parameters.language }}', 'jupyter'), eq('${{ parameters.language }}', 'angular'), eq('${{ parameters.language }}', 'nodejs')))
+        displayName: 'Polaris Analyze'
+
+      # Synopsys BlackDuck
+      - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
+        inputs:
+          Products: BD
+          BlackDuckService: 'product-readiness.BlackDuck'
+          DetectArguments: |
+            --detect.project.name="product-readiness.$(analysisProject)"
+            --detect.project.version.name="$(Build.SourceBranchName)"
+            --detect.source.path=$(Build.SourcesDirectory)$(projPath)/
+            --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
+            --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
+        condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, false), or(ne('${{ parameters.language }}', 'python'), eq(${{ parameters.lib }}, true)))
+        displayName: 'Synopsys Detect: BlackDuck'
+
+      - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
+        inputs:
+          Products: BD
+          BlackDuckService: 'product-readiness.BlackDuck'
+          DetectArguments: |
+            --detect.project.name="product-readiness.$(analysisProject)"
+            --detect.project.version.name="$(Build.SourceBranchName)"
+            --detect.source.path=$(Build.SourcesDirectory)$(projPath)/
+            --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
+            --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
+            --detect.pip.requirements.path=$(Build.SourcesDirectory)$(projPath)/requirements.txt
+        condition: and(succeeded(), or(eq(${{ parameters.useRequirementsTxt }}, true), and(eq('${{ parameters.language }}', 'python'), eq(${{ parameters.lib }}, false))))
+        displayName: 'Synopsys Detect: BlackDuck (Python Requirements.txt)'
