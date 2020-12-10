@@ -1,11 +1,11 @@
 parameters:
   language: ''
   lib: false
-  skipBinSkim: false
-  deleteBinSkim: ''
-  skipPolaris: false
-  useRequirementsTxt: false
-  npmBuild: false
+  skipBinSkim: false # Tells the analysis pipeline not to run binskim as it doesn't work for some samples
+  deleteBinSkim: '' # Some DLLs cause BinSkim errors and need to be removed before running
+  skipPolaris: false # Skips polaris for samples that have no realy code to analysze
+  useRequirementsTxt: false # Tell the pipeline to use requirements.txt even though the language is Jupyter instead of Python
+  npmBuild: false # Tell the pipeline whether to run npm build before blackduck/python. Grafana is an instance where this is used
 
 jobs:
   - job: Analysis
@@ -126,14 +126,13 @@ jobs:
         displayName: 'Build (PowerBI)'
         condition: eq('${{ parameters.language }}', 'powerbi')
 
-      # BinSkim
-      # BinSkim errors if it encounters chromedriver.exe, which is used by many tests
-      # To avoid this issue, delete the file before running BinSkim
+      # BinSkim errors if it encounters badly signed Microsoft files
+      # To avoid this issue, delete the files before running BinSkim
       - task: DeleteFiles@1
-        displayName: 'BinSkim (DotNet): Delete Chromedriver'
+        displayName: 'BinSkim (DotNet): Delete Files'
         inputs:
           SourceFolder: $(Build.SourcesDirectory)$(projPath)
-          Contents: '**/chromedriver.exe'
+          Contents: '${{ parameters.deleteBinSkim }}'
         condition: and(eq('${{ parameters.language }}', 'dotnet'), eq(${{ parameters.skipBinSkim }}, false), ne('${{ parameters.deleteBinSkim }}', ''))
 
       - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-binskim.BinSkim@3
