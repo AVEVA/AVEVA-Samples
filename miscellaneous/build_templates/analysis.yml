@@ -5,7 +5,7 @@ parameters:
   deleteBinSkim: '' # This parameter is used to delete files before running BinSkim. Only use this if the error has been investigated and can be safely ignored 
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
   useRequirementsTxt: false # Tell the pipeline to use requirements.txt even if the language is not Python, e.g. Jupyter
-  npmBuild: false # Tell the pipeline whether to run npm build before blackduck/python. Grafana is an instance where this is used
+  npmBuild: false # Tell the pipeline whether to run npm build before BlackDuck/Python. Grafana is an instance where this is used
 
 jobs:
   - job: Analysis
