@@ -1,7 +1,7 @@
 parameters:
   language: ''
   lib: false
-  skipBinSkim: false # Tells the analysis pipeline not to run binskim as it doesn't work for some samples
+  skipBinSkim: false # Tells the analysis pipeline not to run BinSkim as it doesn't work for some samples
   deleteBinSkim: '' # Some DLLs cause BinSkim errors and need to be removed before running
   skipPolaris: false # Skips polaris for samples that have no realy code to analysze
   useRequirementsTxt: false # Tell the pipeline to use requirements.txt even though the language is Jupyter instead of Python
