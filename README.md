@@ -17,7 +17,7 @@ Note: The OMF samples work against both the on-prem PI System and OCS.
 
 ## About this repo
 
-The [style guide](STYLE_GUIDE.md) describes the organization of the repo and the code samples provided. The [test guide](TEST_GUIDE.md) goes into detail about the included automated tests. The [on prem testing](./miscellaneous/ON_PREM_TESTING.md) document describes the software installed on our internal OSIsoft build agent.
+The [style guide](https://github.com/osisoft/.github/blob/main/STYLE_GUIDE.md) describes the organization of the repo and the code samples provided. The [test guide](https://github.com/osisoft/.github/blob/main/TEST_GUIDE.md) goes into detail about the included automated tests. The [on prem testing](https://github.com/osisoft/.github/blob/main/ON_PREM_TESTING.md) document describes the software installed on our internal OSIsoft build agent.
 
 ## Feedback
 
@@ -31,7 +31,7 @@ If your support question or issue is related to a non-modified sample (or test) 
 
 ## Contributions
 
-If you wish to contribute please take a look at the [contribution guide](CONTRIBUTING.md).
+If you wish to contribute please take a look at the [contribution guide](https://github.com/osisoft/.github/blob/main/CONTRIBUTING.md).
 
 ## License
 
