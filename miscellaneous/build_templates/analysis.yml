@@ -15,9 +15,9 @@ jobs:
     steps:
       # Remove ".placeholder" from filenames
       -script: |
-        for filename in *; do [ -f "$filename" ] || continue; mv "$filename" "${filename//.placeholder/}"; done
-      workingDirectory: $(Build.SourcesDirectory)$(projPath)/
-      displayName: 'Rename Placeholders'
+          for filename in *; do [ -f "$filename" ] || continue; mv "$filename" "${filename//.placeholder/}"; done
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Rename Placeholders'
       
       # Build Sample
       # - DotNet
