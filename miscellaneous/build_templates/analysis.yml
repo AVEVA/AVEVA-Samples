@@ -15,7 +15,7 @@ jobs:
     steps:
       # Remove ".placeholder" from filenames
       - bash: |
-          for filename in *
+          for filename in $(find -name '*.placeholder*')
           do [ -f "$filename" ] || continue
           mv "$filename" "${filename//.placeholder/}"
           done
