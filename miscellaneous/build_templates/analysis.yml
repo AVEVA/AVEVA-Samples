@@ -120,6 +120,7 @@ jobs:
 
       # - PowerBI
       - script: |
+          dotnet restore
           call vsdevcmd
           call msbuild
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
