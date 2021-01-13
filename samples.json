@@ -1,0 +1,27 @@
+[
+  {
+    "Title": "Python",
+    "Description": "Sample Sds client written in Python language",
+    "Url": "https://github.com/osisoft/sample-ocs-waveform-python"
+  },
+  {
+    "Title": ".NET",
+    "Description": "Sample Sds client written in C#",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/docs/SDS_WAVEFORM_DOTNET_README.md"
+  },
+  {
+    "Title": "Java",
+    "Description": "Sample Sds client written in Java",
+    "Url": "https://github.com/osisoft/sample-ocs-waveform-java"
+  },
+  {
+    "Title": "NodeJs",
+    "Description": "Sample Sds client written in NodeJs",
+    "Url": "https://github.com/osisoft/sample-ocs-waveform-nodejs"
+  },
+  {
+    "Title": "Angular",
+    "Description": "Sample Sds client written in Angular",
+    "Url": "https://github.com/osisoft/sample-ocs-waveform-angular"
+  }
+]
