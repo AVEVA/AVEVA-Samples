@@ -1,0 +1,27 @@
+[
+  {
+    "Title": "Python",
+    "Description": "Sample Sds client written in Python language",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/Python"
+  },
+  {
+    "Title": ".NET",
+    "Description": "Sample Sds client written in C#",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/DotNet"
+  },
+  {
+    "Title": "Java",
+    "Description": "Sample Sds client written in Java",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/Java"
+  },
+  {
+    "Title": "NodeJs",
+    "Description": "Sample Sds client written in NodeJs",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/NodeJS"
+  },
+  {
+    "Title": "Angular",
+    "Description": "Sample Sds client written in Angular",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/master/basic_samples/SDS/Angular"
+  }
+]
