@@ -24,6 +24,7 @@ The official OSIsoft samples are organized by technology and accessible through 
       to more advanced.
       <a href="https://github.com/osisoft/OSI-Samples-OCS"> Details </a>
       <br />
+      <br />
     </td>
     <td align="middle" valign="top" width="50%">
       <h3>
@@ -31,6 +32,7 @@ The official OSIsoft samples are organized by technology and accessible through 
       </h3>
       These samples highlight forming and sending OMF messages for PI and OCS.
       <a href="https://github.com/osisoft/OSI-Samples-OMF"> Details </a>
+      <br />
       <br />
     </td>
   </tr>
@@ -44,6 +46,7 @@ The official OSIsoft samples are organized by technology and accessible through 
       These samples cover topics related to the PI System.
       <a href="https://github.com/osisoft/OSI-Samples-PI-System"> Details </a>
       <br />
+      <br />
     </td>
     <td align="middle" valign="top" width="50%">
       <h3>
@@ -52,10 +55,10 @@ The official OSIsoft samples are organized by technology and accessible through 
       These samples cover topics related to OSIsoft Edge technologies.
       <a href="https://github.com/osisoft/OSI-Samples-Edge"> Details </a>
       <br />
+      <br />
     </td>
   </tr>
 </table>
-
 
 Note: The OMF samples work against both the on-prem PI System and OCS.
 
