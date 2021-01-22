@@ -9,12 +9,56 @@ The official OSIsoft samples are organized by technology and accessible through 
 
 **Note:** these samples have transitioned to be hosted in seperate repositories based on their technology.
 
-| Technology                                                        | Description                                                                                                                                        |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[OCS](https://github.com/osisoft/OSI-Samples-OCS)**             | These samples cover programming against OCS. Samples include basic samples to more advanced. [Details](https://github.com/osisoft/OSI-Samples-OCS) |
-| **[OMF](https://github.com/osisoft/OSI-Samples-OMF)**             | These samples highlight forming and sending OMF messages for PI and OCS. [Details](https://github.com/osisoft/OSI-Samples-OMF)                     |
-| **[PI System](https://github.com/osisoft/OSI-Samples-PI-System)** | These samples cover topics related to the PI System. [Details](https://github.com/osisoft/OSI-Samples-PI-System)                                   |
-| **[Edge](https://github.com/osisoft/OSI-Samples-Edge)**           | These samples cover topics related to OSIsoft Edge technologies. [Details](https://github.com/osisoft/OSI-Samples-Edge)                                   |
+<table align="middle" width="100%">
+  <tr>
+    <th align="middle" colspan="2">
+      <h2>Technologies</h2>
+    </th>
+  </tr>
+  <tr>
+    <td align="middle" valign="top" width="50%">
+      <h3>
+        <a href="https://github.com/osisoft/OSI-Samples-OCS"> OCS </a>
+      </h3>
+      These samples cover programming against OCS. Samples include basic samples
+      to more advanced.
+      <a href="https://github.com/osisoft/OSI-Samples-OCS"> Details </a>
+      <br />
+      <br />
+    </td>
+    <td align="middle" valign="top" width="50%">
+      <h3>
+        <a href="https://github.com/osisoft/OSI-Samples-OMF"> OMF </a>
+      </h3>
+      These samples highlight forming and sending OMF messages for PI and OCS.
+      <a href="https://github.com/osisoft/OSI-Samples-OMF"> Details </a>
+      <br />
+      <br />
+    </td>
+  </tr>
+  <tr>
+    <td align="middle" valign="top" width="50%">
+      <h3>
+        <a href="https://github.com/osisoft/OSI-Samples-PI-System">
+          PI System
+        </a>
+      </h3>
+      These samples cover topics related to the PI System.
+      <a href="https://github.com/osisoft/OSI-Samples-PI-System"> Details </a>
+      <br />
+      <br />
+    </td>
+    <td align="middle" valign="top" width="50%">
+      <h3>
+        <a href="https://github.com/osisoft/OSI-Samples-Edge"> Edge </a>
+      </h3>
+      These samples cover topics related to OSIsoft Edge technologies.
+      <a href="https://github.com/osisoft/OSI-Samples-Edge"> Details </a>
+      <br />
+      <br />
+    </td>
+  </tr>
+</table>
 
 Note: The OMF samples work against both the on-prem PI System and OCS.
 
