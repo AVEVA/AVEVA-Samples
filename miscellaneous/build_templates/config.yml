@@ -2,7 +2,6 @@ parameters:
   fileOriginal: ''
   fileLibrary: ''
   filePath: ''
-  delete: false
 
 steps:
   # Download Secure File
@@ -19,16 +18,13 @@ steps:
       sourceFolder: $(Agent.TempDirectory)
       contents: ${{ parameters.fileLibrary }}
       targetFolder: $(Build.SourcesDirectory)${{ parameters.filePath }}/
-      #cleanTargetFolder: false # Optional
       overWrite: true # Optional
-      #flattenFolders: false # Optional
     displayName: 'Copy library config file'
 
-  - bash: rm ${{ parameters.fileOriginal }}
-    workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
-    displayName: 'Delete original config file'
-    condition: eq(${{ parameters.delete }}, true)
-
-  - bash: mv ${{ parameters.fileLibrary }} ${{ parameters.fileOriginal }}
+  - powershell: Rename-Item -Path ${{ parameters.fileLibrary }} -NewName ${{ parameters.fileOriginal }}
     workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
     displayName: 'Rename library config file'
+
+  # - bash: mv ${{ parameters.fileLibrary }} ${{ parameters.fileOriginal }}
+  #   workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
+  #   displayName: 'Rename library config file'
