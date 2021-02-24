@@ -24,7 +24,3 @@ steps:
   - powershell: Rename-Item -Path ${{ parameters.fileLibrary }} -NewName ${{ parameters.fileOriginal }}
     workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
     displayName: 'Rename library config file'
-
-  # - bash: mv ${{ parameters.fileLibrary }} ${{ parameters.fileOriginal }}
-  #   workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
-  #   displayName: 'Rename library config file'
