@@ -1,6 +1,6 @@
 parameters:
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
-  useRequirementsTxt: false # Tell the pipeline to use Python requirements.txt for BlackDuck
+  requirementsPath: '' # Specify path to Python requirements.txt for BlackDuck
 
 steps:
   # Synopsys Polaris
@@ -12,7 +12,7 @@ steps:
       # Call Polaris, set the configuration file path and run analyze with wait option
       & 'polaris.exe' -c polaris.yml analyze -w
     workingDirectory: $(Build.SourcesDirectory)$(projPath)/
-    condition: eq(${{ parameters.skipPolaris }}, false)
+    condition: and(succeeded(), eq(${{ parameters.skipPolaris }}, false))
     displayName: 'Polaris Analyze'
 
   # Synopsys BlackDuck
@@ -26,19 +26,6 @@ steps:
         --detect.source.path=$(Build.SourcesDirectory)$(projPath)/
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, false))
+        --detect.pip.requirements.path=${{ parameters.requirementsPath }}
+    condition: succeeded()
     displayName: 'Synopsys Detect: BlackDuck'
-
-  - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
-    inputs:
-      Products: BD
-      BlackDuckService: 'product-readiness.BlackDuck'
-      DetectArguments: |
-        --detect.project.name="product-readiness.$(analysisProject)"
-        --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path=$(Build.SourcesDirectory)$(projPath)/
-        --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.pip.requirements.path=$(Build.SourcesDirectory)$(projPath)/requirements.txt
-    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, true))
-    displayName: 'Synopsys Detect: BlackDuck (Python Requirements.txt)'
