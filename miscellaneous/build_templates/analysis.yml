@@ -2,7 +2,7 @@ parameters:
   runBinSkim: false # Opt-in to BinSkim only for dotnet samples
   deleteBinSkim: '' # This parameter is used to delete files before running BinSkim. Only use this if the error has been investigated and can be safely ignored
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
-  useRequirements: false # Tell the pipeline to use Python requirements.txt for BlackDuck
+  useRequirementsTxt: false # Tell the pipeline to use Python requirements.txt for BlackDuck
 
 steps:
   # BinSkim errors if it encounters badly signed Microsoft files
