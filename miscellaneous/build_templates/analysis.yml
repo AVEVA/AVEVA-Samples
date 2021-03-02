@@ -11,7 +11,7 @@ steps:
 
       # Call Polaris, set the configuration file path and run analyze with wait option
       & 'polaris.exe' -c polaris.yml analyze -w
-    condition: eq(${{ parameters.skipPolaris }}, false)
+    condition: and(succeeded(), eq(${{ parameters.skipPolaris }}, false))
     displayName: 'Polaris Analyze'
 
   # Synopsys BlackDuck
@@ -25,7 +25,7 @@ steps:
         --detect.source.path=$(Build.SourcesDirectory)/
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-    condition: eq(${{ parameters.useRequirementsTxt }}, false)
+    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, false))
     displayName: 'Synopsys Detect: BlackDuck'
 
   - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
@@ -39,5 +39,5 @@ steps:
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.pip.requirements.path=$(Build.SourcesDirectory)/requirements.txt
-    condition: eq(${{ parameters.useRequirementsTxt }}, true)
+    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, true))
     displayName: 'Synopsys Detect: BlackDuck (Python Requirements.txt)'
