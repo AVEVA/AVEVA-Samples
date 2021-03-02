@@ -1,6 +1,6 @@
 parameters:
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
-  useRequirementsTxt: '' # Specify path to Python requirements.txt for BlackDuck
+  useRequirementsTxt: false # Tell the pipeline to use Python requirements.txt for BlackDuck
 
 steps:
   # Synopsys Polaris
