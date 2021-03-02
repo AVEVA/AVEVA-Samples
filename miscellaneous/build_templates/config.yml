@@ -11,16 +11,17 @@ steps:
       secureFile: ${{ parameters.fileLibrary }}
     displayName: 'Download library config file'
 
+  # Rename Secure File
+  - powershell: Rename-Item -Path ${{ parameters.fileLibrary }} -NewName ${{ parameters.fileOriginal }}
+    workingDirectory: $(Agent.TempDirectory)
+    displayName: 'Rename library config file'
+
   # Copy Files
   # Copy files from source folder to target folder using match patterns (The match patterns will only match file paths, not folder paths)
   - task: CopyFiles@2
     inputs:
       sourceFolder: $(Agent.TempDirectory)
-      contents: ${{ parameters.fileLibrary }}
-      targetFolder: $(Build.SourcesDirectory)${{ parameters.filePath }}/
+      contents: ${{ parameters.fileOriginal }}
+      targetFolder: $(Build.SourcesDirectory)/${{ parameters.filePath }}
       overWrite: true # Optional
     displayName: 'Copy library config file'
-
-  - powershell: Rename-Item -Path ${{ parameters.fileLibrary }} -NewName ${{ parameters.fileOriginal }}
-    workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
-    displayName: 'Rename library config file'
