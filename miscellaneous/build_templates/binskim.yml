@@ -1,5 +1,6 @@
 parameters:
   deleteBinSkim: '' # This parameter is used to delete files before running BinSkim. Only use this if the error has been investigated and can be safely ignored
+  workingDirectory: '' # Can use to specify a different working directory
 
 steps:
   # BinSkim errors if it encounters badly signed Microsoft files
@@ -7,14 +8,14 @@ steps:
   - task: DeleteFiles@1
     displayName: 'BinSkim: Delete Files'
     inputs:
-      SourceFolder: $(Build.SourcesDirectory)$(projPath)
+      SourceFolder: $(Build.SourcesDirectory)/${{ parameters.workingDirectory }}
       Contents: '${{ parameters.deleteBinSkim }}'
     condition: ne('${{ parameters.deleteBinSkim }}', '')
 
   - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-binskim.BinSkim@3
     displayName: 'BinSkim: Analyze'
     inputs:
-      AnalyzeTarget: '$(Build.SourcesDirectory)\*.dll;$(Build.SourcesDirectory)\*.exe'
+      AnalyzeTarget: '$(Build.SourcesDirectory)\${{ parameters.workingDirectory }}\*.dll;$(Build.SourcesDirectory)\${{ parameters.workingDirectory }}\*.exe'
       toolVersion: LatestPreRelease
 
   - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
