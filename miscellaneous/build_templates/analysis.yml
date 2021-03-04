@@ -13,7 +13,7 @@ steps:
       # Call Polaris, set the configuration file path and run analyze with wait option
       & 'polaris.exe' -c polaris.yml analyze -w
     condition: and(succeeded(), eq(${{ parameters.skipPolaris }}, false))
-    workingDirectory: $(Build.SourcesDirectory)\${{ parameters.projectPath }}
+    workingDirectory: $(Build.SourcesDirectory)/${{ parameters.projectPath }}
     displayName: 'Analysis: Polaris'
 
   # Synopsys BlackDuck
@@ -24,7 +24,7 @@ steps:
       DetectArguments: |
         --detect.project.name="product-readiness.$(analysisProject)"
         --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path="$(Build.SourcesDirectory)\${{ parameters.projectPath }}"
+        --detect.source.path="$(Build.SourcesDirectory)/${{ parameters.projectPath }}"
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
     condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, false))
@@ -37,9 +37,9 @@ steps:
       DetectArguments: |
         --detect.project.name="product-readiness.$(analysisProject)"
         --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path="$(Build.SourcesDirectory)\${{ parameters.projectPath }}"
+        --detect.source.path="$(Build.SourcesDirectory)/${{ parameters.projectPath }}"
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.pip.requirements.path=$(Build.SourcesDirectory)\requirements.txt
+        --detect.pip.requirements.path=$(Build.SourcesDirectory)/requirements.txt
     condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, true))
     displayName: 'Analysis: BlackDuck (Python requirements.txt)'
