@@ -1,6 +1,7 @@
 parameters:
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
-  useRequirementsTxt: false # Tell the pipeline to use Python requirements.txt for BlackDuck
+  useRequirementsTxt: false # Tell the task to use Python requirements.txt for BlackDuck
+  projectPath: '' # (Optional) Tell the task to use a specific path to the project
 
 steps:
   # Synopsys Polaris
@@ -11,8 +12,9 @@ steps:
 
       # Call Polaris, set the configuration file path and run analyze with wait option
       & 'polaris.exe' -c polaris.yml analyze -w
-    condition: eq(${{ parameters.skipPolaris }}, false)
-    displayName: 'Polaris Analyze'
+    condition: and(succeeded(), eq(${{ parameters.skipPolaris }}, false))
+    workingDirectory: $(Build.SourcesDirectory)\${{ parameters.projectPath }}
+    displayName: 'Analysis: Polaris'
 
   # Synopsys BlackDuck
   - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
@@ -22,11 +24,11 @@ steps:
       DetectArguments: |
         --detect.project.name="product-readiness.$(analysisProject)"
         --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path=$(Build.SourcesDirectory)/
+        --detect.source.path=$(Build.SourcesDirectory)\${{ parameters.projectPath }}
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-    condition: eq(${{ parameters.useRequirementsTxt }}, false)
-    displayName: 'Synopsys Detect: BlackDuck'
+    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, false))
+    displayName: 'Analysis: BlackDuck'
 
   - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
     inputs:
@@ -35,9 +37,9 @@ steps:
       DetectArguments: |
         --detect.project.name="product-readiness.$(analysisProject)"
         --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path=$(Build.SourcesDirectory)/
+        --detect.source.path=$(Build.SourcesDirectory)\${{ parameters.projectPath }}
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.pip.requirements.path=$(Build.SourcesDirectory)/requirements.txt
-    condition: eq(${{ parameters.useRequirementsTxt }}, true)
-    displayName: 'Synopsys Detect: BlackDuck (Python Requirements.txt)'
+        --detect.pip.requirements.path=$(Build.SourcesDirectory)\requirements.txt
+    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, true))
+    displayName: 'Analysis: BlackDuck (Python requirements.txt)'
