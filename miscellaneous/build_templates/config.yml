@@ -22,6 +22,6 @@ steps:
     inputs:
       sourceFolder: $(Agent.TempDirectory)
       contents: ${{ parameters.fileOriginal }}
-      targetFolder: $(Build.SourcesDirectory)\${{ parameters.filePath }}
+      targetFolder: $(Build.SourcesDirectory)/${{ parameters.filePath }}
       overWrite: true # Optional
     displayName: 'Copy library config file'
