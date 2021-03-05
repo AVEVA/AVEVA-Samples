@@ -1,4 +1,5 @@
 parameters:
+  skip: false # Tell the task to skip completely, for unsupported agents
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
   useRequirementsTxt: false # Tell the task to use Python requirements.txt for BlackDuck
   projectPath: '' # (Optional) Tell the task to use a specific path to the project
@@ -12,7 +13,7 @@ steps:
 
       # Call Polaris, set the configuration file path and run analyze with wait option
       & 'polaris.exe' -c polaris.yml analyze -w
-    condition: and(succeeded(), eq(${{ parameters.skipPolaris }}, false))
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
     workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
     displayName: 'Analysis: Polaris'
 
@@ -27,7 +28,7 @@ steps:
         --detect.source.path="$(Build.SourcesDirectory)${{ parameters.projectPath }}"
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, false))
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, false))
     displayName: 'Analysis: BlackDuck'
 
   - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
@@ -41,5 +42,5 @@ steps:
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.pip.requirements.path=$(Build.SourcesDirectory)\requirements.txt
-    condition: and(succeeded(), eq(${{ parameters.useRequirementsTxt }}, true))
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
     displayName: 'Analysis: BlackDuck (Python requirements.txt)'
