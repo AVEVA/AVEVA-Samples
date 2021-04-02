@@ -31,6 +31,10 @@ steps:
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, false))
     displayName: 'Analysis: BlackDuck'
 
+  - script: pip install -r requirements.txt
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
+    displayName: 'Install requirements.txt'
+
   - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
     inputs:
       Products: BD
