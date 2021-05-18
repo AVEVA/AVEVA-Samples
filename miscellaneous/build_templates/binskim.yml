@@ -11,12 +11,13 @@ steps:
       Contents: '${{ parameters.deleteBinSkim }}'
     condition: ne('${{ parameters.deleteBinSkim }}', '')
 
-  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-binskim.BinSkim@3
+  - task: BinSkim@3
     displayName: 'BinSkim: Analyze'
     inputs:
+      toolVersion: '1.6.1'
       AnalyzeTarget: '$(Build.SourcesDirectory)\*.dll;$(Build.SourcesDirectory)\*.exe'
 
-  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
+  - task: PostAnalysis@1
     displayName: 'BinSkim: Post Analysis'
     inputs:
       BinSkim: true
