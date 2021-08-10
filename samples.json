@@ -1,5 +1,10 @@
 [
   {
+    "Title": "Test-Python",
+    "Description": "Sample Sds client written in Python language",
+    "Url": "https://github.com/osisoft/sample-ocs-waveform-python"
+  },
+  {
     "Title": "Python",
     "Description": "Sample Sds client written in Python language",
     "Url": "https://github.com/osisoft/sample-ocs-waveform-python"
