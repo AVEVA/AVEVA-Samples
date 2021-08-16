@@ -3,6 +3,7 @@ parameters:
   skipPolaris: false # For samples that have no code Polaris is capable of scanning
   useRequirementsTxt: false # Tell the task to use Python requirements.txt for BlackDuck
   projectPath: '' # (Optional) Tell the task to use a specific path to the project
+  snippetMatching: None
 
 steps:
   # Synopsys Polaris
@@ -28,6 +29,7 @@ steps:
         --detect.source.path="$(Build.SourcesDirectory)${{ parameters.projectPath }}"
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
+        --detect.blackduck.signature.scanner.snippet.matching=''${{ parameters.snippetMatching }}''
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, false))
     displayName: 'Analysis: BlackDuck'
 
@@ -46,5 +48,6 @@ steps:
         --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
         --detect.pip.requirements.path=$(Build.SourcesDirectory)\requirements.txt
+        --detect.blackduck.signature.scanner.snippet.matching=''${{ parameters.snippetMatching }}''
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
     displayName: 'Analysis: BlackDuck (Python requirements.txt)'
