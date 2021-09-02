@@ -11,7 +11,7 @@
   },
   {
     "Title": "Data Ingress",
-    "Description": "Samples highlighting some possible data ingress options. Written in C#",
+    "Description": "Samples highlighting some possible data ingress options in C#",
     "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/DATA_INGRESS.md"
   },
   {
