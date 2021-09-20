@@ -1,7 +1,7 @@
 parameters:
   secrets: ''
 
-Steps:
+steps:
   # Remove any appsettings from previous runs
   - powershell: Get-ChildItem -Recurse appsettings.json | Remove-Item
     workingDirectory: $(Build.SourcesDirectory)
