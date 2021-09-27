@@ -1,27 +1,32 @@
 [
   {
-    "Title": "Python",
-    "Description": "Sample Sds client written in Python language",
-    "Url": "https://github.com/osisoft/sample-ocs-waveform-python"
+    "Title": "Authentication",
+    "Description": "Authenticating to OCS using all client types in various languages",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/AUTHENTICATION.md"
   },
   {
-    "Title": ".NET",
-    "Description": "Sample Sds client written in C#",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/SDS_WAVEFORM_DOTNET_README.md"
+    "Title": "SDS",
+    "Description": "SDS common actions written in various languages",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/COMMON_ACTIONS.md"
   },
   {
-    "Title": "Java",
-    "Description": "Sample Sds client written in Java",
-    "Url": "https://github.com/osisoft/sample-ocs-waveform-java"
+    "Title": "Data Ingress",
+    "Description": "Samples highlighting some possible data ingress options in C#",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/DATA_INGRESS.md"
   },
   {
-    "Title": "NodeJs",
-    "Description": "Sample Sds client written in NodeJs",
-    "Url": "https://github.com/osisoft/sample-ocs-waveform-nodejs"
+    "Title": "Visualization",
+    "Description": "Sample visualization applications in various languages",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/VISUALIZATION.md"
   },
   {
-    "Title": "Angular",
-    "Description": "Sample Sds client written in Angular",
-    "Url": "https://github.com/osisoft/sample-ocs-waveform-angular"
+    "Title": "Analytics",
+    "Description": "Data view samples in various languages",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/ANALYTICS.md"
+  },
+  {
+    "Title": "Other",
+    "Description": "UOM sample, data copying, and sample libraries",
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/OTHER.md"
   }
 ]
