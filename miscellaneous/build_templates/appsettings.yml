@@ -18,6 +18,7 @@ steps:
       KeyVaultName: 'Github-Samples'
       SecretsFilter: ${{ parameters.secrets }}
       RunAsPreJob: false
+    condition: ne('${{ parameters.secrets }}', '')
 
   # Replace placeholders with secrets and variables
   - task: FileTransform@1
