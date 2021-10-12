@@ -1,15 +1,18 @@
 parameters:
   secrets: ''
+  appsettings: 'appsettings.json'
+  placeholder: 'appsettings.placeholder.json'
 
 steps:
   # Remove any appsettings from previous runs
-  - powershell: Get-ChildItem -Recurse appsettings.json | Remove-Item
+  - powershell: Get-ChildItem -Recurse ${{ parameters.appsettings }} | Remove-Item
     workingDirectory: $(Build.SourcesDirectory)
+    displayName: 'Remove any existing ${{ parameters.appsettings }} files'
 
   # Rename Secure File
-  - powershell: Get-ChildItem -Recurse appsettings.placeholder.json | Rename-Item -NewName appsettings.json
+  - powershell: Get-ChildItem -Recurse ${{ parameters.placeholder }} | Rename-Item -NewName ${{ parameters.appsettings }}
     workingDirectory: $(Build.SourcesDirectory)
-    displayName: 'Rename placeholder config file'
+    displayName: 'Rename ${{ parameters.placeholder }} to ${{ parameters.appsettings }}'
 
   # Download secrets from Azure Key Vault
   - task: AzureKeyVault@2
@@ -22,8 +25,8 @@ steps:
 
   # Replace placeholders with secrets and variables
   - task: FileTransform@1
-    displayName: 'File transformation: appsettings.json'
+    displayName: 'File transformation: ${{ parameters.appsettings }}'
     inputs:
       folderPath: ''
-      targetFiles: '**/appsettings.json'
+      targetFiles: '**/${{ parameters.appsettings }}'
       fileType: json
