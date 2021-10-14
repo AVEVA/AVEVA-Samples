@@ -2,31 +2,31 @@
   {
     "Title": "Authentication",
     "Description": "Authenticating to OCS using all client types in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/AUTHENTICATION.md"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/AUTHENTICATION.md"
   },
   {
     "Title": "SDS",
     "Description": "SDS common actions written in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/COMMON_ACTIONS.md"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/COMMON_ACTIONS.md"
   },
   {
     "Title": "Data Ingress",
     "Description": "Samples highlighting some possible data ingress options in C#",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/DATA_INGRESS.md"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/DATA_INGRESS.md"
   },
   {
     "Title": "Visualization",
     "Description": "Sample visualization applications in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/VISUALIZATION.md"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/VISUALIZATION.md"
   },
   {
     "Title": "Analytics",
     "Description": "Data view samples in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/ANALYTICS.md"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/ANALYTICS.md"
   },
   {
     "Title": "Other",
     "Description": "UOM sample, data copying, and sample libraries",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/docs/OTHER.md"
+    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/OTHER.md"
   }
 ]
