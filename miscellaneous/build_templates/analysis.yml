@@ -5,13 +5,6 @@ parameters:
   projectPath: '' # (Optional) Tell the task to use a specific path to the project
   snippetMatching: SNIPPET_MATCHING
 
-resources:
-  repositories:
-    - repository: OpsGuildAutomationRepo
-      type: git
-      name: Engineering/OpsGuild.Automation
-      ref: refs/heads/main
-
 steps:
   # Synopsys Polaris
   - powershell: |
