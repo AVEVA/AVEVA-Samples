@@ -5,6 +5,13 @@ parameters:
   projectPath: '' # (Optional) Tell the task to use a specific path to the project
   snippetMatching: SNIPPET_MATCHING
 
+resources:
+  repositories:
+    - repository: OpsGuildAutomationRepo
+      type: git
+      name: Engineering/OpsGuild.Automation
+      ref: refs/heads/main
+
 steps:
   # Synopsys Polaris
   - powershell: |
@@ -18,36 +25,13 @@ steps:
     workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
     displayName: 'Analysis: Polaris'
 
-  # Synopsys BlackDuck
-  - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
-    inputs:
-      Products: BD
-      BlackDuckService: 'product-readiness.BlackDuck'
-      DetectArguments: |
-        --detect.project.name="product-readiness.$(analysisProject)"
-        --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path="$(Build.SourcesDirectory)${{ parameters.projectPath }}"
-        --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.blackduck.signature.scanner.snippet.matching="${{ parameters.snippetMatching }}"
-    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, false))
-    displayName: 'Analysis: BlackDuck'
-
   - script: pip install -r requirements.txt
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
     displayName: 'Install requirements.txt'
-
-  - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
-    inputs:
-      Products: BD
-      BlackDuckService: 'product-readiness.BlackDuck'
-      DetectArguments: |
-        --detect.project.name="product-readiness.$(analysisProject)"
-        --detect.project.version.name="$(Build.SourceBranchName)"
-        --detect.source.path="$(Build.SourcesDirectory)${{ parameters.projectPath }}"
-        --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
-        --detect.pip.requirements.path=$(Build.SourcesDirectory)\requirements.txt
-        --detect.blackduck.signature.scanner.snippet.matching="${{ parameters.snippetMatching }}"
-    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
-    displayName: 'Analysis: BlackDuck (Python requirements.txt)'
+    
+  - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
+    parameters:
+      projectName: "product-readiness.$(analysisProject)"
+      projectVersionName: "$(Build.SourceBranchName)"
+      sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
+      detectorSearchDepth: 0
