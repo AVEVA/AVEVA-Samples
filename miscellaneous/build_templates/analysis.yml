@@ -9,7 +9,6 @@ jobs:
 
 - job: SynopsysPolarisScan
   timeoutInMinutes: 180
-  displayName: Run the Polaris scan
   pool:
       name: 00-OSIManaged-Containers
       demands: Agent.OS -equals Windows_NT
