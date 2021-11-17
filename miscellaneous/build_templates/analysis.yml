@@ -4,7 +4,14 @@ parameters:
   useRequirementsTxt: false # Tell the task to use Python requirements.txt for BlackDuck
   projectPath: '' # (Optional) Tell the task to use a specific path to the project
   snippetMatching: SNIPPET_MATCHING
-    
+
+resources:
+  repositories:
+    - repository: OpsGuildAutomationRepo
+      type: git
+      name: Engineering/OpsGuild.Automation
+      ref: refs/heads/main
+
 jobs:   
 
 - job: SynopsysPolarisScan
