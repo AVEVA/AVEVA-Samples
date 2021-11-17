@@ -1,8 +1,28 @@
 parameters:
-  skip: false # Tell the task to skip completely, for unsupported agents
-  skipPolaris: false # For samples that have no code Polaris is capable of scanning
-  useRequirementsTxt: false # Tell the task to use Python requirements.txt for BlackDuck
-  projectPath: '' # (Optional) Tell the task to use a specific path to the project
+  # Tell the task to skip completely, for unsupported agents
+  - name skip: false
+    type: boolean
+    default: false
+    
+  # For samples that have no code Polaris is capable of scanning
+  - name skipPolaris
+    type: boolean
+    default: false
+  
+  # Tell the task to use Python requirements.txt for BlackDuck
+  - name: useRequirementsTxt
+    type: boolean
+    default: false
+  
+  # Tell the task to use a specific path to the project
+  - name: projectPath
+    type: string
+    default: ''
+    
+  # Build steps run ahead of the analysis jobs
+  - name: buildSteps
+    type: stepList
+    default: []
 
 
 jobs:   
@@ -13,6 +33,8 @@ jobs:
       name: 00-OSIManaged-Containers
       demands: Agent.OS -equals Windows_NT
   steps:
+    - ${{ parameters.buildSteps }}
+    
     # Synopsys Polaris
     - powershell: |
         # Set up Polaris Project Name, Access Token
@@ -28,6 +50,7 @@ jobs:
 - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
   parameters:
     buildSteps:
+      - ${{ parameters.buildSteps }}
       - script: pip install -r requirements.txt
         condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
         displayName: 'Install requirements.txt'
