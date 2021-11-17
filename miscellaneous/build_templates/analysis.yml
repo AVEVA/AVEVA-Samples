@@ -1,11 +1,11 @@
 parameters:
   # Tell the task to skip completely, for unsupported agents
-  - name skip: false
+  - name: skip
     type: boolean
     default: false
     
   # For samples that have no code Polaris is capable of scanning
-  - name skipPolaris
+  - name: skipPolaris
     type: boolean
     default: false
   
