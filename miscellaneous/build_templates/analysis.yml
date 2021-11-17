@@ -12,7 +12,7 @@ jobs:
   displayName: Run the Polaris scan
   pool:
       name: 00-OSIManaged-Containers
-      demands: Agent.OS -equals Linux
+      demands: Agent.OS -equals Windows_NT
   steps:
     # Synopsys Polaris
     - powershell: |
