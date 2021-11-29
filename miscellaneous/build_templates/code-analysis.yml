@@ -1,0 +1,60 @@
+parameters:
+  # Tell the task to skip completely, for unsupported agents
+  - name: skip
+    type: boolean
+    default: false
+    
+  # For samples that have no code Polaris is capable of scanning
+  - name: skipPolaris
+    type: boolean
+    default: false
+  
+  # Tell the task to use Python requirements.txt for BlackDuck
+  - name: useRequirementsTxt
+    type: boolean
+    default: false
+  
+  # Tell the task to use a specific path to the project
+  - name: projectPath
+    type: string
+    default: ''
+    
+  # Build steps run ahead of the analysis jobs
+  - name: buildSteps
+    type: stepList
+    default: []
+
+
+jobs:   
+
+- job: SynopsysPolarisScan
+  timeoutInMinutes: 180
+  pool:
+      name: 00-OSIManaged-Containers
+      demands: Agent.OS -equals Windows_NT
+  steps:
+    - ${{ parameters.buildSteps }}
+    
+    # Synopsys Polaris
+    - powershell: |
+        # Set up Polaris Project Name, Access Token
+        New-Item -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
+        New-Item -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
+
+        # Call Polaris, set the configuration file path and run analyze with wait option
+        & 'polaris.exe' -c polaris.yml analyze -w
+      condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
+      workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
+      displayName: 'Analysis: Polaris'
+    
+- template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
+  parameters:
+    buildSteps:
+      - ${{ parameters.buildSteps }}
+      - script: pip install -r requirements.txt
+        condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
+        displayName: 'Install requirements.txt'
+    projectName: "product-readiness.$(analysisProject)"
+    projectVersionName: "$(Build.SourceBranchName)"
+    sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
+    detectorSearchDepth: 0
