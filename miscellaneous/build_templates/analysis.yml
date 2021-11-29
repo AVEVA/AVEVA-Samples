@@ -1,60 +1,53 @@
 parameters:
-  # Tell the task to skip completely, for unsupported agents
-  - name: skip
-    type: boolean
-    default: false
-    
-  # For samples that have no code Polaris is capable of scanning
-  - name: skipPolaris
-    type: boolean
-    default: false
-  
-  # Tell the task to use Python requirements.txt for BlackDuck
-  - name: useRequirementsTxt
-    type: boolean
-    default: false
-  
-  # Tell the task to use a specific path to the project
-  - name: projectPath
-    type: string
-    default: ''
-    
-  # Build steps run ahead of the analysis jobs
-  - name: buildSteps
-    type: stepList
-    default: []
+  skip: false # Tell the task to skip completely, for unsupported agents
+  skipPolaris: false # For samples that have no code Polaris is capable of scanning
+  useRequirementsTxt: false # Tell the task to use Python requirements.txt for BlackDuck
+  projectPath: '' # (Optional) Tell the task to use a specific path to the project
+  snippetMatching: SNIPPET_MATCHING
 
+steps:
+  # Synopsys Polaris
+  - powershell: |
+      # Set up Polaris Project Name, Access Token
+      New-Item -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
+      New-Item -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
 
-jobs:   
+      # Call Polaris, set the configuration file path and run analyze with wait option
+      & 'polaris.exe' -c polaris.yml analyze -w
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
+    workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
+    displayName: 'Analysis: Polaris'
 
-- job: SynopsysPolarisScan
-  timeoutInMinutes: 180
-  pool:
-      name: 00-OSIManaged-Containers
-      demands: Agent.OS -equals Windows_NT
-  steps:
-    - ${{ parameters.buildSteps }}
-    
-    # Synopsys Polaris
-    - powershell: |
-        # Set up Polaris Project Name, Access Token
-        New-Item -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
-        New-Item -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
+  # Synopsys BlackDuck
+  - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
+    inputs:
+      Products: BD
+      BlackDuckService: 'product-readiness.BlackDuck'
+      DetectArguments: |
+        --detect.project.name="product-readiness.$(analysisProject)"
+        --detect.project.version.name="$(Build.SourceBranchName)"
+        --detect.source.path="$(Build.SourcesDirectory)${{ parameters.projectPath }}"
+        --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
+        --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
+        --detect.blackduck.signature.scanner.snippet.matching="${{ parameters.snippetMatching }}"
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, false))
+    displayName: 'Analysis: BlackDuck'
 
-        # Call Polaris, set the configuration file path and run analyze with wait option
-        & 'polaris.exe' -c polaris.yml analyze -w
-      condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
-      workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
-      displayName: 'Analysis: Polaris'
-    
-- template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
-  parameters:
-    buildSteps:
-      - ${{ parameters.buildSteps }}
-      - script: pip install -r requirements.txt
-        condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
-        displayName: 'Install requirements.txt'
-    projectName: "product-readiness.$(analysisProject)"
-    projectVersionName: "$(Build.SourceBranchName)"
-    sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
-    detectorSearchDepth: 0
+  - script: pip install -r requirements.txt
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
+    displayName: 'Install requirements.txt'
+
+  - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
+    inputs:
+      Products: BD
+      BlackDuckService: 'product-readiness.BlackDuck'
+      DetectArguments: |
+        --detect.project.name="product-readiness.$(analysisProject)"
+        --detect.project.version.name="$(Build.SourceBranchName)"
+        --detect.source.path="$(Build.SourcesDirectory)${{ parameters.projectPath }}"
+        --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
+        --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
+        --detect.pip.requirements.path=$(Build.SourcesDirectory)\requirements.txt
+        --detect.blackduck.signature.scanner.snippet.matching="${{ parameters.snippetMatching }}"
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
+    displayName: 'Analysis: BlackDuck (Python requirements.txt)'
