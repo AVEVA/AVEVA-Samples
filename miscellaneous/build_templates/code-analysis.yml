@@ -31,7 +31,9 @@ jobs:
   timeoutInMinutes: 180
   pool:
       name: 00-OSIManaged-Containers
-      demands: Agent.OS -equals Windows_NT
+      demands: 
+      - Agent.OS -equals Windows_NT
+      - POLARISCLI -equals 1.18.22
   steps:
     - ${{ parameters.buildSteps }}
     
