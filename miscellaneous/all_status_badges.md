@@ -1,4 +1,5 @@
-
+# All Public Sample Pipeline Status Badges
+The purpose of this readme is to provide a quick overview of all status badges for all public samples hosted on the OSIsoft GitHub.
 
 ## AVEVA Data Hub Samples
 
