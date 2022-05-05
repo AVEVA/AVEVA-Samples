@@ -33,7 +33,7 @@ jobs:
       name: 00-OSIManaged-Containers
       demands: 
       - Agent.OS -equals Windows_NT
-      - POLARISCLI -equals 1.18.22
+      - POLARISCLI -equals 2021.12.1
   steps:
     - ${{ parameters.buildSteps }}
     
