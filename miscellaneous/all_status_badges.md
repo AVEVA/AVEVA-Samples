@@ -711,7 +711,16 @@ The purpose of this readme is to provide a quick overview of all status badges f
               Java
             </a>
           </td>
-          <td align="middle">~~~~~~~~~~~~~~~~~~~</td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2621&branchName=main"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-adh-sample_libraries-java?branchName=main"
+                alt="Build Status"
+              />
+            </a>
+          </td>
         </tr>
         <tr>
           <td align="middle">
@@ -721,7 +730,16 @@ The purpose of this readme is to provide a quick overview of all status badges f
               Python
             </a>
           </td>
-          <td align="middle">~~~~~~~~~~~~~~~~~~~</td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4674&branchName=main"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-adh-sample_libraries-python?branchName=main"
+                alt="Build Status"
+              />
+            </a>
+          </td>
         </tr>
       </table>
     </td>
