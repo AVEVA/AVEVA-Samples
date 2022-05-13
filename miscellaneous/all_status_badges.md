@@ -526,15 +526,10 @@ The purpose of this readme is to provide a quick overview of all status badges f
           <td align="middle">
             <a href="https://github.com/osisoft/sample-ocs-data_retrieval-power_query_m">Power Query M</a>
           </td>
-          <td align="middle">
-            <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=3963&repoName=osisoft%2Fsample-ocs-data_retrieval-power_query_m&branchName=main"
-            >
-              <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OCS/osisoft.sample-ocs-data_retrieval-power_query_m?repoName=osisoft%2Fsample-ocs-data_retrieval-power_query_m&branchName=main"
-                alt="Build Status"
-              />
-            </a>
+          <td align="middle" >
+            Manually Tested on:</br> 2022-04-07
+            </br>
+            <p style="color:white;background-color:#57cc49;border-radius:10px">Succeeded</p>
           </td>
         </tr>
       </table>
