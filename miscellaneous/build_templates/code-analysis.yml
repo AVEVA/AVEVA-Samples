@@ -37,17 +37,15 @@ jobs:
   steps:
     - ${{ parameters.buildSteps }}
     
-    # Synopsys Polaris
-    - powershell: |
-        # Set up Polaris Project Name, Access Token
-        New-Item -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
-        New-Item -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
-
-        # Call Polaris, set the configuration file path and run analyze with wait option
-        & 'polaris.exe' -c polaris.yml analyze -w
-      condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
-      workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
-      displayName: 'Analysis: Polaris'
+    - task: SynopsysPolaris@1
+      displayName: Polaris Analyze
+      inputs:
+        polarisCommand: --configuration-file polaris.yml analyze --wait
+        polarisService: Polaris Service Connection
+        waitForIssues: true
+        condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
+        workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
+        displayName: 'Analysis: Polaris'
     
 - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
   parameters:
