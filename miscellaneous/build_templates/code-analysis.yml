@@ -33,19 +33,14 @@ jobs:
       name: 00-OSIManaged-Containers
       demands: 
       - Agent.OS -equals Windows_NT
-      - POLARISCLI -equals 2021.12.1
   steps:
-    - ${{ parameters.buildSteps }}
-    
-    - task: SynopsysPolaris@1
-      displayName: Polaris Analyze
-      inputs:
-        polarisCommand: --configuration-file polaris.yml analyze --wait
-        polarisService: Polaris Service Connection
-        waitForIssues: true
-        condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
-        workingDirectory: $(Build.SourcesDirectory)${{ parameters.projectPath }}
-        displayName: 'Analysis: Polaris'
+  - task: SynopsysPolaris@1
+    displayName: Polaris Analyze
+    inputs:
+      polarisCommand: --configuration-file polaris.yml analyze --wait
+      polarisService: Polaris Service Connection
+      waitForIssues: true
+    condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
     
 - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
   parameters:
