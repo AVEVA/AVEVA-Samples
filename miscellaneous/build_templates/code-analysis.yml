@@ -40,8 +40,8 @@ jobs:
     # Synopsys Polaris
     - powershell: |
         # Set up Polaris Project Name, Access Token
-        New-Item -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
-        New-Item -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
+        New-Item -Force -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
+        New-Item -Force -Path Env:\ -Name POLARIS_ACCESS_TOKEN -Value $(polarisToken)
 
         # Call Polaris, set the configuration file path and run analyze with wait option
         & 'polaris.exe' -c polaris.yml analyze -w
