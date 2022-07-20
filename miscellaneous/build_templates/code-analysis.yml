@@ -30,10 +30,8 @@ jobs:
 - job: SynopsysPolarisScan
   timeoutInMinutes: 180
   pool:
-      name: 00-OSIManaged-Containers
-      demands: 
-      - Agent.OS -equals Windows_NT
-      - POLARISCLI
+      name: OpsGuild-Containers-Staging
+      demands: Agent.Name -equals osimanagedagent-a-1IACDH0001
   steps:
     - ${{ parameters.buildSteps }}
     
