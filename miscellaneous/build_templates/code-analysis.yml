@@ -51,7 +51,7 @@ jobs:
       - script: pip install -r requirements.txt
         condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
         displayName: 'Install requirements.txt'
-    projectName: "product-readiness.$(analysisProject)"
+    projectName: "product-readiness.$(BLACK_DUCK_PROJECT_NAME)"
     projectVersionName: "$(Build.SourceBranchName)"
     sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
     detectorSearchDepth: 0
