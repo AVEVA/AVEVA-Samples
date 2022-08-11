@@ -790,6 +790,60 @@ The purpose of this readme is to provide a quick overview of all status badges f
         </tr>
       </table>
     </td>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-ocs-stream_type_change-python"> Data Hub to PI </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-ocs-stream_type_change-python"
+            >
+              Python
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4426&repoName=osisoft%2Fsample-ocs-stream_type_change-python&branchName=main"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/osisoft.sample-adh-data_hub_to_pi-python?repoName=osisoft%2Fsample-adh-data_hub_to_pi-python&branchName=main"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"> PI to AVEVA Data Hub Transfer Verification Sample </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"
+            >
+              Python
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4668&repoName=osisoft%2Fsample-adh-pi_to_adh_transfer_verification-powershell&branchName=main"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OCS/osisoft.sample-ocs-stream_type_change-python?repoName=osisoft%2Fsample-ocs-stream_type_change-python&branchName=main"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
   </tr>
 </table>
 
