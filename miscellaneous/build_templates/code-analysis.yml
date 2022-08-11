@@ -36,6 +36,10 @@ jobs:
   steps:
   - ${{ parameters.buildSteps }}
   
+  - powershell: |
+      New-Item -Force -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
+    displayName: Set POLARIS_PROJECT_NAME
+    
   - task: SynopsysPolaris@1
     displayName: Polaris Analyze
     inputs:
@@ -51,7 +55,7 @@ jobs:
       - script: pip install -r requirements.txt
         condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
         displayName: 'Install requirements.txt'
-    projectName: "product-readiness.$(BLACK_DUCK_PROJECT_NAME)"
+    projectName: "product-readiness.$(analysisProject)"
     projectVersionName: "$(Build.SourceBranchName)"
     sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
     detectorSearchDepth: 0
