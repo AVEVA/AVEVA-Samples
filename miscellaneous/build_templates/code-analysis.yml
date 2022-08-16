@@ -36,8 +36,8 @@ jobs:
   steps:
   - ${{ parameters.buildSteps }}
   
-  - powershell: |
-      New-Item -Force -Path Env:\ -Name POLARIS_PROJECT_NAME -Value $(analysisProject)
+  - bash: |
+      echo "##vso[task.setvariable variable=POLARIS_PROJECT_NAME]$(analysisProject)"
     displayName: Set POLARIS_PROJECT_NAME
     
   - task: SynopsysPolaris@1
