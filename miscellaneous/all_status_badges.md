@@ -436,19 +436,19 @@ The purpose of this readme is to provide a quick overview of all status badges f
   <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-adh-grafana-nodejs">Grafana </a>
+        <a href="https://github.com/osisoft/sample-adh-grafana_backend_plugin-datasource">Grafana </a>
       </b>
       <table align="middle">
         <tr>
           <td align="middle">
-            <a href="https://github.com/osisoft/sample-adh-grafana-nodejs">NodeJS</a>
+            <a href="https://github.com/osisoft/sample-adh-grafana_backend_plugin-datasource">NodeJS</a>
           </td>
           <td align="middle">
             <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2619&repoName=osisoft%2Fsample-adh-grafana-nodejs&branchName=main"
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4858&repoName=osisoft%2Fsample-adh-grafana_backend_plugin-datasource&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-adh-grafana-nodejs?repoName=osisoft%2Fsample-adh-grafana-nodejs&branchName=main"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/osisoft.sample-adh-grafana_backend_plugin-datasource?repoName=osisoft%2Fsample-adh-grafana_backend_plugin-datasource&branchName=main"
                 alt="Build Status"
               />
             </a>
