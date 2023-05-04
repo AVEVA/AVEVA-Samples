@@ -1,6 +1,3 @@
-| :loudspeaker: **Notice**: Samples have been updated to reflect that they work on AVEVA Data Hub. The samples also work on OSIsoft Cloud Services unless otherwise noted. |
-| -----------------------------------------------------------------------------------------------|  
-
 # OSIsoft Samples
 
 ([AVEVA](https://www.aveva.com/)) is a proven leader in enabling operation intelligence. In this GitHub repo, we provide samples which will help you get started with using AVEVA technology. The repo includes samples against the [PI Server](https://www.aveva.com/en/products/pi-system/) via PI Web API, samples using AVEVA Data Hub ([Data Hub](https://datahub.connect.aveva.com)) via the Data Hub APIs directly and using libraries, and samples creating Open Message Format ([OMF](https://docs.osisoft.com/bundle/data-hub/page/add-organize-data/collect-data/connectors/omf/omf-overview.html)) messages and sending them. The samples are intended to help you get started and are not production applications and libraries.
