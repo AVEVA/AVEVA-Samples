@@ -212,6 +212,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
     </td>
     <td></td>
   </tr>
+
   <tr>
     <td align="middle" valign="top">
       <b>
@@ -360,6 +361,91 @@ The purpose of this readme is to provide a quick overview of all status badges f
       </table>
     </td>
   </tr>
+
+  <tr>
+    <td align="middle" valign="top">
+      <b>
+        <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to ADH Read Only Streams </a>
+      </b>
+      <br />
+      Covers how to invoke SDS REST APIs via the sample client libraries to read data from PI to ADH streams
+      ingressed to Data Hub.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-pi-to-adh-read-only-data-dotnet">.NET</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-pi-to-adh-read-only-data-dotnet?branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-pi-to-adh-read-only-data-python">Python</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-pi-to-adh-read-only-data-python?branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-adh-streaming-updates_rest_api-dotnet"> Streaming Updates
+        </a>
+      </b>
+      <br />
+      Demonstrates REST API calls to ADH for creating a Signup to receive resource updates. Signups allow
+      clients to subscribe resources (for example, streams) and get updates for those resources.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-adh-streaming-updates_rest_api-dotnet">.NET</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status%2Fproduct-readiness%2FADH%2Fosisoft.sample-adh-streaming-updates_rest_api-dotnet?repoName=osisoft%2Fsample-adh-streaming-updates_rest_api-dotnet&branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-adh-event_store-python"> Event Data </a>
+      </b>
+      <br />
+      This sample covers CRUD operations against the AVEVA Data Hub events store. This includes authorization
+      tags, enumerations, reference data, and events.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-adh-event_store-python">Python</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status%2Fproduct-readiness%2FADH%2Fosisoft.sample-adh-event_store-python?repoName=osisoft%2Fsample-adh-event_store-python&branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td>
+    </td>
+  </tr>
+
   <tr>
     <td align="middle" valign="top">
       <b>
