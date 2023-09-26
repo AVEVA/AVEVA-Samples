@@ -367,11 +367,6 @@ The purpose of this readme is to provide a quick overview of all status badges f
       <b>
         <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to ADH Read Only Streams </a>
       </b>
-      <br />
-      Covers how to invoke SDS REST APIs via the sample client libraries to read data from PI to ADH streams
-      ingressed to Data Hub.
-      <br />
-      <br />
       <table align="middle">
         <tr>
           <td align="middle">
@@ -400,11 +395,6 @@ The purpose of this readme is to provide a quick overview of all status badges f
         <a href="https://github.com/osisoft/sample-adh-streaming-updates_rest_api-dotnet"> Streaming Updates
         </a>
       </b>
-      <br />
-      Demonstrates REST API calls to ADH for creating a Signup to receive resource updates. Signups allow
-      clients to subscribe resources (for example, streams) and get updates for those resources.
-      <br />
-      <br />
       <table align="middle">
         <tr>
           <td align="middle">
@@ -424,11 +414,6 @@ The purpose of this readme is to provide a quick overview of all status badges f
       <b>
         <a href="https://github.com/osisoft/sample-adh-event_store-python"> Event Data </a>
       </b>
-      <br />
-      This sample covers CRUD operations against the AVEVA Data Hub events store. This includes authorization
-      tags, enumerations, reference data, and events.
-      <br />
-      <br />
       <table align="middle">
         <tr>
           <td align="middle">
