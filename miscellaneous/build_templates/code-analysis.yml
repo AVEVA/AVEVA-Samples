@@ -56,8 +56,7 @@ jobs:
         displayName: 'Install requirements.txt'
     pool:
       name: 00-OSIManaged-Containers
-      demands:
-      - AgentType -equals osimanagedagent
+      demands: AgentType -equals osimanagedagent
     projectName: "product-readiness.$(analysisProject)"
     projectVersionName: "$(Build.SourceBranchName)"
     sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
