@@ -50,7 +50,7 @@ jobs:
 - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
   parameters:
     pool:
-      name: 00-OSIManaged-Containers
+      name: DevOps Managed Containers Build
       demands: AgentType -equals osimanagedagent
     buildSteps:
       - ${{ parameters.buildSteps }}
