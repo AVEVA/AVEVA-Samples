@@ -30,7 +30,7 @@ jobs:
 - job: SynopsysPolarisScan
   timeoutInMinutes: 180
   pool:
-      name: OpsGuild-Containers-Staging
+      name: DevOps Managed Containers Build
       demands: Agent.Name -equals osimanagedagent-a-1IACDH0001
   steps:
     - ${{ parameters.buildSteps }}
