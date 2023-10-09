@@ -31,7 +31,7 @@ jobs:
   timeoutInMinutes: 180
   pool:
       name: DevOps Managed Containers Build
-      demands: Agent.Name -equals osimanagedagent-a-1IACDH0001
+      demands: AgentType -equals osimanagedagent
   steps:
     - ${{ parameters.buildSteps }}
     
