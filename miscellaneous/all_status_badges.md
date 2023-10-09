@@ -212,6 +212,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
     </td>
     <td></td>
   </tr>
+
   <tr>
     <td align="middle" valign="top">
       <b>
@@ -360,6 +361,76 @@ The purpose of this readme is to provide a quick overview of all status badges f
       </table>
     </td>
   </tr>
+
+  <tr>
+    <td align="middle" valign="top">
+      <b>
+        <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to ADH Read Only Streams </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-pi-to-adh-read-only-data-dotnet">.NET</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-pi-to-adh-read-only-data-dotnet?branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-pi-to-adh-read-only-data-python">Python</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-pi-to-adh-read-only-data-python?branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-adh-streaming-updates_rest_api-dotnet"> Streaming Updates
+        </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-adh-streaming-updates_rest_api-dotnet">.NET</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status%2Fproduct-readiness%2FADH%2Fosisoft.sample-adh-streaming-updates_rest_api-dotnet?repoName=osisoft%2Fsample-adh-streaming-updates_rest_api-dotnet&branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-adh-event_store-python"> Event Data </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a href="https://github.com/osisoft/sample-adh-event_store-python">Python</a>
+          </td>
+          <td align="middle">
+            <img
+              src="https://dev.azure.com/osieng/engineering/_apis/build/status%2Fproduct-readiness%2FADH%2Fosisoft.sample-adh-event_store-python?repoName=osisoft%2Fsample-adh-event_store-python&branchName=main"
+              alt="Build Status" />
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td>
+    </td>
+  </tr>
+
   <tr>
     <td align="middle" valign="top">
       <b>
@@ -436,19 +507,19 @@ The purpose of this readme is to provide a quick overview of all status badges f
   <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-adh-grafana-nodejs">Grafana </a>
+        <a href="https://github.com/osisoft/sample-adh-grafana_backend_plugin-datasource">Grafana </a>
       </b>
       <table align="middle">
         <tr>
           <td align="middle">
-            <a href="https://github.com/osisoft/sample-adh-grafana-nodejs">NodeJS</a>
+            <a href="https://github.com/osisoft/sample-adh-grafana_backend_plugin-datasource">NodeJS</a>
           </td>
           <td align="middle">
             <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2619&repoName=osisoft%2Fsample-adh-grafana-nodejs&branchName=main"
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4858&repoName=osisoft%2Fsample-adh-grafana_backend_plugin-datasource&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/aveva.sample-adh-grafana-nodejs?repoName=osisoft%2Fsample-adh-grafana-nodejs&branchName=main"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/osisoft.sample-adh-grafana_backend_plugin-datasource?repoName=osisoft%2Fsample-adh-grafana_backend_plugin-datasource&branchName=main"
                 alt="Build Status"
               />
             </a>
@@ -790,6 +861,60 @@ The purpose of this readme is to provide a quick overview of all status badges f
         </tr>
       </table>
     </td>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-ocs-stream_type_change-python"> Data Hub to PI </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-ocs-stream_type_change-python"
+            >
+              Python
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4426&repoName=osisoft%2Fsample-ocs-stream_type_change-python&branchName=main"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/ADH/osisoft.sample-adh-data_hub_to_pi-python?repoName=osisoft%2Fsample-adh-data_hub_to_pi-python&branchName=main"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="middle" valign="top">
+      <b>
+        <a href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"> PI to AVEVA Data Hub Transfer Verification Sample </a>
+      </b>
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"
+            >
+              Python
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=4668&repoName=osisoft%2Fsample-adh-pi_to_adh_transfer_verification-powershell&branchName=main"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OCS/osisoft.sample-ocs-stream_type_change-python?repoName=osisoft%2Fsample-ocs-stream_type_change-python&branchName=main"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
   </tr>
 </table>
 
@@ -946,7 +1071,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2640&repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-complex_dynamic-python?repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main&jobName=Tests_ADH"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-complex_dynamic-python?repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main&jobName=Tests_ADH"
                 alt="Build Status"
               />
             </a>
@@ -956,7 +1081,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2640&repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-complex_dynamic-python?repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main&jobName=Tests_EDS"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-complex_dynamic-python?repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main&jobName=Tests_EDS"
                 alt="Build Status"
               />
             </a>
@@ -966,7 +1091,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2640&repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-complex_dynamic-python?repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main&jobName=Tests_PI"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-complex_dynamic-python?repoName=osisoft%2Fsample-omf-complex_dynamic-python&branchName=main&jobName=Tests_PI"
                 alt="Build Status"
               />
             </a>
@@ -985,7 +1110,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2639&repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-complex_dynamic-nodejs?repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main&jobName=Tests_ADH"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-complex_dynamic-nodejs?repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main&jobName=Tests_ADH"
                 alt="Build Status"
               />
             </a>
@@ -995,7 +1120,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2639&repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-complex_dynamic-nodejs?repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main&jobName=Tests_EDS"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-complex_dynamic-nodejs?repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main&jobName=Tests_EDS"
                 alt="Build Status"
               />
             </a>
@@ -1005,7 +1130,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2639&repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-complex_dynamic-nodejs?repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main&jobName=Tests_OnPrem"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-complex_dynamic-nodejs?repoName=osisoft%2Fsample-omf-complex_dynamic-nodejs&branchName=main&jobName=Tests_OnPrem"
                 alt="Build Status"
               />
             </a>
@@ -1091,7 +1216,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2638&repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-bulk_upload-python?repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main&jobName=Tests_ADH"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-bulk_upload-python?repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main&jobName=Tests_ADH"
                 alt="Build Status"
               />
             </a>
@@ -1101,7 +1226,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2638&repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-bulk_upload-python?repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main&jobName=Tests_EDS"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-bulk_upload-python?repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main&jobName=Tests_EDS"
                 alt="Build Status"
               />
             </a>
@@ -1111,7 +1236,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
               href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2638&repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/osisoft.sample-omf-bulk_upload-python?repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main&jobName=Tests_PI"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OMF/aveva.sample-omf-bulk_upload-python?repoName=osisoft%2Fsample-omf-bulk_upload-python&branchName=main&jobName=Tests_PI"
                 alt="Build Status"
               />
             </a>
