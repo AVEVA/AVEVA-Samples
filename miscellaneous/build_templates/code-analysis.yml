@@ -34,6 +34,13 @@ jobs:
       demands: AgentType -equals osimanagedagent
   steps:
     - ${{ parameters.buildSteps }}
+
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        KeyVaultName: 'Github-Samples'
+        SecretsFilter: 'polarisToken'
+        RunAsPreJob: false
     
     # Synopsys Polaris
     - powershell: |
