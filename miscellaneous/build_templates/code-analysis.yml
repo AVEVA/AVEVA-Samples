@@ -30,9 +30,8 @@ jobs:
 - job: SynopsysPolarisScan
   timeoutInMinutes: 180
   pool:
-      name: 00-OSIManaged-Containers
-      demands: 
-      - Agent.OS -equals Windows_NT
+      name: DevOps Managed Containers Build
+      demands: AgentType -equals osimanagedagent
   steps:
   - ${{ parameters.buildSteps }}
   
@@ -40,7 +39,7 @@ jobs:
       echo "##vso[task.setvariable variable=POLARIS_PROJECT_NAME]$(analysisProject)"
     displayName: Set POLARIS_PROJECT_NAME
     
-  - task: SynopsysPolaris@1
+  - task: AvevaSynopsysPolaris@1
     displayName: Polaris Analyze
     inputs:
       polarisCommand: --configuration-file polaris.yml analyze --wait
@@ -50,6 +49,9 @@ jobs:
     
 - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v0.yml@OpsGuildAutomationRepo
   parameters:
+    pool:
+      name: DevOps Managed Containers Build
+      demands: AgentType -equals osimanagedagent
     buildSteps:
       - ${{ parameters.buildSteps }}
       - script: pip install -r requirements.txt
