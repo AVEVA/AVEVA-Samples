@@ -18,7 +18,7 @@ steps:
   - task: AzureKeyVault@2
     inputs:
       azureSubscription: '$(azureSubscription)'
-      KeyVaultName: 'Github-Samples'
+      KeyVaultName: 'GitHubDevSamples'
       SecretsFilter: ${{ parameters.secrets }}
       RunAsPreJob: false
     condition: ne('${{ parameters.secrets }}', '')
