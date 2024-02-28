@@ -1,24 +1,35 @@
+# This template will perform a BinSkim with MicrosoftSecurityDevOps.
 parameters:
-  deleteBinSkim: '' # This parameter is used to delete files before running BinSkim. Only use this if the error has been investigated and can be safely ignored
+- name: binskimPath
+  type: string
+  default: ""
 
 steps:
-  # BinSkim errors if it encounters badly signed Microsoft files
-  # To avoid this issue, delete the files before running BinSkim
-  - task: DeleteFiles@1
-    displayName: 'BinSkim: Delete Files'
-    inputs:
-      SourceFolder: $(Build.SourcesDirectory)
-      Contents: '${{ parameters.deleteBinSkim }}'
-    condition: ne('${{ parameters.deleteBinSkim }}', '')
+# Create binskim folder
+- powershell: |
+    New-Item -ItemType Directory -Force -Path "$(Build.SourcesDirectory)\binskim"
+  displayName: Create folder
 
-  - task: BinSkim@3
-    displayName: 'BinSkim: Analyze'
-    inputs:
-      toolVersion: '1.6.1'
-      AnalyzeTarget: '$(Build.SourcesDirectory)\*.dll;$(Build.SourcesDirectory)\*.exe'
+# Copy files to-be-scanned from Build.SourcesDirectory folder into binskim folder
+- task: CopyFiles@2
+  displayName: Copy files into binskim
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    TargetFolder: '$(Pipeline.Workspace)\\binskim'
+    ${{ if ne(parameters.binskimPath, '') }}:
+      Contents: ${{ parameters.binskimPath }}
+    ${{ else }}:
+      Contents: |
+        **/*.dll
+        **/*.exe
 
-  - task: PostAnalysis@1
-    displayName: 'BinSkim: Post Analysis'
-    inputs:
-      BinSkim: true
-      BinSkimBreakOn: WarningAbove
+# Run BinSkim Tool by MicrosoftSecurityDevOps for Target of above Task  folder "binskim"
+- task: MicrosoftSecurityDevOps@1
+  displayName: 'Run BinSkim'
+  inputs:
+    tools: 'BinSkim'
+    break: true
+  env:
+    GDN_BINSKIM_TARGET: '$(Pipeline.Workspace)/binskim/**/*.*'
+    GDN_BINSKIM_RECURSE: 'true'
+    GDN_BINSKIM_VERBOSE: 'true'
