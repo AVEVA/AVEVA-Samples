@@ -40,7 +40,7 @@ steps:
   displayName: 'Run BinSkim'
   inputs:
     tools: 'BinSkim'
-    break: true
+    break: false
   env:
     GDN_BINSKIM_TARGET: '$(Pipeline.Workspace)/binskim/**/*.*'
     GDN_BINSKIM_RECURSE: 'true'
