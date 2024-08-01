@@ -1,13 +1,13 @@
 # AVEVA Cloud Platform
 
-AVEVA Data Hub ([ADH](https://www.osisoft.com/Solutions/OSIsoft-Cloud-Services/)) is a highly flexible cloud-based platform that provides a scalable, elastic,
-centralized environment to aggregate data for reporting, advanced analytics, and third-party applications. ADH is powered by AVEVA's Sequential Data Store (SDS). In this GitHub repo, we provide samples which will help you get started with the [ADH API](https://ocs-docs.osisoft.com/) against your [ADH instance](https://cloud.osisoft.com/welcome).
+CONNECT data services ([Cds](https://www.aveva.com/en/products/aveva-pi-system/)) is a highly flexible cloud-based platform that provides a scalable, elastic,
+centralized environment to aggregate data for reporting, advanced analytics, and third-party applications. Cds is powered by AVEVA's Sequential Data Store (SDS). In this GitHub repo, we provide samples which will help you get started with the [Cds API](https://ocs-docs.osisoft.com/) against your [Cds instance](https://cloud.osisoft.com/welcome).
 
 If you are interested in other AVEVA samples please see [AVEVA Samples](https://github.com/osisoft/OSI-Samples).
 
 If you are new to our APIs and are looking to get going quickly, the  [Types, Streams, and Retrieving Data](https://github.com/osisoft/OSI-Samples-OCS/blob/main/docs/COMMON_ACTIONS.md) samples are good starting points.
 
-The official ADH samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table. 
+The official Cds samples are divided in multiple categories depending on the scenario and problem/task, accessible through the following table. 
 
 
 
@@ -202,10 +202,10 @@ The official ADH samples are divided in multiple categories depending on the sce
     <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to ADH Read Only Streams </a>
+        <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to Cds Read Only Streams </a>
       </b>
       <br />
-      Covers how to invoke SDS REST APIs via the sample client libraries to read data from PI to ADH streams ingressed to Data Hub.
+      Covers how to invoke SDS REST APIs via the sample client libraries to read data from PI to Cds streams ingressed to CONNECT data services.
       <br />
       <br />
       <table align="middle">
@@ -269,10 +269,10 @@ The official ADH samples are divided in multiple categories depending on the sce
   <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-adh-csv_to_adh-dotnet">CSV to ADH</a>
+        <a href="https://github.com/osisoft/sample-adh-csv_to_adh-dotnet">CSV to Cds</a>
       </b>
       <br />
-      Shows how to send a basic csv file to ADH using SDS calls
+      Shows how to send a basic csv file to Cds using SDS calls
       <br />
       <br />
       <table align="middle">
@@ -331,7 +331,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="docs/ASSETS.md">Assets</a>
       </b>
       <br />
-      These samples highlight basic operations with Assets in ADH, including create, update, data retrieval, and delete operations on Assets.
+      These samples highlight basic operations with Assets in Cds, including create, update, data retrieval, and delete operations on Assets.
       <a href="docs/ASSETS.md"> Details </a>
       <br />
       <br />
@@ -376,7 +376,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="docs/DATA_VIEWS.md"> Data Views </a>
       </b>
       <br />
-      These samples highlight basic operations of Data Views for ADH, including
+      These samples highlight basic operations of Data Views for Cds, including
       creation, updating, getting data from and deletion of Data Views.
       <a href="docs/DATA_VIEWS.md">Details</a>
       <br />
@@ -410,7 +410,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="https://github.com/osisoft/sample-adh-data_views_jupyter-python">Data Views Jupyter</a>
       </b>
       <br />
-      This sample demonstrates how to utilize ADH Data Views to do some basic
+      This sample demonstrates how to utilize Cds Data Views to do some basic
       data analysis using Python Jupyter Notebook.
       <br />
       <br />
@@ -429,7 +429,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="https://github.com/osisoft/sample-adh-data_views_r-r">Data Views R</a>
       </b>
       <br />
-      Demonstrates how to create a data frame in R from an ADH Data View
+      Demonstrates how to create a data frame in R from an Cds Data View
       <br />
       <br />
       <table align="middle">
@@ -453,7 +453,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="https://github.com/osisoft/sample-adh-uom-dotnet">UOM</a>
       </b>
       <br />
-      Covers the basic functionality of the UOM system on ADH
+      Covers the basic functionality of the UOM system on Cds
       <br />
       <br />
       <table align="middle">
@@ -523,7 +523,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="https://github.com/osisoft/sample-ocs-security_management-python">Security Management</a>
       </b>
       <br />
-      Covers security configuration within ADH. This includes creating a custom role, creating a user, inviting a user, setting Access Control Lists (ACLs) for collections, setting ACLs for collection items, setting an owner for a collection item, and retrieving access rights.
+      Covers security configuration within Cds. This includes creating a custom role, creating a user, inviting a user, setting Access Control Lists (ACLs) for collections, setting ACLs for collection items, setting an owner for a collection item, and retrieving access rights.
       <br />
       <br />
       <table align="middle">
@@ -543,7 +543,7 @@ The official ADH samples are divided in multiple categories depending on the sce
         <a href="https://github.com/osisoft/sample-ocs-stream_type_change-python"> Stream Type Change </a>
       </b>
       <br />
-      This sample highlights changing an ADH Stream's underlying SDS Type. The main purpose of this sample is to demonstrate the steps necessary to change the underlying SDS Type, and the secondary purpose is to provide an as-is utility to perform this Type change on PI Adapter v1.1 Streams after upgrading to v1.2.
+      This sample highlights changing an Cds Stream's underlying SDS Type. The main purpose of this sample is to demonstrate the steps necessary to change the underlying SDS Type, and the secondary purpose is to provide an as-is utility to perform this Type change on PI Adapter v1.1 Streams after upgrading to v1.2.
       <br />
       <br />
       <table align="middle">
@@ -560,10 +560,10 @@ The official ADH samples are divided in multiple categories depending on the sce
     </td>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"> PI to AVEVA Data Hub Transfer Verification Sample </a>
+        <a href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"> PI to CONNECT data services Transfer Verification Sample </a>
       </b>
       <br />
-      This sample can be used to compare data stored in a PI Data Archive to data written to AVEVA Data Hub through the PI to Data Hub agent.
+      This sample can be used to compare data stored in a PI Data Archive to data written to CONNECT data services through the PI to CONNECT data services agent.
       <br />
       <br />
       <table align="middle">
@@ -582,10 +582,10 @@ The official ADH samples are divided in multiple categories depending on the sce
   <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-adh-data_hub_to_pi-python"> Data Hub to PI </a>
+        <a href="https://github.com/osisoft/sample-adh-data_hub_to_pi-python"> CONNECT data services to PI </a>
       </b>
       <br />
-      This sample uses REST API calls to the Sequential Data Store of AVEVA Data Hub to collect Types, Streams, and data and create corresponding PI Tags in a Data Archive through OMF messages.
+      This sample uses REST API calls to the Sequential Data Store of CONNECT data services to collect Types, Streams, and data and create corresponding PI Tags in a Data Archive through OMF messages.
       <br />
       <br />
       <table align="middle">
@@ -609,7 +609,7 @@ The official ADH samples are divided in multiple categories depending on the sce
 
 **Note**: Tests with automated UI browser components (such as Hybrid Authentication, Authorization Code Flow and Angular samples) fail intermittently due to automation issues.
 
-For OMF to ADH samples please see the OMF repository: [OSI-Samples-OMF](https://github.com/osisoft/OSI-Samples-OMF)
+For OMF to Cds samples please see the OMF repository: [OSI-Samples-OMF](https://github.com/AVEVA/AVEVA-Samples-OMF)
 
 ## Credentials
 
