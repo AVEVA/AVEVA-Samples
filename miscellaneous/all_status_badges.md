@@ -1,7 +1,7 @@
 # All Public Sample Pipeline Status Badges
 The purpose of this readme is to provide a quick overview of all status badges for all public samples hosted on the OSIsoft GitHub.
 
-## AVEVA Data Hub Samples
+## CONNECT data services Samples
 
 
 <table align="middle" width="100%">
@@ -365,7 +365,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
   <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to ADH Read Only Streams </a>
+        <a href="docs/PI_TO_ADH_READ_DATA.md"> PI to Cds Read Only Streams </a>
       </b>
       <table align="middle">
         <tr>
@@ -863,7 +863,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
     </td>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-ocs-stream_type_change-python"> Data Hub to PI </a>
+        <a href="https://github.com/osisoft/sample-ocs-stream_type_change-python"> CONNECT data services to PI </a>
       </b>
       <table align="middle">
         <tr>
@@ -891,7 +891,7 @@ The purpose of this readme is to provide a quick overview of all status badges f
   <tr>
     <td align="middle" valign="top">
       <b>
-        <a href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"> PI to AVEVA Data Hub Transfer Verification Sample </a>
+        <a href="https://github.com/osisoft/sample-adh-pi_to_adh_transfer_verification-powershell"> PI to CONNECT data services Transfer Verification Sample </a>
       </b>
       <table align="middle">
         <tr>
