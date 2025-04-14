@@ -30,8 +30,7 @@ jobs:
 - job: SynopsysPolarisScan
   timeoutInMinutes: 180
   pool:
-      name: DevOps Managed Containers Build
-      demands: AgentType -equals osimanagedagent
+      name: DevOps Managed AKS Admin
   steps:
   - ${{ parameters.buildSteps }}
   
@@ -50,8 +49,7 @@ jobs:
 - template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v1.yml@OpsGuildAutomationRepo
   parameters:
     pool:
-      name: DevOps Managed Containers Build
-      demands: AgentType -equals osimanagedagent
+      name: DevOps Managed AKS Admin
     buildSteps:
       - ${{ parameters.buildSteps }}
       - script: pip install -r requirements.txt
