@@ -53,7 +53,7 @@ jobs:
       - task: JavaToolInstaller@0
         inputs:
           versionSpec: '11'  # or '17', '8', etc.
-          jdkArchitecture: 'x64'
+          jdkArchitectureOption: 'x64'
           jdkSourceOption: 'PreInstalled'  # Options: PreInstalled, AzureStorage, LocalDirectory
       - ${{ parameters.buildSteps }}
       - script: pip install -r requirements.txt
