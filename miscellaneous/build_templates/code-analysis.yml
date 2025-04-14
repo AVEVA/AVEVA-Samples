@@ -37,7 +37,11 @@ jobs:
   - powershell: |
       echo "##vso[task.setvariable variable=POLARIS_PROJECT_NAME]$(analysisProject)"
     displayName: Set POLARIS_PROJECT_NAME
-    
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '11'  # or '17', '8', etc.
+      jdkArchitecture: 'x64'
+      jdkSourceOption: 'PreInstalled'  # Options: PreInstalled, AzureStorage, LocalDirectory
   - task: blackduck.blackduck-coverity-on-polaris.blackduck-coverity-on-polaris-task.BlackduckCoverityOnPolaris@2
     displayName: Polaris Analyze
     inputs:
