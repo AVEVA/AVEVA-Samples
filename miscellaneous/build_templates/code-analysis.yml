@@ -45,16 +45,11 @@ jobs:
       waitForIssues: true
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
     
-- template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v1.yml@OpsGuildAutomationRepo
+- template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v3.yml@OpsGuildAutomationRepo
   parameters:
     pool:
       name: DevOps Managed AKS Admin
     buildSteps:
-      - task: JavaToolInstaller@0
-        inputs:
-          versionSpec: '8'  # or '17', '8', etc.
-          jdkArchitectureOption: 'x64'
-          jdkSourceOption: 'PreInstalled'  # Options: PreInstalled, AzureStorage, LocalDirectory
       - ${{ parameters.buildSteps }}
       - script: pip install -r requirements.txt
         condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
