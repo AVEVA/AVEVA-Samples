@@ -52,7 +52,7 @@ jobs:
     buildSteps:
       - task: JavaToolInstaller@0
         inputs:
-          versionSpec: '11'  # or '17', '8', etc.
+          versionSpec: '8'  # or '17', '8', etc.
           jdkArchitectureOption: 'x64'
           jdkSourceOption: 'PreInstalled'  # Options: PreInstalled, AzureStorage, LocalDirectory
       - ${{ parameters.buildSteps }}
