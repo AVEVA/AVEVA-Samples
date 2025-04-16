@@ -30,8 +30,7 @@ jobs:
 - job: SynopsysPolarisScan
   timeoutInMinutes: 180
   pool:
-      # name: DevOps Managed AKS Admin
-      vmImage: windows-2022
+      name: Cloud Platform CONNECT v2 Development
   steps:
   - ${{ parameters.buildSteps }}
   
