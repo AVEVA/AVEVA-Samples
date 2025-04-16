@@ -44,18 +44,11 @@ jobs:
       polarisService: 'PolarisScanner'
       waitForIssues: true
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
-    
-- template: Pipelines/Templates/BlackDuck/BlackDuckSourceScan.step.v3.yml@OpsGuildAutomationRepo
-  parameters:
-    pool:
-      name: DevOps Managed AKS Admin
-    buildSteps:
-      - ${{ parameters.buildSteps }}
-      - script: pip install -r requirements.txt
-        condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.useRequirementsTxt }}, true))
-        displayName: 'Install requirements.txt'
-    projectName: "product-readiness.$(analysisProject)"
-    projectVersionName: "$(Build.SourceBranchName)"
-    sourcePath: "$(Build.SourcesDirectory)${{ parameters.projectPath }}"
-    blackDuckServiceConnection: 'BlackDuckScanner'
-    detectorSearchDepth: 0
+
+  - template: "Pipelines/Templates/BlackDuck/v3/BlackDuckScanTemplate.step.v3.yml@ArchitectureRepo"
+    parameters:
+      projectName: product-readiness.$(analysisProject)
+      projectVersionName: "$(Build.SourceBranchName)"
+      blackDuckServiceConnection: 'BlackDuckScanner'
+  
+
