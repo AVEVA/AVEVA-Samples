@@ -44,7 +44,14 @@ jobs:
       polarisService: 'PolarisScanner'
       waitForIssues: true
     condition: and(succeeded(), eq(${{ parameters.skip }}, false), eq(${{ parameters.skipPolaris }}, false))
-
+    
+  - powershell: |
+      where java
+      $env:JAVA_HOME = "$env:JAVA_HOME_17_X64"
+      $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+      java -version
+    displayName: "Use Java 17"
+  
   - template: "Pipelines/Templates/BlackDuck/v3/BlackDuckScanTemplate.step.v3.yml@ArchitectureRepo"
     parameters:
       projectName: product-readiness.$(analysisProject)
