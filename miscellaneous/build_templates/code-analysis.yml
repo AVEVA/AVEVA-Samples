@@ -27,7 +27,7 @@ parameters:
 
 jobs:   
 
-- job: SynopsysPolarisScan
+- job: BlackDuckScans
   timeoutInMinutes: 180
   pool:
       name: Cloud Platform CONNECT v2 Development
