@@ -23,14 +23,18 @@ parameters:
   - name: buildSteps
     type: stepList
     default: []
-
+    
+  # Agent pool on which to run the BlackDuck scans
+  - name: poolForExecution
+    type: string
+    default: 'Cloud Platform CONNECT v2 Development'
 
 jobs:   
 
 - job: BlackDuckScans
   timeoutInMinutes: 180
   pool:
-      name: Cloud Platform CONNECT v2 Development
+      name: ${{ parameters.poolForExecution }}
   steps:
   - ${{ parameters.buildSteps }}
   
