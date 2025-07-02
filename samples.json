@@ -1,32 +1,32 @@
 [
   {
+    "Title": "AVEVA GitHub",
+    "Description": "GitHub Main Page.  Use this to access all samples.",
+    "Url": "https://github.com/AVEVA"
+  },
+  {
     "Title": "Authentication",
-    "Description": "Authenticating to OCS using all client types in various languages",
+    "Description": "Samples focused on connecting to CONNECT Data Services using all client types in various languages",
     "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/AUTHENTICATION.md"
   },
   {
     "Title": "SDS",
-    "Description": "SDS common actions written in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/COMMON_ACTIONS.md"
-  },
-  {
-    "Title": "Data Ingress",
-    "Description": "Samples highlighting some possible data ingress options in C#",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/DATA_INGRESS.md"
+    "Description": "Samples showcasing SDS common actions written in various languages",
+    "Url": "https://github.com/AVEVA/AVEVA-Samples-CloudOperations/blob/main/docs/COMMON_ACTIONS.md"
   },
   {
     "Title": "Visualization",
     "Description": "Sample visualization applications in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/VISUALIZATION.md"
+    "Url": "https://github.com/AVEVA/AVEVA-Samples-CloudOperations/blob/main/docs/VISUALIZATION.md"
   },
   {
-    "Title": "Analytics",
-    "Description": "Data view samples in various languages",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/ANALYTICS.md"
-  },
-  {
-    "Title": "Other",
+    "Title": "Python  Sample Libraries",
     "Description": "UOM sample, data copying, and sample libraries",
-    "Url": "https://github.com/osisoft/OSI-Samples-OCS/tree/main/docs/OTHER.md"
+    "Url": "https://github.com/aveva/sample-adh-sample_libraries-python"
+  },
+  {
+    "Title": "Setup Scripts",
+    "Description": "This extendable sample can be used to create streams (with data), assets, events, etc... in CONNECT Data Services",
+    "Url": "https://github.com/AVEVA/sample-cds-setup_script-python"
   }
 ]
