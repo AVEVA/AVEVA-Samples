@@ -27,7 +27,7 @@ steps:
   displayName: Copy files into binskim
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
-    TargetFolder: '$(Pipeline.Workspace)\\binskim'
+    TargetFolder: '$(Pipeline.Workspace)/binskim'
     ${{ if ne(parameters.binskimPath, '') }}:
       Contents: ${{ parameters.binskimPath }}
     ${{ else }}:
